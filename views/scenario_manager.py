@@ -1,11 +1,62 @@
-from PySide6.QtGui import QIcon, QFont, QCursor
+# scenario_manager.py
+
 from PySide6.QtWidgets import (
     QWidget, QVBoxLayout, QListWidget, QPushButton, QHBoxLayout,
-    QMessageBox, QLineEdit, QListWidgetItem, QToolTip, QFrame, QLabel
+    QMessageBox, QLineEdit, QListWidgetItem, QFrame, QLabel, QDialog, QTextEdit
 )
+from PySide6.QtGui import QIcon, QFont, QCursor
 from PySide6.QtCore import Signal, Slot, Qt, QTimer, QPoint
 
 
+class ScenarioDialog(QDialog):
+    def __init__(self, parent=None, scenario=None):
+        super().__init__(parent)
+        self.setWindowTitle("情景信息")
+        self.scenario = scenario
+        self.init_ui()
+
+    def init_ui(self):
+        layout = QVBoxLayout(self)
+
+        # 名称输入
+        name_layout = QHBoxLayout()
+        name_label = QLabel("名称:")
+        self.name_input = QLineEdit()
+        name_layout.addWidget(name_label)
+        name_layout.addWidget(self.name_input)
+        layout.addLayout(name_layout)
+
+        # 描述输入
+        desc_layout = QVBoxLayout()
+        desc_label = QLabel("描述:")
+        self.desc_input = QTextEdit()
+        desc_layout.addWidget(desc_label)
+        desc_layout.addWidget(self.desc_input)
+        layout.addLayout(desc_layout)
+
+        # 按钮
+        button_layout = QHBoxLayout()
+        self.save_button = QPushButton("保存")
+        self.cancel_button = QPushButton("取消")
+        button_layout.addStretch()
+        button_layout.addWidget(self.save_button)
+        button_layout.addWidget(self.cancel_button)
+        layout.addLayout(button_layout)
+
+        # 连接信号
+        self.save_button.clicked.connect(self.accept)
+        self.cancel_button.clicked.connect(self.reject)
+
+        # 如果是编辑模式，填充现有数据
+        if self.scenario:
+            self.name_input.setText(self.scenario.name)
+            self.desc_input.setText(self.scenario.description)
+
+    def get_data(self):
+        """获取输入的数据"""
+        name = self.name_input.text().strip()
+        description = self.desc_input.toPlainText().strip()
+        return name, description
 
 class CustomToolTip(QLabel):
     def __init__(self, text, parent=None, duration=3000):
@@ -42,87 +93,105 @@ class CustomToolTip(QLabel):
         self.move(pos)  # 移动到指定位置
         self.show()  # 显示提示框
 
+
+
 class ScenarioManager(QWidget):
     scenario_selected = Signal(int, str, str)
     add_requested = Signal()
-    edit_requested = Signal()
-    delete_requested = Signal()
+    edit_requested = Signal(int)    # 支持单选编辑
+    delete_requested = Signal(int)  # 支持单选删除
 
     def __init__(self):
         super().__init__()
+
         self.setObjectName("ScenarioManager")
-        layout = QVBoxLayout(self)
-        layout.setContentsMargins(20, 20, 20, 20)
-        layout.setSpacing(15)
+        self.init_ui()
         self.current_tooltip = None  # 用于追踪当前显示的 ToolTip
+        self.list_widget.setFocusPolicy(Qt.NoFocus)
 
+    def init_ui(self):
+        layout = QVBoxLayout(self)
+        layout.setContentsMargins(5, 5, 5, 5)  # 减少整体边距
+        layout.setSpacing(5)  # 减少整体间距
 
-        # 查找功能（只保留输入框和按钮）
+        # 搜索功能
+        self.init_search(layout)
+
+        # 分隔线
+        self.init_separator(layout)
+
+        # 操作按钮组
+        self.init_buttons(layout)
+
+        # 情景列表
+        self.init_list_widget(layout)
+
+    def init_search(self, parent_layout):
         search_layout = QHBoxLayout()
         self.search_input = QLineEdit()
         self.search_input.setPlaceholderText("输入情景名称进行查找...")
         self.search_input.setFont(QFont("Segoe UI", 10))
-        self.search_input.setFixedHeight(40)
-        self.search_button = QPushButton("查找")
-        self.search_button.setIcon(QIcon("resources/icons/search.png"))
-        self.search_button.setToolTip("查找情景")
-        self.search_button.setFont(QFont("Segoe UI", 10, QFont.Bold))
-        self.search_button.setFixedHeight(40)
-        search_layout.addWidget(self.search_input)
-        search_layout.addWidget(self.search_button)
-        layout.addLayout(search_layout)
+        self.search_input.setFixedHeight(30)
+        self.search_input.textChanged.connect(self.real_time_search)  # 实现实时搜索
 
-        # 分隔线
+        search_layout.addWidget(self.search_input)
+        parent_layout.addLayout(search_layout)
+
+    def init_separator(self, parent_layout):
         line = QFrame()
         line.setFrameShape(QFrame.HLine)
         line.setFrameShadow(QFrame.Sunken)
-        layout.addWidget(line)
+        line.setFixedHeight(2)  # 确保分隔线有足够的高度显示
+        line.setStyleSheet("""
+            QFrame {
+                background-color: #dcdcdc;  /* 设置分隔线颜色 */
+            }
+        """)
+        parent_layout.addWidget(line)
 
-        # 按钮组
+    def init_buttons(self, parent_layout):
         button_layout = QHBoxLayout()
-        button_layout.setSpacing(10)  # 设置按钮间距
-        button_layout.setContentsMargins(0, 10, 0, 10)  # 设置上下左右的外边距
-        self.add_button = QPushButton("➕ 增加")
-        self.add_button.setIcon(QIcon("resources/icons/add.png"))
-        self.add_button.setToolTip("增加新情景")
-        self.add_button.setFont(QFont("Segoe UI", 10, QFont.Bold))
-        self.add_button.setFixedHeight(40)
+        button_layout.setSpacing(5)  # 减少按钮之间的间距
+        button_layout.setContentsMargins(0, 5, 0, 5)  # 减少按钮组的边距
 
-        self.edit_button = QPushButton("✏️ 修改")
-        self.edit_button.setIcon(QIcon("resources/icons/edit.png"))
-        self.edit_button.setToolTip("修改选中的情景")
-        self.edit_button.setFont(QFont("Segoe UI", 10, QFont.Bold))
-        self.edit_button.setFixedHeight(40)
-
-        self.delete_button = QPushButton("❌ 删除")
-        self.delete_button.setIcon(QIcon("resources/icons/delete.png"))
-        self.delete_button.setToolTip("删除选中的情景")
-        self.delete_button.setFont(QFont("Segoe UI", 10, QFont.Bold))
-        self.delete_button.setFixedHeight(40)
+        # 使用辅助方法创建按钮
+        self.add_button = self.create_button("➕ 增加", "resources/icons/add.png", self.add_requested.emit)
+        self.edit_button = self.create_button("✏️ 修改", "resources/icons/edit.png", self.on_edit_requested)
+        self.delete_button = self.create_button("❌ 删除", "resources/icons/delete.png", self.on_delete_requested)
 
         button_layout.addWidget(self.add_button)
         button_layout.addWidget(self.edit_button)
         button_layout.addWidget(self.delete_button)
-        layout.addLayout(button_layout)
+        parent_layout.addLayout(button_layout)
 
-        # 情景列表
+    def create_button(self, text, icon_path, callback):
+        button = QPushButton(text)
+        button.setIcon(QIcon(icon_path))
+        button.setToolTip(text)
+        button.setFont(QFont("Segoe UI", 10, QFont.Bold))
+        button.setFixedHeight(35)  # 调整按钮高度
+        button.clicked.connect(callback)
+        return button
+
+    def init_list_widget(self, parent_layout):
         self.list_widget = QListWidget()
         self.list_widget.setObjectName("ScenarioList")
         self.list_widget.setMouseTracking(True)  # 开启鼠标追踪以支持悬浮提示
-        layout.addWidget(self.list_widget)
+        self.list_widget.setSelectionMode(QListWidget.SingleSelection)  # 支持单选
+        parent_layout.addWidget(self.list_widget)
 
         # 信号与槽
-        self.add_button.clicked.connect(self.add_requested.emit)
-        self.edit_button.clicked.connect(self.edit_requested.emit)
-        self.delete_button.clicked.connect(self.delete_requested.emit)
-        self.search_button.clicked.connect(self.search_scenario)
         self.list_widget.itemClicked.connect(self.select_scenario)
         self.list_widget.itemEntered.connect(self.show_tooltip)  # 悬浮显示描述
 
-
-
-
-        self.list_widget.setFocusPolicy(Qt.NoFocus)
+        # 启用项悬浮事件
+        self.list_widget.setMouseTracking(True)
+        self.list_widget.setAlternatingRowColors(True)
+        self.list_widget.setStyleSheet("""
+            QListWidget::item:hover {
+                background-color: #e6f7ff;
+            }
+        """)
 
     @Slot(QListWidgetItem)
     def select_scenario(self, item):
@@ -155,14 +224,10 @@ class ScenarioManager(QWidget):
             item.setData(Qt.UserRole + 1, scenario.description)
             self.list_widget.addItem(item)
 
-    @Slot()
-    def search_scenario(self):
-        """查找情景"""
-        query = self.search_input.text().strip().lower()
-        if not query:
-            QMessageBox.warning(self, "查找失败", "请输入情景名称进行查找。")
-            return
-
+    @Slot(str)
+    def real_time_search(self, text):
+        """实时搜索情景"""
+        query = text.strip().lower()
         self.list_widget.clear()
         for scenario in self.scenarios:
             if query in scenario.name.lower():  # 忽略大小写匹配
@@ -174,7 +239,7 @@ class ScenarioManager(QWidget):
                 item.setData(Qt.UserRole + 1, scenario.description)
                 self.list_widget.addItem(item)
 
-        if self.list_widget.count() == 0:
+        if self.list_widget.count() == 0 and query:
             QMessageBox.information(self, "无结果", "未找到匹配的情景，请尝试其他关键字。")
 
     @Slot(QListWidgetItem)
@@ -203,3 +268,34 @@ class ScenarioManager(QWidget):
             self.current_tooltip.deleteLater()
             self.current_tooltip = None
         super().leaveEvent(event)
+
+    @Slot()
+    def on_edit_requested(self):
+        selected_items = self.list_widget.selectedItems()
+        if not selected_items:
+            QMessageBox.warning(self, "修改失败", "请先选择要修改的情景。")
+            return
+        scenario_id = selected_items[0].data(Qt.UserRole)
+        self.edit_requested.emit(scenario_id)
+
+    @Slot()
+    def on_delete_requested(self):
+        selected_items = self.list_widget.selectedItems()
+        if not selected_items:
+            QMessageBox.warning(self, "删除失败", "请先选择要删除的情景。")
+            return
+
+        scenario_names = [item.text().split(" - ")[0] for item in selected_items]
+        scenario_id = selected_items[0].data(Qt.UserRole)
+        scenario_name = scenario_names[0]
+        reply = QMessageBox.question(
+            self, '确认删除',
+            f'您确定要删除情景 "{scenario_name}" 吗?',
+            QMessageBox.Yes | QMessageBox.No
+        )
+
+        if reply == QMessageBox.Yes:
+            self.delete_requested.emit(scenario_id)
+            QMessageBox.information(self, "删除成功", "情景已成功删除。")
+        else:
+            QMessageBox.information(self, "取消删除", "您已取消删除操作。")

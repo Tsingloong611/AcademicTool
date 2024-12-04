@@ -9,7 +9,7 @@ from PySide6.QtGui import QFont, Qt
 from PySide6.QtWidgets import QApplication
 from views.main_window import MainWindow
 from controllers.scenario_controller import ScenarioController
-from database.db_config import Base, engine
+from database.db_config import Base, engine, SessionLocal
 from models.scenario import Scenario
 
 def main():
@@ -35,8 +35,10 @@ def main():
     status_bar = window.status_bar_widget
     tab_widget = window.tab_widget
 
+    db = SessionLocal()
+
     # 创建控制器并连接
-    controller = ScenarioController(scenario_manager, status_bar, tab_widget)
+    controller = ScenarioController(scenario_manager, status_bar, tab_widget,db)
 
 
     window.show()
