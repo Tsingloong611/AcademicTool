@@ -37,7 +37,10 @@ class ScenarioController(QObject):
         scenarios = self.get_all_scenarios()
         self.scenario_manager.populate_scenarios(scenarios)
         # 初始时保持标签页锁定和占位页面显示
-        self.tab_widget.show_placeholder()
+        if (scenarios):
+            self.tab_widget.show_placeholder(True)
+        else:
+            self.tab_widget.show_placeholder(False)
 
     def get_all_scenarios(self):
         try:
