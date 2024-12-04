@@ -4,7 +4,7 @@
 # @Software: PyCharm
 
 from PySide6.QtCore import QObject, Slot, Qt
-from PySide6.QtWidgets import QInputDialog, QMessageBox, QDialog
+from PySide6.QtWidgets import QInputDialog, QMessageBox
 from sqlalchemy.exc import SQLAlchemyError
 from models.scenario import Scenario
 from database.db_config import SessionLocal
@@ -14,8 +14,6 @@ from PySide6.QtWidgets import QInputDialog, QMessageBox
 from sqlalchemy.exc import SQLAlchemyError
 from models.scenario import Scenario
 from database.db_config import SessionLocal
-from views.scenario_manager import ScenarioDialog
-
 
 class ScenarioController(QObject):
     def __init__(self, scenario_manager, status_bar, tab_widget):
@@ -39,10 +37,7 @@ class ScenarioController(QObject):
         scenarios = self.get_all_scenarios()
         self.scenario_manager.populate_scenarios(scenarios)
         # 初始时保持标签页锁定和占位页面显示
-        if(scenarios):
-            self.tab_widget.show_placeholder(True)
-        else:
-            self.tab_widget.show_placeholder(False)
+        self.tab_widget.show_placeholder()
 
     def get_all_scenarios(self):
         try:
@@ -64,7 +59,7 @@ class ScenarioController(QObject):
             self.status_bar.current_scenario_label.setText(f"当前情景: {scenario.name}")
             self.status_bar.owl_status_label.setText("OWL 文件状态: 正常")  # 示例
             self.status_bar.bayes_status_label.setText("贝叶斯网络状态: 正常")  # 示例
-            self.status_bar.scenario_update_time_label.setText("最后更新时间: 2024-12-03 10:00:00")  # 示例
+            self.status_bar.last_update_label.setText("最后更新时间: 2024-12-03 10:00:00")  # 示例
 
             # 解锁标签页并显示功能区
             self.tab_widget.show_tabs()
@@ -76,20 +71,18 @@ class ScenarioController(QObject):
             self.status_bar.current_scenario_label.setText("当前情景: 无")
             self.status_bar.owl_status_label.setText("OWL 文件状态: 无")
             self.status_bar.bayes_status_label.setText("贝叶斯网络状态: 无")
-            self.status_bar.scenario_update_time_label.setText("最后更新时间: 无")
+            self.status_bar.last_update_label.setText("最后更新时间: 无")
             self.tab_widget.show_placeholder()
 
     @Slot()
     def handle_add_requested(self):
-        dialog = ScenarioDialog(self.scenario_manager)  # 将父窗口更改为 scenario_manager
-        if dialog.exec() == QDialog.Accepted:
-            name, description = dialog.get_data()
-            if not name:
-                QMessageBox.warning(None, "添加失败", "情景名称不能为空。")
-                return
-            new_scenario = self.add_scenario(name, description)
-            if new_scenario:
-                self.load_scenarios()
+        name, ok = QInputDialog.getText(None, "增加情景", "情景名称:")
+        if ok and name:
+            description, ok_desc = QInputDialog.getMultiLineText(None, "增加情景", "情景描述:")
+            if ok_desc:
+                new_scenario = self.add_scenario(name, description)
+                if new_scenario:
+                    self.load_scenarios()
 
     @Slot()
     def handle_edit_requested(self):
@@ -102,21 +95,19 @@ class ScenarioController(QObject):
         if not scenario:
             QMessageBox.warning(None, "警告", "未找到选中的情景。")
             return
-        dialog = ScenarioDialog(self.scenario_manager, scenario=scenario)  # 将父窗口更改为 scenario_manager
-        if dialog.exec() == QDialog.Accepted:
-            name, description = dialog.get_data()
-            if not name:
-                QMessageBox.warning(None, "修改失败", "情景名称不能为空。")
-                return
-            updated = self.update_scenario(scenario_id, name, description)
-            if updated:
-                self.load_scenarios()
-                if self.current_scenario and self.current_scenario.id == scenario_id:
-                    # 更新状态栏中的所有信息项
-                    self.status_bar.current_scenario_label.setText(f"当前情景: {updated.name}")
-                    self.status_bar.owl_status_label.setText("OWL 文件状态: 正常")
-                    self.status_bar.bayes_status_label.setText("贝叶斯网络状态: 正常")
-                    self.status_bar.last_update_label.setText("最后更新时间: 2024-12-03 10:00:00")
+        name, ok = QInputDialog.getText(None, "修改情景", "情景名称:", text=scenario.name)
+        if ok and name:
+            description, ok_desc = QInputDialog.getMultiLineText(None, "修改情景", "情景描述:", text=scenario.description)
+            if ok_desc:
+                updated = self.update_scenario(scenario_id, name, description)
+                if updated:
+                    self.load_scenarios()
+                    if self.current_scenario and self.current_scenario.id == scenario_id:
+                        # 更新状态栏中的所有信息项
+                        self.status_bar.current_scenario_label.setText(f"当前情景: {updated.name}")
+                        self.status_bar.owl_status_label.setText("OWL 文件状态: 正常")  # 示例
+                        self.status_bar.bayes_status_label.setText("贝叶斯网络状态: 正常")  # 示例
+                        self.status_bar.last_update_label.setText("最后更新时间: 2024-12-03 10:00:00")  # 示例
 
     @Slot()
     def handle_delete_requested(self):
