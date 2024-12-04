@@ -2,6 +2,7 @@
 # @Time    : 12/3/2024 10:07 AM
 # @FileName: main_window.py
 # @Software: PyCharm
+import os
 
 from PySide6.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QDockWidget, QLabel, QFrame
 from PySide6.QtCore import Qt, Slot
@@ -28,14 +29,19 @@ class MainWindow(QMainWindow):
 
         # 创建状态栏的 QDockWidget
         self.create_status_bar_dock()
-
+        self.status_bar_dock.setFixedHeight(225)
 
 
     def create_scenario_manager_dock(self):
         # 创建 QDockWidget
-        dock = QDockWidget("情景管理器", self)
-        dock.setAllowedAreas(Qt.LeftDockWidgetArea | Qt.RightDockWidgetArea)
-        dock.setFeatures(QDockWidget.DockWidgetMovable | QDockWidget.DockWidgetClosable | QDockWidget.DockWidgetFloatable)
+        self.scenario_manager_dock = QDockWidget("情景管理器", self)
+        self.scenario_manager_dock.setAllowedAreas(Qt.LeftDockWidgetArea | Qt.RightDockWidgetArea)
+        self.scenario_manager_dock.setFeatures(
+            QDockWidget.DockWidgetMovable |
+            QDockWidget.DockWidgetClosable |
+            QDockWidget.DockWidgetFloatable
+        )
+        self.scenario_manager_dock.setObjectName("ScenarioManagerDock")
 
         # 创建一个带阴影和圆角的 QFrame 作为容器
         frame = QFrame()
@@ -54,19 +60,24 @@ class MainWindow(QMainWindow):
         layout.addWidget(self.scenario_manager)
 
         # 将 QFrame 设置为 QDockWidget 的内容
-        dock.setWidget(frame)
+        self.scenario_manager_dock.setWidget(frame)
 
         # 将 QDockWidget 添加到主窗口的左侧
-        self.addDockWidget(Qt.LeftDockWidgetArea, dock)
+        self.addDockWidget(Qt.LeftDockWidgetArea, self.scenario_manager_dock)
 
         # 连接信号
         self.scenario_manager.scenario_selected.connect(self.on_scenario_selected)
 
     def create_status_bar_dock(self):
         # 创建 QDockWidget
-        dock_status = QDockWidget("状态栏", self)
-        dock_status.setAllowedAreas(Qt.LeftDockWidgetArea | Qt.RightDockWidgetArea)
-        dock_status.setFeatures(QDockWidget.DockWidgetMovable | QDockWidget.DockWidgetClosable | QDockWidget.DockWidgetFloatable)
+        self.status_bar_dock = QDockWidget("状态栏", self)
+        self.status_bar_dock.setAllowedAreas(Qt.LeftDockWidgetArea | Qt.RightDockWidgetArea)
+        self.status_bar_dock.setFeatures(
+            QDockWidget.DockWidgetMovable |
+            QDockWidget.DockWidgetClosable |
+            QDockWidget.DockWidgetFloatable
+        )
+        self.status_bar_dock.setObjectName("StatusBarDock")
 
         # 创建一个带阴影和圆角的 QFrame 作为容器
         frame_status = QFrame()
@@ -86,24 +97,40 @@ class MainWindow(QMainWindow):
         layout_status.addWidget(self.status_bar_widget)
 
         # 将 QFrame 设置为 QDockWidget 的内容
-        dock_status.setWidget(frame_status)
+        self.status_bar_dock.setWidget(frame_status)
 
         # 使用 splitDockWidget 将状态栏 dock 分割到情景管理器 dock 的下方
-        scenario_dock = self.findChild(QDockWidget, "情景管理器")
-        if scenario_dock:
-            self.splitDockWidget(scenario_dock, dock_status, Qt.BottomDockWidgetArea)
-        else:
-            # 如果情景管理器未找到，直接添加
-            self.addDockWidget(Qt.LeftDockWidgetArea, dock_status)
+        self.splitDockWidget(self.scenario_manager_dock, self.status_bar_dock, Qt.Vertical)
 
-    @Slot(int, str, str)
-    def on_scenario_selected(self, scenario_id, scenario_name, scenario_description):
-        # 更新状态栏显示情景名称、状态和描述
-        self.status_bar_widget.update_status(scenario_name, "正常", scenario_description)
+    def on_scenario_selected(self, scenario_name, scenario_description):
+        user = "当前用户: 用户名"  # 替换为实际的用户信息
+        database = "当前数据库: 数据库名称"  # 替换为实际的数据库信息
+        owl_status = "正常"  # 或根据实际情况设置
+        bayes_status = "正常"  # 或根据实际情况设置
+        self.status_bar_widget.update_status(user, database, scenario_name, owl_status, bayes_status,scenario_description)
 
     def load_styles(self):
-        try:
-            with open("resources/styles/style.qss", "r", encoding="utf-8") as f:
-                self.setStyleSheet(f.read())
-        except Exception as e:
-            print(f"Error loading style.qss: {e}")
+        """加载拆分后的样式表"""
+        styles_dir = os.path.join(os.path.dirname(__file__), "..", "resources", "styles")
+        style_files = [
+            "global.qss",
+            "mainwindow.qss",
+            "dockwidget.qss",
+            "button.qss",
+            "listwidget.qss",
+            "tabwidget.qss",
+            "tooltip.qss",
+            "messagebox.qss",
+            "dialog.qss"
+        ]
+
+        combined_style = ""
+        for style_file in style_files:
+            path = os.path.join(styles_dir, style_file)
+            try:
+                with open(path, "r", encoding="utf-8") as f:
+                    combined_style += f.read() + "\n"
+            except Exception as e:
+                print(f"Error loading {style_file}: {e}")
+
+        self.setStyleSheet(combined_style)

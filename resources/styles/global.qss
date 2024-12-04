@@ -1,0 +1,19 @@
+/* global.qss */
+
+/* 全局设置 */
+* {
+    font-family: "Microsoft YaHei", "Segoe UI", Arial, sans-serif; /* 统一字体 */
+    font-size: 12pt; /* 统一字体大小 */
+    color: #333333; /* 默认字体颜色 */
+    background: transparent; /* 避免字体背景残留 */
+    text-shadow: none; /* 去除文字阴影 */
+}
+
+QMainWindow {
+    background-color: #f0f2f5; /* 浅灰色背景 */
+}
+
+QListWidget::item:selected:focus {
+    border: none;             /* 去除焦点边框 */
+    outline: none;            /* 去除焦点黑框 */
+}
