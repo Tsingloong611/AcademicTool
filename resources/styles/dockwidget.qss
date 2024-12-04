@@ -1,17 +1,24 @@
 /* dockwidget.qss */
 
-/* QDockWidget 样式 */
 QDockWidget {
-    background-color: #ffffff; /* 白色背景 */
-    border: 1px solid #dcdcdc;
-    border-radius: 8px;
+    font-family: "Segoe UI", Arial, sans-serif;
+    font-size: 10pt;
 }
 
 QDockWidget::title {
-    background: #f7f7f7;
-    color: #333333;
+    background-color: #f0f0f0;
     padding: 5px;
-    border-bottom: 1px solid #dcdcdc;
-    font-weight: bold;
-    font-size: 14px;
+    border: 1px solid #dcdcdc;
+    border-bottom: none;
+    border-radius: 8px 8px 0 0;
+}
+
+QDockWidget::close-button,
+QDockWidget::float-button {
+    image: url("resources/icons/close.png");
+}
+
+QDockWidget::close-button:hover,
+QDockWidget::float-button:hover {
+    background-color: #e6e6e6;
 }

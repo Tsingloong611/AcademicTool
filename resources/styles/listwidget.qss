@@ -1,29 +1,19 @@
 /* listwidget.qss */
 
-/* QListWidget 样式 */
 QListWidget {
-    font-size: 12pt;
-    border: 1px solid #dcdcdc;
-    border-radius: 6px;
+    border: none; /* 移除整体边框 */
     background-color: #ffffff;
-    color: #333333;
 }
 
 QListWidget::item {
-    padding: 10px;
-    border-bottom: 1px solid #ddd;
+    padding: 5px 10px;
 }
 
 QListWidget::item:hover {
-    background-color: #f1f1f1; /* 鼠标悬浮高亮 */
+    background-color: #e6f7ff;
 }
 
 QListWidget::item:selected {
     border: none; /* 移除选中时的边框 */
     background-color: #cceeff; /* 选中项背景色 */
-}
-
-QListWidget::item:selected:focus {
-    border: none;
-    outline: none; /* 去除焦点黑框 */
 }

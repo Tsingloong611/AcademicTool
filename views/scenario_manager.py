@@ -49,14 +49,15 @@ class ScenarioDialog(QDialog):
 
         # 如果是编辑模式，填充现有数据
         if self.scenario:
-            self.name_input.setText(self.scenario.name)
-            self.desc_input.setText(self.scenario.description)
+            self.name_input.setText(self.scenario['name'])
+            self.desc_input.setText(self.scenario['description'])
 
     def get_data(self):
         """获取输入的数据"""
         name = self.name_input.text().strip()
         description = self.desc_input.toPlainText().strip()
         return name, description
+
 
 class CustomToolTip(QLabel):
     def __init__(self, text, parent=None, duration=3000):
@@ -92,7 +93,6 @@ class CustomToolTip(QLabel):
         """显示提示框在指定位置"""
         self.move(pos)  # 移动到指定位置
         self.show()  # 显示提示框
-
 
 
 class ScenarioManager(QWidget):
@@ -155,7 +155,7 @@ class ScenarioManager(QWidget):
         button_layout.setContentsMargins(0, 5, 0, 5)  # 减少按钮组的边距
 
         # 使用辅助方法创建按钮
-        self.add_button = self.create_button("➕ 增加", "resources/icons/add.png", self.add_requested.emit)
+        self.add_button = self.create_button("➕ 增加", "resources/icons/add.png", self.on_add_requested)
         self.edit_button = self.create_button("✏️ 修改", "resources/icons/edit.png", self.on_edit_requested)
         self.delete_button = self.create_button("❌ 删除", "resources/icons/delete.png", self.on_delete_requested)
 
@@ -190,6 +190,10 @@ class ScenarioManager(QWidget):
         self.list_widget.setStyleSheet("""
             QListWidget::item:hover {
                 background-color: #e6f7ff;
+            }
+            QListWidget::item:selected {
+                border: none; /* 移除选中时的边框 */
+                background-color: #cceeff; /* 选中项背景色 */
             }
         """)
 
@@ -230,13 +234,13 @@ class ScenarioManager(QWidget):
         query = text.strip().lower()
         self.list_widget.clear()
         for scenario in self.scenarios:
-            if query in scenario.name.lower():  # 忽略大小写匹配
-                description = scenario.description
+            if query in scenario['name'].lower():  # 忽略大小写匹配
+                description = scenario['description']
                 if len(description) > 8:
                     description = description[:8] + "..."
-                item = QListWidgetItem(f"{scenario.name} - {description}")
-                item.setData(Qt.UserRole, scenario.id)
-                item.setData(Qt.UserRole + 1, scenario.description)
+                item = QListWidgetItem(f"{scenario['name']} - {description}")
+                item.setData(Qt.UserRole, scenario['id'])
+                item.setData(Qt.UserRole + 1, scenario['description'])
                 self.list_widget.addItem(item)
 
         if self.list_widget.count() == 0 and query:
@@ -270,32 +274,97 @@ class ScenarioManager(QWidget):
         super().leaveEvent(event)
 
     @Slot()
-    def on_edit_requested(self):
-        selected_items = self.list_widget.selectedItems()
-        if not selected_items:
-            QMessageBox.warning(self, "修改失败", "请先选择要修改的情景。")
-            return
-        scenario_id = selected_items[0].data(Qt.UserRole)
-        self.edit_requested.emit(scenario_id)
+    def on_add_requested(self):
+        """处理增加情景的逻辑"""
+        dialog = ScenarioDialog(self)
+        if dialog.exec() == QDialog.Accepted:
+            name, description = dialog.get_data()
+            if not name:
+                QMessageBox.warning(self, "输入错误", "情景名称不能为空。")
+                return
+            # 检查是否有重复名称
+            for scenario in self.scenarios:
+                if scenario['name'] == name:
+                    QMessageBox.warning(self, "重复情景", "该情景名称已存在。")
+                    return
+            # 添加情景
+            scenario_id = self.add_scenario(name, description)
+            QMessageBox.information(self, "添加成功", f"情景 '{name}' 已成功添加。")
+            self.populate_scenarios(self.get_all_scenarios())
+            # 发射信号
+            self.add_requested.emit()
 
-    @Slot()
-    def on_delete_requested(self):
-        selected_items = self.list_widget.selectedItems()
-        if not selected_items:
-            QMessageBox.warning(self, "删除失败", "请先选择要删除的情景。")
-            return
-
-        scenario_names = [item.text().split(" - ")[0] for item in selected_items]
-        scenario_id = selected_items[0].data(Qt.UserRole)
-        scenario_name = scenario_names[0]
-        reply = QMessageBox.question(
-            self, '确认删除',
-            f'您确定要删除情景 "{scenario_name}" 吗?',
-            QMessageBox.Yes | QMessageBox.No
-        )
-
-        if reply == QMessageBox.Yes:
-            self.delete_requested.emit(scenario_id)
-            QMessageBox.information(self, "删除成功", "情景已成功删除。")
+    @Slot(int)
+    def on_edit_requested(self, scenario_id):
+        """处理编辑情景的逻辑"""
+        scenario = self.get_scenario_by_id(scenario_id)
+        if scenario:
+            dialog = ScenarioDialog(self, scenario)
+            if dialog.exec() == QDialog.Accepted:
+                name, description = dialog.get_data()
+                if not name:
+                    QMessageBox.warning(self, "输入错误", "情景名称不能为空。")
+                    return
+                # 检查是否有重复名称
+                for s in self.scenarios:
+                    if s['name'] == name and s['id'] != scenario_id:
+                        QMessageBox.warning(self, "重复情景", "该情景名称已存在。")
+                        return
+                # 编辑情景
+                self.edit_scenario(scenario_id, name, description)
+                QMessageBox.information(self, "修改成功", f"情景 '{name}' 已成功修改。")
+                self.populate_scenarios(self.get_all_scenarios())
+                # 发射信号
+                self.edit_requested.emit(scenario_id)
         else:
-            QMessageBox.information(self, "取消删除", "您已取消删除操作。")
+            QMessageBox.warning(self, "错误", "未找到要编辑的情景。")
+
+    @Slot(int)
+    def on_delete_requested(self, scenario_id):
+        """处理删除情景的逻辑"""
+        scenario = self.get_scenario_by_id(scenario_id)
+        if scenario:
+            reply = QMessageBox.question(
+                self, '确认删除',
+                f'您确定要删除情景 "{scenario["name"]}" 吗?',
+                QMessageBox.Yes | QMessageBox.No
+            )
+
+            if reply == QMessageBox.Yes:
+                self.delete_scenario(scenario_id)
+                QMessageBox.information(self, "删除成功", "情景已成功删除。")
+                self.populate_scenarios(self.get_all_scenarios())
+                # 发射信号
+                self.delete_requested.emit(scenario_id)
+        else:
+            QMessageBox.warning(self, "错误", "未找到要删除的情景。")
+
+    def add_scenario(self, name, description):
+        """添加情景并返回新情景的ID"""
+        new_id = max([s['id'] for s in self.scenarios], default=0) + 1
+        new_scenario = {'id': new_id, 'name': name, 'description': description}
+        self.scenarios.append(new_scenario)
+        return new_id
+
+    def edit_scenario(self, scenario_id, name, description):
+        """编辑指定ID的情景"""
+        for scenario in self.scenarios:
+            if scenario['id'] == scenario_id:
+                scenario['name'] = name
+                scenario['description'] = description
+                break
+
+    def delete_scenario(self, scenario_id):
+        """删除指定ID的情景"""
+        self.scenarios = [s for s in self.scenarios if s['id'] != scenario_id]
+
+    def get_all_scenarios(self):
+        """返回所有情景"""
+        return self.scenarios
+
+    def get_scenario_by_id(self, scenario_id):
+        """根据ID获取情景"""
+        for scenario in self.scenarios:
+            if scenario['id'] == scenario_id:
+                return scenario
+        return None
