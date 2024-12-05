@@ -15,20 +15,25 @@ class ClickableLabel(QLabel):
         super().mousePressEvent(event)
 
 class CustomCheckBoxWithLabel(QWidget):
-    def __init__(self, label_text):
+    def __init__(self, label_text, is_last=False):
         super().__init__()
-        self.init_ui(label_text)
+        self.init_ui(label_text, is_last)
 
-    def init_ui(self, label_text):
+    def init_ui(self, label_text, is_last):
         layout = QHBoxLayout(self)
         layout.setSpacing(0)
         layout.setContentsMargins(0, 0, 0, 0)
 
         self.checkbox = QCheckBox()
-        self.checkbox.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)  # 设置勾选框的尺寸策略为固定
+        self.checkbox.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
 
         self.label = ClickableLabel(label_text)
-        self.label.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)  # 设置标签的尺寸策略为扩展
+        self.label.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+
+        if is_last:
+            layout.addStretch(0)  # 不添加额外的弹性空间，标签靠右对齐
+        else:
+            layout.addStretch(1)  # 添加弹性空间，标签居中
 
         layout.addWidget(self.checkbox)
         layout.addWidget(self.label)
@@ -57,6 +62,14 @@ class TestWindow(QWidget):
         for i, category in enumerate(categories):
             checkbox_label = CustomCheckBoxWithLabel(category)
             group_layout.addWidget(checkbox_label, i // 2, i % 2)
+
+        # 设置每行的拉伸因子
+        for i in range(group_layout.rowCount()):
+            group_layout.setRowStretch(i, 1)
+
+        # 设置每列的拉伸因子
+        for j in range(group_layout.columnCount()):
+            group_layout.setColumnStretch(j, 1)
 
         group_box.setLayout(group_layout)
         layout.addWidget(group_box)

@@ -6,19 +6,25 @@ import os
 
 from PySide6.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QDockWidget, QLabel, QFrame
 from PySide6.QtCore import Qt, Slot
+from pymysql import connect
+
+from controllers import ScenarioController
 from views.scenario_manager import ScenarioManager
 from views.status_bar import StatusBar
 from views.tabs.tab_widget import TabWidget
 
 
 class MainWindow(QMainWindow):
-    def __init__(self):
+    def __init__(self, db_manager):
         super().__init__()
         self.setWindowTitle("基于认知数字李生的城市道路应急情景推演工具")
         self.setFixedSize(1200, 600)
 
+        self.db_manager = db_manager  # 保存数据库管理器实例
+
         # 设置样式
         self.load_styles()
+
 
         # 创建中央部件：标签页
         self.tab_widget = TabWidget()
@@ -30,6 +36,18 @@ class MainWindow(QMainWindow):
         # 创建状态栏的 QDockWidget
         self.create_status_bar_dock()
         self.status_bar_dock.setFixedHeight(225)
+
+
+        # 创建控制器并连接
+        self.controller = ScenarioController(
+            scenario_manager=self.scenario_manager,
+            status_bar=self.status_bar_widget,
+            tab_widget=self.tab_widget,
+            db_manager=self.db_manager
+        )
+
+        # 自动加载情景数据
+        self.controller.load_scenarios()
 
 
     def create_scenario_manager_dock(self):
@@ -65,8 +83,6 @@ class MainWindow(QMainWindow):
         # 将 QDockWidget 添加到主窗口的左侧
         self.addDockWidget(Qt.LeftDockWidgetArea, self.scenario_manager_dock)
 
-        # 连接信号
-        self.scenario_manager.scenario_selected.connect(self.on_scenario_selected)
 
     def create_status_bar_dock(self):
         # 创建 QDockWidget
@@ -101,13 +117,6 @@ class MainWindow(QMainWindow):
 
         # 使用 splitDockWidget 将状态栏 dock 分割到情景管理器 dock 的下方
         self.splitDockWidget(self.scenario_manager_dock, self.status_bar_dock, Qt.Vertical)
-
-    def on_scenario_selected(self, scenario_name, scenario_description):
-        user = "当前用户: 用户名"  # 替换为实际的用户信息
-        database = "当前数据库: 数据库名称"  # 替换为实际的数据库信息
-        owl_status = "正常"  # 或根据实际情况设置
-        bayes_status = "正常"  # 或根据实际情况设置
-        self.status_bar_widget.update_status(user, database, scenario_name, owl_status, bayes_status,scenario_description)
 
     def load_styles(self):
         """加载拆分后的样式表"""

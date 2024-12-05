@@ -1,0 +1,148 @@
+/* tech_style.qss */
+* {
+    font-family: 'Microsoft YaHei'; /* 设置全局字体为微软雅黑 */
+    font-size: 14px; /* 默认字体大小 */
+}
+
+/* 整体对话框样式 */
+QDialog {
+    background-color: #f0f4f7; /* 浅灰色背景，简约大气 */
+    color: #333333; /* 深色字体，确保可读性 */
+    font-size: 14px;
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);  /* 可选：柔和的阴影效果 */
+}
+
+/* 标题标签 */
+#titleLabel {
+    color: #3498db; /* 浅蓝色标题 */
+    font-size: 20px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* 普通标签样式 */
+QLabel {
+    color: #333333;
+    font-size: 14px;
+}
+
+/* 按钮样式 */
+QPushButton {
+    background-color: #3498db; /* 浅蓝色按钮 */
+    color: #ffffff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 14px;
+    transition: background-color 0.3s ease, transform 0.1s ease;
+}
+
+QPushButton:hover {
+    background-color: #2980b9; /* 悬停时稍深 */
+}
+
+QPushButton:pressed {
+    background-color: #1c5980; /* 按下时更深 */
+    transform: scale(0.98); /* 按下时轻微缩小 */
+}
+
+/* 列表控件样式 */
+/* 去掉选中灰色框 */
+QListWidget {
+    outline: none; /* 去掉焦点框 */
+    background-color: #ffffff; /* 白色背景 */
+    border: 1px solid #bdc3c7;
+    border-radius: 5px; /* 圆角效果 */
+    padding: 5px;
+}
+
+/* 列表项默认样式 */
+QListWidget::item {
+    background-color: #ffffff; /* 默认背景 */
+    color: #333333; /* 默认字体颜色 */
+    padding: 8px;
+    border-radius: 3px; /* 圆角效果 */
+    margin-bottom: 2px;
+}
+
+/* 列表项选中样式 */
+QListWidget::item:selected {
+    border: none; /* 无边框 */
+    background-color: rgba(52, 152, 219, 0.3); /* 半透明浅蓝色背景 */
+    color: #333333; /* 深灰色字体 */
+    border-left: 3px solid #2980b9; /* 选中状态左侧边框 */
+}
+
+/* 列表项悬停样式 */
+QListWidget::item:hover {
+    background-color: rgba(208, 208, 208, 0.5); /* 半透明浅灰色背景 */
+    color: #333333; /* 深灰色字体 */
+}
+/* 输入框样式 */
+QLineEdit {
+    background-color: #ffffff; /* 白色背景 */
+    border: 1px solid #bdc3c7;
+    border-radius: 5px;
+    padding: 8px 35px 8px 10px; /* 为眼睛图标留出空间 */
+    color: #333333;
+    font-size: 14px;
+    transition: border-color 0.3s ease;
+}
+
+QLineEdit:focus {
+    border: 1px solid #3498db; /* 聚焦时边框颜色 */
+}
+
+/* 复选框样式 */
+QCheckBox {
+    color: #333333;
+    font-size: 14px;
+    padding: 5px;
+}
+
+QCheckBox::indicator {
+    width: 18px;
+    height: 18px;
+}
+
+
+/* 工具按钮样式（用于密码显示切换） */
+QToolButton {
+    border: none;
+    background: transparent;
+    padding: 0px;
+    cursor: pointer;
+}
+
+QToolButton:hover {
+    opacity: 0.7; /* 悬停时透明度降低 */
+}
+
+/* 滚动条样式 */
+QScrollBar:vertical {
+    background: #f0f4f7;
+    width: 12px;
+    margin: 0px 0px 0px 0px;
+    border-radius: 5px;
+}
+
+QScrollBar::handle:vertical {
+    background: #bdc3c7;
+    min-height: 20px;
+    border-radius: 5px;
+}
+
+QScrollBar::handle:vertical:hover {
+    background: #95a5a6;
+}
+
+QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
+    background: none;
+}
+
+QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
+    background: none;
+}

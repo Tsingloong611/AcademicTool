@@ -1,9 +1,12 @@
+# -*- coding: utf-8 -*-
+# @Time    : 12/3/2024 10:08 AM
+# @FileName: element_setting.py
+# @Software: PyCharm
 from PySide6.QtCore import Signal, Qt
 from PySide6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QCheckBox, QLineEdit, QLabel, QPushButton, QGroupBox, QGridLayout, QSpacerItem,
     QSizePolicy
 )
-from owlready2 import label
 
 class ClickableLabel(QLabel):
     clicked = Signal()
@@ -51,13 +54,20 @@ class CustomCheckBoxWithLabel(QWidget):
 
     def on_label_clicked(self):
         print(f"Label clicked, objectName: '{self.label.objectName()}'")
-    def on_checkbox_clicked(self):
-        # checkbox被点击时调用的槽函数
-        print(f"Checkbox clicked, objectName: '{self.checkbox.objectName()}'")
 
-    def on_label_clicked(self):
-        # label被点击时调用的槽函数
-        print(f"Label clicked, objectName: '{self.label.objectName()}'")
+class LineEditWidget(QWidget):
+    def __init__(self, label_text, parent=None):
+        super().__init__(parent)
+        layout = QHBoxLayout(self)
+        layout.setSpacing(15)
+        layout.setContentsMargins(0, 0, 0, 0)
+
+        self.label = QLabel(label_text)
+        self.line_edit = QLineEdit()
+        self.line_edit.setFixedWidth(100)
+
+        layout.addWidget(self.label)
+        layout.addWidget(self.line_edit)
 
 class ElementSettingTab(QWidget):
     def __init__(self):
@@ -80,12 +90,19 @@ class ElementSettingTab(QWidget):
         for i, category in enumerate(categories):
             checkbox = CustomCheckBoxWithLabel(category)
             self.checkboxes[category] = checkbox
-            element_layout.addWidget(checkbox, i // 4, i % 4)  # 每行放4个
+            row = i // 4  # 计算行号
+            column = i % 4  # 计算列号
+
+            alignment = Qt.AlignCenter
+
+            element_layout.addWidget(checkbox, row, column, 1, 1, alignment)  # 添加组件并设置对齐方式
         element_group_box.setLayout(element_layout)
+
 
         # 属性模型区域
         attribute_group_box = QGroupBox("属性模型")
         attribute_layout = QGridLayout()
+        attribute_layout.setSpacing(0)  # 设置布局中的控件间隔为0
         attribute_labels = [
             "道路名称", "道路类型", "行车道数",
             "起始桩号", "终点桩号", "封闭情况",
@@ -93,11 +110,10 @@ class ElementSettingTab(QWidget):
         ]
         self.attribute_inputs = {}
         for i, label_text in enumerate(attribute_labels):
-            label = QLabel(label_text)
-            line_edit = QLineEdit()
-            self.attribute_inputs[label_text] = line_edit
-            attribute_layout.addWidget(label, i // 2, (i % 2) * 2)  # 每行放两组
-            attribute_layout.addWidget(line_edit, i // 2, (i % 2) * 2 + 1)
+            print(label_text)
+            line_edit_widget = LineEditWidget(label_text)
+            attribute_layout.addWidget(line_edit_widget, i // 2, (i % 2) * 2, Qt.AlignCenter)
+
         attribute_group_box.setLayout(attribute_layout)
 
         # 行为模型区域

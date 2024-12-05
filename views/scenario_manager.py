@@ -5,7 +5,7 @@ from PySide6.QtWidgets import (
     QMessageBox, QLineEdit, QListWidgetItem, QFrame, QLabel, QDialog, QTextEdit
 )
 from PySide6.QtGui import QIcon, QFont, QCursor
-from PySide6.QtCore import Signal, Slot, Qt, QTimer, QPoint
+from PySide6.QtCore import Signal, Slot, Qt, QTimer, QPoint, QEvent
 
 
 class ScenarioDialog(QDialog):
@@ -58,42 +58,61 @@ class ScenarioDialog(QDialog):
         description = self.desc_input.toPlainText().strip()
         return name, description
 
+
 class CustomToolTip(QLabel):
     def __init__(self, text, parent=None, duration=3000):
         super().__init__(parent)
 
-        # 设置提示框的文本
-        self.setText(text)
+        # 设置提示框的文本，如果没有内容则设置为默认文本
+        self.text = text.strip() if text and text.strip() else "没有描述信息"
+        self.setText(self.text)
 
         # 设置样式表，定义圆角、背景色、阴影等
         self.setStyleSheet("""
             QLabel {
                 background-color: #f7f7f7;
                 color: #333333;
-                border: none;             /* 去掉边框 */
                 border-radius: 8px;       /* 圆角 */
                 padding: 8px;             /* 内边距 */
                 font-size: 11pt;          /* 字体大小 */
                 font-family: "Microsoft YaHei", "Segoe UI", Arial, sans-serif;
-                box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.15); /* 添加轻微阴影 */
+                box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2); /* 阴影效果 */
             }
         """)
 
-        # 设置窗口类型为 ToolTip，无边框和阴影
-        self.setWindowFlags(Qt.ToolTip | Qt.FramelessWindowHint | Qt.NoDropShadowWindowHint)
+        # 设置窗口类型为 ToolTip，并确保窗口保持在最前
+        self.setWindowFlags(Qt.ToolTip | Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint)
 
         # 创建定时器，用于控制提示框的显示时间
         self.timer = QTimer(self)
         self.timer.setSingleShot(True)  # 只触发一次
         self.timer.timeout.connect(self.hide)  # 超时后隐藏提示框
-        self.timer.start(duration)  # 设置显示时长（毫秒）
 
-    def show_at(self, pos):
-        """显示提示框在指定位置"""
+        # 安装事件过滤器以捕捉鼠标事件
+        self.installEventFilter(self)
+
+    def show_at(self, pos, duration=3000):
+        """
+        显示提示框在指定位置并设置显示时长
+        :param pos: 提示框显示的位置（全局坐标）
+        :param duration: 提示框显示的时长（毫秒）
+        """
+        if not self.text.strip():  # 如果内容为空，不显示提示框
+            return
+
         self.move(pos)  # 移动到指定位置
         self.show()  # 显示提示框
+        self.timer.start(duration)  # 设置显示时长
 
-
+    def eventFilter(self, obj, event):
+        if obj == self:
+            if event.type() == QEvent.Enter:
+                # 鼠标进入提示框，停止定时器
+                self.timer.stop()
+            elif event.type() == QEvent.Leave:
+                # 鼠标离开提示框，隐藏提示框
+                self.hide()
+        return super().eventFilter(obj, event)
 
 class ScenarioManager(QWidget):
     scenario_selected = Signal(int, str, str)
@@ -108,6 +127,9 @@ class ScenarioManager(QWidget):
         self.init_ui()
         self.current_tooltip = None  # 用于追踪当前显示的 ToolTip
         self.list_widget.setFocusPolicy(Qt.NoFocus)
+
+        # 安装事件过滤器到 list_widget 的 viewport
+        self.list_widget.viewport().installEventFilter(self)
 
     def init_ui(self):
         layout = QVBoxLayout(self)
@@ -253,21 +275,39 @@ class ScenarioManager(QWidget):
                 self.current_tooltip.hide()
                 self.current_tooltip.deleteLater()  # 删除之前的提示框
 
+            # 如果没有描述信息，设置为默认
+            if not full_description.strip():
+                full_description = "没有描述信息"
+
             # 计算显示位置（鼠标下方偏移一点）
             mouse_pos = QCursor.pos()  # 获取全局鼠标位置
             offset_pos = QPoint(mouse_pos.x() + 10, mouse_pos.y() + 20)  # 向右和向下偏移
 
             # 创建新的 ToolTip
-            self.current_tooltip = CustomToolTip(full_description, self, duration=5000)  # 显示 5 秒
+            self.current_tooltip = CustomToolTip(full_description, None, duration=5000)  # 父窗口设为 None
             self.current_tooltip.show_at(offset_pos)
+            self.current_tooltip.raise_()  # 确保提示框在最前
 
-    def leaveEvent(self, event):
-        """鼠标离开时隐藏提示框"""
-        if self.current_tooltip:
-            self.current_tooltip.hide()
-            self.current_tooltip.deleteLater()
-            self.current_tooltip = None
-        super().leaveEvent(event)
+    def eventFilter(self, obj, event):
+        if obj == self.list_widget.viewport():
+            if event.type() == QEvent.MouseMove:
+                pos = event.position().toPoint()
+                item = self.list_widget.itemAt(pos)
+                if not item:
+                    # 鼠标不在任何项目上，隐藏工具提示
+                    if self.current_tooltip:
+                        print("Hiding tooltip: Mouse not over any item")
+                        self.current_tooltip.hide()
+                        self.current_tooltip.deleteLater()
+                        self.current_tooltip = None
+            elif event.type() == QEvent.Leave:
+                # 鼠标离开列表区域，隐藏工具提示
+                if self.current_tooltip:
+                    print("Hiding tooltip: Mouse left list widget")
+                    self.current_tooltip.hide()
+                    self.current_tooltip.deleteLater()
+                    self.current_tooltip = None
+        return super().eventFilter(obj, event)
 
     @Slot()
     def on_edit_requested(self):
