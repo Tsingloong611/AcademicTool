@@ -665,7 +665,7 @@ class ElementSettingTab(QWidget):
                 font-weight: bold;
             }
         """)
-        self.behavior_table.horizontalHeader().repaint()
+        self.behavior_table.horizontalHeader().update()
 
     def clear_layout(self, layout):
         """辅助方法：清空布局中的所有控件"""
