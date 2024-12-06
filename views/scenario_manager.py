@@ -7,41 +7,75 @@ from PySide6.QtWidgets import (
 from PySide6.QtGui import QIcon, QFont, QCursor
 from PySide6.QtCore import Signal, Slot, Qt, QTimer, QPoint, QEvent
 
+from views.dialogs.custom_information_dialog import CustomInformationDialog
+from views.dialogs.custom_question_dialog import CustomQuestionDialog
+from views.dialogs.custom_warning_dialog import CustomWarningDialog
+
 
 class ScenarioDialog(QDialog):
     def __init__(self, parent=None, scenario=None):
         super().__init__(parent)
         self.setWindowTitle("情景信息")
         self.scenario = scenario
+        self.setFixedSize(400, 300)  # 设置固定窗口大小
         self.init_ui()
 
     def init_ui(self):
+        # 主布局，增加内边距
         layout = QVBoxLayout(self)
+        layout.setContentsMargins(15, 15, 15, 15)  # 设置内边距
+        layout.setSpacing(15)  # 设置控件之间的间距
+        self.setStyleSheet("""* {
+            font-family: "Microsoft YaHei", "Times New Roman", Arial, sans-serif; /* 统一字体 */
+            font-size: 12pt; /* 统一字体大小 */
+            color: #333333; /* 默认字体颜色 */
+            text-shadow: none; /* 去除文字阴影 */
+        }""")
 
-        # 名称输入
+        # 名称输入部分
         name_layout = QHBoxLayout()
         name_label = QLabel("名称:")
+
         self.name_input = QLineEdit()
+        self.name_input.setFixedHeight(30)  # 设置固定高度
+        self.name_input.setPlaceholderText("请输入情景名称")
         name_layout.addWidget(name_label)
         name_layout.addWidget(self.name_input)
         layout.addLayout(name_layout)
 
-        # 描述输入
+        # 描述输入部分
         desc_layout = QVBoxLayout()
         desc_label = QLabel("描述:")
+
         self.desc_input = QTextEdit()
+        self.desc_input.setFixedHeight(150)  # 设置固定高度
+        self.desc_input.setPlaceholderText("请输入情景描述")
         desc_layout.addWidget(desc_label)
         desc_layout.addWidget(self.desc_input)
         layout.addLayout(desc_layout)
 
-        # 按钮
+        # 按钮部分
         button_layout = QHBoxLayout()
         self.save_button = QPushButton("保存")
         self.cancel_button = QPushButton("取消")
-        button_layout.addStretch()
+        self.cancel_button.setStyleSheet("""
+            QPushButton {
+                background-color: white; /* 设置背景颜色为白色 */
+                color: black;           /* 设置文字颜色为黑色 */
+            }
+            QPushButton:pressed {
+                background-color: lightgray; /* 按钮被按下时的背景色 */
+            }
+        """)
+        self.save_button.setFixedHeight(35)
+        self.cancel_button.setFixedHeight(35)
+        button_layout.addStretch()  # 添加伸缩以调整按钮位置
         button_layout.addWidget(self.save_button)
         button_layout.addWidget(self.cancel_button)
         layout.addLayout(button_layout)
+
+        # 外边框样式
+        self.setStyleSheet(self.get_dialog_styles())
 
         # 连接信号
         self.save_button.clicked.connect(self.accept)
@@ -57,6 +91,30 @@ class ScenarioDialog(QDialog):
         name = self.name_input.text().strip()
         description = self.desc_input.toPlainText().strip()
         return name, description
+
+    @staticmethod
+    def get_dialog_styles():
+        """返回对话框样式表"""
+        return """
+            QDialog {
+                background-color: #f7f7f7;  /* 设置背景色 */
+                border: 2px solid #cccccc; /* 添加边框 */
+                border-radius: 10px;       /* 圆角边框 */
+            }
+            QLabel {
+                color: #333333;           /* 字体颜色 */
+            }
+            QLineEdit, QTextEdit {
+                border: 1px solid #cccccc;
+                border-radius: 5px;
+                background-color: #ffffff;
+                padding: 5px;
+                font-size: 10pt;
+            }
+            QLineEdit:focus, QTextEdit:focus {
+                border: 2px solid #0055aa;  /* 聚焦时的边框颜色 */
+            }
+        """
 
 
 class CustomToolTip(QLabel):
@@ -177,9 +235,9 @@ class ScenarioManager(QWidget):
         button_layout.setContentsMargins(0, 5, 0, 5)  # 减少按钮组的边距
 
         # 使用辅助方法创建按钮
-        self.add_button = self.create_button("➕ 增加", "resources/icons/add.png", self.add_requested.emit)
-        self.edit_button = self.create_button("✏️ 修改", "resources/icons/edit.png", self.on_edit_requested)
-        self.delete_button = self.create_button("❌ 删除", "resources/icons/delete.png", self.on_delete_requested)
+        self.add_button = self.create_button("新建", "resources/icons/add.png", self.add_requested.emit)
+        self.edit_button = self.create_button("修改", "resources/icons/edit.png", self.on_edit_requested)
+        self.delete_button = self.create_button("删除", "resources/icons/delete.png", self.on_delete_requested)
 
         button_layout.addWidget(self.add_button)
         button_layout.addWidget(self.edit_button)
@@ -221,15 +279,13 @@ class ScenarioManager(QWidget):
         scenario_name = item.text().split(" - ")[0]  # 仅获取名称部分
         scenario_description = item.data(Qt.UserRole + 1)
 
-        reply = QMessageBox.question(
-            self, '确认选择', f'您确定要选择情景 "{scenario_name}" 吗?',
-            QMessageBox.Yes | QMessageBox.No, QMessageBox.No
-        )
+        reply = CustomQuestionDialog("确认选择", f'您确定要选择情景 "{scenario_name}" 吗?',position=0).ask()
 
-        if reply == QMessageBox.Yes:
+
+        if reply:
             self.scenario_selected.emit(scenario_id, scenario_name, scenario_description)
         else:
-            QMessageBox.information(self, "取消选择", "您已取消选择情景。")
+            CustomInformationDialog("取消选择", "您已取消选择情景。").get_result()
 
     @Slot(list)
     def populate_scenarios(self, scenarios):
@@ -262,7 +318,7 @@ class ScenarioManager(QWidget):
                 self.list_widget.addItem(item)
 
         if self.list_widget.count() == 0 and query:
-            QMessageBox.information(self, "无结果", "未找到匹配的情景，请尝试其他关键字。")
+            CustomInformationDialog("无结果", "未找到匹配的情景，请尝试其他关键字。").get_result()
 
     @Slot(QListWidgetItem)
     def show_tooltip(self, item):
@@ -313,7 +369,7 @@ class ScenarioManager(QWidget):
     def on_edit_requested(self):
         selected_items = self.list_widget.selectedItems()
         if not selected_items:
-            QMessageBox.warning(self, "修改失败", "请先选择要修改的情景。")
+            CustomWarningDialog("修改失败", "请先选择要修改的情景。").get_result()
             return
         scenario_id = selected_items[0].data(Qt.UserRole)
         self.edit_requested.emit(scenario_id)
@@ -322,20 +378,16 @@ class ScenarioManager(QWidget):
     def on_delete_requested(self):
         selected_items = self.list_widget.selectedItems()
         if not selected_items:
-            QMessageBox.warning(self, "删除失败", "请先选择要删除的情景。")
+            CustomWarningDialog("删除失败", "请先选择要删除的情景。").get_result()
             return
 
         scenario_names = [item.text().split(" - ")[0] for item in selected_items]
         scenario_id = selected_items[0].data(Qt.UserRole)
         scenario_name = scenario_names[0]
-        reply = QMessageBox.question(
-            self, '确认删除',
-            f'您确定要删除情景 "{scenario_name}" 吗?',
-            QMessageBox.Yes | QMessageBox.No
-        )
+        reply = CustomQuestionDialog("确认删除", f'您确定要删除情景 "{scenario_name}" 吗?').ask()
 
-        if reply == QMessageBox.Yes:
+        if reply:
             self.delete_requested.emit(scenario_id)
-            QMessageBox.information(self, "删除成功", "情景已成功删除。")
+            CustomInformationDialog("删除成功", "情景已成功删除。").get_result()
         else:
-            QMessageBox.information(self, "取消删除", "您已取消删除操作。")
+            CustomInformationDialog("取消删除", "您已取消删除操作。").get_result()

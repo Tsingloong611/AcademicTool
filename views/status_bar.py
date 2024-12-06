@@ -26,7 +26,7 @@ class StatusBar(QWidget):
         """
         # 主布局
         main_layout = QVBoxLayout(self)
-        main_layout.setContentsMargins(10, 10, 10, 10)  # 减少整体边距
+        main_layout.setContentsMargins(10, 10, 10, 16)  # 减少整体边距
         main_layout.setSpacing(10)  # 减少整体间距
 
         # 用户信息分组
@@ -145,5 +145,28 @@ class StatusBar(QWidget):
         self.scenario_description_label.setText(f"情景描述: {truncated_description}")
         self.owl_status_label.setText(f"OWL 文件状态: {owl_status}")
         self.bayes_status_label.setText(f"贝叶斯网络状态: {bayes_status}")
-        self.scenario_update_time_label.setText(f"情景更新时间: {update_time.toString('yyyy-MM-dd hh:mm:ss')}")
+        self.scenario_update_time_label.setText(f"情景更新时间: {update_time}")
+
+    def updata_userpart(self,username,database,host,port):
+        def set_label_text_with_ellipsis(label, text, max_length=30):
+            """
+            设置 QLabel 的文本，超过 max_length 时截断，并添加工具提示。
+
+            :param label: 要设置的 QLabel 对象
+            :param text: 完整的文本内容
+            :param max_length: 最大显示字符数，超过则截断
+            """
+            if len(text) > max_length:
+                truncated_text = text[:max_length - 3] + '...'
+            else:
+                truncated_text = text
+
+            label.setText(truncated_text)
+            label.setToolTip(text)  # 设置工具提示为完整文本
+        full_user_text = f"当前用户: {username}"
+        set_label_text_with_ellipsis(self.user_label, full_user_text, max_length=40)
+
+        # 第二行：数据库信息
+        full_database_text = f"数据库: {database} | 主机: {host} | 端口: {port}"
+        set_label_text_with_ellipsis(self.database_label, full_database_text, max_length=41)
 

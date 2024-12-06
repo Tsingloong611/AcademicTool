@@ -21,6 +21,12 @@ from PySide6.QtGui import QIcon, QAction
 from controllers.server_manager import ServerManager
 import os
 
+from views.dialogs.custom_error_dialog import CustomErrorDialog
+from views.dialogs.custom_information_dialog import CustomInformationDialog
+from views.dialogs.custom_question_dialog import CustomQuestionDialog
+from views.dialogs.custom_warning_dialog import CustomWarningDialog
+
+
 class LoginDialog(QDialog):
     login_success = Signal()
 
@@ -132,7 +138,7 @@ class LoginDialog(QDialog):
     def edit_server(self):
         selected_item = self.server_list.currentItem()
         if not selected_item:
-            QMessageBox.warning(self, "警告", "请先选择要编辑的服务器。")
+            CustomWarningDialog("警告", "请先选择要编辑的服务器。",buttons=[("确定", "accept")], parent=self).get_result()
             return
         server_id = selected_item.data(Qt.UserRole)
         server = self.server_manager.get_server(server_id)
@@ -145,32 +151,29 @@ class LoginDialog(QDialog):
     def delete_server(self):
         selected_item = self.server_list.currentItem()
         if not selected_item:
-            QMessageBox.warning(self, "警告", "请先选择要删除的服务器。")
+            CustomWarningDialog("警告", "请先选择要删除的服务器。",buttons=[("确定", "accept")], parent=self).get_result()
             return
         server_id = selected_item.data(Qt.UserRole)
         server = self.server_manager.get_server(server_id)
-        confirm = QMessageBox.question(
-            self,
-            "确认删除",
-            f"确定要删除服务器 '{selected_item.text()}' 吗？",
-            QMessageBox.Yes | QMessageBox.No
-        )
-        if confirm == QMessageBox.Yes:
+        confirm = CustomQuestionDialog("确认删除", f"确定要删除服务器 '{selected_item.text()}' 吗？", parent=self).ask()
+        if confirm:
             success = self.server_manager.delete_server(server_id)
             if success:
                 self.populate_server_list()
             else:
-                QMessageBox.critical(self, "错误", "删除服务器失败。")
+                CustomErrorDialog("错误", "删除服务器失败。", parent=self).show_dialog()
 
     def connect_selected_server(self):
         selected_item = self.server_list.currentItem()
         if not selected_item:
-            QMessageBox.warning(self, "警告", "请先选择一个服务器。")
+
+            CustomWarningDialog("警告", "请先选择一个服务器。",buttons=[("确定", "accept")], parent=self).get_result()
             return
         server_id = selected_item.data(Qt.UserRole)
         server = self.server_manager.get_server(server_id)
         if not server:
-            QMessageBox.critical(self, "错误", "未找到选中的服务器。")
+            CustomErrorDialog("错误", "未找到选中的服务器。", parent=self).show_dialog()
+
             return
 
         if server.get('save_password') and 'password' in server and server['password']:
@@ -181,7 +184,7 @@ class LoginDialog(QDialog):
             if dialog.exec() == QDialog.Accepted:
                 password = dialog.get_password()
             else:
-                QMessageBox.warning(self, "警告", "未输入密码，无法连接。")
+                CustomWarningDialog("警告", "未输入密码，无法连接。",buttons=[("确定", "accept")], parent=self).get_result()
                 return
 
             # 询问是否保存密码
@@ -207,20 +210,20 @@ class LoginDialog(QDialog):
             server['database']
         )
         if success:
-            QMessageBox.information(self, "成功", message)
+            CustomInformationDialog("成功", message,buttons=[("确定", "accept")], parent=self).get_result()
             self.login_success.emit()
             self.accept()
         else:
-            QMessageBox.critical(self, "连接失败", f"无法连接到数据库：{message}")
+            CustomErrorDialog("错误", f"无法连接到数据库：{message}", parent=self).show_dialog()
 
     def open_manual_connect_dialog(self):
         dialog = ManualConnectDialog(self.db_manager, self)
         if dialog.exec() == QDialog.Accepted:
-            QMessageBox.information(self, "成功", "已成功连接到数据库。")
+            CustomInformationDialog("成功", "已成功连接到数据库。",buttons=[("确定", "accept")], parent=self).get_result()
             self.login_success.emit()
             self.accept()
         else:
-            QMessageBox.warning(self, "连接取消", "直接连接已取消。")
+            CustomWarningDialog("警告", "直接连接已取消。",buttons=[("确定", "accept")], parent=self).get_result()
 
 
 class ServerEditDialog(QDialog):
@@ -344,13 +347,13 @@ class ServerEditDialog(QDialog):
         database = self.database_edit.text().strip()
 
         if not name or not host or not port or not username or not database:
-            QMessageBox.warning(self, "警告", "请填写所有必填字段。")
+            CustomWarningDialog("警告", "请填写所有必填字段。",buttons=[("确定", "accept")], parent=self).get_result()
             return
 
         try:
             port = int(port)
         except ValueError:
-            QMessageBox.warning(self, "警告", "端口号必须是数字。")
+            CustomWarningDialog("警告", "端口号必须是数字。",buttons=[("确定", "accept")], parent=self).get_result()
             return
 
         self.server_data = {
@@ -542,7 +545,7 @@ class PasswordInputDialog(QDialog):
     def accept_password(self):
         password = self.password_edit.text().strip()
         if not password:
-            QMessageBox.warning(self, "警告", "密码不能为空！")
+            CustomWarningDialog("警告", "密码不能为空！",buttons=[("确定", "accept")], parent=self).get_result()
             return
         self.password = password
         self.accept()

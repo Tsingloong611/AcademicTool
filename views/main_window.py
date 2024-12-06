@@ -4,6 +4,7 @@
 # @Software: PyCharm
 import os
 
+
 from PySide6.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QDockWidget, QLabel, QFrame
 from PySide6.QtCore import Qt, Slot
 from pymysql import connect
@@ -18,7 +19,7 @@ class MainWindow(QMainWindow):
     def __init__(self, db_manager):
         super().__init__()
         self.setWindowTitle("基于认知数字李生的城市道路应急情景推演工具")
-        self.setFixedSize(1200, 600)
+        self.setFixedSize(1197, 600)  # 增大主窗口高度以更好对齐
 
         self.db_manager = db_manager  # 保存数据库管理器实例
 
@@ -27,7 +28,7 @@ class MainWindow(QMainWindow):
 
 
         # 创建中央部件：标签页
-        self.tab_widget = TabWidget()
+        self.tab_widget = TabWidget(self)
         self.setCentralWidget(self.tab_widget)
 
         # 创建情景管理器的 QDockWidget
@@ -87,7 +88,7 @@ class MainWindow(QMainWindow):
     def create_status_bar_dock(self):
         # 创建 QDockWidget
         self.status_bar_dock = QDockWidget("状态栏", self)
-        self.status_bar_dock.setAllowedAreas(Qt.LeftDockWidgetArea | Qt.RightDockWidgetArea)
+        self.status_bar_dock.setAllowedAreas(Qt.BottomDockWidgetArea | Qt.TopDockWidgetArea)
         self.status_bar_dock.setFeatures(
             QDockWidget.DockWidgetMovable |
             QDockWidget.DockWidgetClosable |

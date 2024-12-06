@@ -13,7 +13,7 @@ from views.tabs.condition_setting import ConditionSettingTab
 
 
 class TabWidget(QStackedWidget):
-    def __init__(self):
+    def __init__(self,root):
         super().__init__()
 
         # 页面 0：占位页面，根据是否有情景显示不同提示
@@ -33,6 +33,7 @@ class TabWidget(QStackedWidget):
         """)
         placeholder_layout.addWidget(self.placeholder_label)
         self.addWidget(self.placeholder)
+        self.root = root
 
         # 页面 1：功能区标签页
         self.tab_widget = QTabWidget()
@@ -56,15 +57,6 @@ class TabWidget(QStackedWidget):
 
         self.tab_widget.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
 
-        tab_count = self.tab_widget.count()
-        tab_width = (self.tab_widget.width() + 159) // tab_count
-        # 设置样式表来调整标签宽度
-        print(tab_width)
-        print(self.tab_widget.width())
-        style = f"QTabBar::tab{{width: {tab_width}px;}}"
-        self.tab_widget.setStyleSheet(style)
-
-
         # 为占位页面添加蓝色边框
         self.placeholder.setStyleSheet("""
             QWidget#RightArea {
@@ -77,6 +69,11 @@ class TabWidget(QStackedWidget):
         # 初始化时锁定所有标签页
         self.setCurrentWidget(self.placeholder)
         self.lock_tabs()
+
+        tab_count = self.tab_widget.count()
+        tab_width = self.tab_widget.width() // tab_count + 42
+        style = f"QTabBar::tab{{width: {tab_width}px;}}"
+        self.tab_widget.setStyleSheet(style)
 
     def lock_tabs(self):
         for index in range(self.tab_widget.count()):

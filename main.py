@@ -16,10 +16,6 @@ def main():
     QApplication.setStyle("Fusion")
 
     # 设置全局字体
-    font = QFont("Microsoft YaHei", 10)  # 使用微软雅黑或其他清晰字体
-    font.setHintingPreference(QFont.PreferNoHinting)  # 避免字体模糊
-    font.setStyleStrategy(QFont.PreferAntialias)      # 抗锯齿
-    app.setFont(font)
     app.setAttribute(Qt.AA_EnableHighDpiScaling)  # 启用高 DPI 支持
     app.setAttribute(Qt.AA_UseHighDpiPixmaps)  # 使图标适配高 DPI
 
