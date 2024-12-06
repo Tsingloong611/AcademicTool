@@ -939,7 +939,7 @@ class ElementSettingTab(QWidget):
                     })
 
             # 重新调整表格高度以适应新的行数
-            self.adjust_behavior_table_height()
+            self.behavior_table.horizontalHeader().update()
 
     def handle_save(self):
         """收集所有被勾选的要素数据并模拟保存操作"""
