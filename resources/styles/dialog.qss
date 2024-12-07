@@ -11,13 +11,13 @@ QDialog {
 QDialog QLabel {
     background: transparent; /* 背景透明 */
     color: #333333;          /* 深灰色文字 */
-    font-size: 12pt;         /* 字体大小 */
+    font-size: 14pt;         /* 字体大小 */
     font-family: "Microsoft YaHei", "Segoe UI", Arial, sans-serif;
 }
 
 QDialog QPushButton {
     padding: 8px 16px;
-    font-size: 12pt;
+    font-size: 14pt;
     border: 1px solid #0078d7; /* 蓝色边框 */
     border-radius: 6px;
     background-color: #0078d7; /* 蓝色背景 */

@@ -2,7 +2,7 @@
 
 /* QListWidget 样式 */
 QListWidget {
-    font-size: 12pt;
+    font-size: 14pt;
     border: 1px solid #dcdcdc;
     border-radius: 6px;
     background-color: #ffffff;

@@ -48,7 +48,7 @@ class ScenarioDialog(QDialog):
         desc_label = QLabel("描述:")
 
         self.desc_input = QTextEdit()
-        self.desc_input.setFixedHeight(150)  # 设置固定高度
+        self.desc_input.setFixedHeight(120)  # 设置固定高度
         self.desc_input.setPlaceholderText("请输入情景描述")
         desc_layout.addWidget(desc_label)
         desc_layout.addWidget(self.desc_input)
@@ -58,7 +58,7 @@ class ScenarioDialog(QDialog):
         button_layout = QHBoxLayout()
         self.save_button = QPushButton("保存")
         self.cancel_button = QPushButton("取消")
-        self.cancel_button.setStyleSheet("""
+        self.save_button.setStyleSheet("""
             QPushButton {
                 background-color: white; /* 设置背景颜色为白色 */
                 color: black;           /* 设置文字颜色为黑色 */
@@ -67,8 +67,8 @@ class ScenarioDialog(QDialog):
                 background-color: lightgray; /* 按钮被按下时的背景色 */
             }
         """)
-        self.save_button.setFixedHeight(35)
-        self.cancel_button.setFixedHeight(35)
+        self.save_button.setFixedHeight(40)
+        self.cancel_button.setFixedHeight(40)
         button_layout.addStretch()  # 添加伸缩以调整按钮位置
         button_layout.addWidget(self.save_button)
         button_layout.addWidget(self.cancel_button)
@@ -249,7 +249,7 @@ class ScenarioManager(QWidget):
         button.setIcon(QIcon(icon_path))
         button.setToolTip(text)
         button.setFont(QFont("Segoe UI", 10, QFont.Bold))
-        button.setFixedHeight(35)  # 调整按钮高度
+        button.setFixedHeight(38)  # 调整按钮高度
         button.clicked.connect(callback)
         return button
 
@@ -279,7 +279,7 @@ class ScenarioManager(QWidget):
         scenario_name = item.text().split(" - ")[0]  # 仅获取名称部分
         scenario_description = item.data(Qt.UserRole + 1)
 
-        reply = CustomQuestionDialog("确认选择", f'您确定要选择情景 "{scenario_name}" 吗?',position=0).ask()
+        reply = CustomQuestionDialog("确认选择", f'您确定要选择情景 "{scenario_name}" 吗?').ask()
 
 
         if reply:
@@ -297,7 +297,7 @@ class ScenarioManager(QWidget):
             # 如果描述超过8个字，用 "..." 替代
             if len(description) > 8:
                 description = description[:8] + "..."
-            item = QListWidgetItem(f"{scenario.name} - {description}")
+            item = QListWidgetItem(f"{scenario.name}")
             item.setData(Qt.UserRole, scenario.id)
             item.setData(Qt.UserRole + 1, scenario.description)
             self.list_widget.addItem(item)

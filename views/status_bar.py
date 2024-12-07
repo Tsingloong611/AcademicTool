@@ -26,7 +26,7 @@ class StatusBar(QWidget):
         """
         # 主布局
         main_layout = QVBoxLayout(self)
-        main_layout.setContentsMargins(10, 10, 10, 16)  # 减少整体边距
+        main_layout.setContentsMargins(10, 10, 10, 20)  # 减少整体边距
         main_layout.setSpacing(10)  # 减少整体间距
 
         # 用户信息分组

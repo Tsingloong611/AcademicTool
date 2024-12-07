@@ -291,15 +291,11 @@ class ServerEditDialog(QDialog):
         button_layout = QHBoxLayout()
         self.save_button = QPushButton("保存")
         self.cancel_button = QPushButton("取消")
-        self.cancel_button.setStyleSheet("""
+        self.save_button.setStyleSheet("""
             QPushButton {
                 background-color: #ffffff; /* 白色背景 */
                 color: #000000; /* 黑色文字 */
-                border: none;
-                padding: 10px 20px;
-                border-radius: 5px;
-                font-size: 14px;
-                transition: background-color 0.3s ease, transform 0.1s ease;
+
             }
             QPushButton:hover {
                 background-color: #f0f4f7; /* 浅灰色悬停效果 */
@@ -516,15 +512,11 @@ class PasswordInputDialog(QDialog):
         self.cancel_button = QPushButton("取消")
 
         # 自定义按钮样式
-        self.cancel_button.setStyleSheet("""
+        self.ok_button.setStyleSheet("""
             QPushButton {
                 background-color: #ffffff; /* 白色背景 */
                 color: #000000; /* 黑色文字 */
-                border: none;
-                padding: 10px 20px;
-                border-radius: 5px;
-                font-size: 14px;
-                transition: background-color 0.3s ease, transform 0.1s ease;
+
             }
             QPushButton:hover {
                 background-color: #f0f4f7; /* 浅灰色悬停效果 */

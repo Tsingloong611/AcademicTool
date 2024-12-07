@@ -18,8 +18,8 @@ from views.tabs.tab_widget import TabWidget
 class MainWindow(QMainWindow):
     def __init__(self, db_manager):
         super().__init__()
-        self.setWindowTitle("基于认知数字李生的城市道路应急情景推演工具")
-        self.setFixedSize(1197, 600)  # 增大主窗口高度以更好对齐
+        self.setWindowTitle("基于认知数字孪生的城市道路应急情景推演工具")
+        self.setFixedSize(1206, 650)  # 增大主窗口高度以更好对齐
 
         self.db_manager = db_manager  # 保存数据库管理器实例
 

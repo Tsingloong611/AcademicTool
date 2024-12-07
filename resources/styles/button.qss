@@ -3,7 +3,7 @@
 /* QPushButton 样式 */
 QPushButton {
     padding: 8px 16px;
-    font-size: 12pt;
+    font-size: 14pt;
     border: 1px solid #0078d7; /* 蓝色边框 */
     border-radius: 6px;
     background-color: #0078d7; /* 蓝色背景 */

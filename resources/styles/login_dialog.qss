@@ -17,7 +17,7 @@ QDialog {
 /* 标题标签 */
 #titleLabel {
     color: #3498db; /* 浅蓝色标题 */
-    font-size: 20px;
+    font-size: 16px;
     font-weight: bold;
     text-align: center;
     margin-bottom: 20px;
@@ -34,7 +34,7 @@ QPushButton {
     background-color: #3498db; /* 浅蓝色按钮 */
     color: #ffffff;
     border: none;
-    padding: 10px 20px;
+    padding: 14px 20px;
     border-radius: 5px;
     font-size: 14px;
     transition: background-color 0.3s ease, transform 0.1s ease;

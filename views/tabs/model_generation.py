@@ -11,6 +11,8 @@ import sys
 
 from owlready2.setup_develop_mode import current_dir
 
+from views.dialogs.custom_warning_dialog import CustomWarningDialog
+
 
 class ZoomableLabel(QLabel):
     def __init__(self, parent=None):
@@ -56,14 +58,10 @@ class ZoomableLabel(QLabel):
             # 设置 pixmap
             super().setPixmap(pixmap)
 
-    def enterEvent(self, event):
-        if not self.image_loaded:
-            self.setToolTip("未选择本体，请选择本体")
-        super().enterEvent(event)
 
     def mousePressEvent(self, event):
         if not self.image_loaded and event.button() == Qt.LeftButton:
-            QMessageBox.warning(self, "提示", "未选择本体，请选择本体")
+            CustomWarningDialog("提示", "未选择本体，请选择本体").exec()
         else:
             super().mousePressEvent(event)
 
@@ -157,6 +155,8 @@ class ModelGenerationTab(QWidget):
         # 左侧 - 本体模型区域
         ontology_group_box = QGroupBox("本体模型")
         ontology_layout = QVBoxLayout()
+        ontology_layout.setContentsMargins(15, 15, 15, 10)  # 设置内边距（左、上、右、下）
+        ontology_layout.setSpacing(10)  # 设置内部控件之间的间距
 
         # 创建一个水平布局来放置下拉框和缩放按钮
         combo_zoom_layout = QHBoxLayout()
@@ -221,6 +221,7 @@ class ModelGenerationTab(QWidget):
         image_container_layout.addWidget(self.ontology_image_label, 1)
 
         container_widget = QWidget()
+
         container_widget.setLayout(image_container_layout)
         self.ontology_scroll_area.setWidget(container_widget)
         ontology_layout.addWidget(self.ontology_scroll_area, 1)
@@ -264,6 +265,8 @@ class ModelGenerationTab(QWidget):
             class_layout.addWidget(radio_button)
         class_scroll_area.setWidget(class_content)
         class_group_box_layout = QVBoxLayout()
+        class_group_box_layout.setContentsMargins(15, 15, 15, 10)  # 设置内边距（左、上、右、下）
+        class_group_box_layout.setSpacing(10)  # 设置内部控件之间的间距
         class_group_box_layout.addWidget(class_scroll_area)
         class_group_box.setLayout(class_group_box_layout)
 
@@ -273,7 +276,7 @@ class ModelGenerationTab(QWidget):
         attribute_scroll_area.setWidgetResizable(True)
         attribute_scroll_area.setStyleSheet("border: none;")  # 移除滚动条区域的边框
         attribute_content = QWidget()
-        attribute_content.setStyleSheet("background-color: transparent;")  # 移除内容区域的背景
+        attribute_content.setStyleSheet("background-color: white;")  # 移除内容区域的背景
         attribute_layout = QVBoxLayout(attribute_content)
         attribute_layout.setContentsMargins(0, 0, 0, 0)
         attribute_layout.setSpacing(5)
@@ -292,16 +295,19 @@ class ModelGenerationTab(QWidget):
         attribute_layout.addWidget(self.attribute_table)
         attribute_scroll_area.setWidget(attribute_content)
         attribute_group_box_layout = QVBoxLayout()
+        attribute_group_box_layout.setContentsMargins(15, 15, 15, 10)  # 设置内边距（左、上、右、下）
+        attribute_group_box_layout.setSpacing(10)  # 设置内部控件之间的间距
         attribute_group_box_layout.addWidget(attribute_scroll_area)
         attribute_group_box.setLayout(attribute_group_box_layout)
 
         # 行为模型区域
         behavior_group_box = QGroupBox("行为模型")
+
         behavior_scroll_area = QScrollArea()
         behavior_scroll_area.setWidgetResizable(True)
         behavior_scroll_area.setStyleSheet("border: none;")  # 移除滚动条区域的边框
         behavior_content = QWidget()
-        behavior_content.setStyleSheet("background-color: transparent;")  # 移除内容区域的背景
+        behavior_content.setStyleSheet("background-color: white;")  # 移除内容区域的背景
         behavior_layout = QVBoxLayout(behavior_content)
         behavior_layout.setContentsMargins(0, 0, 0, 0)
         behavior_layout.setSpacing(5)
@@ -320,6 +326,8 @@ class ModelGenerationTab(QWidget):
         behavior_layout.addWidget(self.behavior_table)
         behavior_scroll_area.setWidget(behavior_content)
         behavior_group_box_layout = QVBoxLayout()
+        behavior_group_box_layout.setContentsMargins(15, 15, 15, 10)  # 设置内边距（左、上、右、下）
+        behavior_group_box_layout.setSpacing(10)  # 设置内部控件之间的间距
         behavior_group_box_layout.addWidget(behavior_scroll_area)
         behavior_group_box.setLayout(behavior_group_box_layout)
 
@@ -377,12 +385,12 @@ class ModelGenerationTab(QWidget):
         table.setStyleSheet("""
             QTableWidget {
                 border: none;
-                font-size: 12px;
-                border-top: 1px solid black; /* 顶部线 */
-                border-bottom: 2px solid black; /* 底部线 */
+                font-size: 14px;
+                border-bottom: 1px solid black; /* 底部线 */
             }
             QHeaderView::section {
-                border-top: 1px solid black; /* 表头底部线 */
+                border-top: 1px solid black;    /* 表头顶部线 */
+                border-bottom: 1px solid black; /* 表头底部线 */
                 background-color: #f0f0f0;
                 font-weight: bold;
                 padding: 4px;
@@ -398,23 +406,27 @@ class ModelGenerationTab(QWidget):
                 color: black;             /* 选中文字颜色 */
                 border: none;             /* 选中时无边框 */
             }
-                            QTableWidget:focus {
-        outline: none; /* 禁用焦点边框 */
-    }
+            QTableWidget:focus {
+                outline: none; /* 禁用焦点边框 */
+            }
         """)
+
+        # 确保表头刷新样式
+        self.force_refresh_table_headers(table)
 
     def force_refresh_table_headers(self, table: QTableWidget):
         """确保表头样式刷新，防止表头下的线丢失"""
         table.horizontalHeader().setStyleSheet("""
             QHeaderView::section {
-                border-bottom: 2px solid black;
+                border-top: 1px solid black;    /* 表头顶部线 */
+                border-bottom: 1px solid black; /* 表头底部线 */
                 background-color: #f0f0f0;
                 font-weight: bold;
                 padding: 4px;
                 color: #333333;
             }
         """)
-        table.horizontalHeader().repaint()  # 使用 repaint() 替代 update()
+        table.horizontalHeader().repaint()  # 使用 repaint() 确保样式应用
 
     def handle_save(self):
         """模拟保存操作"""

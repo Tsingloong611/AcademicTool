@@ -3,7 +3,7 @@
 /* 全局设置 */
 * {
     font-family: "Microsoft YaHei", "Times New Roman", Arial, sans-serif; /* 统一字体 */
-    font-size: 12pt; /* 统一字体大小 */
+    font-size: 14pt; /* 统一字体大小 */
     color: #333333; /* 默认字体颜色 */
     text-shadow: none; /* 去除文字阴影 */
 }
@@ -11,10 +11,7 @@
 QMainWindow {
     background-color: #f0f2f5; /* 浅灰色背景 */
 }
-/* 中文字体设置 */
-*:lang(zh) {
-    font-family: "SimSun"; /* 中文字体设为宋体 */
-}
+
 
 /* 英文和数字字体设置 */
 *:lang(en) {
