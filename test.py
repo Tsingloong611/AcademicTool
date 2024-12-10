@@ -1,7 +1,5 @@
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QApplication, QComboBox, QVBoxLayout, QWidget, QLabel
-from PySide6.QtGui import QFont
-
 
 class CenterAlignedComboBox(QComboBox):
     def __init__(self, *args, **kwargs):
@@ -9,9 +7,7 @@ class CenterAlignedComboBox(QComboBox):
         self.setEditable(True)  # 启用编辑模式，便于控制对齐
         self.lineEdit().setReadOnly(True)  # 禁止实际编辑内容
         self.lineEdit().setAlignment(Qt.AlignCenter)  # 设置文本居中对齐
-        font = QFont()
-        font.setPointSize(12)  # 调整字体大小（可选）
-        self.lineEdit().setFont(font)  # 可设置字体样式
+
 
     def showPopup(self):
         super().showPopup()

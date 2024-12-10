@@ -16,6 +16,7 @@ class ScenarioDialog(QDialog):
     def __init__(self, parent=None, scenario=None):
         super().__init__(parent)
         self.setWindowTitle("情景信息")
+        self.setObjectName("ScenarioDialog")  # 设置对象名称
         self.scenario = scenario
         self.setFixedSize(400, 300)  # 设置固定窗口大小
         self.init_ui()
@@ -25,18 +26,14 @@ class ScenarioDialog(QDialog):
         layout = QVBoxLayout(self)
         layout.setContentsMargins(15, 15, 15, 15)  # 设置内边距
         layout.setSpacing(15)  # 设置控件之间的间距
-        self.setStyleSheet("""* {
-            font-family: "Microsoft YaHei", "Times New Roman", Arial, sans-serif; /* 统一字体 */
-            font-size: 12pt; /* 统一字体大小 */
-            color: #333333; /* 默认字体颜色 */
-            text-shadow: none; /* 去除文字阴影 */
-        }""")
 
         # 名称输入部分
         name_layout = QHBoxLayout()
         name_label = QLabel("名称:")
+        name_label.setObjectName("NameLabel")  # 设置对象名称
 
         self.name_input = QLineEdit()
+        self.name_input.setObjectName("NameInput")  # 设置对象名称
         self.name_input.setFixedHeight(30)  # 设置固定高度
         self.name_input.setPlaceholderText("请输入情景名称")
         name_layout.addWidget(name_label)
@@ -46,8 +43,10 @@ class ScenarioDialog(QDialog):
         # 描述输入部分
         desc_layout = QVBoxLayout()
         desc_label = QLabel("描述:")
+        desc_label.setObjectName("DescriptionLabel")  # 设置对象名称
 
         self.desc_input = QTextEdit()
+        self.desc_input.setObjectName("DescriptionInput")  # 设置对象名称
         self.desc_input.setFixedHeight(120)  # 设置固定高度
         self.desc_input.setPlaceholderText("请输入情景描述")
         desc_layout.addWidget(desc_label)
@@ -57,25 +56,19 @@ class ScenarioDialog(QDialog):
         # 按钮部分
         button_layout = QHBoxLayout()
         self.save_button = QPushButton("保存")
+        self.save_button.setObjectName("SaveButton")  # 设置对象名称
         self.cancel_button = QPushButton("取消")
-        self.save_button.setStyleSheet("""
-            QPushButton {
-                background-color: white; /* 设置背景颜色为白色 */
-                color: black;           /* 设置文字颜色为黑色 */
-            }
-            QPushButton:pressed {
-                background-color: lightgray; /* 按钮被按下时的背景色 */
-            }
-        """)
+        self.cancel_button.setObjectName("CancelButton")  # 设置对象名称
+
+        # 移除硬编码的样式
+        # 可以在 QSS 文件中根据 objectName 设置样式
+
         self.save_button.setFixedHeight(40)
         self.cancel_button.setFixedHeight(40)
         button_layout.addStretch()  # 添加伸缩以调整按钮位置
         button_layout.addWidget(self.save_button)
         button_layout.addWidget(self.cancel_button)
         layout.addLayout(button_layout)
-
-        # 外边框样式
-        self.setStyleSheet(self.get_dialog_styles())
 
         # 连接信号
         self.save_button.clicked.connect(self.accept)
@@ -92,30 +85,6 @@ class ScenarioDialog(QDialog):
         description = self.desc_input.toPlainText().strip()
         return name, description
 
-    @staticmethod
-    def get_dialog_styles():
-        """返回对话框样式表"""
-        return """
-            QDialog {
-                background-color: #f7f7f7;  /* 设置背景色 */
-                border: 2px solid #cccccc; /* 添加边框 */
-                border-radius: 10px;       /* 圆角边框 */
-            }
-            QLabel {
-                color: #333333;           /* 字体颜色 */
-            }
-            QLineEdit, QTextEdit {
-                border: 1px solid #cccccc;
-                border-radius: 5px;
-                background-color: #ffffff;
-                padding: 5px;
-                font-size: 10pt;
-            }
-            QLineEdit:focus, QTextEdit:focus {
-                border: 2px solid #0055aa;  /* 聚焦时的边框颜色 */
-            }
-        """
-
 
 class CustomToolTip(QLabel):
     def __init__(self, text, parent=None, duration=3000):
@@ -124,19 +93,7 @@ class CustomToolTip(QLabel):
         # 设置提示框的文本，如果没有内容则设置为默认文本
         self.text = text.strip() if text and text.strip() else "没有描述信息"
         self.setText(self.text)
-
-        # 设置样式表，定义圆角、背景色、阴影等
-        self.setStyleSheet("""
-            QLabel {
-                background-color: #f7f7f7;
-                color: #333333;
-                border-radius: 8px;       /* 圆角 */
-                padding: 8px;             /* 内边距 */
-                font-size: 11pt;          /* 字体大小 */
-                font-family: "Microsoft YaHei", "Segoe UI", Arial, sans-serif;
-                box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2); /* 阴影效果 */
-            }
-        """)
+        self.setObjectName("CustomToolTip")  # 设置对象名称
 
         # 设置窗口类型为 ToolTip，并确保窗口保持在最前
         self.setWindowFlags(Qt.ToolTip | Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint)
@@ -171,6 +128,7 @@ class CustomToolTip(QLabel):
                 # 鼠标离开提示框，隐藏提示框
                 self.hide()
         return super().eventFilter(obj, event)
+
 
 class ScenarioManager(QWidget):
     scenario_selected = Signal(int, str, str)
@@ -209,8 +167,8 @@ class ScenarioManager(QWidget):
     def init_search(self, parent_layout):
         search_layout = QHBoxLayout()
         self.search_input = QLineEdit()
+        self.search_input.setObjectName("SearchInput")  # 设置对象名称
         self.search_input.setPlaceholderText("输入情景名称进行查找...")
-        self.search_input.setFont(QFont("Segoe UI", 10))
         self.search_input.setFixedHeight(30)
         self.search_input.textChanged.connect(self.real_time_search)  # 实现实时搜索
 
@@ -222,11 +180,13 @@ class ScenarioManager(QWidget):
         line.setFrameShape(QFrame.HLine)
         line.setFrameShadow(QFrame.Sunken)
         line.setFixedHeight(2)  # 确保分隔线有足够的高度显示
-        line.setStyleSheet("""
-            QFrame {
-                background-color: #dcdcdc;  /* 设置分隔线颜色 */
-            }
-        """)
+        line.setObjectName("SeparatorLine")  # 设置对象名称
+        # 移除硬编码的样式，样式将通过 QSS 管理
+        # line.setStyleSheet("""
+        #     QFrame {
+        #         background-color: #dcdcdc;  /* 设置分隔线颜色 */
+        #     }
+        # """)
         parent_layout.addWidget(line)
 
     def init_buttons(self, parent_layout):
@@ -246,9 +206,9 @@ class ScenarioManager(QWidget):
 
     def create_button(self, text, icon_path, callback):
         button = QPushButton(text)
+        button.setObjectName(f"{text}Button")  # 设置对象名称，如 "新建Button"
         button.setIcon(QIcon(icon_path))
         button.setToolTip(text)
-        button.setFont(QFont("Segoe UI", 10, QFont.Bold))
         button.setFixedHeight(38)  # 调整按钮高度
         button.clicked.connect(callback)
         return button
@@ -267,11 +227,12 @@ class ScenarioManager(QWidget):
         # 启用项悬浮事件
         self.list_widget.setMouseTracking(True)
         self.list_widget.setAlternatingRowColors(True)
-        self.list_widget.setStyleSheet("""
-            QListWidget::item:hover {
-                background-color: #e6f7ff;
-            }
-        """)
+        # 移除硬编码的样式，样式将通过 QSS 管理
+        # self.list_widget.setStyleSheet("""
+        #     QListWidget::item:hover {
+        #         background-color: #e6f7ff;
+        #     }
+        # """)
 
     @Slot(QListWidgetItem)
     def select_scenario(self, item):
@@ -280,7 +241,6 @@ class ScenarioManager(QWidget):
         scenario_description = item.data(Qt.UserRole + 1)
 
         reply = CustomQuestionDialog("确认选择", f'您确定要选择情景 "{scenario_name}" 吗?').ask()
-
 
         if reply:
             self.scenario_selected.emit(scenario_id, scenario_name, scenario_description)

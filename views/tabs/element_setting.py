@@ -255,6 +255,7 @@ class EditBehaviorDialog(QDialog):
             QLineEdit:focus, QComboBox:focus {
                 border: 2px solid #0078d7; /* 蓝色边框 */
             }
+            
         """)
 
         # 主布局
@@ -400,6 +401,7 @@ class ElementSettingTab(QWidget):
                 padding: 5px;
                 background-color: white;
             }
+
 
             /* 自定义滚动条样式 */
             QScrollBar:vertical {
@@ -550,7 +552,6 @@ class ElementSettingTab(QWidget):
         self.behavior_table = QTableWidget()
         self.behavior_table.setColumnCount(3)
         self.behavior_table.setHorizontalHeaderLabels(["行为名称", "行为主体", "行为对象"])
-        self.behavior_table.horizontalHeader().setFont(QFont("Arial", 12, QFont.Bold))
         self.behavior_table.horizontalHeader().setDefaultAlignment(Qt.AlignCenter)
 
         # 应用三线表样式
@@ -679,9 +680,9 @@ class ElementSettingTab(QWidget):
                 "attributes": {
                     "车辆类型": "货车",
                     "碰撞情况": "是",
-                    "燃爆情景": "是",
+                    "燃爆情况": "是",
                     "车辆位置": "KW0058+500",
-                    "抛锚情景": "是",
+                    "抛锚情况": "是",
                     "侧翻情况": "是",
                     "行驶方向": "正向",
                     "车辆货物": "废纸"
@@ -791,8 +792,8 @@ class ElementSettingTab(QWidget):
             "车辆致灾要素": {
                 "车辆类型": ["货车", "轿车", "SUV", "摩托车"],
                 "碰撞情况": ["是", "否"],
-                "燃爆情景": ["是", "否"],
-                "抛锚情景": ["是", "否"],
+                "燃爆情况": ["是", "否"],
+                "抛锚情况": ["是", "否"],
                 "侧翻情况": ["是", "否"],
                 "行驶方向": ["正向", "逆向"],
             },
@@ -946,8 +947,8 @@ class ElementSettingTab(QWidget):
             "车辆致灾要素": [
                 "车辆类型",
                 "碰撞情况",
-                "燃爆情景",
-                "抛锚情景",
+                "燃爆情况",
+                "抛锚情况",
                 "侧翻情况",
                 "行驶方向"
             ],
@@ -1189,8 +1190,8 @@ class ElementSettingTab(QWidget):
             "车辆致灾要素": [
                 "车辆类型",
                 "碰撞情况",
-                "燃爆情景",
-                "抛锚情景",
+                "燃爆情况",
+                "抛锚情况",
                 "侧翻情况",
                 "行驶方向"
             ],
@@ -1342,8 +1343,8 @@ class ElementSettingTab(QWidget):
             "车辆致灾要素": [
                 "车辆类型",
                 "碰撞情况",
-                "燃爆情景",
-                "抛锚情景",
+                "燃爆情况",
+                "抛锚情况",
                 "侧翻情况",
                 "行驶方向"
             ],
@@ -1585,8 +1586,8 @@ class ElementSettingTab(QWidget):
             "车辆致灾要素": [
                 "车辆类型",
                 "碰撞情况",
-                "燃爆情景",
-                "抛锚情景",
+                "燃爆情况",
+                "抛锚情况",
                 "侧翻情况",
                 "行驶方向"
             ],
@@ -1816,8 +1817,8 @@ class ElementSettingTab(QWidget):
             "车辆致灾要素": [
                 "车辆类型",
                 "碰撞情况",
-                "燃爆情景",
-                "抛锚情景",
+                "燃爆情况",
+                "抛锚情况",
                 "侧翻情况",
                 "行驶方向"
             ],

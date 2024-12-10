@@ -43,7 +43,7 @@ class ScenarioController(QObject):
         database = connection_info.get('database', '未知数据库')
         host = connection_info.get('host', '未知主机')
         port = connection_info.get('port', '未知端口')
-        self.status_bar.updata_userpart(username,database,host,port)
+        self.status_bar.update_user_info(username, database, host, port)
 
     def load_scenarios(self):
         scenarios = self.get_all_scenarios()

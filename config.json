@@ -1,0 +1,16 @@
+{
+    "database": {
+        "username": "Tsing_loong",
+        "password": "12345678",
+        "host": "localhost",
+        "port": 3306,
+        "database": "test"
+    },
+    "i18n": {
+        "language": "zh_CN",
+        "available_languages": [
+            "en_US",
+            "zh_CN"
+        ]
+    }
+}
