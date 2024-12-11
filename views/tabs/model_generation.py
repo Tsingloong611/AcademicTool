@@ -3,7 +3,7 @@ from PySide6.QtWidgets import (
     QLabel, QScrollArea, QTableWidget, QTableWidgetItem, QPushButton,
     QHeaderView, QSizePolicy, QRadioButton, QButtonGroup, QMessageBox, QApplication
 )
-from PySide6.QtCore import Qt, QSize
+from PySide6.QtCore import Qt, QSize, Signal
 from PySide6.QtGui import QPixmap, QWheelEvent, QTransform, QPainter, QIcon
 from PySide6.QtSvg import QSvgRenderer
 import os
@@ -69,6 +69,7 @@ class ZoomableLabel(QLabel):
 class ModelGenerationTab(QWidget):
     def __init__(self):
         super().__init__()
+        self.generate_request = Signal()
         self.init_ui()
 
     def init_ui(self):
@@ -366,6 +367,8 @@ class ModelGenerationTab(QWidget):
         # 设置主布局
         self.setLayout(main_layout)
 
+        self.generate_button.clicked.connect(self.handle_generate)
+
     def zoom_in(self):
         """放大图像"""
         if self.ontology_image_label.image_loaded:
@@ -428,13 +431,9 @@ class ModelGenerationTab(QWidget):
         """)
         table.horizontalHeader().repaint()  # 使用 repaint() 确保样式应用
 
-    def handle_save(self):
-        """模拟保存操作"""
-        # 收集所有被勾选的要素数据
-        saved_data = []
-        # 假设有多个要素类别，这里简化为示例
-        # 您需要根据实际情况修改此部分
-        QMessageBox.information(self, "保存成功", "已成功保存推演模型。")
+    def handle_generate(self):
+        QMessageBox.information(self, "保存成功", "已成功生成推演模型。")
+        self.generate_request.emit()
 
     def handle_ontology_selection(self, index):
         """处理本体模型下拉框的选择"""

@@ -2,81 +2,137 @@
 # @Time    : 12/3/2024 10:11 AM
 # @FileName: tab_widget.py
 # @Software: PyCharm
-
-from PySide6.QtWidgets import QStackedWidget, QWidget, QLabel, QVBoxLayout, QTabWidget, QSizePolicy
-from PySide6.QtCore import Qt
+from PySide6.QtGui import QFont
+from PySide6.QtWidgets import (
+    QWidget, QHBoxLayout, QVBoxLayout,
+    QPushButton, QLabel, QStackedWidget, QSizePolicy
+)
+from PySide6.QtCore import Qt, Signal, Slot
 from views.tabs.element_setting import ElementSettingTab
 from views.tabs.model_generation import ModelGenerationTab
 from views.tabs.model_transformation import ModelTransformationTab
 from views.tabs.condition_setting import ConditionSettingTab
 
-class TabWidget(QStackedWidget):
-    def __init__(self, root):
-        super().__init__()
 
-        self.setObjectName("MainRightArea")  # 为整个区域设置对象名，便于QSS统一管理
+class CustomTabWidget(QWidget):
+    tab_changed = Signal(int)
 
-        # 页面 0：占位页面
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.init_ui()
+        self.ElementSettingTab.generate_button.clicked.connect(self.generate_model)
+        self.ModelGenerationTab.generate_button.clicked.connect(self.generate_bayes)
+
+    def init_ui(self):
+        main_layout = QVBoxLayout(self)
+        main_layout.setContentsMargins(0, 0, 0, 0)
+        main_layout.setSpacing(0)
+
+        self.tab_buttons_widget = QWidget()
+        self.tab_buttons_widget.setObjectName("TabButtonsWidget")
+        self.tab_buttons_layout = QHBoxLayout(self.tab_buttons_widget)
+        self.tab_buttons_layout.setSpacing(0)
+        self.tab_buttons_layout.setContentsMargins(0, 0, 0, 0)
+        self.tab_buttons_widget.setFont(QFont("宋体", 16, QFont.Bold))  # 设置字体和大小
+
+        self.content_stack = QStackedWidget()
+        self.content_stack.setObjectName("ContentStack")
+        self.content_stack.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+
+        self.ElementSettingTab = ElementSettingTab()
+        self.ModelGenerationTab = ModelGenerationTab()
+        self.ModelTransformationTab = ModelTransformationTab()
+        self.ConditionSettingTab = ConditionSettingTab()
+
+        self.tabs = []
+        self.add_tab("情景要素设定", self.ElementSettingTab)
+        self.add_tab("情景模型生成", self.ModelGenerationTab)
+        self.add_tab("推演模型转换", self.ModelTransformationTab)
+        self.add_tab("推演条件设定", self.ConditionSettingTab)
+
+
+
         self.placeholder = QWidget()
-        self.placeholder.setObjectName("RightArea")  # 设置对象名
         placeholder_layout = QVBoxLayout(self.placeholder)
         placeholder_layout.setAlignment(Qt.AlignCenter)
 
         self.placeholder_label = QLabel("")
-        self.placeholder_label.setObjectName("PlaceholderLabel")  # 为占位标签设置对象名
+        self.placeholder_label.setObjectName("PlaceholderLabel")
         self.placeholder_label.setAlignment(Qt.AlignCenter)
         placeholder_layout.addWidget(self.placeholder_label)
-        self.addWidget(self.placeholder)
 
-        self.root = root
+        self.content_stack.addWidget(self.placeholder)
+        self.content_stack.setCurrentWidget(self.placeholder)
 
-        # 页面 1：功能区标签页
-        self.tab_widget_inner = QTabWidget()
-        self.tab_widget_inner.setObjectName("MainTabWidget")  # 设置对象名
-        self.tab_widget_inner.setTabPosition(QTabWidget.North)
-        self.tab_widget_inner.setTabShape(QTabWidget.Rounded)
-        self.tab_widget_inner.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        main_layout.addWidget(self.tab_buttons_widget)
+        main_layout.addWidget(self.content_stack)
 
-        self.addWidget(self.tab_widget_inner)
+        self.tab_buttons_widget.setVisible(False)
 
-        # 添加四个标签页
-        self.element_setting_tab = ElementSettingTab()
-        self.model_generation_tab = ModelGenerationTab()
-        self.model_transformation_tab = ModelTransformationTab()
-        self.condition_setting_tab = ConditionSettingTab()
+    def set_border(self):
+        """设置边框样式"""
+        self.content_stack.setStyleSheet("""QStackedWidget {
+            border: 2px solid #dcdcdc;
+        }""")
 
-        self.tab_widget_inner.addTab(self.element_setting_tab, "情景要素设定")
-        self.tab_widget_inner.addTab(self.model_generation_tab, "情景模型生成")
-        self.tab_widget_inner.addTab(self.model_transformation_tab, "推演模型转换")
-        self.tab_widget_inner.addTab(self.condition_setting_tab, "推演条件设定")
 
-        # 初始化时锁定所有标签页
-        self.setCurrentWidget(self.placeholder)
-        self.lock_tabs()
+    def add_tab(self, tab_name, content_widget):
+        button = QPushButton(tab_name)
+        button.setObjectName(f"{tab_name}Button")
+        button.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+        button.setCheckable(True)
+        button.clicked.connect(lambda checked, idx=len(self.tabs)+1: self.switch_tab(idx))
+        # 设置固定高度以保持一致性
+        button.setFixedHeight(32)
+        self.tab_buttons_layout.addWidget(button)
+        self.tabs.append(button)
+        self.content_stack.addWidget(content_widget)
 
-    def lock_tabs(self):
-        for index in range(self.tab_widget_inner.count()):
-            self.tab_widget_inner.setTabEnabled(index, False)
+    def switch_tab(self, index):
+        self.content_stack.setCurrentIndex(index - 1)
+        self.tab_changed.emit(index - 1)
 
-    def unlock_tabs(self):
-        for index in range(self.tab_widget_inner.count()):
-            self.tab_widget_inner.setTabEnabled(index, True)
-        self.setCurrentWidget(self.tab_widget_inner)
-        self.tab_widget_inner.setCurrentIndex(0)
+        for i, button in enumerate(self.tabs):
+            button.setChecked(i + 1 == index)
 
-    def show_placeholder(self, has_scenarios: bool):
-        self.setCurrentWidget(self.placeholder)
-        self.lock_tabs()
-        self.set_placeholder_text(has_scenarios)
+        self.content_stack.setStyleSheet("""QStackedWidget {
+            border: 1px solid #dcdcdc;
+            border-top: none;
+        }""")
 
-    def show_tabs(self):
-        self.unlock_tabs()
 
-    def set_placeholder_text(self, has_scenarios: bool):
-        if has_scenarios:
-            self.placeholder_label.setText("请选择或新建情景")
+
+    def show_placeholder(self, show=True, message="请选择或新建情景"):
+        if show:
+            self.content_stack.setCurrentWidget(self.placeholder)
+            self.placeholder_label.setText(message)
+            for button in self.tabs:
+                button.setChecked(False)
+            self.tab_buttons_widget.setVisible(False)
         else:
-            self.placeholder_label.setText("请新建情景")
+            self.tab_buttons_widget.setVisible(True)
+            for button in self.tabs:
+                self.lock_tabs(self.tabs.index(button) + 1)
+            if self.tabs:
+                self.unlock_tabs(1)
+                self.switch_tab(1)
 
-    def update_placeholder_style(self, border_color: str = "#0078d7", background_color: str = "#f0f8ff"):
-        pass
+    def lock_tabs(self, index):
+        # 根据索引锁定标签
+        for i, button in enumerate(self.tabs):
+            if i + 1 == index:
+                button.setDisabled(True)
+
+    def unlock_tabs(self, index):
+        # 根据索引解锁标签
+        for i, button in enumerate(self.tabs):
+            if i + 1 == index:
+                button.setEnabled(True)
+
+    def generate_model(self):
+        self.unlock_tabs(2)
+        self.switch_tab(2)
+
+    def generate_bayes(self):
+        self.unlock_tabs(3)
+        self.switch_tab(3)

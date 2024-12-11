@@ -367,6 +367,7 @@ class ElementSettingTab(QWidget):
         super().__init__()
         self.current_selected_category = None  # 当前选中的类别
         self.init_ui()
+        generate_requested = Signal()
 
     def init_ui(self):
         # 设置整体背景颜色和字体
@@ -1317,9 +1318,9 @@ class ElementSettingTab(QWidget):
     def handle_generate(self):
         # 模拟生成情景级孪生模型
         CustomInformationDialog(" ", "已成功生成情景级孪生模型。", parent=self).exec()
-        parent_tab_widget = self.parent().parent()  # 假设结构中父级是 QTabWidget
-        if isinstance(parent_tab_widget, QTabWidget):
-            parent_tab_widget.setCurrentIndex(1)  # 切换到第二个 Tab
+        # 发射生成完成的信号
+        self.generate_requested.emit()
+
 
     def load_models_data(self, category):
         print(f"Loading data for category: {category}")  # 调试信息
@@ -1791,9 +1792,7 @@ class ElementSettingTab(QWidget):
     def handle_generate(self):
         # 模拟生成情景级孪生模型
         CustomInformationDialog(" ", "已成功生成情景级孪生模型。", parent=self).exec()
-        parent_tab_widget = self.parent().parent()  # 假设结构中父级是 QTabWidget
-        if isinstance(parent_tab_widget, QTabWidget):
-            parent_tab_widget.setCurrentIndex(1)  # 切换到第二个 Tab
+
 
     def load_models_data(self, category):
         print(f"Loading data for category: {category}")  # 调试信息

@@ -1,19 +1,20 @@
 /* global.qss */
 
-/* 全局设置 */
+/* 设置全局字体为宋体九号 */
 * {
-    font-family: "Microsoft YaHei", "Times New Roman", Arial, sans-serif; /* 统一字体 */
-    font-size: 14pt; /* 统一字体大小 */
-    color: #333333; /* 默认字体颜色 */
-    text-shadow: none; /* 去除文字阴影 */
+    font-family: "SimSun"; /* 宋体 */
+    font-size: 12pt;
 }
 
-QMainWindow {
-    background-color: #f0f2f5; /* 浅灰色背景 */
+/* 设置标题字体为宋体14号 */
+QLabel#ScenarioTitleLabel, QLabel#StatusTitleLabel, QLabel#MainTitleLabel {
+    font-family: "SimSun";
+    font-size: 12pt;
+    font-weight: bold;
 }
 
-
-/* 英文和数字字体设置 */
-*:lang(en) {
-    font-family: "Times New Roman", "Segoe UI", Arial, sans-serif; /* 英文字体设为 Times New Roman */
+/* 全局颜色 */
+QWidget {
+    background-color: #ffffff; /* 白色 */
+    color: #333333; /* 深灰色文字 */
 }

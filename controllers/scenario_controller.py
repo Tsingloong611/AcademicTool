@@ -52,7 +52,7 @@ class ScenarioController(QObject):
         if(scenarios):
             self.tab_widget.show_placeholder(True)
         else:
-            self.tab_widget.show_placeholder(False)
+            self.tab_widget.show_placeholder(True, "请添加情景。")
 
     def get_all_scenarios(self):
         try:
@@ -93,7 +93,7 @@ class ScenarioController(QObject):
             )
 
             # 解锁标签页并显示功能区
-            self.tab_widget.show_tabs()
+            self.tab_widget.show_placeholder(False)
         else:
             self.reset_status_bar()
 
@@ -249,6 +249,13 @@ class ScenarioController(QObject):
     def handle_database_connected(self):
         CustomInformationDialog("成功", "已成功连接到数据库。").exec()
         self.load_scenarios()
+
+    @Slot()
+    def switch_tab(self, index):
+        self.tab_widget.switch_tab(index)
+        if index==1:
+            self.tab_widget.lock_tabs()
+
 
     def __del__(self):
         if self.session:

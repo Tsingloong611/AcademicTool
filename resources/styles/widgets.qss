@@ -1,0 +1,82 @@
+/* widgets.qss */
+
+/* 按钮样式 */
+QPushButton {
+    border: 1px solid #a0a0a0;
+    border-radius: 5px;
+    padding: 5px 10px;
+    background-color: #f0f0f0; /* 浅灰色 */
+    color: #333333; /* 深灰色文字 */
+}
+
+QPushButton:hover {
+    background-color: #e0e0e0; /* 更浅的灰色 */
+}
+
+QPushButton:pressed {
+    background-color: #d0d0d0; /* 更深的灰色 */
+}
+
+/* 输入框样式 */
+QLineEdit, QTextEdit {
+    border: 1px solid #a0a0a0;
+    border-radius: 5px;
+    padding: 5px;
+    background-color: #ffffff; /* 白色 */
+}
+
+QLineEdit:focus, QTextEdit:focus {
+    border: 1px solid #5dade2; /* 浅蓝色 */
+}
+
+/* 列表项样式 */
+QListWidget {
+    border: 1px solid #a0a0a0;
+    border-radius: 5px;
+    background-color: #ffffff;
+}
+
+QListWidget::item {
+    padding: 5px;
+    border-bottom: 1px solid #d0d0d0;
+}
+
+QListWidget::item:selected {
+    background-color: #5dade2; /* 浅蓝色 */
+    color: #ffffff; /* 白色文字 */
+}
+
+/* 分隔线样式 */
+QFrame#SeparatorLine {
+    border: none;
+    border-top: 1px solid #d0d0d0;
+    margin: 5px 0;
+}
+
+/* 占位标签样式 */
+QLabel#PlaceholderLabel {
+    color: gray;
+    font-style: italic;
+    border: 1px dashed #d0d0d0;
+    border-radius: 5px;
+    padding: 10px;
+    background-color: #f9f9f9; /* 浅灰色背景 */
+}
+
+/* 自定义工具提示样式 */
+QLabel#CustomToolTip {
+    border: 1px solid #a0a0a0;
+    border-radius: 5px;
+    padding: 5px;
+    background-color: #d0e8ff; /* 浅蓝色 */
+    color: #000000; /* 黑色文字 */
+}
+
+/* “无匹配结果”标签样式 */
+QLabel#NoResultLabel {
+    color: gray;
+    font-style: italic;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+}

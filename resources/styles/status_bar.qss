@@ -1,0 +1,36 @@
+/* status_bar.qss */
+
+/* 状态栏容器 */
+QWidget#StatusFrame, StatusBarWidget {
+    border: 1px solid #d0d0d0;
+    border-radius: 10px;
+    background-color: #1e90ff; /* 深蓝色 */
+}
+
+
+/* 用户信息和情景状态组框 */
+QGroupBox#UserInfoGroup, QGroupBox#ScenarioStatusGroup {
+    border: 1px solid #d0d0d0;
+    border-radius: 10px;
+    margin-top: 10px;
+    font-size: 9pt; /* 全局字体 */
+    background-color: #2e8b57; /* 深绿色 */
+}
+
+QLabel#StatusTitleLabel {
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    padding: 5px;
+    color: #333333; /* 深灰色文字 */
+}
+
+
+/* 状态栏标签 */
+QLabel#UserLabel, QLabel#DatabaseLabel, QLabel#CurrentScenarioLabel,
+QLabel#OwlStatusLabel, QLabel#BayesStatusLabel, QLabel#ScenarioDescriptionLabel,
+QLabel#ScenarioUpdateTimeLabel {
+    border: 1px solid #e0e0e0;
+    border-radius: 5px;
+    padding: 5px;
+    color: #333333; /* 深灰色文字 */
+}

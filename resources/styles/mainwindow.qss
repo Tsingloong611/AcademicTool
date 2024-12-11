@@ -1,6 +1,0 @@
-/* mainwindow.qss */
-
-/* QMainWindow 样式 */
-QMainWindow {
-    background-color: #f0f2f5; /* 浅灰色背景 */
-}

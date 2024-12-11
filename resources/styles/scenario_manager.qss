@@ -1,0 +1,21 @@
+/* scenario_manager.qss */
+
+/* 场景管理器容器 */
+QFrame#ScenarioFrame, QWidget#ScenarioManager {
+    border: 1px solid #d0d0d0;
+    border-radius: 10px;
+    background-color: #ffffff; /* 白色 */
+}
+
+/* 场景管理器标题 */
+QLabel#ScenarioTitleLabel {
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    padding: 5px;
+    color: #333333; /* 深灰色文字 */
+}
+
+/* 新建、修改、删除按钮的样式 */
+QPushButton#新建Button, QPushButton#修改Button, QPushButton#删除Button {
+    /* 样式已经在 widgets.qss 中定义 */
+}
