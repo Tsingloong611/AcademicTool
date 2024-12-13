@@ -1,58 +1,53 @@
-from PySide6.QtWidgets import QApplication, QMainWindow, QWidget, QHBoxLayout, QVBoxLayout, QFrame, QLabel
+from PySide6.QtWidgets import QApplication, QMainWindow, QComboBox
+from PySide6.QtGui import QPixmap
 
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
 
-        # 设置主窗口标题
-        self.setWindowTitle("布局示例")
-        self.setObjectName("MainWindow")
+        self.setWindowTitle("自定义箭头图标示例")
 
-        # 创建中央部件
-        central_widget = QWidget()
-        self.setCentralWidget(central_widget)
+        # 创建下拉框
+        combo_box = QComboBox(self)
+        combo_box.setGeometry(50, 50, 200, 30)
 
-        # 创建主布局
-        main_layout = QHBoxLayout(central_widget)
-        main_layout.setContentsMargins(0, 0, 0, 0)
-        main_layout.setSpacing(0)
+        # 添加选项
+        combo_box.addItems(["选项1", "选项2", "选项3"])
 
-        # 创建左侧容器的QFrame
-        left_container_frame = QFrame()
-        left_container_frame.setObjectName("LeftContainerFrame")
-        left_layout = QVBoxLayout(left_container_frame)
+        # 自定义样式表
+        combo_box.setStyleSheet("""
+            QComboBox {
+                border: 1px solid gray;
+                border-radius: 5px;
+                padding-right: 30px; /* 留出箭头空间 */
+            }
+            QComboBox::drop-down {
+                border: none; /* 隐藏下拉按钮边框 */
+                width: 20px; /* 下拉按钮宽度 */
+            }
+            QComboBox::down-arrow {
+                image: url(edit.png); /* 自定义箭头路径 */
+                width: 16px;
+                height: 16px;
+            }
+        """)
 
-        # 创建左侧上部分的QFrame
-        left_top_frame = QFrame()
-        left_top_frame.setObjectName("LeftTopFrame")
-        left_top_layout = QVBoxLayout(left_top_frame)
-        left_top_label = QLabel("左侧上部分")
-        left_top_layout.addWidget(left_top_label)
+        # 检查自定义图标是否正确加载
+        self.check_icon_availability()
 
-        # 创建左侧下部分的QFrame
-        left_bottom_frame = QFrame()
-        left_bottom_frame.setObjectName("LeftBottomFrame")
-        left_bottom_layout = QVBoxLayout(left_bottom_frame)
-        left_bottom_label = QLabel("左侧下部分")
-        left_bottom_layout.addWidget(left_bottom_label)
+        self.setCentralWidget(combo_box)
 
-        # 添加左侧上部分和下部分到左侧容器布局，并设置比例
-        left_layout.addWidget(left_top_frame, stretch=3)
-        left_layout.addWidget(left_bottom_frame, stretch=1)
+    def check_icon_availability(self):
+        # 确保箭头图标文件存在
+        pixmap = QPixmap("arrow.png")
+        if pixmap.isNull():
+            print("图标未正确加载！请确保 'arrow.png' 文件存在于项目目录中。")
 
-        # 创建右侧容器的QFrame
-        right_container_frame = QFrame()
-        right_container_frame.setObjectName("RightContainerFrame")
-        right_layout = QVBoxLayout(right_container_frame)
-        right_label = QLabel("右侧大部分")
-        right_layout.addWidget(right_label)
+if __name__ == "__main__":
+    app = QApplication([])
 
-        # 将左侧和右侧容器的QFrame添加到主布局，并设置比例
-        main_layout.addWidget(left_container_frame, stretch=1)
-        main_layout.addWidget(right_container_frame, stretch=4)
+    window = MainWindow()
+    window.resize(300, 200)
+    window.show()
 
-# 运行应用程序
-app = QApplication([])
-window = MainWindow()
-window.show()
-app.exec()
+    app.exec()

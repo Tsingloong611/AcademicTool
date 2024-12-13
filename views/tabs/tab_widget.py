@@ -21,7 +21,9 @@ class CustomTabWidget(QWidget):
         super().__init__(parent)
         self.init_ui()
         self.ElementSettingTab.generate_button.clicked.connect(self.generate_model)
-        self.ModelGenerationTab.generate_button.clicked.connect(self.generate_bayes)
+        self.ModelGenerationTab.generate_request.connect(self.generate_bayes)
+        self.ModelTransformationTab.set_inference_request.connect(self.set_inference_conditions)
+
 
     def init_ui(self):
         main_layout = QVBoxLayout(self)
@@ -33,7 +35,7 @@ class CustomTabWidget(QWidget):
         self.tab_buttons_layout = QHBoxLayout(self.tab_buttons_widget)
         self.tab_buttons_layout.setSpacing(0)
         self.tab_buttons_layout.setContentsMargins(0, 0, 0, 0)
-        self.tab_buttons_widget.setFont(QFont("宋体", 16, QFont.Bold))  # 设置字体和大小
+
 
         self.content_stack = QStackedWidget()
         self.content_stack.setObjectName("ContentStack")
@@ -55,10 +57,14 @@ class CustomTabWidget(QWidget):
         self.placeholder = QWidget()
         placeholder_layout = QVBoxLayout(self.placeholder)
         placeholder_layout.setAlignment(Qt.AlignCenter)
+        self.placeholder.setStyleSheet("""
+    border-radius: 10px; /* 圆角边框 */
+    """)
 
         self.placeholder_label = QLabel("")
-        self.placeholder_label.setObjectName("PlaceholderLabel")
         self.placeholder_label.setAlignment(Qt.AlignCenter)
+        self.placeholder_label.setObjectName("PlaceholderLabel")
+
         placeholder_layout.addWidget(self.placeholder_label)
 
         self.content_stack.addWidget(self.placeholder)
@@ -72,8 +78,9 @@ class CustomTabWidget(QWidget):
     def set_border(self):
         """设置边框样式"""
         self.content_stack.setStyleSheet("""QStackedWidget {
-            border: 2px solid #dcdcdc;
-        }""")
+    border: 2px solid dark; /* 边框颜色 */
+    border-radius: 10px; /* 圆角边框 */
+}""")
 
 
     def add_tab(self, tab_name, content_widget):
@@ -84,6 +91,155 @@ class CustomTabWidget(QWidget):
         button.clicked.connect(lambda checked, idx=len(self.tabs)+1: self.switch_tab(idx))
         # 设置固定高度以保持一致性
         button.setFixedHeight(32)
+        # 设置样式，未选中时为灰色，选中时为蓝色,下方无边框，上方为圆角，下方为直角
+        if tab_name in ["情景模型生成"]:
+            button.setStyleSheet("""
+                border: 2px solid dark; /* 边框颜色 */
+                border-radius: 10px; /* 圆角边框 */
+                background-color: transparent; /* 背景透明 */
+                color: #333333; /* 文字颜色 */
+                font-size: 18px; /* 文字大小 */
+                font-weight: bold; /* 文字加粗 */
+                    padding: 5px;
+                border-top-left-radius: 0px; /* 左上角直角 */
+                border-top-right-radius: 0px; /* 右上角直角 */
+                border-bottom: none; /* 下方没有边框 */
+                border-bottom-left-radius: 0; /* 左下角直角 */
+                border-bottom-right-radius: 0; /* 右下角直角 */
+            }
+
+            QPushButton:checked {
+                background-color: #5dade2; /* 选中时的背景颜色 */
+                color: white; /* 选中时的文字颜色 */
+                border: 2px solid dark; /* 选中时边框颜色 */
+                border-bottom: none; /* 下方没有边框 */
+            }
+
+            QPushButton:hover {
+                background-color: #B0E2FF; /* 鼠标悬停时的背景颜色 */
+                border: 2px solid dark; /* 鼠标悬停时边框颜色 */
+                border-bottom: none; /* 下方没有边框 */
+            }
+
+            QPushButton:pressed {
+                background-color: #5dade2; /* 鼠标按下时的背景颜色 */
+                border: 2px solid dark;
+                border-bottom: none; /* 下方没有边框 */}
+            """)
+        elif tab_name in ["推演模型转换"]:
+            button.setStyleSheet("""
+                            border: 2px solid dark; /* 边框颜色 */
+                            border-radius: 10px; /* 圆角边框 */
+                            background-color: transparent; /* 背景透明 */
+                            color: #333333; /* 文字颜色 */
+                            font-size: 18px; /* 文字大小 */
+                            font-weight: bold; /* 文字加粗 */
+                            border-top-left-radius: 0px; /* 左上角直角 */
+                                padding: 5px;
+                            border-top-right-radius: 0px; /* 右上角直角 */
+                            border-bottom: none; /* 下方没有边框 */
+                            border-left: none; /* 左侧没有边框 */
+                            border-bottom-left-radius: 0; /* 左下角直角 */
+                            border-bottom-right-radius: 0; /* 右下角直角 */
+                        }
+
+            QPushButton:checked {
+                background-color: #5dade2; /* 选中时的背景颜色 */
+                color: white; /* 选中时的文字颜色 */
+                border: 2px solid dark; /* 选中时边框颜色 */
+                border-bottom: none; /* 下方没有边框 */
+                border-left: none; /* 左侧没有边框 */
+            }
+
+            QPushButton:hover {
+                background-color: #B0E2FF; /* 鼠标悬停时的背景颜色 */
+                border: 2px solid dark; /* 鼠标悬停时边框颜色 */
+                border-bottom: none; /* 下方没有边框 */
+                border-left: none; /* 左侧没有边框 */
+            }
+
+            QPushButton:pressed {
+                background-color: #5dade2; /* 鼠标按下时的背景颜色 */
+                border: 2px solid dark;
+                border-bottom: none; /* 下方没有边框 */
+                border-left: none; /* 左侧没有边框 */}
+                        """)
+        elif tab_name in ["情景要素设定"]:
+            button.setStyleSheet("""
+                border: 2px solid dark; /* 边框颜色 */
+                border-radius: 10px; /* 圆角边框 */
+                background-color: transparent; /* 背景透明 */
+                color: #333333; /* 文字颜色 */
+                font-size: 18px; /* 文字大小 */
+                font-weight: bold; /* 文字加粗 */
+                    padding: 5px;
+                border-top-right-radius: 0px; /* 右上角直角 */
+                border-right: none; /* 右侧没有边框 */
+                border-bottom: none; /* 下方没有边框 */
+                border-bottom-left-radius: 0; /* 左下角直角 */
+                border-bottom-right-radius: 0; /* 右下角直角 */
+            }
+
+            QPushButton:checked {
+                background-color: #5dade2; /* 选中时的背景颜色 */
+                color: white; /* 选中时的文字颜色 */
+                border: 2px solid dark; /* 选中时边框颜色 */
+                border-bottom: none; /* 下方没有边框 */
+                border-right: none; /* 右侧没有边框 */
+            }
+
+            QPushButton:hover {
+                background-color: #B0E2FF; /* 鼠标悬停时的背景颜色 */
+                border: 2px solid dark; /* 鼠标悬停时边框颜色 */
+                border-bottom: none; /* 下方没有边框 */
+                border-right: none; /* 右侧没有边框 */
+            }
+
+            QPushButton:pressed {
+                background-color: #5dade2; /* 鼠标按下时的背景颜色 */
+                border: 2px solid dark;
+                border-bottom: none; /* 下方没有边框 */
+                border-right: none; /* 右侧没有边框 */}
+            """)
+
+        elif tab_name in ["推演条件设定"]:
+            button.setStyleSheet("""
+                border: 2px solid dark; /* 边框颜色 */
+                border-radius: 10px; /* 圆角边框 */
+                background-color: transparent; /* 背景透明 */
+                color: #333333; /* 文字颜色 */
+                font-size: 18px; /* 文字大小 */
+                font-weight: bold; /* 文字加粗 */
+                    padding: 5px;
+                border-top-left-radius: 0px; /* 右上角直角 */
+                border-left: none; /* 右侧没有边框 */
+                border-bottom: none; /* 下方没有边框 */
+                border-bottom-left-radius: 0; /* 左下角直角 */
+                border-bottom-right-radius: 0; /* 右下角直角 */
+            }
+
+            QPushButton:checked {
+                background-color: #5dade2; /* 选中时的背景颜色 */
+                color: white; /* 选中时的文字颜色 */
+                border: 2px solid dark; /* 选中时边框颜色 */
+                border-bottom: none; /* 下方没有边框 */
+                border-left: none; /* 左侧没有边框 */
+            }
+
+            QPushButton:hover {
+                background-color: #B0E2FF; /* 鼠标悬停时的背景颜色 */
+                border: 2px solid dark; /* 鼠标悬停时边框颜色 */
+                border-bottom: none; /* 下方没有边框 */
+                border-left: none; /* 左侧没有边框 */
+            }
+
+            QPushButton:pressed {
+                background-color: #5dade2; /* 鼠标按下时的背景颜色 */
+                border: 2px solid dark;
+                border-bottom: none; /* 下方没有边框 */
+                border-left: none; /* 左侧没有边框 */}
+            """)
+
         self.tab_buttons_layout.addWidget(button)
         self.tabs.append(button)
         self.content_stack.addWidget(content_widget)
@@ -96,9 +252,13 @@ class CustomTabWidget(QWidget):
             button.setChecked(i + 1 == index)
 
         self.content_stack.setStyleSheet("""QStackedWidget {
-            border: 1px solid #dcdcdc;
-            border-top: none;
-        }""")
+    border: 2px solid dark; /* 边框颜色 */
+    border-top: none; /* 上方没有边框 */
+    border-bottom-left-radius: 10px; /* 左下角圆角 */
+    border-bottom-right-radius: 10px; /* 右下角圆角 */
+    background-color:#E8E8E8; /* 淡灰色 */
+}
+""")
 
 
 
@@ -111,11 +271,19 @@ class CustomTabWidget(QWidget):
             self.tab_buttons_widget.setVisible(False)
         else:
             self.tab_buttons_widget.setVisible(True)
+            self.reset_all_inputs()
             for button in self.tabs:
                 self.lock_tabs(self.tabs.index(button) + 1)
             if self.tabs:
                 self.unlock_tabs(1)
                 self.switch_tab(1)
+
+
+    def reset_all_inputs(self):
+        self.ElementSettingTab.reset_inputs()
+        self.ModelGenerationTab.reset_inputs()
+        self.ModelTransformationTab.reset_inputs()
+        self.ConditionSettingTab.reset_inputs()
 
     def lock_tabs(self, index):
         # 根据索引锁定标签
@@ -136,3 +304,7 @@ class CustomTabWidget(QWidget):
     def generate_bayes(self):
         self.unlock_tabs(3)
         self.switch_tab(3)
+
+    def set_inference_conditions(self):
+        self.unlock_tabs(4)
+        self.switch_tab(4)

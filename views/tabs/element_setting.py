@@ -7,61 +7,17 @@ from PySide6.QtCore import Signal, Qt, QObject, QEvent
 from PySide6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QCheckBox, QLineEdit, QLabel, QPushButton, QGroupBox, QGridLayout,
     QSizePolicy, QScrollArea, QMessageBox, QTableWidget, QTableWidgetItem, QHeaderView, QComboBox, QDialog,
-    QFileDialog, QFrame, QApplication, QTabWidget, QFormLayout, QTextEdit
+    QFileDialog, QFrame, QApplication, QTabWidget, QFormLayout, QTextEdit, QStackedLayout, QButtonGroup, QTextBrowser,
+    QListWidget
 )
 from PySide6.QtGui import QFont, QIntValidator, QDoubleValidator
 from PySide6.QtWidgets import QStyledItemDelegate
 import sys
 import json
 
-# 假设 CustomInformationDialog 和 CustomWarningDialog 在项目的其他地方定义
-# 为了完整性，这里提供简单的实现
+from views.dialogs.custom_information_dialog import CustomInformationDialog
+from views.dialogs.custom_warning_dialog import CustomWarningDialog
 
-class CustomInformationDialog(QDialog):
-    def __init__(self, title, message, parent=None):
-        super().__init__(parent)
-        self.setWindowTitle(title)
-        self.setModal(True)
-        self.resize(400, 200)
-
-        layout = QVBoxLayout(self)
-
-        # 信息标签
-        label = QLabel(message)
-        label.setWordWrap(True)
-        label.setAlignment(Qt.AlignCenter)
-        layout.addWidget(label)
-
-        # 关闭按钮
-        button_layout = QHBoxLayout()
-        button_layout.addStretch()
-        close_button = QPushButton("确认")
-        close_button.clicked.connect(self.accept)
-        button_layout.addWidget(close_button)
-        layout.addLayout(button_layout)
-
-class CustomWarningDialog(QDialog):
-    def __init__(self, title, message, parent=None):
-        super().__init__(parent)
-        self.setWindowTitle(title)
-        self.setModal(True)
-        self.resize(400, 200)
-
-        layout = QVBoxLayout(self)
-
-        # 警告标签
-        label = QLabel(message)
-        label.setWordWrap(True)
-        label.setAlignment(Qt.AlignCenter)
-        layout.addWidget(label)
-
-        # 关闭按钮
-        button_layout = QHBoxLayout()
-        button_layout.addStretch()
-        close_button = QPushButton("关闭")
-        close_button.clicked.connect(self.accept)
-        button_layout.addWidget(close_button)
-        layout.addLayout(button_layout)
 
 class CenteredItemDelegate(QStyledItemDelegate):
     """自定义委托，使 QComboBox 的下拉项内容居中显示。"""
@@ -70,6 +26,7 @@ class CenteredItemDelegate(QStyledItemDelegate):
         super().initStyleOption(option, index)
         option.displayAlignment = Qt.AlignCenter
 
+
 class NoWheelEventFilter(QObject):
     """事件过滤器，禁用滚轮事件。"""
 
@@ -77,6 +34,7 @@ class NoWheelEventFilter(QObject):
         if event.type() == QEvent.Wheel:
             return True  # 事件被过滤，不传递下去
         return super().eventFilter(obj, event)
+
 
 def create_centered_combobox(enum_values, initial_value):
     """
@@ -110,29 +68,97 @@ def create_centered_combobox(enum_values, initial_value):
 
     return combobox
 
+
 class SaveResultDialog(QDialog):
-    def __init__(self, save_message, parent=None):
+    def __init__(self, saved_categories, detailed_info, parent=None):
         super().__init__(parent)
-        self.setWindowTitle("保存成功")
+        self.setWindowTitle("保存结果")
         self.setModal(True)
-        self.resize(600, 400)  # 调整大小以适应内容
+        self.resize(600, 400)  # 根据需要调整大小
+
+        # 主布局
+        main_layout = QVBoxLayout(self)
+
+        # 1. 摘要部分
+        summary_label = QLabel("已保存的情景要素类别:")
+        summary_label.setFont(QFont("Microsoft YaHei", 14, QFont.Bold))
+        main_layout.addWidget(summary_label)
+
+        # 使用 QListWidget 显示已保存的类别
+        self.summary_list = QListWidget()
+        for item in saved_categories:
+            self.summary_list.addItem(item['category'])
+        self.summary_list.setSelectionMode(QListWidget.NoSelection)  # 禁止选择
+        self.summary_list.setStyleSheet("""
+            QListWidget {
+                border: 1px solid #ccc;
+                border-radius: 5px;
+                padding: 5px;
+                background-color: #f9f9f9;
+            }
+        """)
+        main_layout.addWidget(self.summary_list)
+
+        # 2. 按钮区域（查看详情 和 确定）
+        button_layout = QHBoxLayout()
+
+        self.view_details_button = QPushButton("查看详情")
+        self.view_details_button.clicked.connect(lambda: self.open_details_dialog(detailed_info))
+        self.view_details_button.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+
+        self.ok_button = QPushButton("确定")
+        self.ok_button.clicked.connect(self.accept)
+        self.ok_button.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+
+        button_layout.addWidget(self.view_details_button)
+        button_layout.addWidget(self.ok_button)
+
+        main_layout.addLayout(button_layout)
+
+        # 3. 优化整体样式
+        self.setStyleSheet("""
+            QDialog {
+                background-color: #ffffff;
+            }
+        """)
+
+    def open_details_dialog(self, detailed_info):
+        """打开详细信息对话框"""
+        details_dialog = DetailsDialog(detailed_info, parent=self)
+        details_dialog.exec()
+
+
+class DetailsDialog(QDialog):
+    def __init__(self, detailed_info, parent=None):
+        super().__init__(parent)
+        self.setWindowTitle("详细信息")
+        self.setModal(True)
+        self.resize(800, 600)  # 根据需要调整大小
 
         layout = QVBoxLayout(self)
 
-        # 创建一个 QTextEdit 用于显示保存的信息，并设置为只读
-        text_edit = QTextEdit()
-        text_edit.setReadOnly(True)
-        text_edit.setHtml(save_message)  # 使用 setHtml 方法
-        text_edit.setAlignment(Qt.AlignLeft | Qt.AlignTop)  # 默认左上对齐
-        layout.addWidget(text_edit)
+        # 使用 QTextBrowser 显示详细信息
+        self.details_browser = QTextBrowser()
+        self.details_browser.setHtml(detailed_info)
+        layout.addWidget(self.details_browser)
 
-        # 添加一个关闭按钮
-        button_layout = QHBoxLayout()
-        button_layout.addStretch()
-        close_button = QPushButton("关闭")
+        # 关闭按钮
+        close_button = QPushButton("确定")
         close_button.clicked.connect(self.accept)
-        button_layout.addWidget(close_button)
-        layout.addLayout(button_layout)
+        close_button.setFixedWidth(100)
+        close_button_layout = QHBoxLayout()
+        close_button_layout.addStretch()
+        close_button_layout.addWidget(close_button)
+        close_button_layout.addStretch()
+        layout.addLayout(close_button_layout)
+
+        # 优化整体样式
+        self.setStyleSheet("""
+            QDialog {
+                background-color: #ffffff;
+            }
+        """)
+
 
 class ClickableLabel(QLabel):
     clicked = Signal()
@@ -173,6 +199,7 @@ class ClickableLabel(QLabel):
 
         self.setStyleSheet(f"color: {color};")
 
+
 class CustomCheckBoxWithLabel(QWidget):
     def __init__(self, label_text):
         super().__init__()
@@ -199,6 +226,7 @@ class CustomCheckBoxWithLabel(QWidget):
     def set_selected(self, selected: bool):
         self.label.set_selected(selected)
 
+
 class EditBehaviorDialog(QDialog):
     def __init__(self, behavior_name, subject, obj, is_subject_enum=False, is_object_enum=False,
                  subject_enum_values=None, object_enum_values=None, parent=None):
@@ -211,51 +239,26 @@ class EditBehaviorDialog(QDialog):
         self.setWindowTitle(f"编辑行为: {behavior_name}")
         self.setFixedSize(400, 300)
         self.setStyleSheet("""
-            * {
-                font-family: "Microsoft YaHei", "Times New Roman", Arial, sans-serif; /* 统一字体 */
-                font-size: 16pt; /* 统一字体大小 */
-                color: #333333; /* 默认字体颜色 */
-                text-shadow: none; /* 去除文字阴影 */
-            }
-            QDialog {
-                background-color: #ffffff; /* 白色背景 */
-                color: #333333;            /* 深灰色文字 */
-                border: 1px solid #dcdcdc; /* 浅灰色边框 */
-                border-radius: 8px;        /* 圆角边框 */
-            }
-
             QDialog QLabel {
                 background: transparent; /* 背景透明 */
                 color: #333333;          /* 深灰色文字 */
                 font-size: 14pt;         /* 字体大小 */
-                font-family: "Microsoft YaHei", "Segoe UI", Arial, sans-serif;
             }
-
-            QDialog QPushButton {
-                padding: 8px 16px;
-                font-size: 14pt;
-                border: 1px solid #0078d7; /* 蓝色边框 */
-                border-radius: 6px;
-                background-color: #0078d7; /* 蓝色背景 */
-                color: #ffffff;
-                transition: background-color 0.3s, border-color 0.3s;
+            QPushButton {
+                background-color: white; /* 设置背景颜色为白色 */
+                color: black;           /* 设置文字颜色为黑色 */
             }
-
-            QDialog QPushButton:hover {
-                background-color: #005a9e; /* 深蓝色背景 */
-                border-color: #005a9e;
+            QPushButton:hover {
+                background-color: #f0f8ff; /* 浅蓝色背景 */
             }
-
-            QDialog QPushButton:pressed {
-                background-color: #004578; /* 更深蓝色背景 */
-                border-color: #00315b;
+            QPushButton:pressed {
+                background-color: #cce5ff; /* 更深蓝色背景 */
             }
 
             /* 输入框选中时的蓝色边框 */
             QLineEdit:focus, QComboBox:focus {
                 border: 2px solid #0078d7; /* 蓝色边框 */
             }
-            
         """)
 
         # 主布局
@@ -285,15 +288,6 @@ class EditBehaviorDialog(QDialog):
         button_layout = QHBoxLayout()
         self.save_button = QPushButton("保存")
         self.cancel_button = QPushButton("取消")
-        self.save_button.setStyleSheet("""
-            QPushButton {
-                background-color: white; /* 设置背景颜色为白色 */
-                color: black;           /* 设置文字颜色为黑色 */
-            }
-            QPushButton:pressed {
-                background-color: lightgray; /* 按钮被按下时的背景色 */
-            }
-        """)
         button_layout.addWidget(self.save_button)
         button_layout.addWidget(self.cancel_button)
         layout.addLayout(button_layout)
@@ -360,30 +354,42 @@ class EditBehaviorDialog(QDialog):
         # 确保返回的值中没有 "<空>"，返回空字符串代替
         return subject if subject != "<空>" else "", obj if obj != "<空>" else ""
 
+
 class ElementSettingTab(QWidget):
+    """情景要素设置标签页"""
+
     save_requested = Signal()
 
     def __init__(self):
         super().__init__()
         self.current_selected_category = None  # 当前选中的类别
+        self.attribute_editors = {}  # 用于存储每个类别下属性对应的编辑器
         self.init_ui()
-        generate_requested = Signal()
+        # 默认选中属性模型
+        self.attribute_button.setChecked(True)
+        self.switch_model_display("Attribute")
 
     def init_ui(self):
         # 设置整体背景颜色和字体
         self.setStyleSheet("""
-            QGroupBox {
-                border: 1px solid #ccc;
-                border-radius: 8px;
-                margin-top: 10px;
-            }
-            QGroupBox::title {
-                subcontrol-origin: margin;
-                subcontrol-position: top left;
-                padding: 0 5px;
-                font-weight: bold;
-                color: #333333;
-            }
+QGroupBox {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    margin-top: 10px;
+    background-color: #ffffff;
+}
+
+QGroupBox::title {
+    subcontrol-origin: margin;
+    subcontrol-position: top left;
+    padding: 4px 10px;
+    font-weight: bold;
+    color: #333333;
+    background-color: #E8E8E8; /* 设置圆角灰色背景 */
+    border-radius: 10px; /* 圆角效果 */
+    border-bottom-left-radius: 0px; /* 左下角无圆角 */
+}
+
             QLabel {
                 color: #333333;
             }
@@ -402,7 +408,6 @@ class ElementSettingTab(QWidget):
                 padding: 5px;
                 background-color: white;
             }
-
 
             /* 自定义滚动条样式 */
             QScrollBar:vertical {
@@ -428,13 +433,82 @@ class ElementSettingTab(QWidget):
             QLabel#placeholder {
                 background-color: white;
                 color: #666666;
-                /* font-style: italic; */  /* 移除斜体 */
                 border: none;
             }
 
             /* 输入框选中时的蓝色边框 */
             QLineEdit:focus, QComboBox:focus {
                 border: 2px solid #0078d7; /* 蓝色边框 */
+            }
+
+            /* 属性模型和行为模型按钮样式 */
+            QPushButton#AttributeButton{
+                border: #f0f0f0; /* 边框颜色 */
+                border-right: 1px solid #f0f0f0; /* 右侧边框 */
+                border-left-radius: 10px; /* 左侧圆角边框 */
+                background-color: transparent; /* 背景透明 */
+                padding:10px 0;
+                font-size: 16px; /* 文字大小 */
+                font-weight: bold; /* 文字加粗 */
+            }
+            QPushButton#BehaviorButton{
+                border: #f0f0f0; /* 边框颜色 */
+                border-left:1px solid #f0f0f0; /* 左侧侧边框 */
+                border-right-radius: 10px; /* 右侧圆角边框 */
+                background-color: transparent; /* 背景透明 */
+                padding:10px 0;
+                font-size: 16px; /* 文字大小 */
+                font-weight: bold; /* 文字加粗 */
+            }
+
+            QPushButton#AttributeButton:hover{
+                background-color: #B0E2FF; /* 鼠标悬停时的背景颜色 */
+                border-right:1px solid #f0f0f0; /* 右侧边框 */
+                border-left-radius: 10px; /* 左侧圆角边框 */
+            }
+            QPushButton#BehaviorButton:hover{
+                background-color: #B0E2FF; /* 鼠标悬停时的背景颜色 */
+                border-left:1px solid #f0f0f0; /* 左侧边框 */
+                border-right-radius: 10px; /* 右侧圆角边框 */
+            }
+
+            QPushButton#AttributeButton:checked {
+                background-color: #5dade2; /* 选中时的背景颜色 */
+                color: white; /* 选中时的文字颜色 */
+                border-right:1px solid #f0f0f0; /* 右侧边框 */
+                border-left-radius: 10px; /* 左侧圆角边框 */
+            }
+            QPushButton#BehaviorButton:checked {
+                background-color: #5dade2; /* 选中时的背景颜色 */
+                color: white; /* 选中时的文字颜色 */
+                border-left:1px solid #f0f0f0; /* 左侧边框 */
+                border-right-radius: 10px; /* 右侧圆角边框 */
+            }
+
+            QPushButton#BehaviorButton:pressed {
+                background-color: #5dade2; /* 鼠标按下时的背景颜色 */
+                border-left:1px solid #f0f0f0; /* 左侧边框 */
+                border-right-radius: 10px; /* 右侧圆角边框 */
+            }
+
+            QPushButton#AttributeButton:pressed {
+                background-color: #5dade2; /* 鼠标按下时的背景颜色 */
+                border-right:1px solid #f0f0f0; /* 右侧边框 */
+                border-left-radius: 10px; /* 左侧圆角边框 */
+            }
+
+            /* QStackedLayout 中的页面样式 */
+            QWidget#AttributeDisplay, QWidget#BehaviorDisplay, QWidget#DefaultDisplay {
+                background-color: white;
+            }
+
+            /* 按钮区域样式 */
+            QPushButton#save_button, QPushButton#generate_button {
+
+            }
+
+            QPushButton#save_button:hover, QPushButton#generate_button:hover {
+
             }
         """)
 
@@ -451,6 +525,14 @@ class ElementSettingTab(QWidget):
         ]
         element_group_box = QGroupBox("涉及的情景要素")
         element_layout = QGridLayout()
+        # 设置字体大小
+        element_group_box.setStyleSheet("""
+            QGroupBox {
+                font-size: 16px;
+                font-weight: bold;
+                background-color: #ffffff;
+            }
+        """)
 
         self.checkboxes = {}
         for i, category in enumerate(self.categories):
@@ -463,7 +545,7 @@ class ElementSettingTab(QWidget):
 
             element_layout.addWidget(checkbox, row, column, 1, 1, alignment)
 
-            # 连接标签点击信号，使用默认参数绑定当前的 category
+            # 连接标签点击信号，使用 clicked 信号连接
             checkbox.label.clicked.connect(lambda checked_cat=category: self.handle_label_clicked(checked_cat))
 
         # 在布局顶部添加间距
@@ -472,28 +554,100 @@ class ElementSettingTab(QWidget):
         element_group_box_layout.addLayout(element_layout)
         element_group_box_layout.setContentsMargins(0, 12, 0, 12)  # 调整 GroupBox 内部边距
         element_group_box.setLayout(element_group_box_layout)
-        main_layout.addWidget(element_group_box)
+        main_layout.addWidget(element_group_box, 1)
 
-        # 2. 属性模型区域
-        self.attribute_group_box = QGroupBox("属性模型")
+        # 2. 合并后的属性模型和行为模型区域
+        model_container = QFrame()
+        model_container.setObjectName("ModelContainer")
+        model_container.setStyleSheet("""
+            QFrame#ModelContainer {
+                border: 1px solid #ccc;
+                border-radius: 10px;
+                background-color: white;
+            }
+        """)
+        model_layout = QVBoxLayout(model_container)
+        model_layout.setContentsMargins(0, 0, 0, 10)
+        model_layout.setSpacing(10)
+
+        # 上部分：两个按钮，模仿Tab，左右各占一半
+        button_layout = QHBoxLayout()
+        button_layout.setContentsMargins(0, 0, 0, 0)
+        button_layout.setSpacing(0)
+
+        self.attribute_button = QPushButton("属性模型")
+        self.attribute_button.setObjectName("AttributeButton")
+        self.attribute_button.setCheckable(True)
+        self.attribute_button.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+        self.attribute_button.setStyleSheet("""
+            border-top-left-radius: 10px;
+        """)
+
+        self.behavior_button = QPushButton("行为模型")
+        self.behavior_button.setObjectName("BehaviorButton")
+        self.behavior_button.setCheckable(True)
+        self.behavior_button.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+        self.behavior_button.setStyleSheet("""
+            border-top-right-radius: 10px;
+        """)
+
+        # 确保只有一个按钮被选中
+        self.button_group = QButtonGroup(self)
+        self.button_group.setExclusive(True)
+        self.button_group.addButton(self.attribute_button)
+        self.button_group.addButton(self.behavior_button)
+
+        button_layout.addWidget(self.attribute_button)
+        button_layout.addWidget(self.behavior_button)
+        model_layout.addLayout(button_layout)
+
+        # 下部分：展示区域，使用 QStackedLayout
+        self.model_stacked_layout = QStackedLayout()
+
+        # 默认展示页面
+        self.default_display_widget = QWidget()
+        self.default_display_layout = QVBoxLayout(self.default_display_widget)
+        self.default_display_layout.setContentsMargins(0, 0, 0, 0)
+        self.default_display_layout.setAlignment(Qt.AlignCenter)
+        default_label = QLabel("请选择模型类别")
+        default_label.setStyleSheet("""
+            color: gray;
+            font-size: 20pt;
+            border-radius: 10px;
+            border: 0px solid #c0c0c0;
+        """)
+        self.default_display_layout.addWidget(default_label)
+
+        # 属性模型展示页面
+        self.attribute_display_widget = QWidget()
+        self.attribute_display_widget.setObjectName("AttributeDisplay")
+        self.attribute_display_layout = QVBoxLayout(self.attribute_display_widget)
+        self.attribute_display_layout.setContentsMargins(0, 0, 0, 0)
+        self.attribute_display_layout.setSpacing(0)
+
+        # 创建滚动区域
         self.attribute_scroll = QScrollArea()
         self.attribute_scroll.setWidgetResizable(True)
         self.attribute_scroll.setFrameStyle(QFrame.NoFrame)
 
-        # 使用 QGridLayout 实现两列布局
+        # 使用 QGridLayout 实现两列布局（每组属性占两列）
         self.attribute_content_widget = QWidget()
         self.attribute_content_layout = QGridLayout(self.attribute_content_widget)
         self.attribute_content_layout.setSpacing(20)
         self.attribute_content_layout.setContentsMargins(15, 15, 15, 15)
         self.attribute_content_layout.setAlignment(Qt.AlignTop)
-        self.attribute_content_layout.setSizeConstraint(QGridLayout.SetMinimumSize)  # 设置大小约束
+        # 设置固定列数为4（两组属性，每组两列）
+        self.attribute_content_layout.setColumnMinimumWidth(0, 100)
+        self.attribute_content_layout.setColumnMinimumWidth(1, 200)
+        self.attribute_content_layout.setColumnMinimumWidth(2, 100)
+        self.attribute_content_layout.setColumnMinimumWidth(3, 200)
 
         self.attribute_content_widget.setLayout(self.attribute_content_layout)
         self.attribute_content_widget.setStyleSheet("background-color: white;")
         self.attribute_content_widget.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
 
         # 占位符页面
-        self.attribute_placeholder = QLabel("等待选择情景要素")
+        self.attribute_placeholder = QLabel("等待上传情景要素模型")
         self.attribute_placeholder.setAlignment(Qt.AlignCenter)
         self.attribute_placeholder.setObjectName("placeholder")
 
@@ -515,44 +669,21 @@ class ElementSettingTab(QWidget):
         attribute_container.setLayout(self.attribute_switch_layout)
         self.attribute_scroll.setWidget(attribute_container)
 
-        # 设置属性模型区域的边框样式，保持 GroupBox 的边框
-        self.attribute_group_box.setStyleSheet("""
-            QGroupBox {
-                border: 1px solid #ccc; /* 保持边框 */
-                border-radius: 8px;
-                margin-top: 10px;
-            }
-            QGroupBox::title {
-                subcontrol-origin: margin;
-                subcontrol-position: top left;
-                padding: 0 5px;
-                font-weight: bold;
-                color: #333333;
-            }
-        """)
-
         # 设置属性模型区域的布局
-        attribute_group_box_layout = QVBoxLayout()
-        attribute_group_box_layout.addSpacing(5)  # 设置标题与内容的间距
-        attribute_group_box_layout.setContentsMargins(20, 12, 32, 12)  # 调整 GroupBox 内部边距
-        attribute_group_box_layout.addWidget(self.attribute_scroll)
-        self.attribute_group_box.setLayout(attribute_group_box_layout)
+        self.attribute_display_layout.addWidget(self.attribute_scroll)
 
-        main_layout.addWidget(self.attribute_group_box)
-
-        # 3. 行为模型区域
-        behavior_group_box = QGroupBox("行为模型")
-
-        # 创建行为模型的布局并设置为实例属性
-        self.behavior_group_box_layout = QVBoxLayout()
-        self.behavior_group_box_layout.setContentsMargins(30, 25, 32, 10)  # 设置左上右下的外边距
-        self.behavior_group_box_layout.setSpacing(10)  # 设置内部控件之间的间距
-        behavior_group_box.setLayout(self.behavior_group_box_layout)
+        # 行为模型展示页面
+        self.behavior_display_widget = QWidget()
+        self.behavior_display_widget.setObjectName("BehaviorDisplay")
+        self.behavior_display_layout = QVBoxLayout(self.behavior_display_widget)
+        self.behavior_display_layout.setContentsMargins(0, 0, 0, 0)
+        self.behavior_display_layout.setSpacing(0)
 
         # 创建表格，使用标准 QTableWidget 并安装事件过滤器
         self.behavior_table = QTableWidget()
         self.behavior_table.setColumnCount(3)
         self.behavior_table.setHorizontalHeaderLabels(["行为名称", "行为主体", "行为对象"])
+        self.behavior_table.horizontalHeader().setFont(QFont("SimSun", 16, QFont.Bold))
         self.behavior_table.horizontalHeader().setDefaultAlignment(Qt.AlignCenter)
 
         # 应用三线表样式
@@ -571,44 +702,37 @@ class ElementSettingTab(QWidget):
         # 设置行为表格的尺寸策略
         self.behavior_table.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
 
-        # 安装事件过滤器以禁用滚轮事件
-        no_wheel_filter_table = NoWheelEventFilter(self.behavior_table)
-        self.behavior_table.installEventFilter(no_wheel_filter_table)
-
         # 创建占位符标签
-        self.behavior_placeholder = QLabel("等待选择情景要素")
+        self.behavior_placeholder = QLabel("等待上传情景要素模型")
         self.behavior_placeholder.setAlignment(Qt.AlignCenter)
         self.behavior_placeholder.setObjectName("placeholder")
         self.behavior_placeholder.hide()  # 初始隐藏
 
         # 添加到布局
-        self.behavior_group_box_layout.addWidget(self.behavior_table)
-        self.behavior_group_box_layout.addWidget(self.behavior_placeholder)
+        self.behavior_display_layout.addWidget(self.behavior_table)
+        self.behavior_display_layout.addWidget(self.behavior_placeholder)
 
-        main_layout.addWidget(behavior_group_box)
+        # 添加到 QStackedLayout
+        self.model_stacked_layout.addWidget(self.default_display_widget)
+        self.model_stacked_layout.addWidget(self.attribute_display_widget)
+        self.model_stacked_layout.addWidget(self.behavior_display_widget)
 
-        # 使用 QSizePolicy 和 stretch factors 来动态分配空间，并保持属性模型和行为模型高度一致
-        main_layout.setStretchFactor(element_group_box, 0)
-        main_layout.setStretchFactor(self.attribute_group_box, 2)
-        main_layout.setStretchFactor(behavior_group_box, 2)
+        model_layout.addLayout(self.model_stacked_layout)
 
-        # 4. 按钮区域
-        button_layout = QHBoxLayout()
+        # 添加到主布局
+        main_layout.addWidget(model_container, 5)
+
+        # 初始化属性模型展示布局
+        self.init_attribute_model()
+
+        # 初始化行为模型展示布局
+        self.init_behavior_model()
+
+        # 3. 按钮区域
+        button_layout_main = QHBoxLayout()
         self.save_button = QPushButton("保存")
         self.save_button.setObjectName("save_button")
         self.save_button.setToolTip("点击保存当前配置的要素数据")
-        self.save_button.setStyleSheet("""
-            QPushButton {
-                background-color: white; /* 设置背景颜色为白色 */
-                color: black;           /* 设置文字颜色为黑色 */
-            }
-            QPushButton:hover {
-                background-color: #f0f8ff; /* 浅蓝色背景 */
-            }
-            QPushButton:pressed {
-                background-color: #cce5ff; /* 更深蓝色背景 */
-            }
-        """)
         self.save_button.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
 
         self.generate_button = QPushButton("生成情景级孪生模型")
@@ -618,14 +742,14 @@ class ElementSettingTab(QWidget):
         self.generate_button.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
 
         # 将按钮添加到布局中，不使用 addStretch()
-        button_layout.addWidget(self.save_button)
-        button_layout.addWidget(self.generate_button)
+        button_layout_main.addWidget(self.save_button)
+        button_layout_main.addWidget(self.generate_button)
 
         # 将按钮布局添加到主布局
-        main_layout.addLayout(button_layout)
+        main_layout.addLayout(button_layout_main)
 
         # 设置按钮区域的下边距为0
-        button_layout.setContentsMargins(0, 0, 0, 0)
+        button_layout_main.setContentsMargins(0, 0, 0, 0)
 
         # 连接保存按钮信号
         self.save_button.clicked.connect(self.handle_save)
@@ -635,6 +759,10 @@ class ElementSettingTab(QWidget):
 
         # 连接生成按钮信号
         self.generate_button.clicked.connect(self.handle_generate)
+
+        # 连接属性模型和行为模型按钮
+        self.attribute_button.clicked.connect(lambda: self.switch_model_display("Attribute"))
+        self.behavior_button.clicked.connect(lambda: self.switch_model_display("Behavior"))
 
         # 初始化界面显示
         # 不自动选择任何类别，显示占位符
@@ -681,9 +809,9 @@ class ElementSettingTab(QWidget):
                 "attributes": {
                     "车辆类型": "货车",
                     "碰撞情况": "是",
-                    "燃爆情况": "是",
+                    "燃爆情景": "是",
                     "车辆位置": "KW0058+500",
-                    "抛锚情况": "是",
+                    "抛锚情景": "是",
                     "侧翻情况": "是",
                     "行驶方向": "正向",
                     "车辆货物": "废纸"
@@ -770,7 +898,6 @@ class ElementSettingTab(QWidget):
                     "心理支持": "全面"
                 },
                 "behavior": [
-
                 ]
             }
         }
@@ -778,7 +905,7 @@ class ElementSettingTab(QWidget):
         # Initialize category_data with deep copies to prevent shared references
         self.category_data = {category: json.loads(json.dumps(data)) for category, data in self.static_data.items()}
 
-        # 定义每个类别中哪些属性是枚举类型及其选项
+        # Define which attributes are enums and their options
         self.category_attribute_enums = {
             "道路环境要素": {
                 "道路类型": ["高速", "城市", "农村"],
@@ -793,8 +920,8 @@ class ElementSettingTab(QWidget):
             "车辆致灾要素": {
                 "车辆类型": ["货车", "轿车", "SUV", "摩托车"],
                 "碰撞情况": ["是", "否"],
-                "燃爆情况": ["是", "否"],
-                "抛锚情况": ["是", "否"],
+                "燃爆情景": ["是", "否"],
+                "抛锚情景": ["是", "否"],
                 "侧翻情况": ["是", "否"],
                 "行驶方向": ["正向", "逆向"],
             },
@@ -829,6 +956,25 @@ class ElementSettingTab(QWidget):
                 "心理支持": ["全面", "一般", "不足"]
             },
         }
+
+        # Generate category_to_attributes based on static_data
+        self.category_to_attributes = {
+            category: list(data.get("attributes", {}).keys())
+            for category, data in self.static_data.items()
+        }
+
+        # Initialize attribute_editors mapping
+        self.attribute_editors = {category: {} for category in self.categories}
+
+    def init_attribute_model(self):
+        """初始化属性模型展示页面"""
+        # 属性模型展示页面已经创建在 init_ui 中，无需重复初始化
+        pass  # No action needed here
+
+    def init_behavior_model(self):
+        """初始化行为模型展示页面"""
+        # 行为模型展示页面已经创建在 init_ui 中，无需重复初始化
+        pass  # No action needed here
 
     def apply_three_line_table_style(self, table: QTableWidget):
         """应用三线表样式到指定的表格"""
@@ -933,62 +1079,17 @@ class ElementSettingTab(QWidget):
         attributes = data.get("attributes", {})
         behaviors = data.get("behavior", [])
 
-        # 根据类别选择相应的属性_labels
-        category_to_attributes = {
-            "道路环境要素": [
-                "道路名称", "道路类型", "行车道数",
-                "起始桩号", "终点桩号", "封闭情况",
-                "受损情况", "污染情况"
-            ],
-            "气象环境要素": [
-                "气温", "湿度", "降雨量",
-                "风速", "天气状况", "能见度",
-                "气压", "云量"
-            ],
-            "车辆致灾要素": [
-                "车辆类型",
-                "碰撞情况",
-                "燃爆情况",
-                "抛锚情况",
-                "侧翻情况",
-                "行驶方向"
-            ],
-            "车辆承灾要素": [
-                "车辆类型", "载重量", "车辆状态",
-                "燃料类型", "车辆编号", "驾驶员",
-                "行驶速度", "车况"
-            ],
-            "道路承灾要素": [
-                "道路承载能力", "路面状况", "交通流量",
-                "交通设施", "应急通道", "道路维护",
-                "照明情况", "路标标识"
-            ],
-            "人类承灾要素": [
-                "人口密度", "应急响应能力", "医疗设施",
-                "避难所数量", "救援队伍", "公众培训",
-                "通讯设施", "公共交通"
-            ],
-            "应急资源要素": [
-                "应急物资", "设备状态", "储备位置",
-                "运输工具", "人员配置", "通讯设备",
-                "能源供应", "后勤支持"
-            ],
-            "应急行为要素": [
-            ],
-        }
+        print(f"Attributes: {attributes}")  # 调试信息
+        print(f"Behaviors: {behaviors}")  # 调试信息
 
-        current_attribute_labels = category_to_attributes.get(category, [])
+        current_attribute_labels = self.category_to_attributes.get(category, [])
 
         if current_attribute_labels:
-            # 切换到内容页面
-            self.attribute_content_widget.show()
-            self.attribute_placeholder.hide()
-
             # 清空现有的属性内容布局
             self.clear_layout(self.attribute_content_layout)
 
-            # Populate Attribute Model 使用 QGridLayout，每行两个属性
-            columns = 2
+            # Populate Attribute Model 使用 QGridLayout，每行两个属性组
+            groups_per_row = 2
             row = 0
             col = 0
             for label_text in current_attribute_labels:
@@ -1016,76 +1117,34 @@ class ElementSettingTab(QWidget):
                     if isinstance(editor, QLineEdit):
                         editor.setValidator(validator)
                 elif isinstance(editor, QComboBox):
-                    # 禁止用户输入新项，保持选择列表
-                    # 取消此行以保持 QComboBox 可编辑，实现居中对齐
-                    # editor.setEditable(False)
+                    # 保持 QComboBox 可编辑，实现居中对齐
                     pass  # 保持编辑模式
 
                 # 添加标签和编辑器到布局
                 self.attribute_content_layout.addWidget(label, row, col * 2)
                 self.attribute_content_layout.addWidget(editor, row, col * 2 + 1)
+
+                # 保存编辑器到 attribute_editors
+                self.attribute_editors[category][label_text] = editor
+
                 col += 1
-                if col >= columns:
+                if col >= groups_per_row:
                     col = 0
                     row += 1
+
+            # 显示内容，隐藏占位符
+            self.attribute_content_widget.show()
+            self.attribute_placeholder.hide()
         else:
             # 如果没有属性模型，显示“没有属性模型”
-            self.attribute_content_widget.hide()
+            self.attribute_display_widget.hide()
             self.attribute_placeholder.setText("没有属性模型")
             self.attribute_placeholder.show()
 
-        # 刷新布局
-        self.attribute_content_widget.adjustSize()
-        self.attribute_content_layout.update()
-
-        # 重置滚动条的位置到顶部
-        self.attribute_scroll.verticalScrollBar().setValue(0)
-
-        # Populate Behavior Model
+        # 填充行为模型
         self.populate_behavior_model(behaviors)
 
-    def handle_label_clicked(self, category):
-        print(f"handle_label_clicked called with category: {category}")  # 调试信息
-
-        # 如果当前选中的类别被勾选且被修改，先保存当前的数据到 self.category_data
-        if self.current_selected_category and self.checkboxes[self.current_selected_category].checkbox.isChecked():
-            self.update_current_category_data()
-
-        if self.current_selected_category:
-            # 恢复之前选中的标签字体和颜色
-            self.checkboxes[self.current_selected_category].set_selected(False)
-        # 设置当前选中的标签字体加粗
-        self.checkboxes[category].set_selected(True)
-        self.current_selected_category = category
-        # 弹出文件上传对话框
-        upload_success = self.upload_model_file(category)
-        if upload_success:
-            # 加载对应的属性模型和行为模型数据
-            self.load_models_data(category)
-        else:
-            # 如果未上传成功，加载默认数据
-            self.load_models_data(category)
-
-    def upload_model_file(self, category):
-        # 弹出文件选择对话框
-        file_dialog = QFileDialog(self)
-        file_dialog.setWindowTitle("选择要素模型文件")
-        file_dialog.setFileMode(QFileDialog.ExistingFile)
-        file_dialog.setNameFilter("JSON 文件 (*.json);;所有文件 (*)")
-        if file_dialog.exec():
-            selected_files = file_dialog.selectedFiles()
-            if selected_files:
-                file_path = selected_files[0]
-                print(f"Selected file for {category}: {file_path}")  # 调试信息
-                # 文件类型验证和解析（暂时不做校验）
-                # 请根据您的需求决定是否需要解析 JSON 文件
-                # 目前只设置已上传状态并显示上传成功对话框
-                self.checkboxes[category].label.set_uploaded(True)
-                CustomInformationDialog("上传成功", f"已成功上传并加载要素模型文件:\n{file_path}", parent=self).exec()
-                return True
-        else:
-            # 用户取消上传，不改变上传状态
-            return False
+        print(f"Finished loading data for category: {category}")  # 调试信息
 
     def open_behavior_editor(self, row, column):
         sender = self.sender()
@@ -1115,9 +1174,9 @@ class ElementSettingTab(QWidget):
         # 判断当前行为是否需要枚举
         enum_data = {
             "信号控制": {"is_subject_enum": True, "subject_enum_values": ["交通灯", "交警"],
-                         "is_object_enum": True, "object_enum_values": ["车辆", "行人"]},
+                       "is_object_enum": True, "object_enum_values": ["车辆", "行人"]},
             "限速": {"is_subject_enum": False, "subject_enum_values": None,
-                     "is_object_enum": True, "object_enum_values": ["司机", "车辆"]},
+                   "is_object_enum": True, "object_enum_values": ["司机", "车辆"]},
             "车辆运载": {"is_subject_enum": True, "subject_enum_values": ["车辆致灾要素"],
                      "is_object_enum": True, "object_enum_values": ["车辆货物"]},
             "车辆撞击": {"is_subject_enum": True, "subject_enum_values": ["车辆致灾要素"],
@@ -1134,8 +1193,8 @@ class ElementSettingTab(QWidget):
             subject,
             obj,
             is_subject_enum=enum_config["is_subject_enum"],
-            is_object_enum=enum_config["is_object_enum"],
             subject_enum_values=enum_config["subject_enum_values"],
+            is_object_enum=enum_config["is_object_enum"],
             object_enum_values=enum_config["object_enum_values"],
             parent=self
         )
@@ -1177,72 +1236,22 @@ class ElementSettingTab(QWidget):
         behaviors = []
 
         # 收集属性数据
-        category_to_attributes = {
-            "道路环境要素": [
-                "道路名称", "道路类型", "行车道数",
-                "起始桩号", "终点桩号", "封闭情况",
-                "受损情况", "污染情况"
-            ],
-            "气象环境要素": [
-                "气温", "湿度", "降雨量",
-                "风速", "天气状况", "能见度",
-                "气压", "云量"
-            ],
-            "车辆致灾要素": [
-                "车辆类型",
-                "碰撞情况",
-                "燃爆情况",
-                "抛锚情况",
-                "侧翻情况",
-                "行驶方向"
-            ],
-            "车辆承灾要素": [
-                "车辆类型", "载重量", "车辆状态",
-                "燃料类型", "车辆编号", "驾驶员",
-                "行驶速度", "车况"
-            ],
-            "道路承灾要素": [
-                "道路承载能力", "路面状况", "交通流量",
-                "交通设施", "应急通道", "道路维护",
-                "照明情况", "路标标识"
-            ],
-            "人类承灾要素": [
-                "人口密度", "应急响应能力", "医疗设施",
-                "避难所数量", "救援队伍", "公众培训",
-                "通讯设施", "公共交通"
-            ],
-            "应急资源要素": [
-                "应急物资", "设备状态", "储备位置",
-                "运输工具", "人员配置", "通讯设备",
-                "能源供应", "后勤支持"
-            ],
-            "应急行为要素": [
-            ],
-        }
+        current_attribute_editors = self.attribute_editors.get(category, {})
 
-        current_attribute_labels = category_to_attributes.get(category, [])
+        for key, editor in current_attribute_editors.items():
+            if isinstance(editor, QLineEdit):
+                value = editor.text()
+            elif isinstance(editor, QComboBox):
+                value = editor.currentText()
+                if value == "<空>":
+                    value = ""
+            else:
+                value = ""
+            attributes[key] = value
+            print(f"Collected attribute: {key} = {value}")  # 调试信息
 
-        if current_attribute_labels:
-            # 遍历属性布局，收集数据
-            for row in range(self.attribute_content_layout.rowCount()):
-                label_widget = self.attribute_content_layout.itemAtPosition(row, 0).widget()
-                editor_widget = self.attribute_content_layout.itemAtPosition(row, 1).widget()
-                if isinstance(label_widget, QLabel) and isinstance(editor_widget, (QLineEdit, QComboBox)):
-                    key = label_widget.text()
-                    if key in current_attribute_labels:
-                        if isinstance(editor_widget, QLineEdit):
-                            value = editor_widget.text()
-                        elif isinstance(editor_widget, QComboBox):
-                            value = editor_widget.currentText()
-                            if value == "<空>":
-                                value = ""
-                        attributes[key] = value
-        else:
-            # 没有属性模型
-            pass
-
-        # 收集行为模型数据
-        if self.behavior_table.isVisible():
+        # 收集行为模型数据，无论当前是否在行为模型界面
+        if self.behavior_table:
             for row in range(self.behavior_table.rowCount()):
                 behavior_name = self.behavior_table.item(row, 0).text() if self.behavior_table.item(row, 0) else ""
                 behavior_subject = self.behavior_table.item(row, 1).text() if self.behavior_table.item(row, 1) else ""
@@ -1253,198 +1262,28 @@ class ElementSettingTab(QWidget):
                         "subject": behavior_subject,
                         "object": behavior_object
                     })
+                    print(f"Collected behavior: {behavior_name}, {behavior_subject}, {behavior_object}")  # 调试信息
 
         # 更新 self.category_data
         self.category_data[category]["attributes"] = attributes
         self.category_data[category]["behavior"] = behaviors
 
-    def handle_save(self):
-        """收集所有被勾选的要素数据并模拟保存操作"""
-        # 如果当前选中的类别被勾选，则先保存当前界面的数据到 self.category_data
-        if self.current_selected_category and self.checkboxes[self.current_selected_category].checkbox.isChecked():
-            self.update_current_category_data()
-
-        # 收集所有被勾选的要素数据
-        saved_categories = []
-        for category, checkbox in self.checkboxes.items():
-            if checkbox.checkbox.isChecked():
-                data = self.category_data.get(category, {})
-                attributes = data.get("attributes", {})
-                behaviors = data.get("behavior", [])
-
-                saved_categories.append({
-                    "category": category,
-                    "attributes": attributes,
-                    "behaviors": behaviors
-                })
-
-        if not saved_categories:
-            CustomInformationDialog("保存结果", "没有要保存的要素。", parent=self).exec()
-            return
-
-        # 显示保存的数据（使用自定义对话框）
-        save_message = ""
-        for item in saved_categories:
-            save_message += f"类别: {item['category']}\n"
-            save_message += "属性:\n"
-            for key, value in item['attributes'].items():
-                save_message += f"  {key}: {value}\n"
-            save_message += "行为模型:\n"
-            if item['behaviors']:
-                for behavior in item['behaviors']:
-                    save_message += f"  行为名称: {behavior['name']}\n"
-                    save_message += f"  行为主体: {behavior['subject']}\n"
-                    save_message += f"  行为对象: {behavior['object']}\n"
-            else:
-                save_message += "  无行为模型\n"
-            save_message += "\n"
-
-        save_dialog = SaveResultDialog(save_message, self)
-        save_dialog.exec()
-
-        # 发射保存完成的信号
-        self.save_requested.emit()
+        print(f"Updated category_data for {category}: {self.category_data[category]}")  # 调试信息
 
     def populate_initial_display(self):
-        """在属性模型和行为模型区域显示“等待选择情景要素”"""
-        # 1. 属性模型区域
-        self.attribute_content_widget.hide()
-        self.attribute_placeholder.setText("等待上传情景要素模型")
-        self.attribute_placeholder.show()
+        """在合并后的属性模型和行为模型区域显示“请选择模型类别”"""
+        # 1. 设置默认页面为default_display_widget
+        self.model_stacked_layout.setCurrentWidget(self.default_display_widget)
 
-        # 2. 行为模型区域
-        self.reset_behavior_model()
-
-    def handle_generate(self):
-        # 模拟生成情景级孪生模型
-        CustomInformationDialog(" ", "已成功生成情景级孪生模型。", parent=self).exec()
-        # 发射生成完成的信号
-        self.generate_requested.emit()
-
-
-    def load_models_data(self, category):
-        print(f"Loading data for category: {category}")  # 调试信息
-
-        data = self.category_data.get(category, {})
-        attributes = data.get("attributes", {})
-        behaviors = data.get("behavior", [])
-
-        # 根据类别选择相应的属性_labels
-        category_to_attributes = {
-            "道路环境要素": [
-                "道路名称", "道路类型", "行车道数",
-                "起始桩号", "终点桩号", "封闭情况",
-                "受损情况", "污染情况"
-            ],
-            "气象环境要素": [
-                "气温", "湿度", "降雨量",
-                "风速", "天气状况", "能见度",
-                "气压", "云量"
-            ],
-            "车辆致灾要素": [
-                "车辆类型",
-                "碰撞情况",
-                "燃爆情况",
-                "抛锚情况",
-                "侧翻情况",
-                "行驶方向"
-            ],
-            "车辆承灾要素": [
-                "车辆类型", "载重量", "车辆状态",
-                "燃料类型", "车辆编号", "驾驶员",
-                "行驶速度", "车况"
-            ],
-            "道路承灾要素": [
-                "道路承载能力", "路面状况", "交通流量",
-                "交通设施", "应急通道", "道路维护",
-                "照明情况", "路标标识"
-            ],
-            "人类承灾要素": [
-                "人口密度", "应急响应能力", "医疗设施",
-                "避难所数量", "救援队伍", "公众培训",
-                "通讯设施", "公共交通"
-            ],
-            "应急资源要素": [
-                "应急物资", "设备状态", "储备位置",
-                "运输工具", "人员配置", "通讯设备",
-                "能源供应", "后勤支持"
-            ],
-            "应急行为要素": [
-            ],
-        }
-
-        current_attribute_labels = category_to_attributes.get(category, [])
-
-        if current_attribute_labels:
-            # 切换到内容页面
-            self.attribute_content_widget.show()
-            self.attribute_placeholder.hide()
-
-            # 清空现有的属性内容布局
-            self.clear_layout(self.attribute_content_layout)
-
-            # Populate Attribute Model 使用 QGridLayout，每行两个属性
-            columns = 2
-            row = 0
-            col = 0
-            for label_text in current_attribute_labels:
-                label = QLabel(label_text)
-
-                # 检查该属性是否为枚举类型
-                enums = self.category_attribute_enums.get(category, {}).get(label_text, None)
-                if enums:
-                    # 创建 CenteredComboBox
-                    editor = create_centered_combobox(enums, attributes.get(label_text, "<空>"))
-                else:
-                    # 创建 QLineEdit
-                    editor = QLineEdit()
-                    editor.setText(attributes.get(label_text, ""))
-                    editor.setPlaceholderText(f"请输入{label_text}")
-                    editor.setAlignment(Qt.AlignCenter)  # 居中对齐
-
-                # 根据字段类型设置验证器
-                if label_text in ["行车道数", "载重量", "交通流量", "人口密度"]:
-                    validator = QIntValidator(0, 1000, self)
-                    if isinstance(editor, QLineEdit):
-                        editor.setValidator(validator)
-                elif label_text in ["气温", "风速"]:
-                    validator = QDoubleValidator(-50.0, 100.0, 2, self)
-                    if isinstance(editor, QLineEdit):
-                        editor.setValidator(validator)
-                elif isinstance(editor, QComboBox):
-                    # 禁止用户输入新项，保持选择列表
-                    # 取消此行以保持 QComboBox 可编辑，实现居中对齐
-                    # editor.setEditable(False)
-                    pass  # 保持编辑模式
-
-                # 添加标签和编辑器到布局
-                self.attribute_content_layout.addWidget(label, row, col * 2)
-                self.attribute_content_layout.addWidget(editor, row, col * 2 + 1)
-                col += 1
-                if col >= columns:
-                    col = 0
-                    row += 1
-        else:
-            # 如果没有属性模型，显示“没有属性模型”
-            self.attribute_content_widget.hide()
-            self.attribute_placeholder.setText("没有属性模型")
-            self.attribute_placeholder.show()
-
-        # 刷新布局
-        self.attribute_content_widget.adjustSize()
-        self.attribute_content_layout.update()
-
-        # 重置滚动条的位置到顶部
-        self.attribute_scroll.verticalScrollBar().setValue(0)
-
-        # Populate Behavior Model
-        self.populate_behavior_model(behaviors)
+        # 2. 隐藏展示内容，显示占位符
+        self.attribute_display_widget.hide()
+        self.behavior_display_widget.hide()
 
     def handle_label_clicked(self, category):
         print(f"handle_label_clicked called with category: {category}")  # 调试信息
 
-        # 如果当前选中的类别被勾选且被修改，先保存当前的数据到 self.category_data
-        if self.current_selected_category and self.checkboxes[self.current_selected_category].checkbox.isChecked():
+        # 如果当前选中的类别被修改，先保存当前的数据到 self.category_data
+        if self.current_selected_category:
             self.update_current_category_data()
 
         if self.current_selected_category:
@@ -1458,11 +1297,14 @@ class ElementSettingTab(QWidget):
         if upload_success:
             # 加载对应的属性模型和行为模型数据
             self.load_models_data(category)
+            # 自动打勾
+            self.checkboxes[category].checkbox.setChecked(True)
         else:
             # 如果未上传成功，加载默认数据
             self.load_models_data(category)
 
     def upload_model_file(self, category):
+        """上传模型文件，选择 JSON 文件并加载数据"""
         # 弹出文件选择对话框
         file_dialog = QFileDialog(self)
         file_dialog.setWindowTitle("选择要素模型文件")
@@ -1473,186 +1315,33 @@ class ElementSettingTab(QWidget):
             if selected_files:
                 file_path = selected_files[0]
                 print(f"Selected file for {category}: {file_path}")  # 调试信息
-                # 文件类型验证和解析（暂时不做校验）
-                # 请根据您的需求决定是否需要解析 JSON 文件
-                # 目前只设置已上传状态并显示上传成功对话框
-                self.checkboxes[category].label.set_uploaded(True)
-                CustomInformationDialog("上传成功", f"已成功上传并加载要素模型文件:\n{file_path}", parent=self).exec()
-                return True
+                # 文件类型验证和解析
+                try:
+                    with open(file_path, 'r', encoding='utf-8') as f:
+                        data = json.load(f)
+                    # 假设 JSON 文件结构与 static_data 相同
+                    self.checkboxes[category].label.set_uploaded(True)
+                    CustomInformationDialog("上传成功", f"已成功上传并加载要素模型文件:\n{file_path}",
+                                            parent=self).exec()
+                    return True
+                    # if category in data:
+                    #     self.category_data[category] = data[category]
+                    #     self.checkboxes[category].label.set_uploaded(True)
+                    #     CustomInformationDialog("上传成功", f"已成功上传并加载要素模型文件:\n{file_path}",
+                    #                             parent=self).exec()
+                    #     # 重新加载属性编辑器映射
+                    #     self.attribute_editors[category] = {}
+                    #     self.load_models_data(category)
+                    #     return True
+                    # else:
+                    #     CustomWarningDialog("上传失败", f"文件内容与类别 '{category}' 不匹配。", parent=self).exec()
+                    #     return False
+                except Exception as e:
+                    CustomWarningDialog("上传失败", f"无法解析文件:\n{str(e)}", parent=self).exec()
+                    return False
         else:
             # 用户取消上传，不改变上传状态
             return False
-
-    def open_behavior_editor(self, row, column):
-        sender = self.sender()
-        if sender != self.behavior_table:
-            print("open_behavior_editor called by unknown sender")  # 调试信息
-            return
-
-        print(f"open_behavior_editor called on row: {row}, column: {column}")  # 调试信息
-        selected_row = row
-        if selected_row < 0:
-            CustomWarningDialog("警告", "请选择一个行为进行编辑！", parent=self).exec()
-            return
-
-        # 获取当前行的数据
-        behavior_name_item = self.behavior_table.item(selected_row, 0)
-        subject_item = self.behavior_table.item(selected_row, 1)
-        object_item = self.behavior_table.item(selected_row, 2)
-
-        if not behavior_name_item:
-            CustomWarningDialog("警告", "行为名称为空，无法编辑。", parent=self).exec()
-            return
-
-        behavior_name = behavior_name_item.text()
-        subject = subject_item.text() if subject_item else ""
-        obj = object_item.text() if object_item else ""
-
-        # 判断当前行为是否需要枚举
-        enum_data = {
-            "信号控制": {"is_subject_enum": True, "subject_enum_values": ["交通灯", "交警"],
-                         "is_object_enum": True, "object_enum_values": ["车辆", "行人"]},
-            "限速": {"is_subject_enum": False, "subject_enum_values": None,
-                     "is_object_enum": True, "object_enum_values": ["司机", "车辆"]},
-            "车辆运载": {"is_subject_enum": True, "subject_enum_values": ["车辆致灾要素"],
-                     "is_object_enum": True, "object_enum_values": ["车辆货物"]},
-            "车辆撞击": {"is_subject_enum": True, "subject_enum_values": ["车辆致灾要素"],
-                     "is_object_enum": True, "object_enum_values": ["车辆承灾要素"]},
-            "车辆抛洒": {"is_subject_enum": True, "subject_enum_values": ["车辆致灾要素"],
-                     "is_object_enum": True, "object_enum_values": ["车辆货物"]},
-        }
-        enum_config = enum_data.get(behavior_name, {"is_subject_enum": False, "subject_enum_values": None,
-                                                    "is_object_enum": False, "object_enum_values": None})
-
-        # 弹出编辑窗口
-        dialog = EditBehaviorDialog(
-            behavior_name,
-            subject,
-            obj,
-            is_subject_enum=enum_config["is_subject_enum"],
-            is_object_enum=enum_config["is_object_enum"],
-            subject_enum_values=enum_config["subject_enum_values"],
-            object_enum_values=enum_config["object_enum_values"],
-            parent=self
-        )
-        if dialog.exec() == QDialog.Accepted:
-            # 获取修改后的值
-            new_subject, new_object = dialog.get_values()
-
-            # 更新表格中的值
-            if isinstance(self.behavior_table.item(selected_row, 1), QTableWidgetItem):
-                self.behavior_table.item(selected_row, 1).setText(new_subject)
-            else:
-                self.behavior_table.setItem(selected_row, 1, QTableWidgetItem(new_subject))
-
-            if isinstance(self.behavior_table.item(selected_row, 2), QTableWidgetItem):
-                self.behavior_table.item(selected_row, 2).setText(new_object)
-            else:
-                self.behavior_table.setItem(selected_row, 2, QTableWidgetItem(new_object))
-
-            # 更新 self.category_data
-            if self.current_selected_category:
-                if selected_row < len(self.category_data[self.current_selected_category]["behavior"]):
-                    self.category_data[self.current_selected_category]["behavior"][selected_row]["subject"] = new_subject
-                    self.category_data[self.current_selected_category]["behavior"][selected_row]["object"] = new_object
-                else:
-                    # 如果行为列表较短，添加新的行为
-                    self.category_data[self.current_selected_category]["behavior"].append({
-                        "name": behavior_name,
-                        "subject": new_subject,
-                        "object": new_object
-                    })
-
-    def update_current_category_data(self):
-        """辅助方法：从GUI收集当前类别的属性和行为，并更新self.category_data"""
-        if not self.current_selected_category:
-            return
-
-        category = self.current_selected_category
-        attributes = {}
-        behaviors = []
-
-        # 收集属性数据
-        category_to_attributes = {
-            "道路环境要素": [
-                "道路名称", "道路类型", "行车道数",
-                "起始桩号", "终点桩号", "封闭情况",
-                "受损情况", "污染情况"
-            ],
-            "气象环境要素": [
-                "气温", "湿度", "降雨量",
-                "风速", "天气状况", "能见度",
-                "气压", "云量"
-            ],
-            "车辆致灾要素": [
-                "车辆类型",
-                "碰撞情况",
-                "燃爆情况",
-                "抛锚情况",
-                "侧翻情况",
-                "行驶方向"
-            ],
-            "车辆承灾要素": [
-                "车辆类型", "载重量", "车辆状态",
-                "燃料类型", "车辆编号", "驾驶员",
-                "行驶速度", "车况"
-            ],
-            "道路承灾要素": [
-                "道路承载能力", "路面状况", "交通流量",
-                "交通设施", "应急通道", "道路维护",
-                "照明情况", "路标标识"
-            ],
-            "人类承灾要素": [
-                "人口密度", "应急响应能力", "医疗设施",
-                "避难所数量", "救援队伍", "公众培训",
-                "通讯设施", "公共交通"
-            ],
-            "应急资源要素": [
-                "应急物资", "设备状态", "储备位置",
-                "运输工具", "人员配置", "通讯设备",
-                "能源供应", "后勤支持"
-            ],
-            "应急行为要素": [
-            ],
-        }
-
-        current_attribute_labels = category_to_attributes.get(category, [])
-
-        if current_attribute_labels:
-            # 遍历属性布局，收集数据
-            for row in range(self.attribute_content_layout.rowCount()):
-                label_widget = self.attribute_content_layout.itemAtPosition(row, 0).widget()
-                editor_widget = self.attribute_content_layout.itemAtPosition(row, 1).widget()
-                if isinstance(label_widget, QLabel) and isinstance(editor_widget, (QLineEdit, QComboBox)):
-                    key = label_widget.text()
-                    if key in current_attribute_labels:
-                        if isinstance(editor_widget, QLineEdit):
-                            value = editor_widget.text()
-                        elif isinstance(editor_widget, QComboBox):
-                            value = editor_widget.currentText()
-                            if value == "<空>":
-                                value = ""
-                        attributes[key] = value
-        else:
-            # 没有属性模型
-            pass
-
-        # 收集行为模型数据
-        if self.behavior_table.isVisible():
-            for row in range(self.behavior_table.rowCount()):
-                behavior_name = self.behavior_table.item(row, 0).text() if self.behavior_table.item(row, 0) else ""
-                behavior_subject = self.behavior_table.item(row, 1).text() if self.behavior_table.item(row, 1) else ""
-                behavior_object = self.behavior_table.item(row, 2).text() if self.behavior_table.item(row, 2) else ""
-                if behavior_name.strip():  # 仅保存有行为名称的行
-                    behaviors.append({
-                        "name": behavior_name,
-                        "subject": behavior_subject,
-                        "object": behavior_object
-                    })
-
-        # 更新 self.category_data
-        self.category_data[category]["attributes"] = attributes
-        self.category_data[category]["behavior"] = behaviors
 
     def handle_save(self):
         """收集所有被勾选的要素数据并模拟保存操作"""
@@ -1675,11 +1364,12 @@ class ElementSettingTab(QWidget):
                 })
 
         if not saved_categories:
+            # 正确传递 parent 参数
             CustomInformationDialog("保存结果", "没有要保存的要素。", parent=self).exec()
             return
 
-        # 构建更美观的HTML格式的保存信息
-        save_message = """
+        # 构建详细的HTML格式的保存信息
+        detailed_info = """
         <html>
         <head>
             <style>
@@ -1691,10 +1381,12 @@ class ElementSettingTab(QWidget):
                 h2 {
                     text-align: center;
                     color: #0078d7;
+                    margin-bottom: 20px;
                 }
                 h3 {
                     color: #005a9e;
-                    margin-top: 20px;
+                    margin-top: 30px;
+                    margin-bottom: 10px;
                 }
                 table {
                     width: 100%;
@@ -1703,34 +1395,28 @@ class ElementSettingTab(QWidget):
                 }
                 th, td {
                     border: 1px solid #cccccc;
-                    padding: 8px;
-                    text-align: left;
+                    padding: 10px;
+                    text-align: center;
                 }
                 th {
                     background-color: #f0f0f0;
                 }
-                ul {
-                    list-style-type: none;
-                    padding-left: 0;
-                }
-                li {
-                    margin-bottom: 5px;
-                }
                 .no-behavior {
                     color: #ff0000;
                     font-style: italic;
+                    text-align: center;
                 }
             </style>
         </head>
         <body>
-        <h2>保存结果</h2>
+        <h2>保存结果详情</h2>
         """
 
         for item in saved_categories:
-            save_message += f"<h3>类别: {item['category']}</h3>"
+            detailed_info += f"<h3>类别: {item['category']}</h3>"
 
             # 属性表格
-            save_message += """
+            detailed_info += """
             <b>属性:</b>
             <table>
                 <tr>
@@ -1739,18 +1425,18 @@ class ElementSettingTab(QWidget):
                 </tr>
             """
             for key, value in item['attributes'].items():
-                save_message += f"""
+                detailed_info += f"""
                 <tr>
                     <td>{key}</td>
                     <td>{value}</td>
                 </tr>
                 """
-            save_message += "</table>"
+            detailed_info += "</table>"
 
             # 行为模型表格
-            save_message += "<b>行为模型:</b>"
+            detailed_info += "<b>行为模型:</b>"
             if item['behaviors']:
-                save_message += """
+                detailed_info += """
                 <table>
                     <tr>
                         <th>行为名称</th>
@@ -1759,158 +1445,66 @@ class ElementSettingTab(QWidget):
                     </tr>
                 """
                 for behavior in item['behaviors']:
-                    save_message += f"""
+                    detailed_info += f"""
                     <tr>
                         <td>{behavior['name']}</td>
                         <td>{behavior['subject']}</td>
                         <td>{behavior['object']}</td>
                     </tr>
                     """
-                save_message += "</table>"
+                detailed_info += "</table>"
             else:
-                save_message += "<p class='no-behavior'>无行为模型</p>"
+                detailed_info += "<p class='no-behavior'>无行为模型</p>"
 
-        save_message += "</body></html>"
+        detailed_info += "</body></html>"
 
-        # 创建并显示保存结果对话框
-        save_dialog = SaveResultDialog(save_message, self)
+        # 创建并显示保存结果对话框，传递已保存类别和详细信息
+        save_dialog = SaveResultDialog(saved_categories, detailed_info, parent=self)
         save_dialog.exec()
 
         # 发射保存完成的信号
         self.save_requested.emit()
 
-    def populate_initial_display(self):
-        """在属性模型和行为模型区域显示“等待选择情景要素”"""
-        # 1. 属性模型区域
+    def handle_generate(self):
+        """模拟生成情景级孪生模型"""
+        CustomInformationDialog("提示", "已成功生成情景级孪生模型。", parent=self).exec()
+        # 这里可以添加实际的生成逻辑
+        # 例如切换到另一个标签页，如果存在的话
+        # parent_tab_widget = self.parent().parent()  # 假设结构中父级是 QTabWidget
+        # if isinstance(parent_tab_widget, QTabWidget):
+        #     parent_tab_widget.setCurrentIndex(1)  # 切换到第二个 Tab
+
+    def switch_model_display(self, model_type):
+        """切换展示区域的内容"""
+        # 强制将焦点从当前编辑器移开，确保所有输入被提交
+        if self.focusWidget():
+            self.focusWidget().clearFocus()
+
+        # 先保存当前数据
+        self.update_current_category_data()
+
+        if model_type == "Attribute":
+            self.model_stacked_layout.setCurrentWidget(self.attribute_display_widget)
+            self.behavior_display_widget.hide()
+            self.attribute_display_widget.show()
+        elif model_type == "Behavior":
+            self.model_stacked_layout.setCurrentWidget(self.behavior_display_widget)
+            self.attribute_display_widget.hide()
+            self.behavior_display_widget.show()
+
+    def reset_inputs(self):
+        """重置所有输入字段"""
+        for checkbox in self.checkboxes.values():
+            checkbox.checkbox.setChecked(False)
+            checkbox.label.set_selected(False)
+            checkbox.label.set_uploaded(False)
+
+        self.current_selected_category = None
         self.attribute_content_widget.hide()
         self.attribute_placeholder.setText("等待上传情景要素模型")
         self.attribute_placeholder.show()
-
-        # 2. 行为模型区域
         self.reset_behavior_model()
 
-    def handle_generate(self):
-        # 模拟生成情景级孪生模型
-        CustomInformationDialog(" ", "已成功生成情景级孪生模型。", parent=self).exec()
-
-
-    def load_models_data(self, category):
-        print(f"Loading data for category: {category}")  # 调试信息
-
-        data = self.category_data.get(category, {})
-        attributes = data.get("attributes", {})
-        behaviors = data.get("behavior", [])
-
-        # 根据类别选择相应的属性_labels
-        category_to_attributes = {
-            "道路环境要素": [
-                "道路名称", "道路类型", "行车道数",
-                "起始桩号", "终点桩号", "封闭情况",
-                "受损情况", "污染情况"
-            ],
-            "气象环境要素": [
-                "气温", "湿度", "降雨量",
-                "风速", "天气状况", "能见度",
-                "气压", "云量"
-            ],
-            "车辆致灾要素": [
-                "车辆类型",
-                "碰撞情况",
-                "燃爆情况",
-                "抛锚情况",
-                "侧翻情况",
-                "行驶方向"
-            ],
-            "车辆承灾要素": [
-                "车辆类型", "载重量", "车辆状态",
-                "燃料类型", "车辆编号", "驾驶员",
-                "行驶速度", "车况"
-            ],
-            "道路承灾要素": [
-                "道路承载能力", "路面状况", "交通流量",
-                "交通设施", "应急通道", "道路维护",
-                "照明情况", "路标标识"
-            ],
-            "人类承灾要素": [
-                "人口密度", "应急响应能力", "医疗设施",
-                "避难所数量", "救援队伍", "公众培训",
-                "通讯设施", "公共交通"
-            ],
-            "应急资源要素": [
-                "应急物资", "设备状态", "储备位置",
-                "运输工具", "人员配置", "通讯设备",
-                "能源供应", "后勤支持"
-            ],
-            "应急行为要素": [
-            ],
-        }
-
-        current_attribute_labels = category_to_attributes.get(category, [])
-
-        if current_attribute_labels:
-            # 切换到内容页面
-            self.attribute_content_widget.show()
-            self.attribute_placeholder.hide()
-
-            # 清空现有的属性内容布局
-            self.clear_layout(self.attribute_content_layout)
-
-            # Populate Attribute Model 使用 QGridLayout，每行两个属性
-            columns = 2
-            row = 0
-            col = 0
-            for label_text in current_attribute_labels:
-                label = QLabel(label_text)
-
-                # 检查该属性是否为枚举类型
-                enums = self.category_attribute_enums.get(category, {}).get(label_text, None)
-                if enums:
-                    # 创建 CenteredComboBox
-                    editor = create_centered_combobox(enums, attributes.get(label_text, "<空>"))
-                else:
-                    # 创建 QLineEdit
-                    editor = QLineEdit()
-                    editor.setText(attributes.get(label_text, ""))
-                    editor.setPlaceholderText(f"请输入{label_text}")
-                    editor.setAlignment(Qt.AlignCenter)  # 居中对齐
-
-                # 根据字段类型设置验证器
-                if label_text in ["行车道数", "载重量", "交通流量", "人口密度"]:
-                    validator = QIntValidator(0, 1000, self)
-                    if isinstance(editor, QLineEdit):
-                        editor.setValidator(validator)
-                elif label_text in ["气温", "风速"]:
-                    validator = QDoubleValidator(-50.0, 100.0, 2, self)
-                    if isinstance(editor, QLineEdit):
-                        editor.setValidator(validator)
-                elif isinstance(editor, QComboBox):
-                    # 禁止用户输入新项，保持选择列表
-                    # 取消此行以保持 QComboBox 可编辑，实现居中对齐
-                    # editor.setEditable(False)
-                    pass  # 保持编辑模式
-
-                # 添加标签和编辑器到布局
-                self.attribute_content_layout.addWidget(label, row, col * 2)
-                self.attribute_content_layout.addWidget(editor, row, col * 2 + 1)
-                col += 1
-                if col >= columns:
-                    col = 0
-                    row += 1
-        else:
-            # 如果没有属性模型，显示“没有属性模型”
-            self.attribute_content_widget.hide()
-            self.attribute_placeholder.setText("没有属性模型")
-            self.attribute_placeholder.show()
-
-        # 刷新布局
-        self.attribute_content_widget.adjustSize()
-        self.attribute_content_layout.update()
-
-        # 重置滚动条的位置到顶部
-        self.attribute_scroll.verticalScrollBar().setValue(0)
-
-        # Populate Behavior Model
-        self.populate_behavior_model(behaviors)
 
 class MainWindow(QDialog):
     def __init__(self):
@@ -1932,11 +1526,13 @@ class MainWindow(QDialog):
 
         self.setLayout(layout)
 
+
 def main():
     app = QApplication(sys.argv)
     window = MainWindow()
     window.show()
     sys.exit(app.exec())
+
 
 if __name__ == "__main__":
     main()

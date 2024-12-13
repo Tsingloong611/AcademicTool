@@ -250,11 +250,7 @@ class ScenarioController(QObject):
         CustomInformationDialog("成功", "已成功连接到数据库。").exec()
         self.load_scenarios()
 
-    @Slot()
-    def switch_tab(self, index):
-        self.tab_widget.switch_tab(index)
-        if index==1:
-            self.tab_widget.lock_tabs()
+
 
 
     def __del__(self):

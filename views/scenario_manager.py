@@ -1,5 +1,3 @@
-# scenario_manager.py
-
 # -*- coding: utf-8 -*-
 # @FileName: scenario_manager.py
 # @Software: PyCharm
@@ -7,7 +5,7 @@ import os
 
 from PySide6.QtWidgets import (
     QWidget, QVBoxLayout, QListWidget, QPushButton, QHBoxLayout,
-    QLineEdit, QListWidgetItem, QFrame, QLabel, QDialog, QTextEdit, QStackedLayout
+    QLineEdit, QListWidgetItem, QFrame, QLabel, QDialog, QTextEdit, QStackedLayout, QSizePolicy
 )
 from PySide6.QtGui import QIcon, QCursor
 from PySide6.QtCore import Signal, Slot, Qt, QTimer, QPoint, QEvent
@@ -39,11 +37,11 @@ class ScenarioDialog(QDialog):
         name_layout.addWidget(self.name_input)
         layout.addLayout(name_layout)
 
-        desc_layout = QVBoxLayout()
+        desc_layout = QHBoxLayout()
         desc_label = QLabel("描述:")
         desc_label.setObjectName("DescriptionLabel")
 
-        self.desc_input = QTextEdit()
+        self.desc_input = QLineEdit()
         self.desc_input.setObjectName("DescriptionInput")
         self.desc_input.setPlaceholderText("请输入情景描述")
         desc_layout.addWidget(desc_label)
@@ -56,9 +54,11 @@ class ScenarioDialog(QDialog):
         self.cancel_button = QPushButton("取消")
         self.cancel_button.setObjectName("CancelButton")
 
-        button_layout.addStretch()
         button_layout.addWidget(self.save_button)
         button_layout.addWidget(self.cancel_button)
+        # 占满剩余空间
+        self.save_button.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+        self.cancel_button.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
         layout.addLayout(button_layout)
 
         self.save_button.clicked.connect(self.accept)
@@ -121,7 +121,7 @@ class ScenarioManager(QWidget):
         layout.setSpacing(5)
 
         self.init_buttons(layout)
-        self.init_separator(layout)
+        # self.init_separator(layout)
         self.init_search(layout)
         self.init_list_widget(layout)
         self.search_input.setObjectName("SearchInput")
@@ -131,6 +131,9 @@ class ScenarioManager(QWidget):
         self.add_button.setObjectName("新建Button")
         self.edit_button.setObjectName("修改Button")
         self.delete_button.setObjectName("删除Button")
+        self.scenario_container.setStyleSheet("""
+                border-radius: 10px;
+        """)
 
     def init_search(self, parent_layout):
         search_layout = QHBoxLayout()
@@ -147,6 +150,8 @@ class ScenarioManager(QWidget):
         line.setFrameShape(QFrame.HLine)
         line.setFrameShadow(QFrame.Sunken)
         line.setObjectName("SeparatorLine")
+        # 设置分隔线的样式
+        line.setStyleSheet("color: #c0c0c0; background-color: #c0c0c0;")
         parent_layout.addWidget(line)
 
     def init_buttons(self, parent_layout):
@@ -194,13 +199,13 @@ class ScenarioManager(QWidget):
         self.scenario_stack = QStackedLayout()
         self.scenario_stack.setContentsMargins(0, 0, 0, 0)
 
-        scenario_container = QWidget()
-        scenario_container.setLayout(self.scenario_stack)
+        self.scenario_container = QWidget()
+        self.scenario_container.setLayout(self.scenario_stack)
         self.scenario_stack.addWidget(self.list_widget)       # 索引 0
         self.scenario_stack.addWidget(self.placeholder_label) # 索引 1
         self.scenario_stack.addWidget(self.no_result_label)   # 索引 2
 
-        parent_layout.addWidget(scenario_container)
+        parent_layout.addWidget(self.scenario_container)
 
         # 连接列表信号
         self.list_widget.itemClicked.connect(self.select_scenario)
@@ -229,7 +234,7 @@ class ScenarioManager(QWidget):
                 short_desc = description[:8] + "..."
             else:
                 short_desc = description
-            item = QListWidgetItem(f"{scenario.name} - {short_desc}")
+            item = QListWidgetItem(f"{scenario.name}")
             item.setData(Qt.UserRole, scenario.id)
             item.setData(Qt.UserRole + 1, scenario.description)
             self.list_widget.addItem(item)
@@ -250,7 +255,7 @@ class ScenarioManager(QWidget):
                 description = scenario.description
                 if len(description) > 8:
                     description = description[:8] + "..."
-                item = QListWidgetItem(f"{scenario.name} - {description}")
+                item = QListWidgetItem(f"{scenario.name}")
                 item.setData(Qt.UserRole, scenario.id)
                 item.setData(Qt.UserRole + 1, scenario.description)
                 self.list_widget.addItem(item)

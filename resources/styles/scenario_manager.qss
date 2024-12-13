@@ -2,9 +2,9 @@
 
 /* 场景管理器容器 */
 QFrame#ScenarioFrame, QWidget#ScenarioManager {
-    border: 1px solid #d0d0d0;
+    border: 2px solid dark;
     border-radius: 10px;
-    background-color: #ffffff; /* 白色 */
+    background-color: #E8E8E8; /* 淡灰色 */
 }
 
 /* 场景管理器标题 */
@@ -18,4 +18,49 @@ QLabel#ScenarioTitleLabel {
 /* 新建、修改、删除按钮的样式 */
 QPushButton#新建Button, QPushButton#修改Button, QPushButton#删除Button {
     /* 样式已经在 widgets.qss 中定义 */
+}
+
+/* “无匹配结果”标签样式 */
+QLabel#NoResultLabel {
+    color: gray;
+    font-size: 20pt;
+    border-radius: 10px;
+    border: 1px solid #c0c0c0;
+}
+
+/* 添加 QListWidget 的圆角样式 */
+QListWidget#ScenarioList {
+    border: 1px solid #c0c0c0;
+    border-radius: 10px;
+    background-color: white;
+    outline: none;
+    padding: 0px;  /* 移除内部边距 */
+    margin: 0px;   /* 移除外部边距 */
+}
+
+/* 自定义 QListWidgetItem 的样式 */
+QListWidget#ScenarioList::item {
+    border: 1px solid transparent;
+    border-radius: 5px;
+    padding: 5px;
+    margin: 2px;
+}
+
+/* 鼠标悬停时的背景色 */
+QListWidget#ScenarioList::item:hover {
+    background-color: #cce5ff;
+}
+
+/* 选中项的背景色 */
+QListWidget#ScenarioList::item:selected {
+    background-color:#5dade2;
+    color: white;
+}
+
+/* DescriptionInput */
+QTextEdit#DescriptionInput {
+    border: 1px solid #c0c0c0;
+    border-radius: 10px;
+    background-color: white;
+    padding: 5px;
 }

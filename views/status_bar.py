@@ -1,5 +1,5 @@
 # status_bar.py
-
+from PySide6.QtGui import QFont
 # -*- coding: utf-8 -*-
 # @FileName: status_bar.py
 # @Software: PyCharm
@@ -19,9 +19,16 @@ class StatusBar(QWidget):
 
         user_group = QGroupBox("用户信息")
         user_group.setObjectName("UserInfoGroup")
+        user_group.setStyleSheet("""
+            QGroupBox {
+                font-size: 16px;
+                font-weight: bold;
+            }
+        """)
         user_layout = QVBoxLayout()
         user_layout.setContentsMargins(5, 5, 5, 5)
         user_layout.setSpacing(5)
+
 
         self.user_label = QLabel("当前用户: 无")
         self.user_label.setObjectName("UserLabel")
@@ -35,6 +42,14 @@ class StatusBar(QWidget):
 
         scenario_group = QGroupBox("情景状态")
         scenario_group.setObjectName("ScenarioStatusGroup")
+        # 加粗，16
+        scenario_group.setStyleSheet("""
+            QGroupBox {
+                font-size: 16px;
+                /* 加粗字体 */
+                font-weight: bold;
+            }
+        """)
         scenario_layout = QVBoxLayout()
         scenario_layout.setContentsMargins(5, 5, 5, 5)
         scenario_layout.setSpacing(5)

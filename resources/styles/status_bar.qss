@@ -2,19 +2,37 @@
 
 /* 状态栏容器 */
 QWidget#StatusFrame, StatusBarWidget {
-    border: 1px solid #d0d0d0;
+    border: 2px solid dark;
     border-radius: 10px;
-    background-color: #1e90ff; /* 深蓝色 */
+        background-color:#E8E8E8; /* 淡灰色 */
 }
 
 
 /* 用户信息和情景状态组框 */
 QGroupBox#UserInfoGroup, QGroupBox#ScenarioStatusGroup {
     border: 1px solid #d0d0d0;
+
     border-radius: 10px;
+    margin-top: 14px;
+    font-size: 12pt; /* 全局字体 */
+
+}
+QGroupBox {
+    border: 1px solid #ccc;
+    border-radius: 8px;
     margin-top: 10px;
-    font-size: 9pt; /* 全局字体 */
-    background-color: #2e8b57; /* 深绿色 */
+    background-color: #ffffff;
+}
+
+QGroupBox::title {
+    subcontrol-origin: margin;
+    subcontrol-position: top left;
+    padding: 2px 10px;
+    font-weight: bold;
+    color: #333333;
+    background-color: #E8E8E8; /* 设置圆角灰色背景 */
+    border-radius: 10px; /* 圆角效果 */
+    border-bottom-left-radius: 0px; /* 左下角无圆角 */
 }
 
 QLabel#StatusTitleLabel {
@@ -29,8 +47,6 @@ QLabel#StatusTitleLabel {
 QLabel#UserLabel, QLabel#DatabaseLabel, QLabel#CurrentScenarioLabel,
 QLabel#OwlStatusLabel, QLabel#BayesStatusLabel, QLabel#ScenarioDescriptionLabel,
 QLabel#ScenarioUpdateTimeLabel {
-    border: 1px solid #e0e0e0;
-    border-radius: 5px;
-    padding: 5px;
-    color: #333333; /* 深灰色文字 */
+
 }
+

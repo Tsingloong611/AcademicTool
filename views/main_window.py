@@ -62,7 +62,6 @@ class MainWindow(QMainWindow):
         scenario_title_label = QLabel("情景管理器")
         scenario_title_label.setObjectName("ScenarioTitleLabel")
         scenario_title_label.setAlignment(Qt.AlignCenter)
-        scenario_title_label.setFont(QFont("SimSun", 16, QFont.Bold))  # 设置字体和大小
         scenario_title_label.setFixedHeight(30)  # 增加高度以容纳圆角
 
         # 添加标题标签到情景管理器小框架
@@ -149,10 +148,10 @@ class MainWindow(QMainWindow):
 
         # 加载样式表
         self.load_stylesheets([
-            r"D:\PythonProjects\AcademicTool_PySide\resources\styles\global.qss",
-            r"D:\PythonProjects\AcademicTool_PySide\resources\styles\scenario_manager.qss",
-            r"D:\PythonProjects\AcademicTool_PySide\resources\styles\tab_widget.qss",
-            r"D:\PythonProjects\AcademicTool_PySide\resources\styles\status_bar.qss"
+            os.path.join(os.path.dirname(__file__),"..", "resources", "styles", "global.qss"),
+            os.path.join(os.path.dirname(__file__),"..", "resources", "styles", "scenario_manager.qss"),
+            os.path.join(os.path.dirname(__file__),"..", "resources", "styles", "widgets.qss"),
+            os.path.join(os.path.dirname(__file__),"..", "resources", "styles", "status_bar.qss")
         ])  # 确保样式表文件位于正确路径
 
     def load_stylesheets(self, filepaths):

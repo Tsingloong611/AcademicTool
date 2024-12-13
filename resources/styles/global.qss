@@ -1,6 +1,6 @@
 /* global.qss */
 
-/* 设置全局字体为宋体九号 */
+/* 设置全局字体为宋体12号 */
 * {
     font-family: "SimSun"; /* 宋体 */
     font-size: 12pt;
@@ -9,7 +9,7 @@
 /* 设置标题字体为宋体14号 */
 QLabel#ScenarioTitleLabel, QLabel#StatusTitleLabel, QLabel#MainTitleLabel {
     font-family: "SimSun";
-    font-size: 12pt;
+    font-size: 14pt;
     font-weight: bold;
 }
 
@@ -17,4 +17,14 @@ QLabel#ScenarioTitleLabel, QLabel#StatusTitleLabel, QLabel#MainTitleLabel {
 QWidget {
     background-color: #ffffff; /* 白色 */
     color: #333333; /* 深灰色文字 */
+}
+
+QComboBox::drop-down {
+    border: none; /* 隐藏下拉按钮边框 */
+    width: 20px; /* 下拉按钮宽度 */
+}
+QComboBox::down-arrow {
+    image: url(edit.png); /* 自定义箭头路径 */
+    width: 16px;
+    height: 16px;
 }
