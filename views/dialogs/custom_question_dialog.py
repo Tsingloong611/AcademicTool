@@ -11,7 +11,7 @@ class CustomQuestionDialog(QDialog):
     def __init__(self, title, message,position=1, parent=None):
         super().__init__(parent)
         self.setWindowTitle(title)
-        self.setFixedSize(300, 150)
+        self.resize(300, 100)
         self.setStyleSheet("""
 
         """)
@@ -48,6 +48,9 @@ class CustomQuestionDialog(QDialog):
             """)
 
         layout.addLayout(button_layout)
+        # 设置固定的按钮宽度
+        for i in range(button_layout.count()):
+            button_layout.itemAt(i).widget().setFixedWidth(50)
 
     def ask(self):
         return self.exec() == QDialog.Accepted

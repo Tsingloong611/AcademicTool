@@ -10,7 +10,7 @@ class CustomErrorDialog(QDialog):
     def __init__(self, title, message, parent=None):
         super().__init__(parent)
         self.setWindowTitle(title)
-        self.setFixedSize(400, 200)
+        self.resize(400, 200)
         self.setStyleSheet("""
 
 
@@ -29,7 +29,9 @@ class CustomErrorDialog(QDialog):
         # 确定按钮
         button = QPushButton("确定")
         button.clicked.connect(self.accept)
-        layout.addWidget(button)
+        layout.addWidget(button, alignment=Qt.AlignCenter)
+        # 设置固定的按钮宽度
+        button.setFixedWidth(50)
 
     def show_dialog(self):
         self.exec()

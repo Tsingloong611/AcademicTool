@@ -9,23 +9,7 @@ from PySide6.QtWidgets import (
 from PySide6.QtCore import Qt, Signal
 from PySide6.QtGui import QPixmap, QFont
 
-
-class CustomInformationDialog(QMessageBox):
-    def __init__(self, title, message, parent=None):
-        super().__init__(parent)
-        self.setWindowTitle(title)
-        self.setText(message)
-        self.setIcon(QMessageBox.Information)
-        self.setStandardButtons(QMessageBox.Ok)
-
-
-class CustomWarningDialog(QMessageBox):
-    def __init__(self, title, message, parent=None):
-        super().__init__(parent)
-        self.setWindowTitle(title)
-        self.setText(message)
-        self.setIcon(QMessageBox.Warning)
-        self.setStandardButtons(QMessageBox.Ok)
+from views.dialogs.custom_warning_dialog import CustomWarningDialog
 
 
 class ZoomableLabel(QLabel):
@@ -81,11 +65,11 @@ class ModelTransformationTab(QWidget):
     def init_ui(self):
         self.set_stylesheet()
         main_layout = QHBoxLayout(self)
-        main_layout.setSpacing(20)
+        main_layout.setSpacing(10)
         main_layout.setContentsMargins(20, 20, 20, 20)
 
         # 左侧 - 贝叶斯网络展示
-        main_layout.addWidget(self.create_bayesian_network_group_box(), 2)
+        main_layout.addWidget(self.create_bayesian_network_group_box(), 3)
 
         # 右侧 - 先验概率部分
         right_layout = QVBoxLayout()
@@ -102,6 +86,10 @@ class ModelTransformationTab(QWidget):
 
         right_layout.addLayout(upper_layout)
         right_layout.addLayout(lower_layout)
+
+        #设置最小宽度
+        prior_group_box.setMinimumWidth(325)
+
 
         main_layout.addLayout(right_layout, 1)
         self.setLayout(main_layout)
@@ -220,19 +208,7 @@ QGroupBox::title {
                 outline: none;
             }
 
-            QPushButton {
-                border: 1px solid #ccc;
-                border-radius: 5px;
-                padding: 5px 10px;
-                background-color: #ffffff;
-                font-size: 14px;
-            }
-            QPushButton:hover {
-                background-color: #f0f0f0;
-            }
-            QPushButton:pressed {
-                background-color: #e0e0e0;
-            }
+
         """)
 
     def create_bayesian_network_group_box(self):
@@ -290,7 +266,7 @@ QGroupBox::title {
 
         # 使用垂直布局将节点选择在上，表格/提示在下
         main_v_layout = QVBoxLayout()
-        main_v_layout.setSpacing(20)
+        main_v_layout.setSpacing(0)
         main_v_layout.setContentsMargins(0, 0, 0, 0)
 
         # 上面：节点选择区域
@@ -327,7 +303,7 @@ QGroupBox::title {
 
         # 下方：展示区域
         self.display_area = QVBoxLayout()
-        self.display_area.setContentsMargins(0, 0, 0, 0)
+        self.display_area.setContentsMargins(0, 10, 0, 0)
 
         self.prior_table = QTableWidget()
         self.prior_table.setColumnCount(3)
@@ -340,6 +316,8 @@ QGroupBox::title {
         self.prior_table.setAlternatingRowColors(True)
         self.prior_table.setEditTriggers(QTableWidget.NoEditTriggers)
         self.prior_table.setShowGrid(False)
+        self.prior_table.setSelectionBehavior(QTableWidget.SelectRows)
+        self.prior_table.setSelectionMode(QTableWidget.SingleSelection)
         self.prior_table.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.apply_table_style(self.prior_table)
 
@@ -413,8 +391,10 @@ QGroupBox::title {
     def create_button_box(self):
         button_box = QVBoxLayout()
         self.set_condition_button = QPushButton("设置推演条件")
+        # 设置最大宽度
+        self.set_condition_button.setMaximumWidth(125)
         self.set_condition_button.clicked.connect(self.set_inference_conditions)
-        button_box.addWidget(self.set_condition_button)
+        button_box.addWidget(self.set_condition_button, alignment=Qt.AlignRight)
         return button_box
 
     def set_inference_conditions(self):
@@ -440,9 +420,18 @@ QGroupBox::title {
                     for state_name, prob in self.node_data[node]:
                         row_position = self.prior_table.rowCount()
                         self.prior_table.insertRow(row_position)
-                        self.prior_table.setItem(row_position, 0, QTableWidgetItem(node))
-                        self.prior_table.setItem(row_position, 1, QTableWidgetItem(state_name))
-                        self.prior_table.setItem(row_position, 2, QTableWidgetItem(f"{prob:.4f}"))
+                        item_node = QTableWidgetItem(node)
+                        item_state = QTableWidgetItem(state_name)
+                        item_prob = QTableWidgetItem(f"{prob:.4f}")
+
+                        # 设置文本居中
+                        item_node.setTextAlignment(Qt.AlignCenter)
+                        item_state.setTextAlignment(Qt.AlignCenter)
+                        item_prob.setTextAlignment(Qt.AlignCenter)
+
+                        self.prior_table.setItem(row_position, 0, item_node)
+                        self.prior_table.setItem(row_position, 1, item_state)
+                        self.prior_table.setItem(row_position, 2, item_prob)
 
     def reset_inputs(self):
         pass

@@ -28,3 +28,10 @@ QComboBox::down-arrow {
     width: 16px;
     height: 16px;
 }
+
+QToolTip {
+    background-color: rgba(255, 255, 255, 220); /* 半透明的白色背景 */
+    color: #333333;                             /* 深灰色文本 */
+    border: 1px solid #cccccc;                  /* 浅灰色边框 */
+}
+

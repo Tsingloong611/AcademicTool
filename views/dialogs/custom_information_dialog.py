@@ -10,7 +10,7 @@ class CustomInformationDialog(QDialog):
     def __init__(self, title, message, buttons=None, parent=None):
         super().__init__(parent)
         self.setWindowTitle(title)
-        self.setFixedSize(300, 150)
+        self.resize(300, 100)
         self.setStyleSheet("""
 
 
@@ -35,6 +35,9 @@ class CustomInformationDialog(QDialog):
             button_layout.addWidget(button)
 
         layout.addLayout(button_layout)
+        # 设置固定的按钮宽度
+        for i in range(button_layout.count()):
+            button_layout.itemAt(i).widget().setFixedWidth(50)
 
     def get_result(self):
         return self.exec()

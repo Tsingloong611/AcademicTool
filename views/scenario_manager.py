@@ -68,37 +68,14 @@ class ScenarioDialog(QDialog):
             self.name_input.setText(self.scenario.name)
             self.desc_input.setText(self.scenario.description)
 
+        # 设置固定的按钮宽度
+        for i in range(button_layout.count()):
+            button_layout.itemAt(i).widget().setFixedWidth(50)
+
     def get_data(self):
         name = self.name_input.text().strip()
-        description = self.desc_input.toPlainText().strip()
+        description = self.desc_input.text().strip()
         return name, description
-
-class CustomToolTip(QLabel):
-    def __init__(self, text, parent=None, duration=3000):
-        super().__init__(parent)
-        self.text = text.strip() if text and text.strip() else "没有描述信息"
-        self.setText(self.text)
-        self.setObjectName("CustomToolTip")
-        self.setWindowFlags(Qt.ToolTip | Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint)
-        self.timer = QTimer(self)
-        self.timer.setSingleShot(True)
-        self.timer.timeout.connect(self.hide)
-        self.installEventFilter(self)
-
-    def show_at(self, pos, duration=3000):
-        if not self.text.strip():
-            return
-        self.move(pos)
-        self.show()
-        self.timer.start(duration)
-
-    def eventFilter(self, obj, event):
-        if obj == self:
-            if event.type() == QEvent.Enter:
-                self.timer.stop()
-            elif event.type() == QEvent.Leave:
-                self.hide()
-        return super().eventFilter(obj, event)
 
 class ScenarioManager(QWidget):
     scenario_selected = Signal(int, str, str)
@@ -109,10 +86,8 @@ class ScenarioManager(QWidget):
     def __init__(self):
         super().__init__()
         self.setObjectName("ScenarioManager")
-        self.current_tooltip = None
         self.init_ui()
         self.list_widget.setFocusPolicy(Qt.NoFocus)
-        self.list_widget.viewport().installEventFilter(self)
         self.scenarios = []
 
     def init_ui(self):
@@ -133,6 +108,31 @@ class ScenarioManager(QWidget):
         self.delete_button.setObjectName("删除Button")
         self.scenario_container.setStyleSheet("""
                 border-radius: 10px;
+        """)
+        # 设置滚动条样式
+        self.list_widget.setStyleSheet("""
+            QScrollBar:vertical {
+                width: 8px;
+                background: #f0f0f0;
+            }
+            QScrollBar::handle:vertical {
+                background: #c0c0c0;
+                border-radius: 4px;
+            }
+            QScrollBar::add-line:vertical {
+                height: 0px;
+            }
+            QScrollBar::sub-line:vertical {
+                height: 0px;
+            }
+            
+QToolTip {
+    background-color: rgba(255, 255, 255, 220); /* 半透明的白色背景 */
+    color: #333333;                             /* 深灰色文本 */
+    border: 1px solid #cccccc;                  /* 浅灰色边框 */
+    border-radius: 0px;                         /* 无圆角 */
+}
+
         """)
 
     def init_search(self, parent_layout):
@@ -162,6 +162,10 @@ class ScenarioManager(QWidget):
         self.add_button = self.create_button("新建", "add.png", self.add_requested.emit)
         self.edit_button = self.create_button("修改", "edit.png", self.on_edit_requested)
         self.delete_button = self.create_button("删除", "delete.png", self.on_delete_requested)
+        # 设置按钮的固定宽度
+        self.add_button.setMaximumWidth(100)
+        self.edit_button.setMaximumWidth(100)
+        self.delete_button.setMaximumWidth(100)
 
         button_layout.addWidget(self.add_button)
         button_layout.addWidget(self.edit_button)
@@ -172,7 +176,7 @@ class ScenarioManager(QWidget):
         button = QPushButton(text)
         button.setObjectName(f"{text}Button")
         button.setIcon(QIcon(os.path.join("resources", "icons", icon_name)))
-        button.setToolTip(text)
+        button.setToolTip(f"{text}情景")
         button.clicked.connect(callback)
         return button
 
@@ -182,6 +186,8 @@ class ScenarioManager(QWidget):
         self.list_widget.setObjectName("ScenarioList")
         self.list_widget.setMouseTracking(True)
         self.list_widget.setSelectionMode(QListWidget.SingleSelection)
+        # 交替显示背景颜色
+        self.list_widget.setAlternatingRowColors(True)
 
         # 创建占位标签
         self.placeholder_label = QLabel("请添加情景")
@@ -209,7 +215,7 @@ class ScenarioManager(QWidget):
 
         # 连接列表信号
         self.list_widget.itemClicked.connect(self.select_scenario)
-        self.list_widget.itemEntered.connect(self.show_tooltip)
+
 
     @Slot(QListWidgetItem)
     def select_scenario(self, item):
@@ -237,6 +243,7 @@ class ScenarioManager(QWidget):
             item = QListWidgetItem(f"{scenario.name}")
             item.setData(Qt.UserRole, scenario.id)
             item.setData(Qt.UserRole + 1, scenario.description)
+            item.setToolTip(scenario.description if scenario.description.strip() else "没有描述信息")
             self.list_widget.addItem(item)
 
         # 根据是否有情景更新堆叠布局
@@ -258,6 +265,7 @@ class ScenarioManager(QWidget):
                 item = QListWidgetItem(f"{scenario.name}")
                 item.setData(Qt.UserRole, scenario.id)
                 item.setData(Qt.UserRole + 1, scenario.description)
+                item.setToolTip(scenario.description if scenario.description.strip() else "没有描述信息")
                 self.list_widget.addItem(item)
                 found = True
 
@@ -272,40 +280,6 @@ class ScenarioManager(QWidget):
             else:
                 self.scenario_stack.setCurrentIndex(1)  # 显示占位标签
 
-    @Slot(QListWidgetItem)
-    def show_tooltip(self, item):
-        if item:
-            full_description = item.data(Qt.UserRole + 1)
-            if self.current_tooltip:
-                self.current_tooltip.hide()
-                self.current_tooltip.deleteLater()
-
-            if not full_description.strip():
-                full_description = "没有描述信息"
-
-            mouse_pos = QCursor.pos()
-            offset_pos = QPoint(mouse_pos.x() + 10, mouse_pos.y() + 20)
-
-            self.current_tooltip = CustomToolTip(full_description, None, duration=5000)
-            self.current_tooltip.show_at(offset_pos)
-            self.current_tooltip.raise_()
-
-    def eventFilter(self, obj, event):
-        if obj == self.list_widget.viewport():
-            if event.type() == QEvent.MouseMove:
-                pos = event.position().toPoint()
-                item = self.list_widget.itemAt(pos)
-                if not item:
-                    if self.current_tooltip:
-                        self.current_tooltip.hide()
-                        self.current_tooltip.deleteLater()
-                        self.current_tooltip = None
-            elif event.type() == QEvent.Leave:
-                if self.current_tooltip:
-                    self.current_tooltip.hide()
-                    self.current_tooltip.deleteLater()
-                    self.current_tooltip = None
-        return super().eventFilter(obj, event)
 
     @Slot()
     def on_edit_requested(self):

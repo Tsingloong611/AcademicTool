@@ -9,7 +9,17 @@ class CustomInputDialog(QDialog):
     def __init__(self, title, message, parent=None):
         super().__init__(parent)
         self.setWindowTitle(title)
-        self.setFixedSize(400, 200)
+        self.resize(300, 150)
+        self.setStyleSheet("""
+                    QLineEdit, QComboBox {
+                border: 1px solid #ccc;
+                border-radius: 5px;
+                padding: 5px;
+            }
+            QLineEdit:focus, QComboBox:focus {
+                border: 2px solid #0078d7; /* 蓝色边框 */
+            }
+        """)
 
         layout = QVBoxLayout(self)
         layout.setSpacing(20)
@@ -35,8 +45,9 @@ class CustomInputDialog(QDialog):
         button_layout.addWidget(cancel_button)
 
         layout.addLayout(button_layout)
+        # 设置固定的按钮宽度
+        for i in range(button_layout.count()):
+            button_layout.itemAt(i).widget().setFixedWidth(50)
 
     def get_input(self):
-        if self.exec() == QDialog.Accepted:
-            return self.input_field.text()
-        return None
+        return self.input_field.text()

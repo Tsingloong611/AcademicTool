@@ -74,14 +74,14 @@ class SaveResultDialog(QDialog):
         super().__init__(parent)
         self.setWindowTitle("保存结果")
         self.setModal(True)
-        self.resize(600, 400)  # 根据需要调整大小
+        self.resize(300, 250)  # 根据需要调整大小
 
         # 主布局
         main_layout = QVBoxLayout(self)
 
         # 1. 摘要部分
         summary_label = QLabel("已保存的情景要素类别:")
-        summary_label.setFont(QFont("Microsoft YaHei", 14, QFont.Bold))
+        summary_label.setFont(QFont("SimSun", 14, QFont.Bold))
         main_layout.addWidget(summary_label)
 
         # 使用 QListWidget 显示已保存的类别
@@ -105,10 +105,12 @@ class SaveResultDialog(QDialog):
         self.view_details_button = QPushButton("查看详情")
         self.view_details_button.clicked.connect(lambda: self.open_details_dialog(detailed_info))
         self.view_details_button.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+        self.view_details_button.setFixedWidth(85)
 
         self.ok_button = QPushButton("确定")
         self.ok_button.clicked.connect(self.accept)
         self.ok_button.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+        self.ok_button.setFixedWidth(50)
 
         button_layout.addWidget(self.view_details_button)
         button_layout.addWidget(self.ok_button)
@@ -133,7 +135,7 @@ class DetailsDialog(QDialog):
         super().__init__(parent)
         self.setWindowTitle("详细信息")
         self.setModal(True)
-        self.resize(800, 600)  # 根据需要调整大小
+        self.resize(600, 400)  # 根据需要调整大小
 
         layout = QVBoxLayout(self)
 
@@ -145,7 +147,7 @@ class DetailsDialog(QDialog):
         # 关闭按钮
         close_button = QPushButton("确定")
         close_button.clicked.connect(self.accept)
-        close_button.setFixedWidth(100)
+        close_button.setFixedWidth(50)
         close_button_layout = QHBoxLayout()
         close_button_layout.addStretch()
         close_button_layout.addWidget(close_button)
@@ -237,13 +239,9 @@ class EditBehaviorDialog(QDialog):
     def init_ui(self, behavior_name, subject, obj, is_subject_enum, is_object_enum, subject_enum_values,
                 object_enum_values):
         self.setWindowTitle(f"编辑行为: {behavior_name}")
-        self.setFixedSize(400, 300)
+        self.setFixedSize(400, 200)
         self.setStyleSheet("""
-            QDialog QLabel {
-                background: transparent; /* 背景透明 */
-                color: #333333;          /* 深灰色文字 */
-                font-size: 14pt;         /* 字体大小 */
-            }
+
             QPushButton {
                 background-color: white; /* 设置背景颜色为白色 */
                 color: black;           /* 设置文字颜色为黑色 */
@@ -263,16 +261,17 @@ class EditBehaviorDialog(QDialog):
 
         # 主布局
         layout = QVBoxLayout(self)
+        layout.setSpacing(0)
 
         # 行为名称显示（不可编辑）
         behavior_label = QLabel(f"正在编辑行为: {behavior_name}")
-        behavior_label.setStyleSheet("font-weight: bold; font-size: 16px; margin-bottom: 10px;")
+        behavior_label.setStyleSheet("font-weight: bold; font-size: 16px;")
         behavior_label.setAlignment(Qt.AlignCenter)  # 居中对齐
         layout.addWidget(behavior_label)
 
         # 创建表单布局
         form_layout = QFormLayout()
-        form_layout.setSpacing(15)
+        form_layout.setSpacing(10)
 
         # 创建行为主体和行为对象编辑器
         self.subject_editor = self.create_editor(is_subject_enum, subject_enum_values, subject,
@@ -287,7 +286,11 @@ class EditBehaviorDialog(QDialog):
         # 按钮布局
         button_layout = QHBoxLayout()
         self.save_button = QPushButton("保存")
+        # 设置最大宽度
+        self.save_button.setFixedWidth(50)
         self.cancel_button = QPushButton("取消")
+        # 设置最大宽度
+        self.cancel_button.setFixedWidth(50)
         button_layout.addWidget(self.save_button)
         button_layout.addWidget(self.cancel_button)
         layout.addLayout(button_layout)
@@ -295,6 +298,7 @@ class EditBehaviorDialog(QDialog):
         # 连接信号与槽
         self.save_button.clicked.connect(self.validate_and_accept)
         self.cancel_button.clicked.connect(self.reject)
+
 
     def create_editor(self, is_enum, enum_values, initial_value, placeholder_text):
         """
@@ -430,10 +434,12 @@ QGroupBox::title {
             }
 
             /* 设定占位符标签的样式 */
-            QLabel#placeholder {
-                background-color: white;
-                color: #666666;
-                border: none;
+            QLabel#placeholder{
+                color: gray;
+                font-size: 20pt;
+                border-radius: 10px;
+                border: 0px solid #c0c0c0;
+                background-color: #ffffff;
             }
 
             /* 输入框选中时的蓝色边框 */
@@ -514,7 +520,7 @@ QGroupBox::title {
 
         # 主布局
         main_layout = QVBoxLayout(self)
-        main_layout.setSpacing(15)
+        main_layout.setSpacing(10)
         main_layout.setContentsMargins(20, 20, 20, 10)  # 左, 上, 右, 下 设置底部为10以对齐状态栏
 
         # 1. 情景要素类别选择区域
@@ -622,7 +628,7 @@ QGroupBox::title {
         self.attribute_display_widget = QWidget()
         self.attribute_display_widget.setObjectName("AttributeDisplay")
         self.attribute_display_layout = QVBoxLayout(self.attribute_display_widget)
-        self.attribute_display_layout.setContentsMargins(0, 0, 0, 0)
+        self.attribute_display_layout.setContentsMargins(10, 0, 10, 0)
         self.attribute_display_layout.setSpacing(0)
 
         # 创建滚动区域
@@ -676,7 +682,7 @@ QGroupBox::title {
         self.behavior_display_widget = QWidget()
         self.behavior_display_widget.setObjectName("BehaviorDisplay")
         self.behavior_display_layout = QVBoxLayout(self.behavior_display_widget)
-        self.behavior_display_layout.setContentsMargins(0, 0, 0, 0)
+        self.behavior_display_layout.setContentsMargins(10, 0, 10, 0)
         self.behavior_display_layout.setSpacing(0)
 
         # 创建表格，使用标准 QTableWidget 并安装事件过滤器
@@ -685,6 +691,8 @@ QGroupBox::title {
         self.behavior_table.setHorizontalHeaderLabels(["行为名称", "行为主体", "行为对象"])
         self.behavior_table.horizontalHeader().setFont(QFont("SimSun", 16, QFont.Bold))
         self.behavior_table.horizontalHeader().setDefaultAlignment(Qt.AlignCenter)
+        self.behavior_table.setSelectionBehavior(QTableWidget.SelectRows)
+        self.behavior_table.setSelectionMode(QTableWidget.SingleSelection)
 
         # 应用三线表样式
         self.apply_three_line_table_style(self.behavior_table)
@@ -730,20 +738,27 @@ QGroupBox::title {
 
         # 3. 按钮区域
         button_layout_main = QHBoxLayout()
+        button_layout_main.setAlignment(Qt.AlignLeft)
         self.save_button = QPushButton("保存")
+        # 设置最大宽度
+        self.save_button.setMaximumWidth(155)
+        self.save_button.setMinimumWidth(155)
         self.save_button.setObjectName("save_button")
         self.save_button.setToolTip("点击保存当前配置的要素数据")
         self.save_button.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
 
         self.generate_button = QPushButton("生成情景级孪生模型")
+        # 设置最大宽度
+        self.generate_button.setMaximumWidth(155)
+        self.generate_button.setMinimumWidth(155)
         self.generate_button.setObjectName("generate_button")
         self.generate_button.setToolTip("点击生成情景级孪生模型")
 
         self.generate_button.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
 
         # 将按钮添加到布局中，不使用 addStretch()
-        button_layout_main.addWidget(self.save_button)
-        button_layout_main.addWidget(self.generate_button)
+        button_layout_main.addWidget(self.save_button, alignment=Qt.AlignLeft)
+        button_layout_main.addWidget(self.generate_button, alignment=Qt.AlignLeft)
 
         # 将按钮布局添加到主布局
         main_layout.addLayout(button_layout_main)
@@ -1467,7 +1482,7 @@ QGroupBox::title {
 
     def handle_generate(self):
         """模拟生成情景级孪生模型"""
-        CustomInformationDialog("提示", "已成功生成情景级孪生模型。", parent=self).exec()
+        CustomInformationDialog(" ", "已成功生成情景级孪生模型。", parent=self).exec()
         # 这里可以添加实际的生成逻辑
         # 例如切换到另一个标签页，如果存在的话
         # parent_tab_widget = self.parent().parent()  # 假设结构中父级是 QTabWidget

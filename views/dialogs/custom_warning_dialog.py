@@ -10,7 +10,7 @@ class CustomWarningDialog(QDialog):
     def __init__(self, title, message, buttons=None, parent=None):
         super().__init__(parent)
         self.setWindowTitle(title)
-        self.setFixedSize(250, 150)
+        self.resize(300, 100)
 
         layout = QVBoxLayout(self)
         layout.setSpacing(20)
@@ -18,7 +18,7 @@ class CustomWarningDialog(QDialog):
         # 消息内容
         label = QLabel(message)
         label.setWordWrap(True)
-        layout.addWidget(label)
+        layout.addWidget(label, alignment=Qt.AlignCenter)
 
         self.setStyleSheet("""
 
@@ -34,6 +34,9 @@ class CustomWarningDialog(QDialog):
             button_layout.addWidget(button)
 
         layout.addLayout(button_layout)
+        # 设置固定的按钮宽度
+        for i in range(button_layout.count()):
+            button_layout.itemAt(i).widget().setFixedWidth(50)
 
     def get_result(self):
         return self.exec()

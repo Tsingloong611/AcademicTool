@@ -127,7 +127,7 @@ class MainWindow(QMainWindow):
 
         # 添加左右布局到中央布局
         central_layout.addWidget(left_container, stretch=1)
-        central_layout.addWidget(self.tab_widget, stretch=3)
+        central_layout.addWidget(self.tab_widget, stretch=4)
 
         # 设置中央部件
         self.setCentralWidget(central_widget)

@@ -1,683 +1,860 @@
+import os
 import sys
-import json
+from functools import partial
 from PySide6.QtWidgets import (
-    QApplication, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit,
-    QPushButton, QComboBox, QSpinBox, QTableWidget, QTableWidgetItem,
-    QMessageBox, QGroupBox, QGridLayout, QHeaderView, QDialog, QFormLayout,
-    QDialogButtonBox, QInputDialog
+    QApplication, QWidget, QLabel, QCheckBox, QHBoxLayout, QVBoxLayout,
+    QGroupBox, QPushButton, QSizePolicy, QTableWidget, QTableWidgetItem,
+    QDialog, QHeaderView, QStackedLayout, QSpinBox, QComboBox, QLineEdit,
+    QListWidget, QTextBrowser, QStyleOptionViewItem, QStyledItemDelegate
 )
-from PySide6.QtCore import Qt, Signal, Slot, QUrl, QObject
-from PySide6.QtGui import QIntValidator
-from PySide6.QtWebEngineWidgets import QWebEngineView
-from PySide6.QtWebChannel import QWebChannel
+from PySide6.QtCore import Qt, Signal, QEvent, QObject
+from PySide6.QtGui import QFont, QPainter, QPen, QColor, QIcon
 
+from views.dialogs.custom_information_dialog import CustomInformationDialog
+from views.dialogs.custom_input_dialog import CustomInputDialog
 from views.dialogs.custom_question_dialog import CustomQuestionDialog
 from views.dialogs.custom_warning_dialog import CustomWarningDialog
-from views.tabs.element_setting import CustomInformationDialog
 
 
+class CenteredItemDelegate(QStyledItemDelegate):
+    """自定义委托，使 QComboBox 的下拉项内容居中显示。"""
+
+    def initStyleOption(self, option, index):
+        super().initStyleOption(option, index)
+        option.displayAlignment = Qt.AlignCenter
 
 
-# 通信桥接类，用于与 JavaScript 交互
-class MapBridge(QObject):
-    location_selected = Signal(str)
+class NoWheelEventFilter(QObject):
+    """事件过滤器，禁用滚轮事件。"""
 
-    @Slot(str)
-    def sendLocation(self, location):
-        self.location_selected.emit(location)
+    def eventFilter(self, obj, event):
+        if event.type() == QEvent.Wheel:
+            return True  # 事件被过滤，不传递下去
+        return super().eventFilter(obj, event)
 
 
-# 地图选择对话框
-class MapSelectionDialog(QDialog):
-    location_selected = Signal(str)
+def create_centered_combobox(enum_values, initial_value):
+    """
+    创建一个居中对齐的 QComboBox，并禁用滚轮事件。
+    """
+    combobox = QComboBox()
+    combobox.addItem("<空>")
+    for item in enum_values:
+        combobox.addItem(item)
 
-    def __init__(self, parent=None):
-        super().__init__(parent)
-        self.setWindowTitle("选择位置")
-        self.resize(800, 600)
-        self.bridge = MapBridge()
-        self.bridge.location_selected.connect(self.on_location_selected)
-        self.selected_location = ""
+    if initial_value in enum_values:
+        combobox.setCurrentText(initial_value)
+    else:
+        combobox.setCurrentText("<空>")
 
-        self.init_ui()
+    # 使 QComboBox 可编辑，以便设置对齐方式
+    combobox.setEditable(True)
+    # 设置 lineEdit 为只读，防止用户输入新项
+    combobox.lineEdit().setReadOnly(True)
+    # 设置文本居中对齐
+    combobox.lineEdit().setAlignment(Qt.AlignCenter)
 
-    def init_ui(self):
-        layout = QVBoxLayout(self)
+    # 获取 QComboBox 的视图并应用自定义委托以居中显示下拉项
+    view = combobox.view()
+    delegate = CenteredItemDelegate(view)
+    view.setItemDelegate(delegate)
 
-        # 设置 QWebEngineView
-        self.map_view = QWebEngineView()
-        layout.addWidget(self.map_view)
+    # 安装事件过滤器以禁用滚轮事件
+    no_wheel_filter = NoWheelEventFilter(combobox)
+    combobox.installEventFilter(no_wheel_filter)
 
-        # 设置 QWebChannel
-        self.channel = QWebChannel()
-        self.channel.registerObject("bridge", self.bridge)
-        self.map_view.page().setWebChannel(self.channel)
+    return combobox
 
-        # 加载内嵌的 HTML 地图
-        self.map_view.setHtml(self.get_map_html(), QUrl("qrc:///"))
+class FullHeaderDelegate(QStyledItemDelegate):
+    """
+    自定义两行多级表头，保持原先多级表头的结构。
+    额外需求：
+      - row=0 col=1/4 ("推演前/推演后")去掉下边线
+      - row=1 col=1..6 ("较好/中等/较差")去掉上边线
+    """
+    def paint(self, painter, option, index):
+        r, c = index.row(), index.column()
+        if r < 2:
+            painter.save()
+            painter.fillRect(option.rect, QColor("#f0f0f0"))
 
-        # 确认和取消按钮
-        button_layout = QHBoxLayout()
-        self.confirm_button = QPushButton("确认选择")
-        self.confirm_button.setEnabled(False)  # 初始禁用，直到选择位置
-        self.cancel_button = QPushButton("取消")
-        button_layout.addStretch()
-        button_layout.addWidget(self.confirm_button)
-        button_layout.addWidget(self.cancel_button)
-        layout.addLayout(button_layout)
+            if r == 0 and c == 0:
+                # 斜杠 “韧性/预案”
+                # 上边线(2px)，下边线(1px)
+                pen_top = QPen(Qt.black, 2)
+                painter.setPen(pen_top)
+                painter.drawLine(option.rect.topLeft(), option.rect.topRight())
 
-        self.confirm_button.clicked.connect(self.accept)
-        self.cancel_button.clicked.connect(self.reject)
+                pen_bottom = QPen(Qt.black, 1)
+                painter.setPen(pen_bottom)
+                painter.drawLine(option.rect.bottomLeft(), option.rect.bottomRight())
 
-    def get_map_html(self):
-        # 使用 Leaflet.js 创建交互式地图
-        # 通过 QWebChannel 发送点击位置到 Python
-        return """
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <meta charset="utf-8" />
-            <title>地图选择</title>
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-                  integrity="sha256-sA+e2A5QnpF+4S2vXwXoBw6lgXHI7fVGM3e3z+oA64E="
-                  crossorigin=""/>
-            <style>
-                html, body, #map { height: 100%; margin: 0; padding: 0; }
-            </style>
-            <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-                    integrity="sha256-o9N1jv0FQJmH+v8XkLG0+ZPrunfZzE9sThnjG+uHaxE="
-                    crossorigin=""></script>
-            <script src="qrc:///qtwebchannel/qwebchannel.js"></script>
-        </head>
-        <body>
-            <div id="map"></div>
-            <script>
-                var map = L.map('map').setView([39.915, 116.404], 12); // 默认北京
+                # 斜线
+                painter.drawLine(option.rect.topLeft(), option.rect.bottomRight())
 
-                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                    attribution: '© OpenStreetMap contributors'
-                }).addTo(map);
+                # 上下文字
+                topRect = option.rect.adjusted(0, 0, 0, -option.rect.height()//2)
+                bottomRect = option.rect.adjusted(0, option.rect.height()//2, 0, 0)
+                painter.drawText(topRect, Qt.AlignCenter, "韧性")
+                painter.drawText(bottomRect, Qt.AlignCenter, "预案")
 
-                var marker;
+            elif r == 0 and c == 1:
+                # “推演前”，去掉下边线
+                pen_top = QPen(Qt.black, 2)
+                painter.setPen(pen_top)
+                painter.drawLine(option.rect.topLeft(), option.rect.topRight())
+                # 不画下边线 => 去掉
 
-                // Initialize QWebChannel
-                new QWebChannel(qt.webChannelTransport, function(channel) {
-                    window.bridge = channel.objects.bridge;
-                });
+                painter.drawText(option.rect, Qt.AlignCenter, "推演前")
 
-                map.on('click', function(e) {
-                    var lat = e.latlng.lat.toFixed(6);
-                    var lng = e.latlng.lng.toFixed(6);
-                    var location = lat + "," + lng;
-                    if (marker) {
-                        map.removeLayer(marker);
-                    }
-                    marker = L.marker(e.latlng).addTo(map);
-                    bridge.sendLocation(location);
-                });
-            </script>
-        </body>
-        </html>
-        """
+            elif r == 0 and c == 4:
+                # “推演后”，同理去掉下边线
+                pen_top = QPen(Qt.black, 2)
+                painter.setPen(pen_top)
+                painter.drawLine(option.rect.topLeft(), option.rect.topRight())
 
-    @Slot(str)
-    def on_location_selected(self, location):
-        self.selected_location = location
-        self.confirm_button.setEnabled(True)
-        CustomInformationDialog("位置选择", f"已选择位置: {location}").exec()
+                painter.drawText(option.rect, Qt.AlignCenter, "推演后")
 
-    def accept(self):
-        if self.selected_location:
-            self.location_selected.emit(self.selected_location)
-            super().accept()
+            elif r == 0:
+                # 其他被合并单元格不画线, 仅填充背景
+                painter.fillRect(option.rect, QColor("#f0f0f0"))
+
+            elif r == 1 and c in [1,2,3,4,5,6]:
+                # 第二行“较好/中等/较差”，去掉上边线
+                # 不画上边线
+                pen_bottom = QPen(Qt.black, 1)
+                painter.setPen(pen_bottom)
+                painter.drawLine(option.rect.bottomLeft(), option.rect.bottomRight())
+                text_map = {
+                    1:"较好", 2:"中等", 3:"较差",
+                    4:"较好", 5:"中等", 6:"较差"
+                }
+                painter.drawText(option.rect, Qt.AlignCenter, text_map[c])
+
+            painter.restore()
         else:
-            CustomWarningDialog("提示", "请先选择一个位置。").exec()
+            # row>=2 => 数据行
+            super().paint(painter, option, index)
 
 
-# 资源管理对话框
-class ResourceManagementDialog(QDialog):
-    resource_updated = Signal(list)  # Signal to emit the updated resource list
+class CustomTableWidget(QTableWidget):
+    def resizeEvent(self, event):
+        super().resizeEvent(event)
+        content_width = self.horizontalHeader().length()
+        if content_width < 550:
+            self.setHorizontalScrollBarPolicy(Qt.ScrollBarAsNeeded)
+        else:
+            self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
 
-    # 定义资源类型的枚举
-    RESOURCE_TYPES = {
-        "人员": ["救援人员", "医疗人员", "后勤人员"],
-        "物资": ["医疗物资", "食品", "饮用水"],
-        "车辆": ["救护车", "消防车", "运输车"]
-    }
+class ClickableLabel(QLabel):
+    clicked = Signal()
+    def mousePressEvent(self, event):
+        self.clicked.emit()
 
-    def __init__(self, resources=None, parent=None):
-        super().__init__(parent)
-        self.setWindowTitle("资源管理")
-        self.resources = resources if resources else []
-        self.init_ui()
-        self.resize(800, 600)
+class CustomCheckBoxWithLabel(QWidget):
+    def __init__(self, label_text):
+        super().__init__()
+        self.init_ui(label_text)
 
-    def init_ui(self):
-        layout = QVBoxLayout(self)
+    def init_ui(self, label_text):
+        # 横向排布：复选框 + label + 时长
+        layout = QHBoxLayout(self)
+        layout.setSpacing(10)
+        layout.setContentsMargins(0,0,0,0)
 
-        # 资源表格
-        self.resource_table = QTableWidget(0, 4)
-        self.resource_table.setHorizontalHeaderLabels(["资源", "类型", "数量", "位置"])
-        self.apply_three_line_table_style(self.resource_table)
-        self.resource_table.setEditTriggers(QTableWidget.NoEditTriggers)  # 禁止直接编辑
-        self.resource_table.verticalHeader().setVisible(False)  # 隐藏行号
-        layout.addWidget(self.resource_table)
+        self.checkbox = QCheckBox()
+        self.checkbox.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
 
-        self.load_resources()
+        self.label = ClickableLabel(label_text)
+        self.label.setStyleSheet("cursor: pointer;color: black;font-weight: normal;")
+        self.label.setAlignment(Qt.AlignLeft|Qt.AlignVCenter)
 
-        # 按钮布局
-        button_layout = QHBoxLayout()
-        add_btn = QPushButton("添加")
-        edit_btn = QPushButton("修改")
-        delete_btn = QPushButton("删除")
-        button_layout.addWidget(add_btn)
-        button_layout.addWidget(edit_btn)
-        button_layout.addWidget(delete_btn)
-        layout.addLayout(button_layout)
+        self.duration_spin = QSpinBox()
+        self.duration_spin.setRange(0,10000)
+        self.duration_spin.setSuffix(" 分钟")
+        self.duration_spin.setEnabled(False)
+        self.duration_spin.setStyleSheet("background-color: #eee;")
 
-        add_btn.clicked.connect(self.add_resource)
-        edit_btn.clicked.connect(self.edit_resource)
-        delete_btn.clicked.connect(self.delete_resource)
+        self.duration_spin.setAlignment(Qt.AlignCenter)
 
-        # 确认和取消按钮
-        self.button_box = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
-        self.button_box.accepted.connect(self.accept_changes)
-        self.button_box.rejected.connect(self.reject)
-        layout.addWidget(self.button_box)
+        layout.addWidget(self.checkbox)
+        layout.addWidget(self.label)
+        layout.addWidget(QLabel("时长:"))
+        layout.addWidget(self.duration_spin)
 
-    def load_resources(self):
-        self.resource_table.setRowCount(0)
-        for resource in self.resources:
-            self.add_resource_to_table(resource)
+    def set_selected(self, selected):
+        font = self.label.font()
+        if selected:
+            # Bold + 蓝色
+            font.setBold(True)
+            self.label.setFont(font)
+            self.label.setStyleSheet("font-weight: bold; color: #5dade2; cursor: pointer;")
 
-    def add_resource_to_table(self, resource):
-        row_position = self.resource_table.rowCount()
-        self.resource_table.insertRow(row_position)
-        self.resource_table.setItem(row_position, 0, QTableWidgetItem(resource["资源"]))
-        self.resource_table.setItem(row_position, 1, QTableWidgetItem(resource["类型"]))
-        self.resource_table.setItem(row_position, 2, QTableWidgetItem(str(resource["数量"])))
-        self.resource_table.setItem(row_position, 3, QTableWidgetItem(resource["位置"]))
+            # 开启 spinbox 并设置白色背景
+            self.duration_spin.setEnabled(True)
+            self.duration_spin.setStyleSheet("background-color: white;")
+        else:
+            # 普通 + 黑色
+            font.setBold(False)
+            self.label.setFont(font)
+            self.label.setStyleSheet("font-weight: normal; color: black; cursor: pointer;")
 
-    def add_resource(self):
-        dialog = SingleResourceDialog(parent=self)
-        if dialog.exec() == QDialog.Accepted:
-            resource = dialog.get_resource()
-            self.resources.append(resource)
-            self.add_resource_to_table(resource)
+            # 禁用 spinbox 并设置灰色背景
+            self.duration_spin.setEnabled(False)
+            self.duration_spin.setStyleSheet("background-color: #eee;")
 
-    def edit_resource(self):
-        selected_items = self.resource_table.selectedItems()
-        if not selected_items:
-            CustomWarningDialog("提示", "请选择要修改的资源。").exec()
-            return
-        row = selected_items[0].row()
-        resource = {
-            "资源": self.resource_table.item(row, 0).text(),
-            "类型": self.resource_table.item(row, 1).text(),
-            "数量": int(self.resource_table.item(row, 2).text()),
-            "位置": self.resource_table.item(row, 3).text()
-        }
-        dialog = SingleResourceDialog(resource, parent=self)
-        if dialog.exec() == QDialog.Accepted:
-            updated_resource = dialog.get_resource()
-            self.resources[row] = updated_resource
-            self.resource_table.setItem(row, 0, QTableWidgetItem(updated_resource["资源"]))
-            self.resource_table.setItem(row, 1, QTableWidgetItem(updated_resource["类型"]))
-            self.resource_table.setItem(row, 2, QTableWidgetItem(str(updated_resource["数量"])))
-            self.resource_table.setItem(row, 3, QTableWidgetItem(updated_resource["位置"]))
+    def get_duration(self):
+        return self.duration_spin.value()
 
-    def delete_resource(self):
-        selected_items = self.resource_table.selectedItems()
-        if not selected_items:
-            CustomWarningDialog("提示", "请选择要删除的资源。").exec()
-            return
-        row = selected_items[0].row()
-        confirm = CustomQuestionDialog("确认删除", "确定要删除选中的资源吗？").ask()
-        if confirm:
-            self.resource_table.removeRow(row)
-            del self.resources[row]
+# 占位对话框: SingleResourceDialog,DetailsDialog,SaveResultDialog...
+# 省略实现细节，只是为了完整
 
-    def accept_changes(self):
-        self.resource_updated.emit(self.resources)
-        self.accept()
-
-    def apply_three_line_table_style(self, table: QTableWidget):
-        """应用三线表样式到指定的表格并动态调整列宽"""
-        table.setStyleSheet("""
-            QTableWidget {
-                border: none;
-                font-size: 14px;
-                border-bottom: 1px solid black; /* 底部线 */
-            }
-            QHeaderView::section {
-                border-top: 1px solid black;    /* 表头顶部线 */
-                border-bottom: 1px solid black; /* 表头底部线 */
-                background-color: #f0f0f0;
-                font-weight: bold;
-                padding: 4px;
-                color: #333333;
-                text-align: center; /* 表头内容居中 */
-            }
-            QTableWidget::item {
-                border: none; /* 中间行无边框 */
-                padding: 5px;
-                text-align: center; /* 单元格内容居中 */
-            }
-            /* 设置选中行的样式 */
-            QTableWidget::item:selected {
-                background-color: #cce5ff; /* 选中背景颜色 */
-                color: black;             /* 选中文字颜色 */
-                border: none;             /* 选中时无边框 */
-            }
-            QTableWidget:focus {
-                outline: none; /* 禁用焦点边框 */
-            }
-        """)
-        # 动态调整列宽
-        header = table.horizontalHeader()
-        header.setStretchLastSection(True)
-        header.setSectionResizeMode(QHeaderView.Stretch)
-
-
-# 单个资源添加/编辑对话框
 class SingleResourceDialog(QDialog):
     def __init__(self, resource=None, parent=None):
         super().__init__(parent)
-        self.setWindowTitle("添加资源" if resource is None else "修改资源")
+        self.setWindowTitle("资源信息")
         self.resource = resource
         self.init_ui()
-
     def init_ui(self):
         layout = QVBoxLayout(self)
+        self.resource_label = QLabel("资源:")
+        # self.resource_input = QComboBox()
+        # self.resource_input.addItems(["人员", "物资", "车辆"])
+        # 使用自定义居中对齐的 QComboBox
+        self.resource_input = create_centered_combobox(["人员", "物资", "车辆"], "人员")
+        layout.addWidget(self.resource_label)
+        layout.addWidget(self.resource_input)
 
-        form_layout = QFormLayout()
-        self.resource_combo = QComboBox()
-        self.resource_combo.addItems(["人员", "物资", "车辆"])
-        form_layout.addRow("资源:", self.resource_combo)
+        self.type_label = QLabel("类型:")
+        # self.type_input = QComboBox()
+        # self.type_input.addItems(["类型A", "类型B", "类型C"])
+        # 使用自定义居中对齐的 QComboBox
+        self.type_input = create_centered_combobox(["类型A", "类型B", "类型C"], "类型A")
+        layout.addWidget(self.type_label)
+        layout.addWidget(self.type_input)
 
-        # 类型根据资源类型枚举
-        self.type_combo = QComboBox()
-        self.update_type_options(self.resource_combo.currentText())
-        form_layout.addRow("类型:", self.type_combo)
-
-        # 连接资源类型下拉框变化信号，动态更新类型选项
-        self.resource_combo.currentTextChanged.connect(self.update_type_options)
-
+        self.quantity_label = QLabel("数量:")
         self.quantity_spin = QSpinBox()
-        self.quantity_spin.setRange(1, 1000)
-        form_layout.addRow("数量:", self.quantity_spin)
+        self.quantity_spin.setAlignment(Qt.AlignCenter)
+        self.quantity_spin.setRange(1,1000)
+        layout.addWidget(self.quantity_label)
+        layout.addWidget(self.quantity_spin)
 
+        self.location_label = QLabel("位置:")
         self.location_input = QLineEdit()
-        self.location_input.setReadOnly(True)
-        self.location_button = QPushButton("选择位置")
-        self.location_button.clicked.connect(self.select_location)
-        location_layout = QHBoxLayout()
-        location_layout.addWidget(self.location_input)
-        location_layout.addWidget(self.location_button)
-        form_layout.addRow("位置:", location_layout)
+        layout.addWidget(self.location_label)
+        layout.addWidget(self.location_input)
 
-        layout.addLayout(form_layout)
-
-        # 确认和取消按钮
-        self.button_box = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
-        self.button_box.accepted.connect(self.validate_and_accept)
-        self.button_box.rejected.connect(self.reject)
-        layout.addWidget(self.button_box)
+        btn_layout = QHBoxLayout()
+        self.ok_btn = QPushButton("确定")
+        self.cancel_btn = QPushButton("取消")
+        btn_layout.addWidget(self.ok_btn)
+        btn_layout.addWidget(self.cancel_btn)
+        layout.addLayout(btn_layout)
+        self.setLayout(layout)
+        self.ok_btn.clicked.connect(self.accept)
+        self.cancel_btn.clicked.connect(self.reject)
 
         if self.resource:
-            self.resource_combo.setCurrentText(self.resource["资源"])
-            self.type_combo.setCurrentText(self.resource["类型"])
+            self.resource_input.setCurrentText(self.resource["资源"])
+            self.type_input.setCurrentText(self.resource["类型"])
             self.quantity_spin.setValue(self.resource["数量"])
             self.location_input.setText(self.resource["位置"])
 
-    def update_type_options(self, resource_type):
-        self.type_combo.clear()
-        if resource_type in ResourceManagementDialog.RESOURCE_TYPES:
-            self.type_combo.addItems(ResourceManagementDialog.RESOURCE_TYPES[resource_type])
-        else:
-            self.type_combo.addItem("未知类型")
+        for i in range(btn_layout.count()):
+            btn_layout.itemAt(i).widget().setFixedWidth(50)
 
-    def select_location(self):
-    # dialog = MapSelectionDialog(self)
-    # dialog.location_selected.connect(self.set_location)
-    # dialog.exec()
-        # 手动输入地址
-        self.location_input.setText(QInputDialog.getText(self, "手动输入地址", "请输入地址：")[0])
-        # 设置地址
-        self.set_location(self.location_input.text())
-
-
-    @Slot(str)
-    def set_location(self, location):
-        self.location_input.setText(location)
-
-    def validate_and_accept(self):
-        resource = self.resource_combo.currentText()
-        type_ = self.type_combo.currentText().strip()
-        quantity = self.quantity_spin.value()
-        location = self.location_input.text().strip()
-
-        if not type_:
-            CustomWarningDialog("提示", "类型不能为空。").exec()
-            return
-        if not location:
-            CustomWarningDialog("提示", "位置不能为空。").exec()
-            return
-
-        self.resource = {
-            "资源": resource,
-            "类型": type_,
-            "数量": quantity,
-            "位置": location
-        }
-        self.accept()
+        self.setStyleSheet("""
+                        QLineEdit, QComboBox {
+                border: 1px solid #ccc;
+                border-radius: 5px;
+                padding: 5px;
+            }
+            QLineEdit:focus, QComboBox:focus {
+                border: 2px solid #0078d7; /* 蓝色边框 */
+            }
+        """
+)
 
     def get_resource(self):
-        return self.resource
+        return {
+            "资源":self.resource_input.currentText(),
+            "类型":self.type_input.currentText(),
+            "数量":self.quantity_spin.value(),
+            "位置":self.location_input.text().strip() if self.location_input.text().strip() else "未知"
+        }
+
+class DetailsDialog(QDialog):
+    def __init__(self, info_html, parent=None):
+        super().__init__(parent)
+        self.setWindowTitle("详细信息")
+        self.setModal(True)
+        self.resize(600,400)
+        layout = QVBoxLayout(self)
+        self.browser = QTextBrowser()
+        self.browser.setHtml(info_html)
+        layout.addWidget(self.browser)
+        close_btn = QPushButton("确定")
+        close_btn.clicked.connect(self.accept)
+        close_btn.setFixedWidth(50)
+        h = QHBoxLayout()
+        h.addStretch()
+        h.addWidget(close_btn)
+        h.addStretch()
+        layout.addLayout(h)
+        self.setLayout(layout)
+
+class SaveResultDialog(QDialog):
+    def __init__(self, saved_categories, info_html, parent=None):
+        super().__init__(parent)
+        self.setWindowTitle("保存结果")
+        self.setModal(True)
+        self.resize(300,250)
+        main_layout = QVBoxLayout(self)
+        lab = QLabel("已保存的应急行为类别:")
+        lab.setFont(QFont("SimSun",14,QFont.Bold))
+        main_layout.addWidget(lab)
+
+        self.listwidget = QListWidget()
+        for sc in saved_categories:
+            self.listwidget.addItem(sc["category"])
+        main_layout.addWidget(self.listwidget)
+
+        btn_h = QHBoxLayout()
+        self.btn_detail = QPushButton("查看详情")
+        self.btn_detail.setFixedWidth(85)
+        self.btn_detail.clicked.connect(lambda: self.open_detail_dialog(info_html))
+        self.btn_ok = QPushButton("确定")
+        self.btn_ok.setFixedWidth(50)
+        self.btn_ok.clicked.connect(self.accept)
+        btn_h.addWidget(self.btn_detail)
+        btn_h.addWidget(self.btn_ok)
+        main_layout.addLayout(btn_h)
+        self.setLayout(main_layout)
+
+    def open_detail_dialog(self, info_html):
+        dlg = DetailsDialog(info_html, parent=self)
+        dlg.exec()
 
 
-# 主界面类
+
+
 class ConditionSettingTab(QWidget):
+    save_requested = Signal()
+
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setWindowTitle("应急预案设置")
+        # 行为资源
+        self.behavior_resources = {b:[] for b in ["救助","牵引","抢修","消防"]}
+        self.current_behavior = None
         self.init_ui()
 
     def init_ui(self):
         self.set_stylesheet()
-        main_layout = QVBoxLayout()
-
-        # 应急行为设置
-        behavior_group = QGroupBox("应急行为设置")
-        behavior_layout = QGridLayout()
-
-        self.behaviors = ["救助", "牵引", "抢修", "消防"]
-        self.behavior_duration = {}
-
-        for i, behavior in enumerate(self.behaviors):
-            label = QLabel(f"{behavior}时长：")
-            hour_spin = QSpinBox()
-            hour_spin.setRange(0, 23)
-            hour_spin.setSuffix(" 小时")
-            hour_spin.setValue(0)
-            hour_spin.setFocusPolicy(Qt.StrongFocus)  # 允许键盘输入
-            hour_spin.setWrapping(False)
-            hour_spin.wheelEvent = lambda event: None  # 禁用滚轮
-
-            minute_spin = QSpinBox()
-            minute_spin.setRange(0, 59)
-            minute_spin.setSuffix(" 分钟")
-            minute_spin.setValue(0)
-            minute_spin.setFocusPolicy(Qt.StrongFocus)  # 允许键盘输入
-            minute_spin.setWrapping(False)
-            minute_spin.wheelEvent = lambda event: None  # 禁用滚轮
-
-            # 连接分钟变化信号，自动增加小时
-            minute_spin.valueChanged.connect(
-                lambda value, b=behavior, m_spin=minute_spin, h_spin=hour_spin: self.handle_minute_change(b, value, m_spin, h_spin)
-            )
-
-            self.behavior_duration[behavior] = (hour_spin, minute_spin)
-            behavior_layout.addWidget(label, i, 0)
-            behavior_layout.addWidget(hour_spin, i, 1)
-            behavior_layout.addWidget(minute_spin, i, 2)
-
-        behavior_group.setLayout(behavior_layout)
-        main_layout.addWidget(behavior_group)
-
-        # 应急资源设置
-        resource_group = QGroupBox("应急资源设置")
-        resource_layout = QVBoxLayout()
-
-        # 资源表格
-        self.resource_table = QTableWidget(0, 4)
-        self.resource_table.setHorizontalHeaderLabels(["资源", "类型", "数量", "位置"])
-        self.apply_three_line_table_style(self.resource_table)
-        self.resource_table.setEditTriggers(QTableWidget.NoEditTriggers)  # 禁止直接编辑
-        self.resource_table.verticalHeader().setVisible(False)  # 隐藏行号
-        self.resource_table.setAlternatingRowColors(True)
-        resource_layout.addWidget(self.resource_table)
-
-        # 设置资源按钮
-        set_resource_btn = QPushButton("设置资源")
-        set_resource_btn.clicked.connect(self.open_resource_dialog)
-        resource_layout.addWidget(set_resource_btn)
-
-        resource_group.setLayout(resource_layout)
-        main_layout.addWidget(resource_group)
-
-        # 保存预案，执行推演按钮
-        execute_btn = QPushButton("保存预案，执行推演")
-        execute_btn.clicked.connect(self.save_and_execute)
-        main_layout.addWidget(execute_btn)
-
-        # 证据更新区域
-        evidence_group = QGroupBox("证据更新")
-        evidence_layout = QVBoxLayout()
-        self.evidence_table = QTableWidget(0, 3)
-        self.evidence_table.setHorizontalHeaderLabels(["要素节点", "状态", "概率"])
-        self.apply_three_line_table_style(self.evidence_table)
-        self.evidence_table.setEditTriggers(QTableWidget.NoEditTriggers)  # 禁止直接编辑
-        self.evidence_table.verticalHeader().setVisible(False)  # 隐藏行号
-        self.evidence_table.setAlternatingRowColors(True)
-        evidence_layout.addWidget(self.evidence_table)
-        evidence_group.setLayout(evidence_layout)
-        main_layout.addWidget(evidence_group)
-
-        # 推演结果区域
-        simulation_group = QGroupBox("推演结果")
-        simulation_layout = QVBoxLayout()
-        self.simulation_table = QTableWidget(0, 7)
-        # 列头: 预案名字, 推演前较好, 推演前中等, 推演前较差, 推演后较好, 推演后中等, 推演后较差
-        self.simulation_table.setHorizontalHeaderLabels([
-            "预案名字",
-            "推演前-较好", "推演前-中等", "推演前-较差",
-            "推演后-较好", "推演后-中等", "推演后-较差"
-        ])
-        self.apply_three_line_table_style(self.simulation_table)
-        self.simulation_table.setEditTriggers(QTableWidget.NoEditTriggers)  # 禁止直接编辑
-        self.simulation_table.verticalHeader().setVisible(False)  # 隐藏行号
-        self.simulation_table.setAlternatingRowColors(True)
-        simulation_layout.addWidget(self.simulation_table)
-        simulation_group.setLayout(simulation_layout)
-        main_layout.addWidget(simulation_group)
-
+        main_layout = QVBoxLayout(self)
+        main_layout.setSpacing(10)
+        main_layout.setContentsMargins(20, 20, 20, 20)
         self.setLayout(main_layout)
 
-    def handle_minute_change(self, behavior, value, m_spin, h_spin):
-        if value >= 60:
-            m_spin.setValue(0)
-            if h_spin.value() < 23:
-                h_spin.setValue(h_spin.value() + 1)
+        # =============== 上方布局：应急行为(左) & 应急资源(右) =================
+        upper_layout = QHBoxLayout()
+        upper_layout.setSpacing(10)
+
+        # 左侧：QVBoxLayout，里面放 (应急行为设置 GroupBox [stretch=10]) + (按钮 [stretch=1])
+        left_vbox = QVBoxLayout()
+        left_vbox.setSpacing(10)
+
+        behavior_group = QGroupBox("应急行为设置")
+        behavior_group_layout = QVBoxLayout()
+        behavior_group_layout.setContentsMargins(10,10,10,10)
+        # 设置最小宽度
+        behavior_group.setMinimumWidth(200)
+        # 4 个行为checkbox
+        self.behaviors = ["救助","牵引","抢修","消防"]
+        self.behavior_settings = {}
+        for b in self.behaviors:
+            cbox_with_label = CustomCheckBoxWithLabel(b)
+            cbox_with_label.checkbox.stateChanged.connect(
+                partial(self.handle_checkbox_state_changed, behavior=b)
+            )
+            cbox_with_label.label.clicked.connect(
+                partial(self.handle_label_clicked, behavior=b)
+            )
+            behavior_group_layout.addWidget(cbox_with_label)
+            self.behavior_settings[b] = cbox_with_label
+
+        behavior_group.setLayout(behavior_group_layout)
+
+        # 按钮
+        self.execute_btn = QPushButton("保存预案，执行推演")
+        self.execute_btn.setEnabled(False)
+        self.execute_btn.setToolTip("请配置应急行为")
+        self.execute_btn.setMaximumWidth(160)
+        self.execute_btn.clicked.connect(self.handle_save)
+        self.execute_btn.setStyleSheet("""
+            QPushButton {
+                color: black;
+                background-color: #cce5ff;
+                border: 1px solid #0078d7;
+                border-radius: 5px;
+                padding: 2px;
+            }
+            QPushButton:hover {
+                background-color: #5dade2;
+            }
+            QPushButton:disabled {
+                background-color: #d3d3d3; color:#888; border:1px solid #aaa;
+            }
+        """)
+
+        # 比例 10:1
+        left_vbox.addWidget(behavior_group, stretch=10)
+        left_vbox.addWidget(self.execute_btn, alignment=Qt.AlignCenter, stretch=0)
+
+        # 右侧：应急资源设置
+        resource_group = QGroupBox("应急资源设置")
+        resource_layout = QVBoxLayout()
+        resource_layout.setContentsMargins(10,10,10,10)
+        self.resource_stacked_layout = QStackedLayout()
+
+        self.placeholder_widget = QWidget()
+        ph_layout = QVBoxLayout()
+        ph_label = QLabel("请选择应急行为")
+        ph_label.setAlignment(Qt.AlignCenter)
+        ph_label.setStyleSheet("""
+                color: gray;
+                font-size: 20pt;
+                border-radius: 10px;
+                border: 0px solid #c0c0c0;
+                background-color: #ffffff;
+            """)
+        ph_layout.addWidget(ph_label)
+        self.placeholder_widget.setLayout(ph_layout)
+        self.resource_stacked_layout.addWidget(self.placeholder_widget)
+
+        self.resource_management_widget = QWidget()
+        res_mgmt_layout = QVBoxLayout()
+        res_mgmt_layout.setContentsMargins(0,0,0,0)
+
+
+        label_btn_layout = QHBoxLayout()
+        label_btn_layout.setContentsMargins(0,0,0,0)
+        self.current_behavior_label = QLabel("请选择应急行为")
+        self.current_behavior_label.setAlignment(Qt.AlignCenter)
+        self.current_behavior_label.setStyleSheet("font-weight:bold;color:gray;")
+
+        btn_hbox = QHBoxLayout()
+        btn_hbox.setContentsMargins(0,0,0,0)
+        self.add_resource_btn = QPushButton("添加")
+        self.edit_resource_btn = QPushButton("修改")
+        self.delete_resource_btn = QPushButton("删除")
+
+        self.add_resource_btn.setIcon(
+            QIcon(os.path.join(os.path.dirname(__file__), "..", "..", "resources", "icons", "add.png")))
+        self.edit_resource_btn.setIcon(
+            QIcon(os.path.join(os.path.dirname(__file__), "..", "..", "resources", "icons", "edit.png")))
+        self.delete_resource_btn.setIcon(
+            QIcon(os.path.join(os.path.dirname(__file__), "..", "..", "resources", "icons", "delete.png")))
+
+        self.add_resource_btn.setMaximumWidth(100)
+        self.edit_resource_btn.setMaximumWidth(100)
+        self.delete_resource_btn.setMaximumWidth(100)
+
+        btn_hbox.addWidget(self.add_resource_btn)
+        btn_hbox.addWidget(self.edit_resource_btn)
+        btn_hbox.addWidget(self.delete_resource_btn)
+
+        label_btn_layout.addWidget(self.current_behavior_label)
+        label_btn_layout.addLayout(btn_hbox)
+
+        res_mgmt_layout.addLayout(label_btn_layout)
+
+        self.resource_table = QTableWidget(0,4)
+        self.resource_table.setHorizontalHeaderLabels(["资源","类型","数量","位置"])
+        self.resource_table.setEditTriggers(QTableWidget.NoEditTriggers)
+        self.resource_table.setSelectionBehavior(QTableWidget.SelectRows)
+        self.resource_table.setSelectionMode(QTableWidget.SingleSelection)
+        self.resource_table.verticalHeader().setVisible(False)
+        self.resource_table.setAlternatingRowColors(True)
+        self.resource_table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        self.resource_table.setShowGrid(False)
+        self.resource_table.setSizePolicy(QSizePolicy.Expanding,QSizePolicy.Expanding)
+        self.apply_table_style(self.resource_table)
+
+        res_mgmt_layout.addWidget(self.resource_table)
+        self.resource_management_widget.setLayout(res_mgmt_layout)
+        self.resource_stacked_layout.addWidget(self.resource_management_widget)
+
+        resource_layout.addLayout(self.resource_stacked_layout)
+        resource_group.setLayout(resource_layout)
+
+        upper_layout.addLayout(left_vbox, stretch=1)
+        upper_layout.addWidget(resource_group, stretch=4)
+
+        main_layout.addLayout(upper_layout, stretch=1)
+
+        # =============== 下方布局：证据更新（左） & 推演结果（右） =================
+        lower_layout = QHBoxLayout()
+        lower_layout.setSpacing(10)
+
+        evidence_group = QGroupBox("证据更新")
+        # 设置最小宽度
+        evidence_group.setMinimumWidth(200)
+        evidence_layout = QVBoxLayout()
+        evidence_layout.setContentsMargins(10,20,10,10)
+        self.evidence_table = CustomTableWidget(0,3)
+        self.evidence_table.setHorizontalHeaderLabels(["要素节点","状态","概率"])
+        self.evidence_table.setEditTriggers(QTableWidget.NoEditTriggers)
+        self.evidence_table.setSelectionBehavior(QTableWidget.SelectRows)
+        self.evidence_table.setSelectionMode(QTableWidget.SingleSelection)
+        self.evidence_table.verticalHeader().setVisible(False)
+        self.evidence_table.setAlternatingRowColors(True)
+        self.evidence_table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        self.evidence_table.setShowGrid(False)
+        self.evidence_table.setSizePolicy(QSizePolicy.Expanding,QSizePolicy.Expanding)
+        self.apply_table_style(self.evidence_table)
+
+        evidence_layout.addWidget(self.evidence_table)
+        evidence_group.setLayout(evidence_layout)
+
+        simulation_group = QGroupBox("推演结果")
+        simulation_layout = QVBoxLayout()
+        simulation_layout.setContentsMargins(10,20,10,10)
+        self.simulation_table = CustomTableWidget(2,7)
+        self.simulation_table.setShowGrid(False)
+        self.simulation_table.setSelectionBehavior(QTableWidget.SelectRows)
+        self.simulation_table.setSelectionMode(QTableWidget.SingleSelection)
+        self.simulation_table.setEditTriggers(QTableWidget.NoEditTriggers)
+
+        self.simulation_table.horizontalHeader().setVisible(False)
+        self.simulation_table.verticalHeader().setVisible(False)
+
+        # 多级表头：两行
+        self.simulation_table.setSpan(0,0,2,1)  # 斜杠"韧性/预案"
+        self.simulation_table.setSpan(0,1,1,3)  # "推演前"
+        self.simulation_table.setSpan(0,4,1,3)  # "推演后"
+
+        # 自定义表头委托
+        header_delegate = FullHeaderDelegate(self.simulation_table)
+        for row in range(2):
+            for col in range(self.simulation_table.columnCount()):
+                self.simulation_table.setItemDelegateForRow(row, header_delegate)
+
+        self.apply_table_style(self.simulation_table)
+
+        self.simulation_table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+
+        simulation_layout.addWidget(self.simulation_table)
+        simulation_group.setLayout(simulation_layout)
+
+        lower_layout.addWidget(evidence_group, stretch=1)
+        lower_layout.addWidget(simulation_group, stretch=4)
+
+        main_layout.addLayout(lower_layout, stretch=1)
+
+        # 连接按钮
+        self.add_resource_btn.clicked.connect(self.add_resource)
+        self.edit_resource_btn.clicked.connect(self.edit_resource)
+        self.delete_resource_btn.clicked.connect(self.delete_resource)
+
+    def handle_label_clicked(self, behavior):
+        cbox = self.behavior_settings[behavior].checkbox
+        if not cbox.isChecked():
+            cbox.setChecked(True)
+        else:
+            self.switch_behavior(behavior)
+            self.update_label_styles(behavior)
+
+    def handle_checkbox_state_changed(self, state, behavior):
+        if state == 2:
+            self.behavior_settings[behavior].checkbox.setEnabled(False)
+            self.switch_behavior(behavior)
+            self.update_label_styles(behavior)
+            self.update_resource_dependencies(behavior)
+            self.check_execute_button()
+
+    def switch_behavior(self, behavior):
+        self.current_behavior = behavior
+        self.current_behavior_label.setText(f"正在编辑: {behavior}")
+        self.current_behavior_label.setStyleSheet("font-weight:bold;color:#5dade2;")
+        self.add_resource_btn.setToolTip(f"添加{behavior}的资源")
+        self.edit_resource_btn.setToolTip(f"修改{behavior}的资源")
+        self.delete_resource_btn.setToolTip(f"删除{behavior}的资源")
+        self.resource_stacked_layout.setCurrentWidget(self.resource_management_widget)
+        self.load_resources_for_behavior(behavior)
+
+    def update_label_styles(self, selected_behavior):
+        for b, cbl in self.behavior_settings.items():
+            cbl.set_selected(b == selected_behavior)
+
+    def update_resource_dependencies(self, behavior):
+        self.resource_stacked_layout.setCurrentWidget(self.resource_management_widget)
+        self.load_resources_for_behavior(behavior)
+
+    def load_resources_for_behavior(self, behavior):
+        self.resource_table.setRowCount(0)
+        for r in self.behavior_resources[behavior]:
+            self.add_resource_to_table(r, behavior)
+
+    def add_resource_to_table(self, resource, behavior):
+        rowpos = self.resource_table.rowCount()
+        self.resource_table.insertRow(rowpos)
+        self.resource_table.setItem(rowpos,0,QTableWidgetItem(resource["资源"]))
+        self.resource_table.setItem(rowpos,1,QTableWidgetItem(resource["类型"]))
+        self.resource_table.setItem(rowpos,2,QTableWidgetItem(str(resource["数量"])))
+        self.resource_table.setItem(rowpos,3,QTableWidgetItem(resource["位置"]))
+        for col in range(4):
+            self.resource_table.item(rowpos,col).setTextAlignment(Qt.AlignCenter)
+
+    def add_resource(self):
+        if not self.current_behavior:
+            CustomWarningDialog("提示","请先选择应急行为").exec()
+            return
+        dlg = SingleResourceDialog(parent=self)
+        if dlg.exec() == QDialog.Accepted:
+            r = dlg.get_resource()
+            self.behavior_resources[self.current_behavior].append(r)
+            self.add_resource_to_table(r, self.current_behavior)
+            self.check_execute_button()
+
+    def edit_resource(self):
+        sel = self.resource_table.selectedItems()
+        if not sel:
+            CustomWarningDialog("提示","请选择要修改的资源。").exec()
+            return
+        row = sel[0].row()
+        resource = {
+            "资源": self.resource_table.item(row,0).text(),
+            "类型": self.resource_table.item(row,1).text(),
+            "数量": int(self.resource_table.item(row,2).text()),
+            "位置": self.resource_table.item(row,3).text()
+        }
+        dlg = SingleResourceDialog(resource, parent=self)
+        if dlg.exec() == QDialog.Accepted:
+            updated = dlg.get_resource()
+            try:
+                idx = self.behavior_resources[self.current_behavior].index(resource)
+                self.behavior_resources[self.current_behavior][idx] = updated
+            except ValueError:
+                CustomWarningDialog("提示","未找到要修改的资源。").exec()
+                return
+            self.resource_table.setItem(row,0,QTableWidgetItem(updated["资源"]))
+            self.resource_table.setItem(row,1,QTableWidgetItem(updated["类型"]))
+            self.resource_table.setItem(row,2,QTableWidgetItem(str(updated["数量"])))
+            self.resource_table.setItem(row,3,QTableWidgetItem(updated["位置"]))
+            for col in range(4):
+                self.resource_table.item(row,col).setTextAlignment(Qt.AlignCenter)
+            self.check_execute_button()
+
+    def delete_resource(self):
+        sel = self.resource_table.selectedItems()
+        if not sel:
+            CustomWarningDialog("提示","请选择要删除的资源。").exec()
+            return
+        row = sel[0].row()
+        resource = {
+            "资源": self.resource_table.item(row,0).text(),
+            "类型": self.resource_table.item(row,1).text(),
+            "数量": int(self.resource_table.item(row,2).text()),
+            "位置": self.resource_table.item(row,3).text()
+        }
+        reply = CustomQuestionDialog("确认删除",f"确定要删除应急行为 '{self.current_behavior}' 下的选中资源吗？", parent=self).ask()
+        if reply:
+            try:
+                self.behavior_resources[self.current_behavior].remove(resource)
+            except ValueError:
+                CustomWarningDialog("提示","未找到要删除的资源。").exec()
+                return
+            self.resource_table.removeRow(row)
+            self.check_execute_button()
+
+    def check_execute_button(self):
+        selected_b = [b for b in self.behaviors if self.behavior_settings[b].checkbox.isChecked()]
+        all_checked = (len(selected_b)==len(self.behaviors))
+        self.execute_btn.setEnabled(all_checked)
+        self.execute_btn.setToolTip("请配置应急行为" if not all_checked else "")
+
+    def handle_save(self):
+        saved_categories = []
+        for b in self.behaviors:
+            cbox = self.behavior_settings[b].checkbox
+            if cbox.isChecked():
+                duration = self.behavior_settings[b].get_duration()
+                res_list = self.behavior_resources[b]
+                saved_categories.append({
+                    "category": b,
+                    "attributes": {"时长": f"{duration} 分钟"},
+                    "behaviors": res_list
+                })
+        if not saved_categories:
+            CustomInformationDialog("保存结果","没有要保存的应急行为。", parent=self).exec()
+            return
+
+        info_html = """
+        <html><head><style>
+         body{font-family:"Microsoft YaHei";font-size:14px;color:#333}
+         h2{text-align:center;color:#0078d7;margin-bottom:20px}
+         h3{color:#005a9e;margin-top:30px;margin-bottom:10px}
+         table{width:100%;border-collapse:collapse;margin-bottom:20px}
+         th,td{border:1px solid #ccc;padding:10px;text-align:center}
+         th{background-color:#f0f0f0}
+         .no-behavior{color:red;font-style:italic;text-align:center}
+        </style></head><body><h2>保存结果详情</h2>
+        """
+        for item in saved_categories:
+            info_html += f"<h3>类别: {item['category']}</h3>"
+            info_html += """<b>属性:</b>
+            <table><tr><th>属性名称</th><th>属性值</th></tr>"""
+            for k,v in item["attributes"].items():
+                info_html += f"<tr><td>{k}</td><td>{v}</td></tr>"
+            info_html += "</table><b>资源列表:</b>"
+            if item["behaviors"]:
+                info_html += """<table>
+                <tr><th>资源名称</th><th>类型</th><th>数量</th><th>位置</th></tr>"""
+                for r in item["behaviors"]:
+                    info_html += f"<tr><td>{r['资源']}</td><td>{r['类型']}</td><td>{r['数量']}</td><td>{r['位置']}</td></tr>"
+                info_html += "</table>"
             else:
-                h_spin.setValue(23)
+                info_html += "<p class='no-behavior'>无资源</p>"
+        info_html += "</body></html>"
+
+        dlg = SaveResultDialog(saved_categories, info_html, parent=self)
+        if dlg.exec():
+            # 询问预案名
+            input_dlg = CustomInputDialog("预案名称设置","请输入预案名字:",parent=self)
+            if input_dlg.exec():
+                plan_name = input_dlg.get_input().strip()
+                if plan_name:
+                    self.update_evidence_table()
+                    self.update_simulation_table(plan_name)
+                    CustomInformationDialog("成功", f"预案 '{plan_name}' 已保存并推演。",parent=self).exec()
+                else:
+                    CustomWarningDialog("提示","预案名字不能为空。").exec()
+
+    def update_evidence_table(self):
+        example_data = [
+            {"要素节点":"节点1","状态":"正常","概率":"80%"},
+            {"要素节点":"节点2","状态":"异常","概率":"20%"},
+        ]
+        # 清空表格内容和行数
+        self.evidence_table.clearContents()
+        self.evidence_table.setRowCount(0)
+
+        for d in example_data:
+            rowpos = self.evidence_table.rowCount()
+            self.evidence_table.insertRow(rowpos)
+            self.evidence_table.setItem(rowpos,0,QTableWidgetItem(d["要素节点"]))
+            self.evidence_table.setItem(rowpos,1,QTableWidgetItem(d["状态"]))
+            self.evidence_table.setItem(rowpos,2,QTableWidgetItem(d["概率"]))
+            for col in range(3):
+                self.evidence_table.item(rowpos,col).setTextAlignment(Qt.AlignCenter)
+
+    def update_simulation_table(self, plan_name):
+        # 从 row=2 开始插数据
+        data = [
+            {
+                "预案名字": plan_name,
+                "推演前-较好":"30%",
+                "推演前-中等":"50%",
+                "推演前-较差":"20%",
+                "推演后-较好":"60%",
+                "推演后-中等":"30%",
+                "推演后-较差":"10%",
+            }
+        ]
+        for d in data:
+            rowpos = self.simulation_table.rowCount()
+            self.simulation_table.setRowCount(rowpos+1)
+            self.simulation_table.setItem(rowpos,0,QTableWidgetItem(d["预案名字"]))
+            self.simulation_table.setItem(rowpos,1,QTableWidgetItem(d["推演前-较好"]))
+            self.simulation_table.setItem(rowpos,2,QTableWidgetItem(d["推演前-中等"]))
+            self.simulation_table.setItem(rowpos,3,QTableWidgetItem(d["推演前-较差"]))
+            self.simulation_table.setItem(rowpos,4,QTableWidgetItem(d["推演后-较好"]))
+            self.simulation_table.setItem(rowpos,5,QTableWidgetItem(d["推演后-中等"]))
+            self.simulation_table.setItem(rowpos,6,QTableWidgetItem(d["推演后-较差"]))
+            for col in range(7):
+                self.simulation_table.item(rowpos,col).setTextAlignment(Qt.AlignCenter)
 
     def set_stylesheet(self):
         self.setStyleSheet("""
-            QGroupBox {
-                border: 1px solid #ccc;
-                border-radius: 8px;
-                margin-top: 10px;
-            }
-            QGroupBox::title {
-                subcontrol-origin: margin;
-                subcontrol-position: top center;
-                padding: 0 5px;
-                font-weight: bold;
-                color: #333333;
-            }
-            QLabel {
-                color: #333333;
-            }
-            QComboBox {
-                border: 1px solid #ccc;
-                border-radius: 4px;
-                padding: 5px;
-                background-color: white;
-            }
-            QTableWidget {
-                border: none;
-                font-size: 14px;
-                background-color: white;
-            }
-            QHeaderView::section {
-                border: 1px solid #ccc;
-                background-color: #f0f0f0;
-                font-weight: bold;
-                padding: 4px;
-                color: #333333;
-                text-align: center;
-            }
-            QTableWidget::item:selected {
-                background-color: #cce5ff;
-                color: black;
-            }
-            QTableWidget:focus {
-                outline: none;
-            }
+        QGroupBox {
+            border:1px solid #ccc;
+            border-radius:8px;
+            margin-top:10px;
+            font-weight:bold;
+            background-color:#fff;
+        }
+        QGroupBox::title {
+            subcontrol-origin: margin;
+            subcontrol-position: top left;
+            padding:2px 10px;
+            font-weight:bold;
+            color:#333;
+            background-color:#E8E8E8;
+            border-radius:10px;
+            border-bottom-left-radius:0;
+        }
+        QLabel{ color:#333; }
+        QCheckBox{ color:#333; }
+
+        /* ----------------------【改动 2】：在下面的选择器中加入 QSpinBox ---------------------- */
+        QLineEdit, QComboBox, QSpinBox {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 5px;
+            background-color: white; /* 这里可根据需要自定义 */
+        }
+        QLineEdit:focus, QComboBox:focus, QSpinBox:focus {
+            border: 2px solid #0078d7; /* 蓝色边框 */
+        }
+        /* ------------------------------------------------------------------- */
+
+        QScrollBar:vertical, QScrollBar:horizontal {
+            border:none; background:#f1f1f1; width:8px; height:8px; margin:0;
+        }
+        QScrollBar::handle:vertical, QScrollBar::handle:horizontal {
+            background:#c1c1c1; min-width:20px; min-height:20px; border-radius:4px;
+        }
+        QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical,
+        QScrollBar::add-line:horizontal, QScrollBar::sub-line:horizontal {
+            height:0;width:0;subcontrol-origin:margin;
+        }
+        QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical,
+        QScrollBar::add-page:horizontal, QScrollBar::sub-page:horizontal {
+            background:none;
+        }
         """)
 
-    def apply_three_line_table_style(self, table: QTableWidget):
-        """应用三线表样式到指定的表格并动态调整列宽"""
+    def apply_table_style(self, table: QTableWidget):
         table.setStyleSheet("""
             QTableWidget {
-                border: none;
-                font-size: 14px;
-                border-bottom: 1px solid black; /* 底部线 */
+                border:none;
+                font-size:14px;
+                border-bottom:1px solid black;
             }
             QHeaderView::section {
-                border-top: 1px solid black;    /* 表头顶部线 */
-                border-bottom: 1px solid black; /* 表头底部线 */
-                background-color: #f0f0f0;
-                font-weight: bold;
-                padding: 4px;
-                color: #333333;
-                text-align: center; /* 表头内容居中 */
+                border-top:1px solid black;
+                border-bottom:1px solid black;
+                background-color:#f0f0f0;
+                font-weight:bold;
+                padding:4px;
+                color:#333;
+                text-align:center;
             }
             QTableWidget::item {
-                border: none; /* 中间行无边框 */
-                padding: 5px;
-                text-align: center; /* 单元格内容居中 */
+                border:none;
+                padding:5px;
+                text-align:center;
             }
-            /* 设置选中行的样式 */
             QTableWidget::item:selected {
-                background-color: #cce5ff; /* 选中背景颜色 */
-                color: black;             /* 选中文字颜色 */
-                border: none;             /* 选中时无边框 */
+                background-color:#cce5ff; color:black; border:none;
             }
             QTableWidget:focus {
-                outline: none; /* 禁用焦点边框 */
+                outline:none;
             }
         """)
-        # 动态调整列宽
-        header = table.horizontalHeader()
-        header.setStretchLastSection(True)
-        header.setSectionResizeMode(QHeaderView.Stretch)
-
-        # 设置交替行颜色
         table.setAlternatingRowColors(True)
-
-    def open_resource_dialog(self):
-        dialog = ResourceManagementDialog(self.get_current_resources(), self)
-        dialog.resource_updated.connect(self.update_resource_table)
-        dialog.exec()
-
-    def get_current_resources(self):
-        resources = []
-        for row in range(self.resource_table.rowCount()):
-            resource = {
-                "资源": self.resource_table.item(row, 0).text(),
-                "类型": self.resource_table.item(row, 1).text(),
-                "数量": int(self.resource_table.item(row, 2).text()),
-                "位置": self.resource_table.item(row, 3).text()
-            }
-            resources.append(resource)
-        return resources
-
-    def update_resource_table(self, resources):
-        self.resource_table.setRowCount(0)
-        for resource in resources:
-            self.add_resource_to_table(resource)
-
-    def add_resource_to_table(self, resource):
-        row_position = self.resource_table.rowCount()
-        self.resource_table.insertRow(row_position)
-        self.resource_table.setItem(row_position, 0, QTableWidgetItem(resource["资源"]))
-        self.resource_table.setItem(row_position, 1, QTableWidgetItem(resource["类型"]))
-        self.resource_table.setItem(row_position, 2, QTableWidgetItem(str(resource["数量"])))
-        self.resource_table.setItem(row_position, 3, QTableWidgetItem(resource["位置"]))
-
-    def save_and_execute(self):
-        # 获取应急行为设置
-        behavior_settings = {}
-        for behavior, (hour_spin, minute_spin) in self.behavior_duration.items():
-            total_minutes = hour_spin.value() * 60 + minute_spin.value()
-            behavior_settings[behavior] = total_minutes
-        print("应急行为设置:", behavior_settings)
-
-        # 获取应急资源设置
-        resources = self.get_current_resources()
-        print("应急资源设置:", resources)
-
-        # 这里应保存预案并执行推演，更新证据更新和推演结果
-        # 这里只是示例，实际逻辑需要根据需求实现
-
-        # 更新证据更新表格
-        self.update_evidence_table()
-
-        # 更新推演结果表格
-        self.update_simulation_table()
-
-        CustomInformationDialog("成功", "预案已保存并执行推演。").exec()
-
-    def update_evidence_table(self):
-        self.evidence_table.setRowCount(0)
-        # 示例数据，实际应根据推演结果获取
-        evidence_data = [
-            {"要素节点": "节点1", "状态": "正常", "概率": "80%"},
-            {"要素节点": "节点2", "状态": "异常", "概率": "20%"},
-        ]
-        for data in evidence_data:
-            row_position = self.evidence_table.rowCount()
-            self.evidence_table.insertRow(row_position)
-            self.evidence_table.setItem(row_position, 0, QTableWidgetItem(data["要素节点"]))
-            self.evidence_table.setItem(row_position, 1, QTableWidgetItem(data["状态"]))
-            self.evidence_table.setItem(row_position, 2, QTableWidgetItem(data["概率"]))
-
-    def update_simulation_table(self):
-        self.simulation_table.setRowCount(0)
-        # 示例数据，实际应根据推演结果获取
-        simulation_data = [
-            {
-                "预案名字": "预案A",
-                "推演前-较好": "30%",
-                "推演前-中等": "50%",
-                "推演前-较差": "20%",
-                "推演后-较好": "60%",
-                "推演后-中等": "30%",
-                "推演后-较差": "10%",
-            },
-            {
-                "预案名字": "预案B",
-                "推演前-较好": "25%",
-                "推演前-中等": "55%",
-                "推演前-较差": "20%",
-                "推演后-较好": "50%",
-                "推演后-中等": "35%",
-                "推演后-较差": "15%",
-            },
-        ]
-        for data in simulation_data:
-            row_position = self.simulation_table.rowCount()
-            self.simulation_table.insertRow(row_position)
-            self.simulation_table.setItem(row_position, 0, QTableWidgetItem(data["预案名字"]))
-            self.simulation_table.setItem(row_position, 1, QTableWidgetItem(data["推演前-较好"]))
-            self.simulation_table.setItem(row_position, 2, QTableWidgetItem(data["推演前-中等"]))
-            self.simulation_table.setItem(row_position, 3, QTableWidgetItem(data["推演前-较差"]))
-            self.simulation_table.setItem(row_position, 4, QTableWidgetItem(data["推演后-较好"]))
-            self.simulation_table.setItem(row_position, 5, QTableWidgetItem(data["推演后-中等"]))
-            self.simulation_table.setItem(row_position, 6, QTableWidgetItem(data["推演后-较差"]))
 
     def reset_inputs(self):
         pass
@@ -686,6 +863,6 @@ class ConditionSettingTab(QWidget):
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     window = ConditionSettingTab()
-    window.resize(1000, 800)
+    window.resize(1200, 800)
     window.show()
     sys.exit(app.exec())
