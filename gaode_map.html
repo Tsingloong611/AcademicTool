@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>高德地图选择</title>
+    <style>
+        html, body, #mapContainer {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+    <!-- 引入高德地图 API (替换 YOUR_AMAP_KEY 为您的高德地图 API Key) -->
+    <script src="https://webapi.amap.com/maps?v=2.0&key=f5c6bd77acf4d4a715e9cd57c1eef006"></script>
+    <!-- 引入 Qt WebChannel -->
+    <script src="qrc:///qtwebchannel/qwebchannel.js"></script>
+    <script type="text/javascript">
+        var bridge = null;
+        var map = null;
+        var marker = null;
+
+        function initMap() {
+            // 初始化 WebChannel
+            new QWebChannel(qt.webChannelTransport, function(channel) {
+                bridge = channel.objects.bridge;
+            });
+
+            // 创建地图实例
+            map = new AMap.Map('mapContainer', {
+                resizeEnable: true,
+                center: [116.397428, 39.90923], // 默认中心点（北京天安门）
+                zoom: 13
+            });
+
+            // 添加点击事件
+            map.on('click', function(e) {
+                var lnglat = e.lnglat;
+                var lng = lnglat.getLng();
+                var lat = lnglat.getLat();
+
+                // 清除之前的标注
+                if (marker) {
+                    map.remove(marker);
+                }
+
+                // 添加新的标注
+                marker = new AMap.Marker({
+                    position: lnglat
+                });
+                marker.setMap(map);
+
+                // 进行逆地理编码
+                AMap.plugin('AMap.Geocoder', function() {
+                    var geocoder = new AMap.Geocoder({
+                        radius: 1000,
+                        extensions: "all"
+                    });
+                    geocoder.getAddress(lnglat, function(status, result) {
+                        if (status === 'complete' && result.info === 'OK') {
+                            var address = result.regeocode.formattedAddress;
+                            // 弹出气泡显示地址
+                            marker.setLabel({
+                                offset: new AMap.Pixel(20, 20),
+                                content: address
+                            });
+
+                            // 调用 Python 的桥梁方法传递地址和坐标
+                            if (bridge) {
+                                bridge.sendLocationToQt(address, lat, lng);
+                            }
+                        } else {
+                            console.error('逆地理编码失败:', result);
+                            var address = `(${lat.toFixed(6)}, ${lng.toFixed(6)})`;
+                            marker.setLabel({
+                                offset: new AMap.Pixel(20, 20),
+                                content: address
+                            });
+
+                            if (bridge) {
+                                bridge.sendLocationToQt(address, lat, lng);
+                            }
+                        }
+                    });
+                });
+            });
+        }
+
+        window.onload = initMap;
+    </script>
+</head>
+<body>
+    <div id="mapContainer"></div>
+</body>
+</html>
