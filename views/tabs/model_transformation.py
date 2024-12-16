@@ -1,3 +1,5 @@
+# model_transformation.py
+
 import sys
 import os
 from PySide6.QtWidgets import (
@@ -6,11 +8,15 @@ from PySide6.QtWidgets import (
     QHeaderView, QSizePolicy, QMessageBox, QApplication, QDialog,
     QCheckBox, QGridLayout
 )
-from PySide6.QtCore import Qt, Signal
-from PySide6.QtGui import QPixmap, QFont
+from PySide6.QtCore import Qt, Signal, QSize
+from PySide6.QtGui import QPixmap, QFont, QIcon
 
 from views.dialogs.custom_warning_dialog import CustomWarningDialog
+from views.tabs.condition_setting import CustomTableWidget
 
+# Constants Definition
+ZOOM_IN_ICON = "resources/icons/zoom_in.png"   # 确保路径正确
+ZOOM_OUT_ICON = "resources/icons/zoom_out.png" # 确保路径正确
 
 class ZoomableLabel(QLabel):
     def __init__(self, parent=None):
@@ -29,7 +35,8 @@ class ZoomableLabel(QLabel):
             self.scale_factor *= 1.1
         else:
             self.scale_factor /= 1.1
-        self.scale_factor = max(0.1, min(self.scale_factor, 10.0))
+        self.scale_factor = max(self.scale_factor, 0.1)
+        self.scale_factor = min(self.scale_factor, 10.0)
         self.update_pixmap()
 
     def update_pixmap(self):
@@ -63,51 +70,34 @@ class ModelTransformationTab(QWidget):
         self.init_ui()
 
     def init_ui(self):
+        """Initialize UI components and layout."""
         self.set_stylesheet()
-        main_layout = QHBoxLayout(self)
-        main_layout.setSpacing(10)
-        main_layout.setContentsMargins(20, 20, 20, 20)
 
-        # 左侧 - 贝叶斯网络展示
-        main_layout.addWidget(self.create_bayesian_network_group_box(), 3)
+        # 主布局改为垂直布局
+        main_layout = QVBoxLayout(self)
+        main_layout.setSpacing(0)
+        main_layout.setContentsMargins(20, 0, 20, 10)  # Adjusted bottom margin for better spacing
 
-        # 右侧 - 先验概率部分
-        right_layout = QVBoxLayout()
+
+        # -------------------
+        # 底部布局 - 分左右
+        # -------------------
+        bottom_layout = QHBoxLayout()
+        bottom_layout.setSpacing(10)
+
+        # 先验概率部分（左侧，比例1）
         prior_group_box = self.create_prior_probability_group_box()
+        bottom_layout.addWidget(prior_group_box, stretch=1)
 
-        # 上下布局：上方为prior_group_box（包含节点选择和表格区域）
-        # 下方为按钮框
-        upper_layout = QVBoxLayout()
-        upper_layout.addWidget(prior_group_box)
-
-        lower_layout = QVBoxLayout()
-        button_box = self.create_button_box()  # 创建按钮框
-        lower_layout.addLayout(button_box)
-
-        right_layout.addLayout(upper_layout)
-        right_layout.addLayout(lower_layout)
-
-        #设置最小宽度
-        prior_group_box.setMinimumWidth(325)
+        # 贝叶斯网络展示部分（右侧，比例3）
+        bayesian_network_group_box = self.create_bayesian_network_group_box()
+        bottom_layout.addWidget(bayesian_network_group_box, stretch=3)
 
 
-        main_layout.addLayout(right_layout, 1)
+        # 将底部布局添加到主布局
+        main_layout.addLayout(bottom_layout)
+
         self.setLayout(main_layout)
-        self.node_group_box.setStyleSheet("""QGroupBox {
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    margin-top: 10px;
-    background-color: #ffffff;
-}
-
-QGroupBox::title {
-    subcontrol-origin: margin;
-    subcontrol-position: top left;
-    padding: 0px 0px;
-    font-weight: bold;
-    color: #333333;
-    background-color: #ffffff;
-}""")
 
     def set_stylesheet(self):
         """设置整体样式表"""
@@ -207,8 +197,6 @@ QGroupBox::title {
             QTableWidget:focus {
                 outline: none;
             }
-
-
         """)
 
     def create_bayesian_network_group_box(self):
@@ -221,18 +209,44 @@ QGroupBox::title {
                 background-color: #ffffff;
             }
         """)
-        layout = QVBoxLayout()
-        layout.setContentsMargins(10, 10, 10, 10)
 
-        # 图像加载区域
+        # 整体布局
+        group_layout = QVBoxLayout(group_box)
+        group_layout.setContentsMargins(10, 10, 10, 10)
+        group_layout.setSpacing(5)
+
+        # ====== 顶部按钮布局（固定在右上角） ======
+        button_layout = QHBoxLayout()
+        button_layout.setContentsMargins(0, 0, 0, 0)
+        button_layout.setSpacing(5)
+
+        button_layout.addStretch()  # 把按钮推到右边
+
+        # 放大和缩小按钮
+        self.zoom_in_button = self.create_zoom_button(ZOOM_IN_ICON, "放大图像(按住 Ctrl 并滚动鼠标滚轮)", self.zoom_in)
+        self.zoom_out_button = self.create_zoom_button(ZOOM_OUT_ICON, "缩小图像(按住 Ctrl 并滚动鼠标滚轮)", self.zoom_out)
+
+        # 连接信号
+        self.zoom_in_button.clicked.connect(self.zoom_in)
+        self.zoom_out_button.clicked.connect(self.zoom_out)
+
+        self.set_condition_button = QPushButton("设置推演条件")
+        # 设置最大宽度
+        self.set_condition_button.setFixedWidth(110)
+        self.set_condition_button.clicked.connect(self.set_inference_conditions)
+        button_layout.addWidget(self.set_condition_button)
+
+
+        button_layout.addWidget(self.zoom_in_button)
+        button_layout.addWidget(self.zoom_out_button)
+
+        # ====== 中部：可滚动图像区域 ======
         self.bayesian_network_label = ZoomableLabel()
         self.bayesian_network_label.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.bayesian_network_label.setText("贝叶斯网络图像加载区")
         self.bayesian_network_label.setStyleSheet("background-color: #ffffff;")
 
-        # 默认图片路径，可以替换为实际路径
         default_png = os.path.join(os.path.dirname(__file__), "combined_bn.png")
-
         if os.path.exists(default_png):
             pixmap = QPixmap(default_png)
             self.bayesian_network_label.setPixmap(pixmap)
@@ -243,10 +257,24 @@ QGroupBox::title {
         scroll_area.setWidgetResizable(True)
         scroll_area.setWidget(self.bayesian_network_label)
         scroll_area.setStyleSheet("QScrollArea {border: none; background-color: #ffffff;}")
-        layout.addWidget(scroll_area)
 
-        group_box.setLayout(layout)
+        # ====== 把按钮布局和滚动区域加入 group_box 的布局 ======
+        group_layout.addLayout(button_layout)   # 按钮固定在顶部
+        group_layout.addWidget(scroll_area, 1)  # 滚动区域在下面
+
         return group_box
+
+    def create_zoom_button(self, icon_path, tooltip, callback):
+        """Create Zoom Button"""
+        button = QPushButton()
+        if os.path.exists(icon_path):
+            button.setIcon(QIcon(icon_path))
+        else:
+            button.setText("缩放")
+        button.setToolTip(tooltip)
+        button.setFixedSize(QSize(24, 24))
+        button.clicked.connect(callback)
+        return button
 
     def create_prior_probability_group_box(self):
         """创建先验概率部分"""
@@ -273,10 +301,9 @@ QGroupBox::title {
         self.node_group_box = QGroupBox("节点选择")
         self.node_group_box.setStyleSheet("""
             QGroupBox {
-    border: 1px solid #d0d0d0;
-
-    border-radius: 10px;
-    margin-top: 14px;
+                border: 1px solid #d0d0d0;
+                border-radius: 10px;
+                margin-top: 14px;
             }
         """)
 
@@ -305,9 +332,11 @@ QGroupBox::title {
         self.display_area = QVBoxLayout()
         self.display_area.setContentsMargins(0, 10, 0, 0)
 
-        self.prior_table = QTableWidget()
+        self.prior_table = CustomTableWidget()
         self.prior_table.setColumnCount(3)
         self.prior_table.setHorizontalHeaderLabels(["节点", "状态", "概率"])
+        self.apply_table_style(self.prior_table)
+
         self.prior_table.horizontalHeader().setFont(QFont("SimSun", 16, QFont.Bold))
         self.prior_table.horizontalHeader().setDefaultAlignment(Qt.AlignCenter)
         self.prior_table.horizontalHeader().setStretchLastSection(True)
@@ -319,7 +348,6 @@ QGroupBox::title {
         self.prior_table.setSelectionBehavior(QTableWidget.SelectRows)
         self.prior_table.setSelectionMode(QTableWidget.SingleSelection)
         self.prior_table.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-        self.apply_table_style(self.prior_table)
 
         self.placeholder_label = QLabel("请选择节点")
         self.placeholder_label.setObjectName("placeholder")
@@ -347,7 +375,8 @@ QGroupBox::title {
                 border: none;
                 font-size: 14px;
                 border-bottom: 1px solid black; 
-                background-color: #ffffff;
+                    background-color: white;
+    alternate-background-color: #e9e7e3;
             }
             QHeaderView::section {
                 border-top: 1px solid black;
@@ -388,14 +417,7 @@ QGroupBox::title {
         """)
         table.horizontalHeader().repaint()
 
-    def create_button_box(self):
-        button_box = QVBoxLayout()
-        self.set_condition_button = QPushButton("设置推演条件")
-        # 设置最大宽度
-        self.set_condition_button.setMaximumWidth(125)
-        self.set_condition_button.clicked.connect(self.set_inference_conditions)
-        button_box.addWidget(self.set_condition_button, alignment=Qt.AlignRight)
-        return button_box
+
 
     def set_inference_conditions(self):
         self.set_inference_request.emit()
@@ -432,6 +454,20 @@ QGroupBox::title {
                         self.prior_table.setItem(row_position, 0, item_node)
                         self.prior_table.setItem(row_position, 1, item_state)
                         self.prior_table.setItem(row_position, 2, item_prob)
+
+    def zoom_in(self):
+        """放大图像"""
+        if self.bayesian_network_label.pixmap_original:
+            self.bayesian_network_label.scale_factor *= 1.1
+            self.bayesian_network_label.scale_factor = min(self.bayesian_network_label.scale_factor, 10.0)
+            self.bayesian_network_label.update_pixmap()
+
+    def zoom_out(self):
+        """缩小图像"""
+        if self.bayesian_network_label.pixmap_original:
+            self.bayesian_network_label.scale_factor /= 1.1
+            self.bayesian_network_label.scale_factor = max(self.bayesian_network_label.scale_factor, 0.1)
+            self.bayesian_network_label.update_pixmap()
 
     def reset_inputs(self):
         pass

@@ -13,6 +13,8 @@ class CustomQuestionDialog(QDialog):
         self.setWindowTitle(title)
         self.resize(300, 100)
         self.setStyleSheet("""
+        background : white;
+        color: black;
 
         """)
 

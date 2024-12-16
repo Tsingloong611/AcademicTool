@@ -1,10 +1,9 @@
-# main_window.py
-
 # -*- coding: utf-8 -*-
 # @Time    : 12/10/2024 11:10 AM
 # @FileName: main_window.py
 # @Software: PyCharm
 import os
+import sys
 
 from PySide6.QtGui import QFont
 from PySide6.QtWidgets import (
@@ -24,7 +23,7 @@ class MainWindow(QMainWindow):
         super().__init__()
 
         # 设置主窗口标题
-        self.setWindowTitle("基于认知数字孪生的城市道路应急情景推演工具")
+        self.setWindowTitle(self.tr("基于认知数字孪生的城市道路应急情景推演工具"))
         self.setObjectName("MainWindow")
 
         self.db_manager = db_manager  # 保存数据库管理器实例
@@ -59,7 +58,7 @@ class MainWindow(QMainWindow):
         # 场景管理器样式已经在 scenario_manager.qss 中定义，无需再次设置
 
         # 创建情景管理器标题标签
-        scenario_title_label = QLabel("情景管理器")
+        scenario_title_label = QLabel(self.tr("情景管理器"))
         scenario_title_label.setObjectName("ScenarioTitleLabel")
         scenario_title_label.setAlignment(Qt.AlignCenter)
         scenario_title_label.setFixedHeight(30)  # 增加高度以容纳圆角
@@ -90,7 +89,7 @@ class MainWindow(QMainWindow):
         # 状态栏样式已经在 status_bar.qss 中定义，无需再次设置
 
         # 创建状态栏标题标签
-        status_title_label = QLabel("状态栏")
+        status_title_label = QLabel(self.tr("状态栏"))
         status_title_label.setObjectName("StatusTitleLabel")
         status_title_label.setAlignment(Qt.AlignCenter)
         status_title_label.setFont(QFont("SimSun", 16, QFont.Bold))  # 设置字体和大小
@@ -148,10 +147,10 @@ class MainWindow(QMainWindow):
 
         # 加载样式表
         self.load_stylesheets([
-            os.path.join(os.path.dirname(__file__),"..", "resources", "styles", "global.qss"),
-            os.path.join(os.path.dirname(__file__),"..", "resources", "styles", "scenario_manager.qss"),
-            os.path.join(os.path.dirname(__file__),"..", "resources", "styles", "widgets.qss"),
-            os.path.join(os.path.dirname(__file__),"..", "resources", "styles", "status_bar.qss")
+            os.path.join(os.path.dirname(__file__), "..", "resources", "styles", "global.qss"),
+            os.path.join(os.path.dirname(__file__), "..", "resources", "styles", "scenario_manager.qss"),
+            os.path.join(os.path.dirname(__file__), "..", "resources", "styles", "widgets.qss"),
+            os.path.join(os.path.dirname(__file__), "..", "resources", "styles", "status_bar.qss")
         ])  # 确保样式表文件位于正确路径
 
     def load_stylesheets(self, filepaths):
@@ -167,4 +166,4 @@ class MainWindow(QMainWindow):
 
     def on_tab_changed(self, index):
         # 处理标签切换事件，例如更新状态栏或其他逻辑
-        print(f"切换到标签 {index}")
+        print(self.tr(f"切换到标签 {index}"))

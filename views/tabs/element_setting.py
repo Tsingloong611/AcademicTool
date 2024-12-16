@@ -95,6 +95,7 @@ class SaveResultDialog(QDialog):
                 border-radius: 5px;
                 padding: 5px;
                 background-color: #f9f9f9;
+                alternate-background-color: #e9e7e3
             }
         """)
         main_layout.addWidget(self.summary_list)
@@ -521,7 +522,7 @@ QGroupBox::title {
         # 主布局
         main_layout = QVBoxLayout(self)
         main_layout.setSpacing(10)
-        main_layout.setContentsMargins(20, 20, 20, 10)  # 左, 上, 右, 下 设置底部为10以对齐状态栏
+        main_layout.setContentsMargins(20, 0, 20, 10)  # 左, 上, 右, 下 设置底部为10以对齐状态栏
 
         # 1. 情景要素类别选择区域
         self.categories = [
@@ -701,6 +702,7 @@ QGroupBox::title {
         self.behavior_table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
         self.behavior_table.verticalHeader().setVisible(False)
         self.behavior_table.setAlternatingRowColors(True)  # 使用交替行颜色区分
+        self.behavior_table.setStyleSheet("alternate-background-color: #e9e7e3")
 
         self.behavior_table.setEditTriggers(QTableWidget.NoEditTriggers)  # 禁用默认编辑功能
 
@@ -738,27 +740,25 @@ QGroupBox::title {
 
         # 3. 按钮区域
         button_layout_main = QHBoxLayout()
-        button_layout_main.setAlignment(Qt.AlignLeft)
+        button_layout_main.setAlignment(Qt.AlignRight)
         self.save_button = QPushButton("保存")
         # 设置最大宽度
-        self.save_button.setMaximumWidth(155)
-        self.save_button.setMinimumWidth(155)
+        self.save_button.setFixedWidth(110)
         self.save_button.setObjectName("save_button")
         self.save_button.setToolTip("点击保存当前配置的要素数据")
         self.save_button.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
 
-        self.generate_button = QPushButton("生成情景级孪生模型")
+        self.generate_button = QPushButton("生成情景模型")
         # 设置最大宽度
-        self.generate_button.setMaximumWidth(155)
-        self.generate_button.setMinimumWidth(155)
+        self.generate_button.setFixedWidth(110)
         self.generate_button.setObjectName("generate_button")
         self.generate_button.setToolTip("点击生成情景级孪生模型")
 
         self.generate_button.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
 
         # 将按钮添加到布局中，不使用 addStretch()
-        button_layout_main.addWidget(self.save_button, alignment=Qt.AlignLeft)
-        button_layout_main.addWidget(self.generate_button, alignment=Qt.AlignLeft)
+        button_layout_main.addWidget(self.save_button)
+        button_layout_main.addWidget(self.generate_button)
 
         # 将按钮布局添加到主布局
         main_layout.addLayout(button_layout_main)
@@ -998,6 +998,8 @@ QGroupBox::title {
                 border: none;
                 font-size: 14px;
                 border-bottom: 1px solid black; /* 底部线 */
+                    background-color: white;
+    alternate-background-color: #e9e7e3;
             }
             QHeaderView::section {
                 border-top: 1px solid black;    /* 表头顶部线 */

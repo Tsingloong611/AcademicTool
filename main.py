@@ -11,8 +11,9 @@ from PySide6.QtGui import Qt
 from PySide6.QtWidgets import QApplication, QMessageBox, QDialog
 
 from views.dialogs.custom_error_dialog import CustomErrorDialog
+from views.dialogs.custom_information_dialog import CustomInformationDialog
 from views.main_window import MainWindow
-from views.login_dialog import LoginDialog
+# from views.login_dialog import LoginDialog
 from database.db_config import DatabaseManager
 
 # 定义默认配置
@@ -27,6 +28,11 @@ DEFAULT_CONFIG = {
     "i18n": {
         "language": "zh_CN",
         "available_languages": ["en_US", "zh_CN"]
+    },
+    "gaode-map": {
+        "enable": False,
+        "javascript_api_key": "",
+        "web_service_key": ""
     }
 }
 
@@ -38,13 +44,10 @@ def create_default_config(config_path):
     try:
         with open(config_path, 'w', encoding='utf-8') as f:
             json.dump(DEFAULT_CONFIG, f, ensure_ascii=False, indent=4)
-        QMessageBox.information(
-            None,
-            "配置文件创建",
-            f"默认配置文件已创建在 {config_path}。\n请根据需要进行修改后重新启动应用程序。"
-        )
+
+        CustomInformationDialog("配置文件创建", f"默认配置文件已创建在 {config_path}。\n请根据需要进行修改后重新启动应用程序。").exec_()
     except Exception as e:
-        QMessageBox.critical(None, "配置文件创建失败", f"无法创建配置文件：{e}")
+        CustomErrorDialog("配置文件创建失败", f"无法创建配置文件：{e}", parent=None).show_dialog()
     sys.exit(1)
 
 
@@ -59,7 +62,7 @@ def load_config(config_path='config.json'):
         try:
             config = json.load(f)
         except json.JSONDecodeError as e:
-            QMessageBox.critical(None, "配置错误", f"解析配置文件失败：{e}")
+            CustomErrorDialog("配置错误", f"解析配置文件失败：{e}", parent=None).show_dialog()
             sys.exit(1)
 
     return config
@@ -80,9 +83,6 @@ def main(app):
     # 设置宋体九号
     app.setFont("宋体,9")
 
-    # 启用高 DPI 支持
-    app.setAttribute(Qt.AA_EnableHighDpiScaling)
-    app.setAttribute(Qt.AA_UseHighDpiPixmaps)
 
     # 加载配置文件
     config = load_config()

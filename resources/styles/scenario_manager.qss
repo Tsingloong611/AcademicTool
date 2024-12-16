@@ -36,6 +36,7 @@ QListWidget#ScenarioList {
     outline: none;
     padding: 0px;  /* 移除内部边距 */
     margin: 0px;   /* 移除外部边距 */
+    alternate-background-color: #e9e7e3
 }
 
 /* 自定义 QListWidgetItem 的样式 */

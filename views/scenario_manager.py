@@ -163,9 +163,9 @@ QToolTip {
         self.edit_button = self.create_button("修改", "edit.png", self.on_edit_requested)
         self.delete_button = self.create_button("删除", "delete.png", self.on_delete_requested)
         # 设置按钮的固定宽度
-        self.add_button.setMaximumWidth(100)
-        self.edit_button.setMaximumWidth(100)
-        self.delete_button.setMaximumWidth(100)
+        self.add_button.setFixedWidth(110)
+        self.edit_button.setFixedWidth(110)
+        self.delete_button.setFixedWidth(110)
 
         button_layout.addWidget(self.add_button)
         button_layout.addWidget(self.edit_button)

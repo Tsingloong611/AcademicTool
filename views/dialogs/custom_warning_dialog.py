@@ -21,6 +21,8 @@ class CustomWarningDialog(QDialog):
         layout.addWidget(label, alignment=Qt.AlignCenter)
 
         self.setStyleSheet("""
+        background : white;
+        color: black;
 
 """)
 

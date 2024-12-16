@@ -4,7 +4,7 @@ from PySide6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QGroupBox, QComboBox,
     QLabel, QScrollArea, QTableWidget, QTableWidgetItem, QPushButton,
     QHeaderView, QSizePolicy, QMessageBox, QApplication,
-    QStackedLayout, QGridLayout, QFrame, QListWidget, QListWidgetItem, QButtonGroup
+    QStackedLayout, QGridLayout, QFrame, QListWidget, QListWidgetItem, QButtonGroup, QSpacerItem
 )
 from PySide6.QtCore import Qt, QSize, Signal
 from PySide6.QtGui import QPixmap, QWheelEvent, QPainter, QIcon, QFont
@@ -129,33 +129,29 @@ class ModelGenerationTab(QWidget):
         """Initialize UI components and layout."""
         self.set_stylesheet()
         main_layout = QVBoxLayout(self)
-        main_layout.setSpacing(10)
-        main_layout.setContentsMargins(20, 20, 20, 10)
+        main_layout.setSpacing(0)
+        main_layout.setContentsMargins(20, 0, 20, 10)
 
-        # Upper Section - Ontology Selection
-        main_layout.addWidget(self.create_ontology_group_box(), 3)  # Occupy more space
+        # 中部布局 - 本体选择区域
+        ontology_group_box = self.create_ontology_group_box()
+        main_layout.addWidget(ontology_group_box, stretch=3)
 
-        # Lower Section - Left side (Class Selection and Generate Button), Right side (Model Switch Area)
+        # 底部布局 - 左右两侧
         lower_layout = QHBoxLayout()
         lower_layout.setSpacing(10)
+        lower_layout.setContentsMargins(0, 10, 0, 0)
 
-        # Left side layout
+        # 左侧布局 - 类选择区域
         left_side_layout = QVBoxLayout()
         left_side_layout.setSpacing(10)
 
-        # Class Selection Area
-        left_side_layout.addWidget(self.create_class_group_box())
-
-        # Generate Inference Model Button
-        self.generate_button = QPushButton("生成推演模型")
-        self.generate_button.setMaximumWidth(125)
-        self.generate_button.clicked.connect(self.handle_generate)
-        self.generate_button.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
-        left_side_layout.addWidget(self.generate_button, alignment=Qt.AlignLeft)
+        # 类选择区域
+        class_group_box = self.create_class_group_box()
+        left_side_layout.addWidget(class_group_box, stretch=10)
 
         lower_layout.addLayout(left_side_layout, 1)
 
-        # Right side - Model Switch Area (Rounded Rectangle)
+        # 右侧布局 - 模型切换区域（圆角矩形）
         right_side_layout = QVBoxLayout()
         right_side_layout.setSpacing(0)
         right_side_layout.setContentsMargins(0, 0, 0, 0)
@@ -173,9 +169,9 @@ class ModelGenerationTab(QWidget):
         model_switch_layout.setContentsMargins(0, 0, 0, 10)
         model_switch_layout.setSpacing(0)
 
-        # Model Switch Buttons Layout (Horizontal)
+        # 模型切换按钮布局（水平）
         button_layout = QHBoxLayout()
-        button_layout.setSpacing(0)  # Close to border
+        button_layout.setSpacing(0)  # 紧贴边框
         button_layout.setContentsMargins(0, 0, 0, 0)
 
         self.attribute_button = QPushButton("属性模型")
@@ -206,7 +202,7 @@ class ModelGenerationTab(QWidget):
 
         model_switch_layout.addLayout(button_layout)
 
-        # QStackedLayout Content
+        # QStackedLayout 内容
         self.stacked_layout = QStackedLayout()
         self.stacked_layout.setContentsMargins(0, 0, 0, 0)
         self.stacked_layout.setSpacing(0)
@@ -226,7 +222,6 @@ class ModelGenerationTab(QWidget):
         main_layout.addLayout(lower_layout, 1)
 
         self.setLayout(main_layout)
-
 
     def set_stylesheet(self):
         """Set the overall stylesheet."""
@@ -426,7 +421,7 @@ QListWidget::item:selected {
             }
         """)
         ontology_layout = QVBoxLayout()
-        ontology_layout.setContentsMargins(15, 15, 15, 10)
+        ontology_layout.setContentsMargins(10, 10, 10, 10)
         ontology_layout.setSpacing(10)
 
         # Dropdown and Zoom Buttons Layout
@@ -447,8 +442,14 @@ QListWidget::item:selected {
         self.zoom_in_button.setEnabled(False)
         self.zoom_out_button.setEnabled(False)
 
+        # 生成推演模型按钮
+        self.generate_button = QPushButton("生成推演模型")
+        self.generate_button.setFixedWidth(110)  # 根据需要调整宽度
+        self.generate_button.clicked.connect(self.handle_generate)
+
         combo_zoom_layout.addWidget(self.ontology_combo)
         combo_zoom_layout.addStretch()
+        combo_zoom_layout.addWidget(self.generate_button)
         combo_zoom_layout.addWidget(self.zoom_in_button)
         combo_zoom_layout.addWidget(self.zoom_out_button)
 
@@ -498,7 +499,7 @@ QListWidget::item:selected {
         """)
 
         class_layout_container = QVBoxLayout()
-        class_layout_container.setContentsMargins(15, 15, 15, 10)
+        class_layout_container.setContentsMargins(15, 12, 15, 10)
         class_layout_container.setSpacing(10)
 
         # Initialize QListWidget
@@ -606,6 +607,8 @@ QListWidget::item:selected {
                         border: none;
                         font-size: 14px;
                         border-bottom: 1px solid black; /* Bottom line */
+                                            background-color: white;
+    alternate-background-color: #e9e7e3;
                     }
                     QHeaderView::section {
                         border-top: 1px solid black;    /* Header top line */

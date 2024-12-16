@@ -35,3 +35,11 @@ QToolTip {
     border: 1px solid #cccccc;                  /* 浅灰色边框 */
 }
 
+QListWidget{
+    background-color: white;
+    alternate-background-color: #e9e7e3
+}
+
+    QMainWindow {
+        background: white;
+    }

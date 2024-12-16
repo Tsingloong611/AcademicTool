@@ -12,8 +12,8 @@ class CustomErrorDialog(QDialog):
         self.setWindowTitle(title)
         self.resize(400, 200)
         self.setStyleSheet("""
-
-
+        background : white;
+        color: black;
         """)
 
         layout = QVBoxLayout(self)
