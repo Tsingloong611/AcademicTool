@@ -6,7 +6,6 @@ from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QVBoxLayout, QDialog, QLabel, QLineEdit, QHBoxLayout, QPushButton
 
 
-
 class CustomInputDialog(QDialog):
     accepted_text = Signal(str)
 
@@ -17,7 +16,6 @@ class CustomInputDialog(QDialog):
         self.setStyleSheet("""
         background : white;
         color: black;
-
 
                     QLineEdit, QComboBox {
                 border: 1px solid #ccc;
@@ -44,11 +42,11 @@ class CustomInputDialog(QDialog):
         # 按钮布局
         button_layout = QHBoxLayout()
 
-        ok_button = QPushButton("确认")
+        ok_button = QPushButton(self.tr("确认"))
         ok_button.clicked.connect(self._accept_input)
         button_layout.addWidget(ok_button)
 
-        cancel_button = QPushButton("取消")
+        cancel_button = QPushButton(self.tr("取消"))
         cancel_button.clicked.connect(self.reject)
         button_layout.addWidget(cancel_button)
 

@@ -13,10 +13,11 @@ from views.dialogs.custom_information_dialog import CustomInformationDialog
 from views.dialogs.custom_question_dialog import CustomQuestionDialog
 from views.dialogs.custom_warning_dialog import CustomWarningDialog
 
+
 class ScenarioDialog(QDialog):
     def __init__(self, parent=None, scenario=None):
         super().__init__(parent)
-        self.setWindowTitle("情景信息")
+        self.setWindowTitle(self.tr("情景信息"))
         self.setObjectName("ScenarioDialog")
         self.scenario = scenario
         self.init_ui()
@@ -27,31 +28,31 @@ class ScenarioDialog(QDialog):
         layout.setSpacing(15)
 
         name_layout = QHBoxLayout()
-        name_label = QLabel("名称:")
+        name_label = QLabel(self.tr("名称:"))
         name_label.setObjectName("NameLabel")
 
         self.name_input = QLineEdit()
         self.name_input.setObjectName("NameInput")
-        self.name_input.setPlaceholderText("请输入情景名称")
+        self.name_input.setPlaceholderText(self.tr("请输入情景名称"))
         name_layout.addWidget(name_label)
         name_layout.addWidget(self.name_input)
         layout.addLayout(name_layout)
 
         desc_layout = QHBoxLayout()
-        desc_label = QLabel("描述:")
+        desc_label = QLabel(self.tr("描述:"))
         desc_label.setObjectName("DescriptionLabel")
 
         self.desc_input = QLineEdit()
         self.desc_input.setObjectName("DescriptionInput")
-        self.desc_input.setPlaceholderText("请输入情景描述")
+        self.desc_input.setPlaceholderText(self.tr("请输入情景描述"))
         desc_layout.addWidget(desc_label)
         desc_layout.addWidget(self.desc_input)
         layout.addLayout(desc_layout)
 
         button_layout = QHBoxLayout()
-        self.save_button = QPushButton("保存")
+        self.save_button = QPushButton(self.tr("保存"))
         self.save_button.setObjectName("SaveButton")
-        self.cancel_button = QPushButton("取消")
+        self.cancel_button = QPushButton(self.tr("取消"))
         self.cancel_button.setObjectName("CancelButton")
 
         button_layout.addWidget(self.save_button)
@@ -76,6 +77,7 @@ class ScenarioDialog(QDialog):
         name = self.name_input.text().strip()
         description = self.desc_input.text().strip()
         return name, description
+
 
 class ScenarioManager(QWidget):
     scenario_selected = Signal(int, str, str)
@@ -125,7 +127,7 @@ class ScenarioManager(QWidget):
             QScrollBar::sub-line:vertical {
                 height: 0px;
             }
-            
+
 QToolTip {
     background-color: rgba(255, 255, 255, 220); /* 半透明的白色背景 */
     color: #333333;                             /* 深灰色文本 */
@@ -139,7 +141,7 @@ QToolTip {
         search_layout = QHBoxLayout()
         self.search_input = QLineEdit()
         self.search_input.setObjectName("SearchInput")
-        self.search_input.setPlaceholderText("输入情景名称进行查找...")
+        self.search_input.setPlaceholderText(self.tr("输入情景名称进行查找..."))
         self.search_input.textChanged.connect(self.real_time_search)
 
         search_layout.addWidget(self.search_input)
@@ -159,9 +161,9 @@ QToolTip {
         button_layout.setSpacing(5)
         button_layout.setContentsMargins(0, 5, 0, 5)
 
-        self.add_button = self.create_button("新建", "add.png", self.add_requested.emit)
-        self.edit_button = self.create_button("修改", "edit.png", self.on_edit_requested)
-        self.delete_button = self.create_button("删除", "delete.png", self.on_delete_requested)
+        self.add_button = self.create_button(self.tr("新建"), "add.png", self.add_requested.emit)
+        self.edit_button = self.create_button(self.tr("修改"), "edit.png", self.on_edit_requested)
+        self.delete_button = self.create_button(self.tr("删除"), "delete.png", self.on_delete_requested)
         # 设置按钮的固定宽度
         self.add_button.setFixedWidth(110)
         self.edit_button.setFixedWidth(110)
@@ -176,7 +178,7 @@ QToolTip {
         button = QPushButton(text)
         button.setObjectName(f"{text}Button")
         button.setIcon(QIcon(os.path.join("resources", "icons", icon_name)))
-        button.setToolTip(f"{text}情景")
+        button.setToolTip(self.tr(f"{text}情景"))
         button.clicked.connect(callback)
         return button
 
@@ -190,13 +192,13 @@ QToolTip {
         self.list_widget.setAlternatingRowColors(True)
 
         # 创建占位标签
-        self.placeholder_label = QLabel("请添加情景")
+        self.placeholder_label = QLabel(self.tr("请添加情景"))
         self.placeholder_label.setAlignment(Qt.AlignCenter)
         self.placeholder_label.setObjectName("PlaceholderLabel")
         self.placeholder_label.setStyleSheet("color: gray; font-style: italic;")
 
         # 创建“无匹配结果”标签
-        self.no_result_label = QLabel("无匹配结果")
+        self.no_result_label = QLabel(self.tr("无匹配结果"))
         self.no_result_label.setAlignment(Qt.AlignCenter)
         self.no_result_label.setObjectName("NoResultLabel")
         # 样式已在 widgets.qss 中定义
@@ -207,15 +209,14 @@ QToolTip {
 
         self.scenario_container = QWidget()
         self.scenario_container.setLayout(self.scenario_stack)
-        self.scenario_stack.addWidget(self.list_widget)       # 索引 0
-        self.scenario_stack.addWidget(self.placeholder_label) # 索引 1
-        self.scenario_stack.addWidget(self.no_result_label)   # 索引 2
+        self.scenario_stack.addWidget(self.list_widget)  # 索引 0
+        self.scenario_stack.addWidget(self.placeholder_label)  # 索引 1
+        self.scenario_stack.addWidget(self.no_result_label)  # 索引 2
 
         parent_layout.addWidget(self.scenario_container)
 
         # 连接列表信号
         self.list_widget.itemClicked.connect(self.select_scenario)
-
 
     @Slot(QListWidgetItem)
     def select_scenario(self, item):
@@ -223,12 +224,12 @@ QToolTip {
         scenario_name = item.text().split(" - ")[0]
         scenario_description = item.data(Qt.UserRole + 1)
 
-        reply = CustomQuestionDialog("确认选择", f'您确定要选择情景 "{scenario_name}" 吗?').ask()
+        reply = CustomQuestionDialog(self.tr("确认选择"), self.tr(f'您确定要选择情景 "{scenario_name}" 吗?')).ask()
 
         if reply:
             self.scenario_selected.emit(scenario_id, scenario_name, scenario_description)
         else:
-            CustomInformationDialog("取消选择", "您已取消选择情景。").get_result()
+            CustomInformationDialog(self.tr("取消选择"), self.tr("您已取消选择情景。")).get_result()
 
     @Slot(list)
     def populate_scenarios(self, scenarios):
@@ -243,7 +244,7 @@ QToolTip {
             item = QListWidgetItem(f"{scenario.name}")
             item.setData(Qt.UserRole, scenario.id)
             item.setData(Qt.UserRole + 1, scenario.description)
-            item.setToolTip(scenario.description if scenario.description.strip() else "没有描述信息")
+            item.setToolTip(scenario.description if scenario.description.strip() else self.tr("没有描述信息"))
             self.list_widget.addItem(item)
 
         # 根据是否有情景更新堆叠布局
@@ -265,7 +266,7 @@ QToolTip {
                 item = QListWidgetItem(f"{scenario.name}")
                 item.setData(Qt.UserRole, scenario.id)
                 item.setData(Qt.UserRole + 1, scenario.description)
-                item.setToolTip(scenario.description if scenario.description.strip() else "没有描述信息")
+                item.setToolTip(scenario.description if scenario.description.strip() else self.tr("没有描述信息"))
                 self.list_widget.addItem(item)
                 found = True
 
@@ -280,12 +281,11 @@ QToolTip {
             else:
                 self.scenario_stack.setCurrentIndex(1)  # 显示占位标签
 
-
     @Slot()
     def on_edit_requested(self):
         selected_items = self.list_widget.selectedItems()
         if not selected_items:
-            CustomWarningDialog("修改失败", "请先选择要修改的情景。").get_result()
+            CustomWarningDialog(self.tr("修改失败"), self.tr("请先选择要修改的情景。")).get_result()
             return
         scenario_id = selected_items[0].data(Qt.UserRole)
         self.edit_requested.emit(scenario_id)
@@ -294,19 +294,19 @@ QToolTip {
     def on_delete_requested(self):
         selected_items = self.list_widget.selectedItems()
         if not selected_items:
-            CustomWarningDialog("删除失败", "请先选择要删除的情景。").get_result()
+            CustomWarningDialog(self.tr("删除失败"), self.tr("请先选择要删除的情景。")).get_result()
             return
 
         scenario_names = [item.text().split(" - ")[0] for item in selected_items]
         scenario_id = selected_items[0].data(Qt.UserRole)
         scenario_name = scenario_names[0]
-        reply = CustomQuestionDialog("确认删除", f'您确定要删除情景 "{scenario_name}" 吗?').ask()
+        reply = CustomQuestionDialog(self.tr("确认删除"), self.tr(f'您确定要删除情景 "{scenario_name}" 吗?')).ask()
 
         if reply:
             self.delete_requested.emit(scenario_id)
-            CustomInformationDialog("删除成功", "情景已成功删除。").get_result()
+            CustomInformationDialog(self.tr("删除成功"), self.tr("情景已成功删除。")).get_result()
         else:
-            CustomInformationDialog("取消删除", "您已取消删除操作。").get_result()
+            CustomInformationDialog(self.tr("取消删除"), self.tr("您已取消删除操作。")).get_result()
 
     def add_scenario(self, scenario):
         """添加情景并更新视图。"""

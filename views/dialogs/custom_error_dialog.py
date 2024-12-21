@@ -27,7 +27,7 @@ class CustomErrorDialog(QDialog):
         layout.addWidget(label)
 
         # 确定按钮
-        button = QPushButton("确定")
+        button = QPushButton(self.tr("确定"))
         button.clicked.connect(self.accept)
         layout.addWidget(button, alignment=Qt.AlignCenter)
         # 设置固定的按钮宽度

@@ -74,7 +74,7 @@ class ZoomableLabel(QLabel):
     def set_svg(self, svg_path):
         """Set and load the SVG image."""
         if not self.renderer.load(svg_path):
-            self.setText("无法加载图像")
+            self.setText(self.tr("无法加载图像"))
             self.image_loaded = False
             return
         self.scale_factor = 1.0
@@ -174,7 +174,7 @@ class ModelGenerationTab(QWidget):
         button_layout.setSpacing(0)  # 紧贴边框
         button_layout.setContentsMargins(0, 0, 0, 0)
 
-        self.attribute_button = QPushButton("属性模型")
+        self.attribute_button = QPushButton(self.tr("属性模型"))
         self.attribute_button.setObjectName("AttributeButton")
         self.attribute_button.setCheckable(True)
         self.attribute_button.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
@@ -183,7 +183,7 @@ class ModelGenerationTab(QWidget):
         """)
         self.attribute_button.clicked.connect(lambda: self.show_tab(0))
 
-        self.behavior_button = QPushButton("行为模型")
+        self.behavior_button = QPushButton(self.tr("行为模型"))
         self.behavior_button.setObjectName("BehaviorButton")
         self.behavior_button.setCheckable(True)
         self.behavior_button.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
@@ -225,15 +225,15 @@ class ModelGenerationTab(QWidget):
 
     def set_stylesheet(self):
         """Set the overall stylesheet."""
-        self.setStyleSheet("""
-QGroupBox {
+        self.setStyleSheet(f"""
+QGroupBox {{
     border: 1px solid #ccc;
     border-radius: 8px;
     margin-top: 10px;
     background-color: #ffffff;
-}
+}}
 
-QGroupBox::title {
+QGroupBox::title {{
     subcontrol-origin: margin;
     subcontrol-position: top left;
     padding: 2px 10px;
@@ -242,57 +242,57 @@ QGroupBox::title {
     background-color: #E8E8E8; /* Rounded gray background */
     border-radius: 10px; /* Rounded corners */
     border-bottom-left-radius: 0px; /* No bottom-left radius */
-}
-QLabel {
+}}
+QLabel {{
     color: #333333;
-}
-QCheckBox {
+}}
+QCheckBox {{
     color: #333333;
-}
-QLineEdit {
+}}
+QLineEdit {{
     border: 1px solid #ccc;
     border-radius: 4px;
     padding: 5px;
     background-color: white;
-}
-QScrollBar:vertical, QScrollBar:horizontal {
+}}
+QScrollBar:vertical, QScrollBar:horizontal {{
     border: none;
     background: #f1f1f1;
     width: 8px;
     height: 8px;
     margin: 0px 0px 0px 0px;
-}
-QScrollBar::handle:vertical, QScrollBar::handle:horizontal {
+}}
+QScrollBar::handle:vertical, QScrollBar::handle:horizontal {{
     background: #c1c1c1;
     min-width: 20px;
     min-height: 20px;
     border-radius: 4px;
-}
+}}
 QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical,
-QScrollBar::add-line:horizontal, QScrollBar::sub-line:horizontal {
+QScrollBar::add-line:horizontal, QScrollBar::sub-line:horizontal {{
     height: 0px;
     width: 0px;
     subcontrol-origin: margin;
-}
+}}
 QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical,
-QScrollBar::add-page:horizontal, QScrollBar::sub-page:horizontal {
+QScrollBar::add-page:horizontal, QScrollBar::sub-page:horizontal {{
     background: none;
-}
+}}
 
-QLabel#placeholder{
+QLabel#placeholder{{
     color: gray;
     font-size: 20pt;
     border-radius: 10px;
     border: 0px solid #c0c0c0;
-}
+}}
 
 /* Rounded area styles */
-QFrame#ModelSwitchContainer {
+QFrame#ModelSwitchContainer {{
 
-}
+}}
 
 /* Attribute and Behavior Model buttons styles */
-QPushButton#AttributeButton{
+QPushButton#AttributeButton{{
     border: #f0f0f0; /* Border color */
     border-right: 1px solid #f0f0f0; /* Right border */
     border-left-radius: 10px; /* Left rounded border */
@@ -300,8 +300,8 @@ QPushButton#AttributeButton{
     padding:10px 0;
     font-size: 16px; /* Text size */
     font-weight: bold; /* Bold text */
-}
-QPushButton#BehaviorButton{
+}}
+QPushButton#BehaviorButton{{
     border: #f0f0f0; /* Border color */
     border-left:1px solid #f0f0f0; /* Left border */
     border-right-radius: 10px; /* Right rounded border */
@@ -309,52 +309,52 @@ QPushButton#BehaviorButton{
     padding:10px 0;
     font-size: 16px; /* Text size */
     font-weight: bold; /* Bold text */
-}
+}}
 
-QPushButton#AttributeButton:hover{
+QPushButton#AttributeButton:hover{{
     background-color: #B0E2FF; /* Background color on hover */
     border-right:1px solid #f0f0f0; /* Right border */
     border-left-radius: 10px; /* Left rounded border */
-}
-QPushButton#BehaviorButton:hover{
+}}
+QPushButton#BehaviorButton:hover{{
     background-color: #B0E2FF; /* Background color on hover */
     border-left:1px solid #f0f0f0; /* Left border */
     border-right-radius: 10px; /* Right rounded border */
-}
+}}
 
-QPushButton#AttributeButton:checked {
+QPushButton#AttributeButton:checked {{
     background-color: #5dade2; /* Background color when checked */
     color: white; /* Text color when checked */
     border-right:1px solid #f0f0f0; /* Right border */
     border-left-radius: 10px; /* Left rounded border */
-}
-QPushButton#BehaviorButton:checked {
+}}
+QPushButton#BehaviorButton:checked {{
     background-color: #5dade2; /* Background color when checked */
     color: white; /* Text color when checked */
     border-left:1px solid #f0f0f0; /* Left border */
     border-right-radius: 10px; /* Right rounded border */
-}
+}}
 
 
-QPushButton#BehaviorButton:pressed {
+QPushButton#BehaviorButton:pressed {{
     background-color: #5dade2; /* Background color when pressed */
     border-left:1px solid #f0f0f0; /* Left border */
     border-right-radius: 10px; /* Right rounded border */
-}
+}}
 
-QPushButtonAttributeButton:pressed {
+QPushButtonAttributeButton:pressed {{
     background-color: #5dade2; /* Background color when pressed */
     border-right:1px solid #f0f0f0; /* Right border */
     border-left-radius: 10px; /* Left rounded border */
-}
+}}
 
 /* Table styles */
-QTableWidget {
+QTableWidget {{
     border: none;
     font-size: 14px;
     border-bottom: 1px solid black; /* Bottom line */
-}
-QHeaderView::section {
+}}
+QHeaderView::section {{
     border-top: 1px solid black;    /* Header top line */
     border-bottom: 1px solid black; /* Header bottom line */
     background-color: #f0f0f0;
@@ -362,58 +362,53 @@ QHeaderView::section {
     padding: 4px;
     color: #333333;
     text-align: center; /* Header content centered */
-}
-QTableWidget::item {
+}}
+QTableWidget::item {{
     border: none; /* No border for middle rows */
     padding: 5px;
     text-align: center; /* Cell content centered */
-}
+}}
 /* Selected row styles */
-QTableWidget::item:selected {
+QTableWidget::item:selected {{
     background-color: #cce5ff; /* Selected background color */
     color: black;             /* Selected text color */
     border: none;             /* No border when selected */
-}
-QTableWidget:focus {
+}}
+QTableWidget:focus {{
     outline: none; /* Disable focus border */
-}
-QListWidget {
+}}
+QListWidget {{
     border: 1px solid #c0c0c0;
     border-radius: 10px;
     border-top: none;
     border-bottom: none;
     background-color: white;
     outline: none;
-    padding: 0px;  /* 移除内部边距 */
-    margin: 0px;   /* 移除外部边距 */
-    font-size: 12px;
-}
+    padding: 0px;
+    margin: 0px;
+    font-size: 14px;
+}}
 
-/* 自定义 QListWidgetItem 的样式 */
-QListWidget::item {
+QListWidget::item {{
     border: 1px solid transparent;
     border-radius: 5px;
     padding: 5px;
     margin: 2px;
-}
+}}
 
-/* 鼠标悬停时的背景色 */
-QListWidget::item:hover {
+QListWidget::item:hover {{
     background-color: #cce5ff;
-}
+}}
 
-/* 选中项的背景色 */
-QListWidget::item:selected {
+QListWidget::item:selected {{
     background-color:#5dade2;
     color: white;
-}
-
-
+}}
 """)
 
     def create_ontology_group_box(self):
         """Create Ontology Selection Area"""
-        ontology_group_box = QGroupBox("本体模型")
+        ontology_group_box = QGroupBox(self.tr("本体模型"))
         ontology_group_box.setStyleSheet("""
             QGroupBox {
                 font-size: 16px;
@@ -430,21 +425,21 @@ QListWidget::item:selected {
         combo_zoom_layout.setContentsMargins(0, 0, 0, 0)
 
         self.ontology_combo = QComboBox()
-        self.ontology_combo.addItem("请选择本体")
+        self.ontology_combo.addItem(self.tr("请选择本体"))
         self.ontology_combo.addItems(list(SVG_FILES.keys()))
         self.ontology_combo.setCurrentIndex(0)
         self.ontology_combo.model().item(0).setEnabled(False)
         self.ontology_combo.currentIndexChanged.connect(self.handle_ontology_selection)
 
         # Zoom Buttons
-        self.zoom_in_button = self.create_zoom_button(ZOOM_IN_ICON, "放大图像(按住 Ctrl 并滚动鼠标滚轮)", self.zoom_in)
-        self.zoom_out_button = self.create_zoom_button(ZOOM_OUT_ICON, "缩小图像(按住 Ctrl 并滚动鼠标滚轮)", self.zoom_out)
+        self.zoom_in_button = self.create_zoom_button(ZOOM_IN_ICON, self.tr("放大图像(按住 Ctrl 并滚动鼠标滚轮)"), self.zoom_in)
+        self.zoom_out_button = self.create_zoom_button(ZOOM_OUT_ICON, self.tr("缩小图像(按住 Ctrl 并滚动鼠标滚轮)"), self.zoom_out)
         self.zoom_in_button.setEnabled(False)
         self.zoom_out_button.setEnabled(False)
 
         # 生成推演模型按钮
-        self.generate_button = QPushButton("生成推演模型")
-        self.generate_button.setFixedWidth(110)  # 根据需要调整宽度
+        self.generate_button = QPushButton(self.tr("生成推演模型"))
+        self.generate_button.setFixedWidth(110)
         self.generate_button.clicked.connect(self.handle_generate)
 
         combo_zoom_layout.addWidget(self.ontology_combo)
@@ -467,7 +462,7 @@ QListWidget::item:selected {
 
         self.ontology_image_label = ZoomableLabel()
         self.ontology_image_label.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-        self.ontology_image_label.setText("图形加载区")
+        self.ontology_image_label.setText(self.tr("图形加载区"))
         image_layout.addWidget(self.ontology_image_label, 1)
 
         self.ontology_scroll_area.setWidget(image_container)
@@ -482,7 +477,7 @@ QListWidget::item:selected {
         if os.path.exists(icon_path):
             button.setIcon(QIcon(icon_path))
         else:
-            button.setText("缩放")
+            button.setText(self.tr("缩放"))
         button.setToolTip(tooltip)
         button.setFixedSize(QSize(24, 24))
         button.clicked.connect(callback)
@@ -490,7 +485,7 @@ QListWidget::item:selected {
 
     def create_class_group_box(self):
         """Create Class Selection Area"""
-        class_group_box = QGroupBox("类")
+        class_group_box = QGroupBox(self.tr("类"))
         class_group_box.setStyleSheet("""
             QGroupBox {
                 font-size: 16px;
@@ -502,21 +497,18 @@ QListWidget::item:selected {
         class_layout_container.setContentsMargins(15, 12, 15, 10)
         class_layout_container.setSpacing(10)
 
-        # Initialize QListWidget
         self.class_list_widget = QListWidget()
         self.class_list_widget.setSelectionMode(QListWidget.SingleSelection)
         self.class_list_widget.itemSelectionChanged.connect(self.handle_class_selection)
         self.class_list_widget.setAlternatingRowColors(True)
 
-
-        # Placeholder if no ontology is selected or no classes are available
-        self.class_placeholder_label = QLabel("请选择本体")
+        self.class_placeholder_label = QLabel(self.tr("请选择本体"))
         self.class_placeholder_label.setObjectName("placeholder")
         self.class_placeholder_label.setAlignment(Qt.AlignCenter)
 
         class_layout_container.addWidget(self.class_placeholder_label)
         class_layout_container.addWidget(self.class_list_widget)
-        self.class_list_widget.hide()  # Initially hide the list widget
+        self.class_list_widget.hide()
 
         class_group_box.setLayout(class_layout_container)
         return class_group_box
@@ -530,7 +522,7 @@ QListWidget::item:selected {
 
         self.attribute_table = QTableWidget()
         self.attribute_table.setColumnCount(2)
-        self.attribute_table.setHorizontalHeaderLabels(["属性", "范围"])
+        self.attribute_table.setHorizontalHeaderLabels([self.tr("属性"), self.tr("范围")])
         self.apply_table_style(self.attribute_table)
         self.attribute_table.horizontalHeader().setFont(QFont("SimSun", 16, QFont.Bold))
         self.attribute_table.horizontalHeader().setDefaultAlignment(Qt.AlignCenter)
@@ -539,24 +531,18 @@ QListWidget::item:selected {
         self.attribute_table.setSelectionBehavior(QTableWidget.SelectRows)
         self.attribute_table.setSelectionMode(QTableWidget.SingleSelection)
         self.attribute_table.verticalHeader().setVisible(False)
-        self.attribute_table.setAlternatingRowColors(True)  # Use alternating row colors
-
-        self.attribute_table.setEditTriggers(QTableWidget.NoEditTriggers)  # Disable default editing
-
-        # Remove default grid lines
+        self.attribute_table.setAlternatingRowColors(True)
+        self.attribute_table.setEditTriggers(QTableWidget.NoEditTriggers)
         self.attribute_table.setShowGrid(False)
-
-        # Set size policy
         self.attribute_table.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
 
-        # Initial placeholder
-        self.attribute_placeholder_label = QLabel("请选择类")
+        self.attribute_placeholder_label = QLabel(self.tr("请选择类"))
         self.attribute_placeholder_label.setObjectName("placeholder")
         self.attribute_placeholder_label.setAlignment(Qt.AlignCenter)
 
         attribute_layout.addWidget(self.attribute_placeholder_label)
         attribute_layout.addWidget(self.attribute_table)
-        self.attribute_table.hide()  # Initially hide the table
+        self.attribute_table.hide()
 
         return attribute_widget
 
@@ -569,7 +555,7 @@ QListWidget::item:selected {
 
         self.behavior_table = QTableWidget()
         self.behavior_table.setColumnCount(2)
-        self.behavior_table.setHorizontalHeaderLabels(["行为", "范围"])
+        self.behavior_table.setHorizontalHeaderLabels([self.tr("行为"), self.tr("范围")])
         self.apply_table_style(self.behavior_table)
 
         self.behavior_table.horizontalHeader().setFont(QFont("SimSun", 16, QFont.Bold))
@@ -579,24 +565,18 @@ QListWidget::item:selected {
         self.behavior_table.verticalHeader().setVisible(False)
         self.behavior_table.setSelectionBehavior(QTableWidget.SelectRows)
         self.behavior_table.setSelectionMode(QTableWidget.SingleSelection)
-        self.behavior_table.setAlternatingRowColors(True)  # Use alternating row colors
-
-        self.behavior_table.setEditTriggers(QTableWidget.NoEditTriggers)  # Disable default editing
-
-        # Remove default grid lines
+        self.behavior_table.setAlternatingRowColors(True)
+        self.behavior_table.setEditTriggers(QTableWidget.NoEditTriggers)
         self.behavior_table.setShowGrid(False)
-
-        # Set size policy
         self.behavior_table.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
 
-        # Initial placeholder
-        self.behavior_placeholder_label = QLabel("请选择类")
+        self.behavior_placeholder_label = QLabel(self.tr("请选择类"))
         self.behavior_placeholder_label.setObjectName("placeholder")
         self.behavior_placeholder_label.setAlignment(Qt.AlignCenter)
 
         behavior_layout.addWidget(self.behavior_placeholder_label)
         behavior_layout.addWidget(self.behavior_table)
-        self.behavior_table.hide()  # Initially hide the table
+        self.behavior_table.hide()
 
         return behavior_widget
 
@@ -642,16 +622,16 @@ QListWidget::item:selected {
         """Ensure that the header styles are refreshed to prevent line loss."""
         table.horizontalHeader().setStyleSheet("""
                     QHeaderView::section {
-                        border-top: 1px solid black;    /* Header top line */
-                        border-bottom: 1px solid black; /* Header bottom line */
+                        border-top: 1px solid black;
+                        border-bottom: 1px solid black;
                         background-color: #f0f0f0;
                         font-weight: bold;
                         padding: 4px;
                         color: #333333;
-                        text-align: center; /* Header content centered */
+                        text-align: center;
                     }
                 """)
-        table.horizontalHeader().repaint()  # Ensure styles are applied
+        table.horizontalHeader().repaint()
 
     def populate_table(self, table: QTableWidget, data: list):
         """Populate table data."""
@@ -659,7 +639,6 @@ QListWidget::item:selected {
         for row_idx, (attr, scope) in enumerate(data):
             table.setItem(row_idx, 0, QTableWidgetItem(attr))
             table.setItem(row_idx, 1, QTableWidgetItem(scope))
-            # 居中对齐
             table.item(row_idx, 0).setTextAlignment(Qt.AlignCenter)
             table.item(row_idx, 1).setTextAlignment(Qt.AlignCenter)
 
@@ -689,7 +668,7 @@ QListWidget::item:selected {
 
     def handle_generate(self):
         """Handle the logic for generating the model."""
-        CustomInformationDialog(" ", "已成功生成推演模型。").exec()
+        CustomInformationDialog(" ", self.tr("已成功生成推演模型。")).exec()
         self.generate_request.emit()
 
     def handle_ontology_selection(self, index):
@@ -704,10 +683,10 @@ QListWidget::item:selected {
         svg_path = os.path.join(os.getcwd(), svg_filename)
 
         if not os.path.exists(svg_path):
-            self.ontology_image_label.setText("无法找到 SVG 文件")
+            self.ontology_image_label.setText(self.tr("无法找到 SVG 文件"))
             self.ontology_image_label.image_loaded = False
             self.toggle_zoom_buttons(False)
-            CustomWarningDialog("提示", "无法找到对应的图形文件。").exec()
+            CustomWarningDialog(self.tr("提示"), self.tr("无法找到对应的图形文件。")).exec()
             self.reset_class_selection()
             self.reset_model_tabs_after_ontology()
             return
@@ -720,17 +699,17 @@ QListWidget::item:selected {
 
             # Reset attribute and behavior model areas to "Please select a class"
             self.attribute_table.hide()
-            self.attribute_placeholder_label.setText("请选择类")
+            self.attribute_placeholder_label.setText(self.tr("请选择类"))
             self.attribute_placeholder_label.show()
 
             self.behavior_table.hide()
-            self.behavior_placeholder_label.setText("请选择类")
+            self.behavior_placeholder_label.setText(self.tr("请选择类"))
             self.behavior_placeholder_label.show()
 
     def reset_ontology_selection(self):
         """Reset ontology selection related UI components."""
         self.ontology_combo.setCurrentIndex(0)
-        self.ontology_image_label.setText("图形加载区")
+        self.ontology_image_label.setText(self.tr("图形加载区"))
         self.ontology_image_label.setStyleSheet("""
             color: gray;
     font-size: 20pt;
@@ -753,21 +732,17 @@ QListWidget::item:selected {
 
         if self.current_ontology in CLASS_OPTIONS and CLASS_OPTIONS[self.current_ontology]:
             class_options = CLASS_OPTIONS[self.current_ontology]
-            self.current_class = None  # Reset current class
+            self.current_class = None
 
             for option in class_options:
                 item = QListWidgetItem(option)
-                # 居中
                 item.setTextAlignment(Qt.AlignCenter)
                 self.class_list_widget.addItem(item)
-
-
 
             self.class_list_widget.show()
             self.class_placeholder_label.hide()
         else:
-            # If no class options defined for the ontology, show placeholder
-            self.class_placeholder_label.setText("该本体没有类")
+            self.class_placeholder_label.setText(self.tr("该本体没有类"))
             self.class_placeholder_label.show()
             self.class_list_widget.hide()
             self.current_class = None
@@ -775,7 +750,7 @@ QListWidget::item:selected {
     def reset_class_selection(self):
         """Reset class selection area to initial state."""
         self.class_list_widget.clear()
-        self.class_placeholder_label.setText("请选择本体")
+        self.class_placeholder_label.setText(self.tr("请选择本体"))
         self.class_placeholder_label.show()
         self.class_list_widget.hide()
         self.current_class = None
@@ -793,29 +768,24 @@ QListWidget::item:selected {
 
     def reset_model_tabs_before_ontology(self):
         """Reset attribute and behavior model areas to 'Please select ontology'."""
-        # Attribute Model
         self.attribute_table.hide()
-        self.attribute_placeholder_label.setText("请选择本体")
+        self.attribute_placeholder_label.setText(self.tr("请选择本体"))
         self.attribute_placeholder_label.show()
 
-        # Behavior Model
         self.behavior_table.hide()
-        self.behavior_placeholder_label.setText("请选择本体")
+        self.behavior_placeholder_label.setText(self.tr("请选择本体"))
         self.behavior_placeholder_label.show()
 
-        # Enable model switch buttons
         self.toggle_model_tabs(True)
 
     def reset_model_tabs_after_ontology(self):
         """Reset attribute and behavior model areas to 'Please select class'."""
-        # Attribute Model
         self.attribute_table.hide()
-        self.attribute_placeholder_label.setText("请选择类")
+        self.attribute_placeholder_label.setText(self.tr("请选择类"))
         self.attribute_placeholder_label.show()
 
-        # Behavior Model
         self.behavior_table.hide()
-        self.behavior_placeholder_label.setText("请选择类")
+        self.behavior_placeholder_label.setText(self.tr("请选择类"))
         self.behavior_placeholder_label.show()
 
     def update_model_tabs(self):
@@ -832,7 +802,7 @@ QListWidget::item:selected {
             self.populate_table(self.attribute_table, attributes)
         else:
             self.attribute_table.hide()
-            self.attribute_placeholder_label.setText("无属性数据")
+            self.attribute_placeholder_label.setText(self.tr("无属性数据"))
             self.attribute_placeholder_label.show()
 
         # Update Behavior Model
@@ -843,17 +813,15 @@ QListWidget::item:selected {
             self.populate_table(self.behavior_table, behaviors)
         else:
             self.behavior_table.hide()
-            self.behavior_placeholder_label.setText("无行为数据")
+            self.behavior_placeholder_label.setText(self.tr("无行为数据"))
             self.behavior_placeholder_label.show()
 
     def toggle_model_tabs(self, enable: bool):
         """Enable or disable attribute and behavior model areas."""
         if enable:
-            # Enable model switch buttons
             self.attribute_button.setEnabled(True)
             self.behavior_button.setEnabled(True)
         else:
-            # Disable model switch buttons and switch to default page
             self.attribute_button.setEnabled(False)
             self.behavior_button.setEnabled(False)
             self.stacked_layout.setCurrentWidget(self.attribute_widget)
@@ -862,10 +830,7 @@ QListWidget::item:selected {
 
     def handle_save(self):
         """Collect all checked feature data and simulate save operation."""
-        # Assume save logic is similar to element_setting.py, here only showing prompt
-        CustomInformationDialog("保存成功", "已成功保存要素数据。").exec()
-        # If needed, actual save logic can be added here
-        # self.save_requested.emit()
+        CustomInformationDialog(self.tr("保存成功"), self.tr("已成功保存要素数据。")).exec()
 
     def reset_inputs(self):
         """Reset all inputs."""
@@ -877,28 +842,25 @@ QListWidget::item:selected {
 
     def load_models_data(self, category):
         """Load attribute and behavior data based on selected category."""
-        print(f"Loading data for category: {category}")  # Debug information
+        print(f"Loading data for category: {category}")
 
-        # Simulate loading data
         attributes = ATTRIBUTE_SAMPLE_DATA.get(category, [])
         behaviors = BEHAVIOR_SAMPLE_DATA.get(category, [])
 
-        # Update Attribute Model
         if attributes:
             self.attribute_placeholder_label.hide()
             self.attribute_table.show()
             self.populate_table(self.attribute_table, attributes)
         else:
             self.attribute_table.hide()
-            self.attribute_placeholder_label.setText("无属性数据")
+            self.attribute_placeholder_label.setText(self.tr("无属性数据"))
             self.attribute_placeholder_label.show()
 
-        # Update Behavior Model
         if behaviors:
             self.behavior_placeholder_label.hide()
             self.behavior_table.show()
             self.populate_table(self.behavior_table, behaviors)
         else:
             self.behavior_table.hide()
-            self.behavior_placeholder_label.setText("无行为数据")
+            self.behavior_placeholder_label.setText(self.tr("无行为数据"))
             self.behavior_placeholder_label.show()

@@ -47,10 +47,10 @@ class CustomTabWidget(QWidget):
         self.ConditionSettingTab = ConditionSettingTab()
 
         self.tabs = []
-        self.add_tab("情景要素设定", self.ElementSettingTab)
-        self.add_tab("情景模型生成", self.ModelGenerationTab)
-        self.add_tab("推演模型转换", self.ModelTransformationTab)
-        self.add_tab("推演条件设定", self.ConditionSettingTab)
+        self.add_tab(self.tr("情景要素设定"), self.ElementSettingTab)
+        self.add_tab(self.tr("情景模型生成"), self.ModelGenerationTab)
+        self.add_tab(self.tr("推演模型转换"), self.ModelTransformationTab)
+        self.add_tab(self.tr("推演条件设定"), self.ConditionSettingTab)
 
 
 
@@ -82,17 +82,16 @@ class CustomTabWidget(QWidget):
     border-radius: 10px; /* 圆角边框 */
 }""")
 
-
     def add_tab(self, tab_name, content_widget):
-        button = QPushButton(tab_name)
+        button = QPushButton(self.tr(tab_name))
         button.setObjectName(f"{tab_name}Button")
         button.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
         button.setCheckable(True)
         button.clicked.connect(lambda checked, idx=len(self.tabs)+1: self.switch_tab(idx))
         # 设置固定高度以保持一致性
         button.setFixedHeight(32)
-        # 设置样式，未选中时为灰色，选中时为蓝色,下方无边框，上方为圆角，下方为直角
-        if tab_name in ["情景模型生成"]:
+        # 样式根据 tab_name 判断，但这些判断字符串并非直接展示给用户，仅用于条件判断，不添加 tr()
+        if tab_name in [self.tr("情景模型生成")]:
             button.setStyleSheet("""
                 border: 2px solid dark; /* 边框颜色 */
                 border-radius: 10px; /* 圆角边框 */
@@ -126,7 +125,7 @@ class CustomTabWidget(QWidget):
                 border: 2px solid dark;
                 border-bottom: none; /* 下方没有边框 */}
             """)
-        elif tab_name in ["推演模型转换"]:
+        elif tab_name in [self.tr("推演模型转换")]:
             button.setStyleSheet("""
                             border: 2px solid dark; /* 边框颜色 */
                             border-radius: 10px; /* 圆角边框 */
@@ -164,7 +163,7 @@ class CustomTabWidget(QWidget):
                 border-bottom: none; /* 下方没有边框 */
                 border-left: none; /* 左侧没有边框 */}
                         """)
-        elif tab_name in ["情景要素设定"]:
+        elif tab_name in [self.tr("情景要素设定")]:
             button.setStyleSheet("""
                 border: 2px solid dark; /* 边框颜色 */
                 border-radius: 10px; /* 圆角边框 */
@@ -201,8 +200,7 @@ class CustomTabWidget(QWidget):
                 border-bottom: none; /* 下方没有边框 */
                 border-right: none; /* 右侧没有边框 */}
             """)
-
-        elif tab_name in ["推演条件设定"]:
+        elif tab_name in [self.tr("推演条件设定")]:
             button.setStyleSheet("""
                 border: 2px solid dark; /* 边框颜色 */
                 border-radius: 10px; /* 圆角边框 */
@@ -260,12 +258,12 @@ class CustomTabWidget(QWidget):
 }
 """)
 
-
-
-    def show_placeholder(self, show=True, message="请选择或新建情景"):
+    def show_placeholder(self, show=True, message=None):
+        if message is None:
+            message = self.tr("请选择或新建情景")
         if show:
             self.content_stack.setCurrentWidget(self.placeholder)
-            self.placeholder_label.setText(message)
+            self.placeholder_label.setText(self.tr(message))
             for button in self.tabs:
                 button.setChecked(False)
             self.tab_buttons_widget.setVisible(False)
@@ -277,7 +275,6 @@ class CustomTabWidget(QWidget):
             if self.tabs:
                 self.unlock_tabs(1)
                 self.switch_tab(1)
-
 
     def reset_all_inputs(self):
         self.ElementSettingTab.reset_inputs()

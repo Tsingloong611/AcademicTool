@@ -14,7 +14,6 @@ class CustomInformationDialog(QDialog):
         self.setStyleSheet("""
         background : white;
         color: black;
-
                 """)
 
         layout = QVBoxLayout(self)
@@ -30,8 +29,8 @@ class CustomInformationDialog(QDialog):
         button_layout = QHBoxLayout()
         self.result = None
 
-        for text, role in buttons or [("确认", "accept")]:
-            button = QPushButton(text)
+        for text, role in buttons or [(self.tr("确认"), "accept")]:
+            button = QPushButton(self.tr(text))
             button.clicked.connect(self.accept if role == "accept" else self.reject)
             button_layout.addWidget(button)
 

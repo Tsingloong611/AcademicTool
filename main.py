@@ -1,12 +1,10 @@
-# -*- coding: utf-8 -*-
-# @Time    : 12/3/2024 10:09 AM
-# @FileName: main.py
-# @Software: PyCharm
+# main.py
 
 import sys
 import json
 import os
 
+from PySide6.QtCore import QTranslator, QCoreApplication
 from PySide6.QtGui import Qt
 from PySide6.QtWidgets import QApplication, QMessageBox, QDialog
 
@@ -70,10 +68,26 @@ def load_config(config_path='config.json'):
 
 def setup_i18n(app, i18n_config):
     """
-    设置国际化选项。目前保留选项，具体实现以后进行。
+    设置国际化选项。
     """
-    # 国际化功能留待以后实现
-    pass
+    language = i18n_config.get("language", "en_US")
+    available_languages = i18n_config.get("available_languages", ["en_US", "zh_CN"])
+
+    translator = QTranslator()
+    translation_file = f"translations/translations_{language}.qm"
+
+    if language not in available_languages:
+        language = "zh_CN"  # 默认语言
+
+    if os.path.exists(translation_file):
+        if translator.load(translation_file):
+            app.installTranslator(translator)
+        else:
+            print(f"无法加载翻译文件：{translation_file}")
+    else:
+        print(f"翻译文件不存在：{translation_file}")
+
+    return translator
 
 
 def main(app):
@@ -83,12 +97,11 @@ def main(app):
     # 设置宋体九号
     app.setFont("宋体,9")
 
-
     # 加载配置文件
     config = load_config()
 
-    # 设置国际化（暂不实现）
-    setup_i18n(app, config.get("i18n", {}))
+    # 设置国际化
+    translator = setup_i18n(app, config.get("i18n", {}))
 
     # 初始化数据库管理器
     db_manager = DatabaseManager()

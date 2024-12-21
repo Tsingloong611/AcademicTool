@@ -8,14 +8,13 @@ from black.concurrency import cancel
 
 
 class CustomQuestionDialog(QDialog):
-    def __init__(self, title, message,position=1, parent=None):
+    def __init__(self, title, message, position=1, parent=None):
         super().__init__(parent)
         self.setWindowTitle(title)
         self.resize(300, 100)
         self.setStyleSheet("""
         background : white;
         color: black;
-
         """)
 
         layout = QVBoxLayout(self)
@@ -30,22 +29,19 @@ class CustomQuestionDialog(QDialog):
         # 按钮布局
         button_layout = QHBoxLayout()
 
-        yes_button = QPushButton("确认")
+        yes_button = QPushButton(self.tr("确认"))
         yes_button.clicked.connect(self.accept)
         button_layout.addWidget(yes_button)
 
-
-        no_button = QPushButton("取消")
+        no_button = QPushButton(self.tr("取消"))
         no_button.clicked.connect(self.reject)
         button_layout.addWidget(no_button)
         if position == 1:
             yes_button.setStyleSheet("""
 
-
             """)
         else:
             no_button.setStyleSheet("""
-
 
             """)
 

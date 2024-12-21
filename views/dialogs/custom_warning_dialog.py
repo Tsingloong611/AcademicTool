@@ -23,15 +23,14 @@ class CustomWarningDialog(QDialog):
         self.setStyleSheet("""
         background : white;
         color: black;
-
-""")
+        """)
 
         # 按钮布局
         button_layout = QHBoxLayout()
         self.result = None
 
-        for text, role in buttons or [("确定", "accept")]:
-            button = QPushButton(text)
+        for text, role in buttons or [(self.tr("确定"), "accept")]:
+            button = QPushButton(self.tr(text))
             button.clicked.connect(self.accept if role == "accept" else self.reject)
             button_layout.addWidget(button)
 
