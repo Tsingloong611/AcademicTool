@@ -96,7 +96,7 @@ class StatusBar(QWidget):
         label.setText(self.tr(text) if isinstance(text, str) else text)
         label.setToolTip(text)
 
-    def update_status(self, username, database, host, port, scenario_name, owl_status, bayes_status, scenario_description, update_time):
+    def update_status(self, username, database, scenario_name, owl_status, bayes_status, scenario_description, update_time):
         full_user_text = self.tr(f"当前用户: {username}")
         self.set_label_text_with_tooltip(self.user_label, full_user_text, max_length=40)
 
@@ -122,7 +122,7 @@ class StatusBar(QWidget):
         self.scenario_update_time_label.setText(self.tr("情景更新时间: ") + self.tr(update_time))
         self.scenario_update_time_label.setToolTip(self.tr(update_time))
 
-    def update_user_info(self, username, database, host, port):
+    def update_user_info(self, username, database):
         full_user_text = self.tr(f"当前用户: {username}")
         self.set_label_text_with_tooltip(self.user_label, full_user_text, max_length=40)
 

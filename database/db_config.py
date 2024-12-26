@@ -6,8 +6,8 @@ from sqlalchemy import create_engine
 from sqlalchemy.dialects.mysql import pymysql
 from sqlalchemy.orm import sessionmaker, declarative_base
 from sqlalchemy import create_engine, text
-# 基类
-Base = declarative_base()
+from models.models import Base
+
 
 class DatabaseManager:
     def __init__(self):
@@ -21,6 +21,7 @@ class DatabaseManager:
             self.SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=self.engine)
             # 创建所有表（如果尚未创建）
             Base.metadata.create_all(bind=self.engine)
+            print("数据库连接成功")
             return True, "连接成功"
         except Exception as e:
             return False, str(e)

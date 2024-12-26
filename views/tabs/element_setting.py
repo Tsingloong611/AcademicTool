@@ -253,11 +253,10 @@ class EditBehaviorDialog(QDialog):
         form_layout = QFormLayout()
         form_layout.setSpacing(10)
 
-        self.subject_editor = self.create_editor(is_subject_enum, subject_enum_values, subject,
-                                                 self.tr("请输入行为主体（如：司机）"))
+
         self.object_editor = self.create_editor(is_object_enum, object_enum_values, obj, self.tr("请输入行为对象（如：行人）"))
 
-        form_layout.addRow(self.tr("行为主体:"), self.subject_editor)
+
         form_layout.addRow(self.tr("行为对象:"), self.object_editor)
         layout.addLayout(form_layout)
 
@@ -297,14 +296,11 @@ class EditBehaviorDialog(QDialog):
         return editor
 
     def validate_and_accept(self):
-        subject = self.subject_editor.currentText() if isinstance(self.subject_editor,
-                                                                  QComboBox) else self.subject_editor.text().strip()
+
         obj = self.object_editor.currentText() if isinstance(self.object_editor,
                                                              QComboBox) else self.object_editor.text().strip()
 
-        if not subject or subject == "<空>":
-            CustomWarningDialog(self.tr("输入错误"), self.tr("行为主体不能为空！")).exec_()
-            return
+
 
         if not obj or obj == "<空>":
             CustomWarningDialog(self.tr("输入错误"), self.tr("行为对象不能为空！")).exec_()
@@ -313,12 +309,13 @@ class EditBehaviorDialog(QDialog):
         self.accept()
 
     def get_values(self):
-        subject = self.subject_editor.currentText() if isinstance(self.subject_editor,
-                                                                  QComboBox) else self.subject_editor.text().strip()
+
         obj = self.object_editor.currentText() if isinstance(self.object_editor,
                                                              QComboBox) else self.object_editor.text().strip()
+        print(obj)
+        return obj
 
-        return subject if subject != "<空>" else "", obj if obj != "<空>" else ""
+
 
 
 class ElementSettingTab(QWidget):
@@ -946,6 +943,7 @@ QGroupBox::title {
         self.behavior_placeholder.show()
 
     def populate_behavior_model(self, behaviors):
+        self.behavior_table.setRowCount(0)  # 清除表格中的所有行
         if behaviors:
             self.behavior_placeholder.hide()
             self.behavior_table.show()
@@ -957,7 +955,7 @@ QGroupBox::title {
                 name_item.setTextAlignment(Qt.AlignCenter)
                 self.behavior_table.setItem(row_idx, 0, name_item)
 
-                subject_item = QTableWidgetItem(behavior.get("subject", ""))
+                subject_item = QTableWidgetItem(self.current_selected_category)
                 object_item = QTableWidgetItem(behavior.get("object", ""))
                 subject_item.setTextAlignment(Qt.AlignCenter)
                 object_item.setTextAlignment(Qt.AlignCenter)
@@ -1078,12 +1076,8 @@ QGroupBox::title {
             parent=self
         )
         if dialog.exec() == QDialog.Accepted:
-            new_subject, new_object = dialog.get_values()
+            new_object = dialog.get_values()
 
-            if isinstance(self.behavior_table.item(selected_row, 1), QTableWidgetItem):
-                self.behavior_table.item(selected_row, 1).setText(new_subject)
-            else:
-                self.behavior_table.setItem(selected_row, 1, QTableWidgetItem(new_subject))
 
             if isinstance(self.behavior_table.item(selected_row, 2), QTableWidgetItem):
                 self.behavior_table.item(selected_row, 2).setText(new_object)
@@ -1092,12 +1086,11 @@ QGroupBox::title {
 
             if self.current_selected_category:
                 if selected_row < len(self.category_data[self.current_selected_category]["behavior"]):
-                    self.category_data[self.current_selected_category]["behavior"][selected_row]["subject"] = new_subject
                     self.category_data[self.current_selected_category]["behavior"][selected_row]["object"] = new_object
                 else:
                     self.category_data[self.current_selected_category]["behavior"].append({
                         "name": behavior_name,
-                        "subject": new_subject,
+                        "subject": self.current_selected_category,
                         "object": new_object
                     })
 
@@ -1282,13 +1275,17 @@ QGroupBox::title {
                     </tr>
                 """
                 for behavior in item['behaviors']:
+                    behavior_name = behavior.get('name', '')
+                    behavior_subject = item['category']
+                    behavior_object = behavior.get('object', '')
                     detailed_info += f"""
                     <tr>
-                        <td>{behavior['name']}</td>
-                        <td>{behavior['subject']}</td>
-                        <td>{behavior['object']}</td>
+                        <td>{behavior_name}</td>
+                        <td>{behavior_subject}</td>
+                        <td>{behavior_object}</td>
                     </tr>
                     """
+
                 detailed_info += "</table>"
             else:
                 detailed_info += "<p class='no-behavior'>" + self.tr("无行为模型") + "</p>"

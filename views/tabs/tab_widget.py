@@ -25,6 +25,7 @@ class CustomTabWidget(QWidget):
         self.ModelTransformationTab.set_inference_request.connect(self.set_inference_conditions)
 
 
+
     def init_ui(self):
         main_layout = QVBoxLayout(self)
         main_layout.setContentsMargins(0, 0, 0, 0)
@@ -267,6 +268,15 @@ class CustomTabWidget(QWidget):
             for button in self.tabs:
                 button.setChecked(False)
             self.tab_buttons_widget.setVisible(False)
+            self.content_stack.setStyleSheet("""QStackedWidget {
+                border: 2px solid dark; /* 边框颜色 */
+                border-top-left-radius: 10px;
+                border-top-right-radius: 10px;
+                border-bottom-left-radius: 10px; /* 左下角圆角 */
+                border-bottom-right-radius: 10px; /* 右下角圆角 */
+                background-color:#E8E8E8; /* 淡灰色 */
+            }
+            """)
         else:
             self.tab_buttons_widget.setVisible(True)
             self.reset_all_inputs()

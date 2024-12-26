@@ -66,8 +66,8 @@ class ScenarioDialog(QDialog):
         self.cancel_button.clicked.connect(self.reject)
 
         if self.scenario:
-            self.name_input.setText(self.scenario.name)
-            self.desc_input.setText(self.scenario.description)
+            self.name_input.setText(self.scenario.scenario_name)
+            self.desc_input.setText(self.scenario.scenario_description)
 
         # 设置固定的按钮宽度
         for i in range(button_layout.count()):
@@ -195,7 +195,7 @@ QToolTip {
         self.placeholder_label = QLabel(self.tr("请添加情景"))
         self.placeholder_label.setAlignment(Qt.AlignCenter)
         self.placeholder_label.setObjectName("PlaceholderLabel")
-        self.placeholder_label.setStyleSheet("color: gray; font-style: italic;")
+
 
         # 创建“无匹配结果”标签
         self.no_result_label = QLabel(self.tr("无匹配结果"))
@@ -236,15 +236,15 @@ QToolTip {
         self.list_widget.clear()
         self.scenarios = scenarios
         for scenario in scenarios:
-            description = scenario.description
+            description = scenario.scenario_description
             if len(description) > 8:
                 short_desc = description[:8] + "..."
             else:
                 short_desc = description
-            item = QListWidgetItem(f"{scenario.name}")
-            item.setData(Qt.UserRole, scenario.id)
-            item.setData(Qt.UserRole + 1, scenario.description)
-            item.setToolTip(scenario.description if scenario.description.strip() else self.tr("没有描述信息"))
+            item = QListWidgetItem(f"{scenario.scenario_name}")
+            item.setData(Qt.UserRole, scenario.scenario_id)
+            item.setData(Qt.UserRole + 1, scenario.scenario_description)
+            item.setToolTip(scenario.scenario_description if scenario.scenario_description.strip() else self.tr("没有描述信息"))
             self.list_widget.addItem(item)
 
         # 根据是否有情景更新堆叠布局
@@ -259,14 +259,14 @@ QToolTip {
         self.list_widget.clear()
         found = False
         for scenario in self.scenarios:
-            if query in scenario.name.lower():
-                description = scenario.description
+            if query in scenario.scenario_name.lower():
+                description = scenario.scenario_description
                 if len(description) > 8:
                     description = description[:8] + "..."
-                item = QListWidgetItem(f"{scenario.name}")
-                item.setData(Qt.UserRole, scenario.id)
-                item.setData(Qt.UserRole + 1, scenario.description)
-                item.setToolTip(scenario.description if scenario.description.strip() else self.tr("没有描述信息"))
+                item = QListWidgetItem(f"{scenario.scenario_name}")
+                item.setData(Qt.UserRole, scenario.scenario_id)
+                item.setData(Qt.UserRole + 1, scenario.scenario_description)
+                item.setToolTip(scenario.scenario_description if scenario.scenario_description.strip() else self.tr("没有描述信息"))
                 self.list_widget.addItem(item)
                 found = True
 
