@@ -850,7 +850,7 @@ class ConditionSettingTab(QWidget):
             self.tr("确定要删除应急行为 '") + self.current_behavior + self.tr("' 下的选中资源吗？"),
             parent=self
         )
-        qdlg.answered.connect(lambda is_ok: self.on_delete_confirmed(is_ok, resource, row))
+        qdlg.accepted.connect(lambda: self.on_delete_confirmed(True, resource, row))
         qdlg.open()
 
     def on_delete_confirmed(self, is_ok, resource, row):

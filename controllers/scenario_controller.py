@@ -4,17 +4,18 @@
 # @Software: PyCharm
 import json
 
-from PySide6.QtCore import QObject, Slot, Qt
+from PySide6.QtCore import QObject, Slot, Qt, Signal
 from PySide6.QtWidgets import QInputDialog, QMessageBox, QDialog
 from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.orm import joinedload
 from sqlalchemy.orm.sync import update
 from sqlalchemy.sql.base import elements
 
 # 假设您已经在 models/scenario.py 中定义了 Scenario 类，
 # 其中字段为 scenario_id, scenario_name, scenario_description, ...
 from models.models import Scenario, ElementBase, Element, Attribute, AttributeBase, BehaviorObject, BehaviorBaseObject, \
-    Behavior, BehaviorBase, AttributeAssociation, AttributeBaseAssociation
+    Behavior, BehaviorBase, AttributeAssociation, AttributeBaseAssociation, ElementType, EnumValue, AttributeType
 
 from views.dialogs.custom_error_dialog import CustomErrorDialog
 from views.dialogs.custom_information_dialog import CustomInformationDialog
@@ -24,6 +25,8 @@ from views.scenario_manager import ScenarioDialog
 
 
 class ScenarioController(QObject):
+    # 发出查询结果信号
+    send_sql_result = Signal(list)
     def __init__(self, scenario_manager, status_bar, tab_widget, db_manager):
         super().__init__()
         self.scenario_manager = scenario_manager
@@ -39,6 +42,8 @@ class ScenarioController(QObject):
         self.scenario_manager.edit_requested.connect(self.handle_edit_requested)
         self.scenario_manager.delete_requested.connect(self.handle_delete_requested)
 
+        self.tab_widget.ElementSettingTab.request_sql_query.connect(self.execute_sql_query)
+        self.send_sql_result.connect(self.tab_widget.ElementSettingTab.receive_sql_result)
         # 加载初始数据
         self.load_scenarios()
 
@@ -104,78 +109,200 @@ class ScenarioController(QObject):
 
             self.static_data = self.build_static_data(scenario_id)
 
-
-            self.tab_widget.ElementSettingTab.static_data = self.static_data
-            self.tab_widget.ElementSettingTab.category_data = {category: json.loads(json.dumps(data)) for category, data in self.static_data.items()}
-            self.tab_widget.ElementSettingTab.category_to_attributes = {
-            category: list(data.get("attributes", {}).keys())
-            for category, data in self.static_data.items()
-        }
-            self.tab_widget.ElementSettingTab.attribute_editors= {category: {} for category in self.tab_widget.ElementSettingTab.categories}
         else:
             self.reset_status_bar()
 
 
     def build_static_data(self, scenario_id):
         """
-        根据题中提到的三条查询逻辑，构造 static_data 字典
+        根据给定的 scenario_id，从数据库加载所有相关元素及其属性和行为，
+        构建 static_data 字典，符合指定的简化 JSON 结构。
+
+        Args:
+            scenario_id (int): 情景的唯一标识符。
+
+        Returns:
+            dict: 包含情景要素、属性和行为的嵌套字典。
         """
-        # 第 1 步：获取 “父节点不为空 且 父节点不等于 关联实体” 的所有 Element
-        # 相当于：
-        # SELECT * FROM element
-        #  WHERE scenario_id=20
-        #    AND element_parent_id IS NOT NULL
-        #    AND element_parent_id <> (SELECT element_id FROM element WHERE scenario_id=20 AND element_name='关联实体')
-
-        # 先拿 '关联实体' 的 element_id
-        ent = self.session.query(Element.element_id).filter(
-            Element.scenario_id == scenario_id,
-            Element.element_name == '关联实体'
-        ).scalar()  # 返回单个值 or None
-
-        # 再拿符合条件的 Element
-        elements = self.session.query(Element).filter(
-            Element.scenario_id == scenario_id,
-            Element.element_parent_id.isnot(None),
-            Element.element_parent_id != ent
-        ).all()
-
-        # 用于构造 static_data
-        static_data = {}
-
-        # 第 2 & 第 3 步：对每个要素，分别查询 Attribute、Behavior
-        for elem in elements:
-            elem_name = elem.element_name
-
-            # 查属性: SELECT * FROM attribute WHERE element_id = elem.element_id
-            attrs = self.session.query(Attribute).filter(Attribute.element_id == elem.element_id).all()
-
-            # 查行为: SELECT * FROM behavior WHERE element_id = elem.element_id
-            behs = self.session.query(Behavior).filter(Behavior.element_id == elem.element_id).all()
-
-            # 组装属性字典
-            attr_dict = {}
-            for a in attrs:
-                attr_dict[a.attribute_name] = a.attribute_value  # or whatever fields
-
-            # 组装行为列表
-            beh_list = []
-            for b in behs:
-                # 根据你实际表字段来赋值, 这里举例:
-                beh_list.append({
-                    "name": b.behavior_name,
-                    # 如果你还有 subject/object 字段，就加上:
-                    # "subject": b.behavior_subject,
-                    # "object": b.behavior_object
-                })
-
-            static_data[elem_name] = {
-                "attributes": attr_dict,
-                "behavior": beh_list
+        # 初始化 static_data
+        static_data = {
+            "scenario": {
+                "scenario_id": scenario_id,
+                "scenario_name": "",
+                "scenario_description": "",
+                "create_time": "",
+                "update_time": "",
+                "emergency_id": None,
+                "elements": []
             }
+        }
 
-        print(f"static_data:{static_data}")
+        try:
+            # 预先加载所有 AttributeTypes 和 EnumValues，缓存以减少查询次数
+            attribute_types = {at.attribute_type_id: at for at in self.session.query(AttributeType).all()}
+            enum_values = {ev.enum_value_id: ev.value for ev in self.session.query(EnumValue).all()}
 
+
+            # 获取符合条件的 Elements
+            elements = self.session.query(Element).filter(
+                Element.scenario_id == scenario_id,
+            ).all()
+
+            element_ids = [elem.element_id for elem in elements]
+
+            # 获取所有相关的 Attributes
+            attributes = self.session.query(Attribute).filter(
+                Attribute.element_id.in_(element_ids)
+            ).all()
+
+            # 获取所有相关的 AttributeAssociations
+            attribute_associations = self.session.query(AttributeAssociation).filter(
+                AttributeAssociation.attribute_id.in_([attr.attribute_id for attr in attributes])
+            ).all()
+
+            # 构建属性关联字典
+            attr_assoc_dict = {}
+            for assoc in attribute_associations:
+                if assoc.attribute_id not in attr_assoc_dict:
+                    attr_assoc_dict[assoc.attribute_id] = []
+                attr_assoc_dict[assoc.attribute_id].append(assoc.associated_element_id)
+
+            # 获取所有相关的 Behaviors
+            behaviors = self.session.query(Behavior).filter(
+                Behavior.element_id.in_(element_ids)
+            ).all()
+
+            # 获取所有相关的 BehaviorObjects
+            behavior_objects = self.session.query(BehaviorObject).filter(
+                BehaviorObject.behavior_id.in_([beh.behavior_id for beh in behaviors])
+            ).all()
+
+            # 构建行为关联字典
+            beh_assoc_dict = {}
+            for assoc in behavior_objects:
+                if assoc.behavior_id not in beh_assoc_dict:
+                    beh_assoc_dict[assoc.behavior_id] = []
+                beh_assoc_dict[assoc.behavior_id].append(assoc.object_element_id)
+
+            # 将 Attributes 按 element_id 分组
+            attributes_by_element = {}
+            for attr in attributes:
+                if attr.element_id not in attributes_by_element:
+                    attributes_by_element[attr.element_id] = []
+                attributes_by_element[attr.element_id].append(attr)
+
+            # 将 Behaviors 按 element_id 分组
+            behaviors_by_element = {}
+            for beh in behaviors:
+                if beh.element_id not in behaviors_by_element:
+                    behaviors_by_element[beh.element_id] = []
+                behaviors_by_element[beh.element_id].append(beh)
+
+            for elem in elements:
+                # 获取元素类型
+                elem_type = self.session.query(ElementType).filter(
+                    ElementType.element_type_id == elem.element_type_id
+                ).one_or_none()
+                elem_type_code = elem_type.code if elem_type else "unknown"
+
+                elem_dict = {
+                    "element_id": elem.element_id,
+                    "element_name": elem.element_name,
+                    "element_type_id": elem.element_type_id,
+                    "element_parent_id": elem.element_parent_id,
+                    "attributes": [],
+                    "behaviors": []
+                }
+
+                # 处理属性
+                elem_attributes = attributes_by_element.get(elem.element_id, [])
+                for attr in elem_attributes:
+                    attr_type = attribute_types.get(attr.attribute_type_id)
+                    if not attr_type:
+                        continue  # 或者处理未知类型
+
+
+                    attr_value = attr.attribute_value
+
+                    # 根据属性类型处理关联
+                    if attr_type.code not in ['string', 'int', 'boolean', 'enum']:
+                        # 需要从 attribute_association 获取关联的 element_id
+                        associated_ids = attr_assoc_dict.get(attr.attribute_id, [])
+                        if attr.is_multi_valued:
+                            attr_value = associated_ids  # 多个关联ID
+                        else:
+                            attr_value = associated_ids[0] if associated_ids else None  # 单个关联ID
+                            attr_value = list(attr_value)
+
+                    # 构建属性字典
+                    attr_entry = {
+                        "attribute_id": attr.attribute_id,
+                        "attribute_name": attr.attribute_name,
+                        "attribute_type_id": attr.attribute_type_id,
+                        "is_required": bool(attr.is_required),
+                        "is_multi_valued": bool(attr.is_multi_valued),
+                        "enum_value_id": attr.enum_value_id,
+                        "attribute_value": attr_value
+                    }
+
+                    elem_dict["attributes"].append(attr_entry)
+
+                # 处理行为
+                elem_behaviors = behaviors_by_element.get(elem.element_id, [])
+                for beh in elem_behaviors:
+                    # 获取行为类型
+                    beh_type = self.session.query(ElementType).filter(
+                        ElementType.element_type_id == beh.object_type_id
+                    ).one_or_none()
+
+                    beh_type_code = beh_type.code if beh_type else "unknown"
+
+                    # 根据行为类型处理关联
+                    associated_ids = beh_assoc_dict.get(beh.behavior_id, [])
+                    if beh.is_multi_valued:
+                        related_objects = associated_ids
+                    else:
+                        related_objects = [associated_ids[0]] if associated_ids else []
+
+                    beh_entry = {
+                        "behavior_id": beh.behavior_id,
+                        "behavior_name": beh.behavior_name,
+                        "is_required": bool(beh.is_required),
+                        "object_type_id": beh.object_type_id,
+                        "is_multi_valued": bool(beh.is_multi_valued),
+                        "related_objects": related_objects
+                    }
+
+                    elem_dict["behaviors"].append(beh_entry)
+
+                static_data["scenario"]["elements"].append(elem_dict)
+
+        except AttributeError as e:
+            # 记录错误日志
+            print(f"AttributeError: {e}")
+        except Exception as e:
+            # 记录其他错误日志
+            print(f"Error: {e}")
+
+        try:
+            # 获取情景的其他信息（名称、描述、时间等）
+            scenario = self.session.query(Scenario).filter(
+                Scenario.scenario_id == scenario_id
+            ).one_or_none()
+
+            if scenario:
+                static_data["scenario"]["scenario_name"] = scenario.scenario_name
+                static_data["scenario"]["scenario_description"] = scenario.scenario_description
+                static_data["scenario"][
+                    "create_time"] = scenario.scenario_create_time.isoformat() if scenario.scenario_create_time else None
+                static_data["scenario"][
+                    "update_time"] = scenario.scenario_update_time.isoformat() if scenario.scenario_update_time else None
+                static_data["scenario"]["emergency_id"] = scenario.emergency_id
+
+        except Exception as e:
+            print(f"Error while fetching scenario details: {e}")
+
+        print(f"static_data: {json.dumps(static_data, ensure_ascii=False, indent=2)}")
         return static_data
 
     def reset_status_bar(self):
@@ -494,6 +621,23 @@ class ScenarioController(QObject):
 
     def get_element_by_scenario_id(self,scenario_id):
         pass
+
+    def execute_sql_query(self, sql_query):
+        print("执行查询")
+        # 执行 SQL 查询
+        result = self.get_result_by_sql(sql_query)
+        # 发出查询结果信号
+        self.send_sql_result.emit(result)
+
+    def get_result_by_sql(self, sql_query):
+        try:
+            # 执行查询
+            result = self.session.execute(text(sql_query)).fetchall()
+            print(f"查询结果: {result}")
+            return result
+        except Exception as e:
+            print(f"执行 SQL 查询时出错: {e}")
+            return []
 
     def __del__(self):
         if self.session:

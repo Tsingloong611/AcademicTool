@@ -142,7 +142,7 @@ class MainWindow(QMainWindow):
         # 自动加载情景数据
         self.controller.load_scenarios()
 
-        # 连接标签切换信号（如果需要）
+        # 连接标签切换信号，调试
         self.tab_widget.tab_changed.connect(self.on_tab_changed)
 
         # 加载样式表
@@ -165,5 +165,5 @@ class MainWindow(QMainWindow):
         self.setStyleSheet(combined_styles)
 
     def on_tab_changed(self, index):
-        # 处理标签切换事件，例如更新状态栏或其他逻辑
+        # 处理标签切换事件
         print(self.tr(f"切换到标签 {index}"))

@@ -151,11 +151,6 @@ class Element(Base):
         index=True
     )
 
-    # 如果需要映射关系，可加 relationship
-    # element_type = relationship("ElementType")
-    # scenario = relationship("Scenario", back_populates="elements")
-    # parent = relationship("Element", remote_side=[element_id])
-
     def __repr__(self):
         return f"<Element(name={self.element_name})>"
 

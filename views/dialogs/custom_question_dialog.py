@@ -10,6 +10,7 @@ from black.concurrency import cancel
 class CustomQuestionDialog(QDialog):
     def __init__(self, title, message, position=1, parent=None):
         super().__init__(parent)
+        self.answered = None
         self.setWindowTitle(title)
         self.resize(300, 100)
         self.setStyleSheet("""
