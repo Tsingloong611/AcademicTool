@@ -53,7 +53,7 @@ class CustomInputDialog(QDialog):
         layout.addLayout(button_layout)
         # 设置固定的按钮宽度
         for i in range(button_layout.count()):
-            button_layout.itemAt(i).widget().setFixedWidth(50)
+            button_layout.itemAt(i).widget().setFixedWidth(110)
 
     def get_input(self):
         return self.input_field.text()

@@ -3,6 +3,7 @@
 # @FileName: scenario_controller.py
 # @Software: PyCharm
 import json
+from datetime import datetime
 
 from PySide6.QtCore import QObject, Slot, Qt, Signal
 from PySide6.QtWidgets import QInputDialog, QMessageBox, QDialog
@@ -12,16 +13,24 @@ from sqlalchemy.orm import joinedload
 from sqlalchemy.orm.sync import update
 from sqlalchemy.sql.base import elements
 
+from models.models import Scenario, BehaviorValue, AttributeValue, Category, Entity, Template, BehaviorValueReference, \
+    AttributeValueReference, entity_category
 # 假设您已经在 models/scenario.py 中定义了 Scenario 类，
 # 其中字段为 scenario_id, scenario_name, scenario_description, ...
-from models.models import Scenario, ElementBase, Element, Attribute, AttributeBase, BehaviorObject, BehaviorBaseObject, \
-    Behavior, BehaviorBase, AttributeAssociation, AttributeBaseAssociation, ElementType, EnumValue, AttributeType
-
 from views.dialogs.custom_error_dialog import CustomErrorDialog
 from views.dialogs.custom_information_dialog import CustomInformationDialog
 from views.dialogs.custom_warning_dialog import CustomWarningDialog
 from views.login_dialog import LoginDialog
 from views.scenario_manager import ScenarioDialog
+import logging
+import json
+from sqlalchemy.orm import Session
+from typing import Dict, Any, Union, List
+
+# 配置日志
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
 
 
 class ScenarioController(QObject):
@@ -29,6 +38,7 @@ class ScenarioController(QObject):
     send_sql_result = Signal(list)
     def __init__(self, scenario_manager, status_bar, tab_widget, db_manager):
         super().__init__()
+        self.scenario_id = 1
         self.scenario_manager = scenario_manager
         self.status_bar = status_bar
         self.tab_widget = tab_widget
@@ -44,6 +54,7 @@ class ScenarioController(QObject):
 
         self.tab_widget.ElementSettingTab.request_sql_query.connect(self.execute_sql_query)
         self.send_sql_result.connect(self.tab_widget.ElementSettingTab.receive_sql_result)
+        self.tab_widget.ElementSettingTab.save_to_database_signal.connect(self.apply_changes_from_json)
         # 加载初始数据
         self.load_scenarios()
 
@@ -53,10 +64,10 @@ class ScenarioController(QObject):
         database = connection_info.get('database', '未知数据库')
         self.status_bar.update_user_info(username, database)
 
-    def load_scenarios(self):
+    def load_scenarios(self,selected_scenario_id=None):
         """加载并在界面上显示所有情景"""
         scenarios = self.get_all_scenarios()
-        self.scenario_manager.populate_scenarios(scenarios)
+        self.scenario_manager.populate_scenarios(scenarios,selected_scenario_id)
         # 初始时保持标签页锁定和占位页面显示
         if scenarios:
             self.tab_widget.show_placeholder(True)
@@ -77,6 +88,7 @@ class ScenarioController(QObject):
     def handle_scenario_selected(self, scenario_id, scenario_name, scenario_description):
         """当用户在列表中选择了一个情景时触发"""
         scenario = self.get_scenario_by_id(scenario_id)
+        self.scenario_id = scenario_id
         if scenario:
             self.current_scenario = scenario
             # 从数据库管理器获取连接信息
@@ -107,203 +119,353 @@ class ScenarioController(QObject):
             # 解锁标签页并显示功能区
             self.tab_widget.show_placeholder(False)
 
-            self.static_data = self.build_static_data(scenario_id)
+            self.tab_widget.ElementSettingTab.session = self.session
+
+            self.static_data = self.get_scenario_data(self.session, scenario_id)
+            # 缩进
+            self.static_data = json.dumps(self.static_data, indent=4, ensure_ascii=False)
+
+            print(f"得到了{self.static_data}")
+            self.static_data = json.loads(self.static_data)
+
+            self.tab_widget.ElementSettingTab.scenario_data = self.static_data
+            if not self.static_data["entities"]:
+                print("No entities found for the selected scenario.")
+                self.tab_widget.ElementSettingTab.element_data = {}
+            else:
+                entity_data = {
+                    entity["entity_id"]: entity for entity in self.static_data["entities"]
+                }
+                print(f"读取到entity_data: {entity_data}")
+                self.tab_widget.ElementSettingTab.element_data = entity_data
+
+
 
         else:
             self.reset_status_bar()
 
+    from typing import Dict, Any
+    from sqlalchemy.orm import Session
 
-    def build_static_data(self, scenario_id):
+    def get_scenario_data(self,session: Session, scenario_id: int) -> Dict[str, Any]:
         """
-        根据给定的 scenario_id，从数据库加载所有相关元素及其属性和行为，
-        构建 static_data 字典，符合指定的简化 JSON 结构。
-
-        Args:
-            scenario_id (int): 情景的唯一标识符。
-
-        Returns:
-            dict: 包含情景要素、属性和行为的嵌套字典。
+        根据 scenario_id，获取该场景下所有的实体(Entity)、
+        以及与实体相关的属性(AttributeValue) / 行为(BehaviorValue) / 类别(Category) 等信息，
+        组织成一个包含 scenario + entities + attributes + behaviors 等的字典。
         """
-        # 初始化 static_data
-        static_data = {
-            "scenario": {
-                "scenario_id": scenario_id,
-                "scenario_name": "",
-                "scenario_description": "",
-                "create_time": "",
-                "update_time": "",
-                "emergency_id": None,
-                "elements": []
-            }
+        # 1. 先查询场景自身
+        scenario = session.query(Scenario).filter_by(scenario_id=scenario_id).one()
+
+        # 构建最外层 scenario 数据结构
+        scenario_data = {
+            "scenario_id": scenario.scenario_id,
+            "scenario_name": scenario.scenario_name,
+            "scenario_description": scenario.scenario_description,
+            "scenario_create_time": str(scenario.scenario_create_time),
+            "scenario_update_time": str(scenario.scenario_update_time),
+            "emergency_id": scenario.emergency_id,
+            "entities": []
         }
 
-        try:
-            # 预先加载所有 AttributeTypes 和 EnumValues，缓存以减少查询次数
-            attribute_types = {at.attribute_type_id: at for at in self.session.query(AttributeType).all()}
-            enum_values = {ev.enum_value_id: ev.value for ev in self.session.query(EnumValue).all()}
+        # 2. 遍历该 scenario 下的所有 entity
+        for entity in scenario.entities:
+            # entity 自身信息
+            entity_dict = {
+                "entity_id": entity.entity_id,
+                "entity_name": entity.entity_name,
+                "entity_type_id": entity.entity_type_id,
+                "entity_parent_id": entity.entity_parent_id,
+                "scenario_id": entity.scenario_id,
+                "create_time": str(entity.create_time),
+                "update_time": str(entity.update_time),
+                "categories": [],
+                "attributes": [],
+                "behaviors": []
+            }
 
+            # 3. 收集多对多关联的 category
+            for cat in entity.categories:
+                entity_dict["categories"].append({
+                    "category_id": cat.category_id,
+                    "category_name": cat.category_name,
+                    "description": cat.description
+                })
 
-            # 获取符合条件的 Elements
-            elements = self.session.query(Element).filter(
-                Element.scenario_id == scenario_id,
-            ).all()
+            # 4. 收集该 entity 的所有 attribute_value
+            for av in entity.attribute_values:
+                attr_def = av.attribute_definition
 
-            element_ids = [elem.element_id for elem in elements]
-
-            # 获取所有相关的 Attributes
-            attributes = self.session.query(Attribute).filter(
-                Attribute.element_id.in_(element_ids)
-            ).all()
-
-            # 获取所有相关的 AttributeAssociations
-            attribute_associations = self.session.query(AttributeAssociation).filter(
-                AttributeAssociation.attribute_id.in_([attr.attribute_id for attr in attributes])
-            ).all()
-
-            # 构建属性关联字典
-            attr_assoc_dict = {}
-            for assoc in attribute_associations:
-                if assoc.attribute_id not in attr_assoc_dict:
-                    attr_assoc_dict[assoc.attribute_id] = []
-                attr_assoc_dict[assoc.attribute_id].append(assoc.associated_element_id)
-
-            # 获取所有相关的 Behaviors
-            behaviors = self.session.query(Behavior).filter(
-                Behavior.element_id.in_(element_ids)
-            ).all()
-
-            # 获取所有相关的 BehaviorObjects
-            behavior_objects = self.session.query(BehaviorObject).filter(
-                BehaviorObject.behavior_id.in_([beh.behavior_id for beh in behaviors])
-            ).all()
-
-            # 构建行为关联字典
-            beh_assoc_dict = {}
-            for assoc in behavior_objects:
-                if assoc.behavior_id not in beh_assoc_dict:
-                    beh_assoc_dict[assoc.behavior_id] = []
-                beh_assoc_dict[assoc.behavior_id].append(assoc.object_element_id)
-
-            # 将 Attributes 按 element_id 分组
-            attributes_by_element = {}
-            for attr in attributes:
-                if attr.element_id not in attributes_by_element:
-                    attributes_by_element[attr.element_id] = []
-                attributes_by_element[attr.element_id].append(attr)
-
-            # 将 Behaviors 按 element_id 分组
-            behaviors_by_element = {}
-            for beh in behaviors:
-                if beh.element_id not in behaviors_by_element:
-                    behaviors_by_element[beh.element_id] = []
-                behaviors_by_element[beh.element_id].append(beh)
-
-            for elem in elements:
-                # 获取元素类型
-                elem_type = self.session.query(ElementType).filter(
-                    ElementType.element_type_id == elem.element_type_id
-                ).one_or_none()
-                elem_type_code = elem_type.code if elem_type else "unknown"
-
-                elem_dict = {
-                    "element_id": elem.element_id,
-                    "element_name": elem.element_name,
-                    "element_type_id": elem.element_type_id,
-                    "element_parent_id": elem.element_parent_id,
-                    "attributes": [],
-                    "behaviors": []
+                attribute_item = {
+                    "attribute_value_id": av.attribute_value_id,
+                    "attribute_definition_id": attr_def.attribute_definition_id,
+                    "attribute_name": av.attribute_name,
+                    "china_default_name": attr_def.china_default_name,
+                    "english_default_name": attr_def.english_default_name,
+                    "attribute_code_name": attr_def.attribute_code.attribute_code_name,  # 对应 attribute_code
+                    "attribute_aspect_name": attr_def.attribute_aspect.attribute_aspect_name,  # 对应 attribute_aspect
+                    "attribute_type_code": attr_def.attribute_type.attribute_type_code,  # 对应 attribute_type
+                    "is_required": bool(attr_def.is_required),
+                    "is_multi_valued": bool(attr_def.is_multi_valued),
+                    "is_reference": bool(attr_def.is_reference),
+                    "reference_target_type_id": attr_def.reference_target_type_id,
+                    "default_value": attr_def.default_value,
+                    "description": attr_def.description,
+                    # 存储在 attribute_value 表里的值
+                    "attribute_value": av.attribute_value,
+                    # 若是引用型属性，可收集其 references
+                    "referenced_entities": []
                 }
 
-                # 处理属性
-                elem_attributes = attributes_by_element.get(elem.element_id, [])
-                for attr in elem_attributes:
-                    attr_type = attribute_types.get(attr.attribute_type_id)
-                    if not attr_type:
-                        continue  # 或者处理未知类型
+                # 如果是引用型 (attr_def.is_reference = True)，检查 attribute_value_reference
+                if attr_def.is_reference:
+                    for ref in av.references:
+                        attribute_item["referenced_entities"].append({
+                            "referenced_entity_id": ref.referenced_entity_id
+                        })
 
+                entity_dict["attributes"].append(attribute_item)
 
-                    attr_value = attr.attribute_value
+            # 5. 收集该 entity 的所有行为(behavior_value)
+            #    由于 model 中定义: entity.behavior_values => BehaviorValue
+            for bv in entity.behavior_values:
+                bh_def = bv.behavior_definition
+                # 提取 BehaviorDefinition 的中文、英文名、行为代码等信息
+                # 如需还原旧字段 "behavior_name"，可以用 bh_def.china_default_name
+                # 也可以添加 "english_behavior_name": bh_def.english_default_name
 
-                    # 根据属性类型处理关联
-                    if attr_type.code not in ['string', 'int', 'boolean', 'enum']:
-                        # 需要从 attribute_association 获取关联的 element_id
-                        associated_ids = attr_assoc_dict.get(attr.attribute_id, [])
-                        if attr.is_multi_valued:
-                            attr_value = associated_ids  # 多个关联ID
-                        else:
-                            attr_value = associated_ids[0] if associated_ids else None  # 单个关联ID
-                            attr_value = list(attr_value)
+                # 获取 behavior_code 表中的代码名称
+                #   bh_def.behavior_code_ref 是 BehaviorCode 对象
+                #   bh_def.behavior_code_ref.behavior_code_name 即数据库 behavior_code.behavior_code_name
+                behavior_item = {
+                    "behavior_value_id": bv.behavior_value_id,
+                    "behavior_definition_id": bh_def.behavior_definition_id,
 
-                    # 构建属性字典
-                    attr_entry = {
-                        "attribute_id": attr.attribute_id,
-                        "attribute_name": attr.attribute_name,
-                        "attribute_type_id": attr.attribute_type_id,
-                        "is_required": bool(attr.is_required),
-                        "is_multi_valued": bool(attr.is_multi_valued),
-                        "enum_value_id": attr.enum_value_id,
-                        "attribute_value": attr_value
-                    }
+                    # 原先的 "behavior_name" 用中文名替代
+                    "behavior_name": bh_def.behavior_code_ref.behavior_code_name,
+                    "china_default_name": bh_def.china_default_name,
+                    "english_behavior_name": bh_def.english_default_name,
 
-                    elem_dict["attributes"].append(attr_entry)
+                    # 代码名称(如果需要)
+                    "behavior_code_name": bh_def.behavior_code_ref.behavior_code_name if bh_def.behavior_code_ref else None,
 
-                # 处理行为
-                elem_behaviors = behaviors_by_element.get(elem.element_id, [])
-                for beh in elem_behaviors:
-                    # 获取行为类型
-                    beh_type = self.session.query(ElementType).filter(
-                        ElementType.element_type_id == beh.object_type_id
-                    ).one_or_none()
+                    "object_entity_type_id": bh_def.object_entity_type_id,
+                    "is_required": bool(bh_def.is_required),
+                    "is_multi_valued": bool(bh_def.is_multi_valued),
+                    "description": bh_def.description,
+                    "create_time": str(bv.create_time),
+                    "update_time": str(bv.update_time),
+                    # 如果该行为还引用其他对象实体(behavior_value_reference)，可在此收集
+                    "object_entities": []
+                }
 
-                    beh_type_code = beh_type.code if beh_type else "unknown"
+                # bv.references => BehaviorValueReference
+                for ref in bv.references:
+                    behavior_item["object_entities"].append({
+                        "object_entity_id": ref.object_entity_id
+                    })
 
-                    # 根据行为类型处理关联
-                    associated_ids = beh_assoc_dict.get(beh.behavior_id, [])
-                    if beh.is_multi_valued:
-                        related_objects = associated_ids
+                entity_dict["behaviors"].append(behavior_item)
+
+            # 将完整的 entity_dict 加入 scenario_data
+            scenario_data["entities"].append(entity_dict)
+
+        return scenario_data
+
+    def apply_changes_from_json(session: Session, scenario_data: Dict[str, Any]) -> None:
+        """
+        回写逻辑:
+        1. 若 scenario_id 存在且>0 => 更新; 若没有 => 新建
+        2. entity_id>0 => UPDATE; entity_id<=0 => INSERT
+        3. attribute_value_id>0 => UPDATE; 否则 => INSERT
+        4. behavior_value_id>0 => UPDATE; 否则 => INSERT
+        5. 处理引用 (attribute_value_reference, behavior_value_reference):
+           - 若 refer id>0 => 直接指向已有实体
+           - 若 refer id<0 => 需先新建对应实体, flush 出其id后再指向
+        """
+
+        # 0. 建立 "临时ID -> 实际ID" 的映射缓存，用来处理新建对象之间的引用
+        temp_id_map: Dict[int, int] = {}  # 存储 {负数ID: 数据库生成的正数ID}
+
+        # ----------------------------------------------------------------
+        # 1. 处理 scenario 本身
+        # ----------------------------------------------------------------
+        sc_id = scenario_data.get("scenario_id", None)
+        if sc_id and sc_id > 0:
+            # 已存在 => 查找并更新
+            scenario_obj = session.query(Scenario).get(sc_id)
+            if not scenario_obj:
+                raise ValueError(f"Scenario with ID={sc_id} not found in DB.")
+            # 可以更新 scenario_name / scenario_description 等, 这里只示范 name
+            if "scenario_name" in scenario_data:
+                scenario_obj.scenario_name = scenario_data["scenario_name"]
+            if "scenario_description" in scenario_data:
+                scenario_obj.scenario_description = scenario_data["scenario_description"]
+            # 不需要 manually add, 因为 scenario_obj 已是持久化对象
+        else:
+            # 没 ID 或 ID<=0 => 新建一个 scenario
+            scenario_obj = Scenario(
+                scenario_name=scenario_data.get("scenario_name", "新场景"),
+                scenario_description=scenario_data.get("scenario_description", None),
+                # 其余字段(如 emergency_id) 按需补充
+            )
+            session.add(scenario_obj)
+            session.flush()  # 以便获得新的 scenario_id
+
+        # ----------------------------------------------------------------
+        # 2. 处理 entities
+        # ----------------------------------------------------------------
+        entities_data: List[Dict[str, Any]] = scenario_data.get("entities", [])
+
+        # 函数内部：存储从 JSON -> 数据库 Entity对象 的映射, 以便后续引用
+        entity_map: Dict[Union[int, None], Entity] = {}
+
+        for ent_data in entities_data:
+            e_id = ent_data.get("entity_id", None)
+            if e_id and e_id > 0:
+                # 已存在 => UPDATE
+                entity_obj = session.query(Entity).get(e_id)
+                if not entity_obj:
+                    raise ValueError(f"Entity with ID={e_id} not found.")
+                # 更新字段
+                entity_obj.entity_name = ent_data.get("entity_name", entity_obj.entity_name)
+                entity_obj.entity_type_id = ent_data.get("entity_type_id", entity_obj.entity_type_id)
+                # 也可更新 entity_parent_id, scenario_id 等
+            else:
+                # 新建
+                entity_obj = Entity(
+                    entity_name=ent_data.get("entity_name", "新Entity"),
+                    entity_type_id=ent_data.get("entity_type_id", 1),  # 默认1 => Vehicle
+                    scenario_id=scenario_obj.scenario_id,
+                )
+                session.add(entity_obj)
+                session.flush()  # 让数据库自动生成 entity_id
+
+                # 若 JSON 中是一个负数, 则记录到 temp_id_map
+                if e_id and e_id < 0:
+                    temp_id_map[e_id] = entity_obj.entity_id
+
+            # 无论新建还是更新，都放到 entity_map
+            # 注意: 这里 e_id 若为 None, 也可以作为key
+            entity_map[e_id] = entity_obj
+
+            # ----------------------------------------------------------------
+            # 2.1. 处理 categories (多对多)
+            # ----------------------------------------------------------------
+            entity_obj.categories.clear()  # 简化处理：先清空，再根据 JSON 重新添加
+            for cat_data in ent_data.get("categories", []):
+                # cat_data 可能同时有 "category_id" / "category_name"
+                c_id = cat_data.get("category_id")
+                if c_id:
+                    category_obj = session.query(Category).get(c_id)
+                    # 若找不到, 也可自行决定报错 或者 新建 Category
+                    if not category_obj:
+                        raise ValueError(f"Category ID={c_id} not found.")
+                    entity_obj.categories.append(category_obj)
+                else:
+                    # 没有 category_id => 根据 name 查或者新建
+                    cat_name = cat_data.get("category_name", None)
+                    if not cat_name:
+                        continue
+                    category_obj = session.query(Category).filter_by(category_name=cat_name).first()
+                    if not category_obj:
+                        # 新建 Category, 仅示例
+                        category_obj = Category(category_name=cat_name)
+                        session.add(category_obj)
+                        session.flush()
+                    entity_obj.categories.append(category_obj)
+
+            # ----------------------------------------------------------------
+            # 2.2. 处理 attributes (AttributeValue)
+            # ----------------------------------------------------------------
+            for attr_data in ent_data.get("attributes", []):
+                av_id = attr_data.get("attribute_value_id", None)
+                if av_id and av_id > 0:
+                    # 更新
+                    av_obj = session.query(AttributeValue).get(av_id)
+                    if not av_obj:
+                        raise ValueError(f"AttributeValue ID={av_id} not found.")
+                    av_obj.attribute_value = attr_data.get("attribute_value", av_obj.attribute_value)
+                else:
+                    # 新建
+                    definition_id = attr_data["attribute_definition_id"]
+                    av_obj = AttributeValue(
+                        entity_id=entity_obj.entity_id,
+                        attribute_definition_id=definition_id,
+                        attribute_value=attr_data.get("attribute_value", None)
+                    )
+                    session.add(av_obj)
+                    session.flush()
+
+                # 处理引用 (attribute_value_reference)
+                # 先清空原有引用 (若要保留原引用，则需做差异更新; 此处简单做覆盖)
+                av_obj.references.clear()
+                for ref_data in attr_data.get("referenced_entities", []):
+                    ref_id = ref_data["referenced_entity_id"]  # 可能是正数, 也可能是负数
+                    real_ref_id = None
+                    if ref_id > 0:
+                        real_ref_id = ref_id  # 已存在实体
                     else:
-                        related_objects = [associated_ids[0]] if associated_ids else []
+                        # 负数 => 新建(或已新建)对应实体, 要到 temp_id_map 找
+                        if ref_id in temp_id_map:
+                            real_ref_id = temp_id_map[ref_id]
+                        else:
+                            raise ValueError(f"Referenced entity with temp ID={ref_id} not created yet.")
+                    # 添加关系
+                    avr = AttributeValueReference(
+                        attribute_value_id=av_obj.attribute_value_id,
+                        referenced_entity_id=real_ref_id
+                    )
+                    session.add(avr)
+                # end of attribute_value
 
-                    beh_entry = {
-                        "behavior_id": beh.behavior_id,
-                        "behavior_name": beh.behavior_name,
-                        "is_required": bool(beh.is_required),
-                        "object_type_id": beh.object_type_id,
-                        "is_multi_valued": bool(beh.is_multi_valued),
-                        "related_objects": related_objects
-                    }
+            # ----------------------------------------------------------------
+            # 2.3. 处理 behaviors (BehaviorValue)
+            # ----------------------------------------------------------------
+            for bhv_data in ent_data.get("behaviors", []):
+                bv_id = bhv_data.get("behavior_value_id", None)
+                if bv_id and bv_id > 0:
+                    # 更新
+                    bv_obj = session.query(BehaviorValue).get(bv_id)
+                    if not bv_obj:
+                        raise ValueError(f"BehaviorValue ID={bv_id} not found.")
+                    # 也可以更新 behavior_definition_id, ...
+                else:
+                    # 新建
+                    def_id = bhv_data["behavior_definition_id"]
+                    bv_obj = BehaviorValue(
+                        behavior_definition_id=def_id,
+                        subject_entity_id=entity_obj.entity_id
+                    )
+                    session.add(bv_obj)
+                    session.flush()
 
-                    elem_dict["behaviors"].append(beh_entry)
+                    if bv_id and bv_id < 0:
+                        temp_id_map[bv_id] = bv_obj.behavior_value_id
 
-                static_data["scenario"]["elements"].append(elem_dict)
+                # 清空引用(behavior_value_reference)
+                bv_obj.references.clear()
+                for ref_data in bhv_data.get("object_entities", []):
+                    obj_eid = ref_data["object_entity_id"]
+                    if obj_eid > 0:
+                        real_eid = obj_eid
+                    else:
+                        # 在 temp_id_map中找
+                        if obj_eid in temp_id_map:
+                            real_eid = temp_id_map[obj_eid]
+                        else:
+                            raise ValueError(f"Referenced entity with temp ID={obj_eid} not created yet.")
+                    bvr = BehaviorValueReference(
+                        behavior_value_id=bv_obj.behavior_value_id,
+                        object_entity_id=real_eid
+                    )
+                    session.add(bvr)
+        # end for ent_data in entities
 
-        except AttributeError as e:
-            # 记录错误日志
-            print(f"AttributeError: {e}")
-        except Exception as e:
-            # 记录其他错误日志
-            print(f"Error: {e}")
-
-        try:
-            # 获取情景的其他信息（名称、描述、时间等）
-            scenario = self.session.query(Scenario).filter(
-                Scenario.scenario_id == scenario_id
-            ).one_or_none()
-
-            if scenario:
-                static_data["scenario"]["scenario_name"] = scenario.scenario_name
-                static_data["scenario"]["scenario_description"] = scenario.scenario_description
-                static_data["scenario"][
-                    "create_time"] = scenario.scenario_create_time.isoformat() if scenario.scenario_create_time else None
-                static_data["scenario"][
-                    "update_time"] = scenario.scenario_update_time.isoformat() if scenario.scenario_update_time else None
-                static_data["scenario"]["emergency_id"] = scenario.emergency_id
-
-        except Exception as e:
-            print(f"Error while fetching scenario details: {e}")
-
-        print(f"static_data: {json.dumps(static_data, ensure_ascii=False, indent=2)}")
-        return static_data
+        # ----------------------------------------------------------------
+        # 最后, commit 提交所有改动
+        # ----------------------------------------------------------------
+        session.commit()
+        print("JSON回写数据库成功。")
 
     def reset_status_bar(self):
         """重置状态栏的内容"""
@@ -332,7 +494,10 @@ class ScenarioController(QObject):
                 return
             new_scenario = self.add_scenario(name, description)
             if new_scenario:
-                self.load_scenarios()
+                self.load_scenarios(new_scenario.scenario_id)
+                # 自动加载
+                self.handle_scenario_selected(new_scenario.scenario_id,new_scenario.scenario_name,new_scenario.scenario_description)
+
 
     @Slot()
     def handle_edit_requested(self):
@@ -361,24 +526,26 @@ class ScenarioController(QObject):
                     pass
 
     @Slot()
-    def handle_delete_requested(self):
+    def handle_delete_requested(self, scenario_id):
         """用户点击“删除情景”按钮时执行"""
         current_item = self.scenario_manager.list_widget.currentItem()
         if not current_item:
             CustomWarningDialog("警告", "请选择要删除的情景。").exec()
             return
         scenario_id = current_item.data(Qt.UserRole)
+
+
         scenario = self.get_scenario_by_id(scenario_id)
         if not scenario:
             CustomWarningDialog("警告", "未找到选中的情景。").exec()
             return
+        self.scenario_manager.list_widget.setCurrentItem(None)
 
-        success = self.delete_scenario(scenario_id)
-        if success:
-            self.load_scenarios()
-            if self.current_scenario and self.current_scenario.scenario_id == scenario_id:
-                self.current_scenario = None
-                self.reset_status_bar()
+        self.get_result_by_sql(f"DELETE FROM scenario WHERE scenario_id = {scenario_id}")
+        self.load_scenarios()
+        if self.current_scenario and self.current_scenario.scenario_id == scenario_id:
+            self.current_scenario = None
+            self.reset_status_bar()
 
     def add_scenario(self, scenario_name, scenario_description=''):
         """在数据库中插入新情景"""
@@ -387,176 +554,27 @@ class ScenarioController(QObject):
             new_scenario = Scenario(
                 scenario_name=scenario_name,
                 scenario_description=scenario_description,
+                scenario_create_time=datetime.utcnow(),  # Set to current UTC time
+                scenario_update_time=datetime.utcnow(),  # Optionally set update time
                 emergency_id=1  # 根据实际需求调整
             )
             self.session.add(new_scenario)
             self.session.commit()  # 提交以获取 new_scenario 的 ID
 
-            self.replicate_all_for_scenario(new_scenario.scenario_id)
-
+#            self.replicate_all_for_scenario(new_scenario.scenario_id) TO DO 暂时废除
 
             # 提交所有新的 Element 实例
             self.session.commit()
             self.session.refresh(new_scenario)
             return new_scenario
+            # 查找新添加的情景并选中
+
         except SQLAlchemyError as e:
             self.session.rollback()
             print(f"Error adding scenario: {e}")
             CustomErrorDialog("错误", f"新增情景失败: {e}").exec()
             return None
 
-    def replicate_all_for_scenario(self, scenario_id):
-        """
-        将 element_base / attribute_base / attribute_base_association / behavior_base / behavior_base_object
-        等数据复制到 element / attribute / attribute_association / behavior / behavior_object
-        以在指定 scenario 中创建完整要素、属性及行为模型。
-        """
-
-        ########################
-        # 1. 复制 element_base -> element
-        ########################
-        element_base_list = self.session.query(ElementBase).all()
-        element_base_to_element = {}  # 用于记录映射：element_base_id -> element_id
-
-        # 假设 element_base_list 中，父节点的记录在子节点之前
-        for eb in element_base_list:
-            # 根据 eb.element_base_parent_id 找到新父节点
-            parent_id = None
-            if eb.element_base_parent_id is not None:
-                # 到映射字典查父节点新ID
-                # 注意：如果父节点还没处理过，就会拿不到，须保证顺序或做二次处理
-                parent_id = element_base_to_element.get(eb.element_base_parent_id)
-
-            new_elem = Element(
-                element_name=eb.element_base_name,
-                element_type_id=eb.element_base_type_id,
-                scenario_id=scenario_id,
-                element_parent_id=parent_id  # 这里赋给新 Element 的父节点
-            )
-            self.session.add(new_elem)
-            self.session.commit()  # 提交后获得 new_elem.element_id
-
-            # 记录映射关系
-            element_base_to_element[eb.element_base_id] = new_elem.element_id
-
-        self.session.commit()
-
-        ########################
-        # 2. 复制 attribute_base -> attribute
-        ########################
-        # 对每个 element_base, 查找其下所有 attribute_base, 复制到 attribute
-        attribute_base_to_attribute = {}
-
-        for eb in element_base_list:
-            # 找到对应的 element_id
-            if eb.element_base_id not in element_base_to_element:
-                continue
-            new_element_id = element_base_to_element[eb.element_base_id]
-
-            # 查找该 base 下的所有 attribute_base
-            attr_bases = self.session.query(AttributeBase).filter_by(element_base_id=eb.element_base_id).all()
-            for ab in attr_bases:
-                new_attr = Attribute(
-                    attribute_name=ab.attribute_base_name,
-                    attribute_type_id=ab.attribute_base_type_id,
-                    is_required=ab.is_required,
-                    is_multi_valued=ab.is_multi_valued,
-                    enum_value_id=ab.enum_value_id,
-                    attribute_value=ab.attribute_base_value or "",
-                    element_id=new_element_id
-                )
-                self.session.add(new_attr)
-                self.session.commit()
-                # 记录映射
-                attribute_base_to_attribute[ab.attribute_base_id] = new_attr.attribute_id
-
-        self.session.commit()
-
-        ########################
-        # 3. 复制 attribute_base_association -> attribute_association
-        ########################
-        # attribute_base_association 是 (attribute_base_id, associated_element_base_id) 复合主键
-        # 复制成 (attribute_id, associated_element_id)
-        assoc_bases = self.session.query(AttributeBaseAssociation).all()
-        for assoc in assoc_bases:
-            # 1) 找到对应的新 attribute_id
-            attr_base_id = assoc.attribute_base_id
-            if attr_base_id not in attribute_base_to_attribute:
-                continue
-            new_attr_id = attribute_base_to_attribute[attr_base_id]
-
-            # 2) 找到对应的新 element_id
-            assoc_elem_base_id = assoc.associated_element_base_id
-            if assoc_elem_base_id not in element_base_to_element:
-                continue
-            new_assoc_elem_id = element_base_to_element[assoc_elem_base_id]
-
-            # 插入到 attribute_association
-            new_assoc = AttributeAssociation(
-                attribute_id=new_attr_id,
-                associated_element_id=new_assoc_elem_id
-            )
-            self.session.add(new_assoc)
-            # 不需要立即commit，最后统一提交
-
-        self.session.commit()
-
-        ########################
-        # 4. 复制 behavior_base -> behavior
-        ########################
-        # behavior_base: (behavior_base_id, behavior_base_name, object_type_id, is_multi_valued, element_base_id ...)
-        behavior_base_list = self.session.query(BehaviorBase).all()
-        behavior_base_to_behavior = {}
-
-        for bb in behavior_base_list:
-            # 找到对应的 element
-            if bb.element_base_id not in element_base_to_element:
-                continue
-            new_elem_id = element_base_to_element[bb.element_base_id]
-
-            new_behavior = Behavior(
-                behavior_name=bb.behavior_base_name,
-                object_type_id=bb.object_type_id,
-                is_multi_valued=bb.is_multi_valued,
-                element_id=new_elem_id,
-                # 如果有 is_required 字段或者其他字段，也可在这里赋值
-                is_required = bb.is_required,
-            )
-            self.session.add(new_behavior)
-            self.session.commit()
-
-            behavior_base_to_behavior[bb.behavior_base_id] = new_behavior.behavior_id
-
-        self.session.commit()
-
-        ########################
-        # 5. 复制 behavior_base_object -> behavior_object
-        ########################
-        # behavior_base_object: (behavior_base_id, object_element_base_id) 复合主键
-        # => behavior_object: (behavior_id, object_element_id)
-        bbo_list = self.session.query(BehaviorBaseObject).all()
-        for bbo in bbo_list:
-            # 找到 behavior_id
-            if bbo.behavior_base_id not in behavior_base_to_behavior:
-                continue
-            new_behavior_id = behavior_base_to_behavior[bbo.behavior_base_id]
-
-            # 找到新 object_element_id
-            if bbo.object_element_base_id not in element_base_to_element:
-                continue
-            new_object_elem_id = element_base_to_element[bbo.object_element_base_id]
-
-            # 插入
-            new_bobj = BehaviorObject(
-                behavior_id=new_behavior_id,
-                object_element_id=new_object_elem_id
-            )
-            self.session.add(new_bobj)
-            # 不需要马上 commit
-
-        self.session.commit()
-
-        print("=== 复制完成：element/attribute/behavior及中间关联表都已生成 ===")
 
     def update_scenario(self, scenario_id, scenario_name=None, scenario_description=None):
         """更新情景信息"""
@@ -643,3 +661,68 @@ class ScenarioController(QObject):
         if self.session:
             self.session.close()
             print("Session closed.")
+
+
+    def replicate_all_for_scenario(self, scenario_id: int):
+        """
+        1) 根据 scenario_id 获取该场景。
+        2) 遍历数据库中所有(或特定) Template，为每个 Template 在该场景下新建一个 Entity。
+        3) 为该新 Entity:
+           - 附加模板所指定的 category
+           - 不管 is_required 与否，对 template.attribute_definitions 中的每个属性都建一条 AttributeValue
+           - 同理，对 template.behavior_definitions 中的每个行为都建一条 BehaviorValue
+        4) 最后 commit。
+        """
+
+        # 0. 找到目标场景
+        scenario_obj = self.session.query(Scenario).get(scenario_id)
+        if not scenario_obj:
+            raise ValueError(f"Scenario(id={scenario_id}) not found.")
+
+        # 1. 获取要复制的所有模板 (可根据业务需求，添加 filter)
+        all_templates = self.session.query(Template).all()
+
+        # 2. 遍历模板，新建实体
+        for tpl in all_templates:
+            # 2.1 创建一个 entity 对象
+            new_entity = Entity(
+                entity_name=f"{tpl.template_name}_复制品",
+                entity_type_id=tpl.entity_type_id,
+                scenario_id=scenario_obj.scenario_id,
+                create_time=datetime.utcnow(),
+                update_time=datetime.utcnow()
+            )
+            self.session.add(new_entity)
+            self.session.flush()  # 拿到 new_entity.entity_id
+
+            # 2.2 附加模板的 category 到新实体上
+            #     template.category_id -> 找到 Category 后 append
+            cat_obj = self.session.query(Category).get(tpl.category_id)
+            if cat_obj:
+                new_entity.categories.append(cat_obj)
+
+            # 2.3 遍历 template.attribute_definitions，对每条都创建 AttributeValue
+            for attr_def in tpl.attribute_definitions:
+                av = AttributeValue(
+                    entity_id=new_entity.entity_id,
+                    attribute_definition_id=attr_def.attribute_definition_id,
+                    attribute_value=attr_def.default_value,  # 可以用默认值，也可设为 None
+                    create_time=datetime.utcnow(),
+                    update_time=datetime.utcnow()
+                )
+                self.session.add(av)
+                # 不一定要 flush()，可留到 commit 一并提交
+
+            # 2.4 遍历 template.behavior_definitions，对每条都创建 BehaviorValue
+            for bhv_def in tpl.behavior_definitions:
+                bv = BehaviorValue(
+                    behavior_definition_id=bhv_def.behavior_definition_id,
+                    subject_entity_id=new_entity.entity_id,
+                    create_time=datetime.utcnow(),
+                    update_time=datetime.utcnow()
+                )
+                self.session.add(bv)
+
+        # 3. 一次性 commit
+        self.session.commit()
+        print(f"复制完成: scenario_id={scenario_id} 已新增 {len(all_templates)} 个entity。")

@@ -71,7 +71,7 @@ class ScenarioDialog(QDialog):
 
         # 设置固定的按钮宽度
         for i in range(button_layout.count()):
-            button_layout.itemAt(i).widget().setFixedWidth(50)
+            button_layout.itemAt(i).widget().setFixedWidth(110)
 
     def get_data(self):
         name = self.name_input.text().strip()
@@ -232,11 +232,15 @@ QToolTip {
             CustomInformationDialog(self.tr("取消选择"), self.tr("您已取消选择情景。")).get_result()
 
     @Slot(list)
-    def populate_scenarios(self, scenarios):
+    def populate_scenarios(self, scenarios,select_scenario_id=None):
         self.list_widget.clear()
         self.scenarios = scenarios
         for scenario in scenarios:
+            print(scenario.scenario_name)
+            print(scenario.scenario_description)
             description = scenario.scenario_description
+            if not description:
+                description = '暂无描述'
             if len(description) > 8:
                 short_desc = description[:8] + "..."
             else:
@@ -244,12 +248,27 @@ QToolTip {
             item = QListWidgetItem(f"{scenario.scenario_name}")
             item.setData(Qt.UserRole, scenario.scenario_id)
             item.setData(Qt.UserRole + 1, scenario.scenario_description)
-            item.setToolTip(scenario.scenario_description if scenario.scenario_description.strip() else self.tr("没有描述信息"))
+            item.setToolTip(scenario.scenario_description if description else self.tr("没有描述信息"))
             self.list_widget.addItem(item)
 
         # 根据是否有情景更新堆叠布局
         if self.scenarios:
             self.scenario_stack.setCurrentIndex(0)  # 显示列表
+            if select_scenario_id:
+                # 查找并选中指定的情景
+                selected = False
+                for index in range(self.list_widget.count()):
+                    item = self.list_widget.item(index)
+                    if item.data(Qt.UserRole) == select_scenario_id:
+                        self.list_widget.setCurrentItem(item)
+                        item.setSelected(True)
+                        self.scenario_selected.emit(
+                            item.data(Qt.UserRole),
+                            item.text(),
+                            item.data(Qt.UserRole + 1)
+                        )
+                        selected = True
+                        break
         else:
             self.scenario_stack.setCurrentIndex(1)  # 显示占位标签
 
@@ -312,6 +331,7 @@ QToolTip {
         """添加情景并更新视图。"""
         self.scenarios.append(scenario)
         self.populate_scenarios(self.scenarios)
+
 
     def remove_scenario_by_id(self, scenario_id):
         """根据 ID 删除情景并更新视图。"""

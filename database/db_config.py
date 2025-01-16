@@ -7,6 +7,7 @@ from sqlalchemy.dialects.mysql import pymysql
 from sqlalchemy.orm import sessionmaker, declarative_base
 from sqlalchemy import create_engine, text
 from models.models import Base
+from database import seed_data
 
 
 class DatabaseManager:
@@ -21,6 +22,8 @@ class DatabaseManager:
             self.SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=self.engine)
             # 创建所有表（如果尚未创建）
             Base.metadata.create_all(bind=self.engine)
+            # 添加种子数据
+            seed_data.seed_all(self.get_session())
             print("数据库连接成功")
             return True, "连接成功"
         except Exception as e:
@@ -62,18 +65,3 @@ class DatabaseManager:
         except Exception as e:
             print(f"获取连接信息失败: {e}")
             return None
-
-
-if __name__ =="__main__":
-    db_manager = DatabaseManager()
-    connected, message = db_manager.connect("Tsing_loong", "12345678", "localhost", 3306, "test")
-    if connected:
-        print("连接成功")
-        connection_info = db_manager.get_connection_info()
-        if connection_info:
-            print("连接信息:")
-            print(connection_info)
-        else:
-            print("无法获取连接信息")
-    else:
-        print(f"连接失败: {message}")

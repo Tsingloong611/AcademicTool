@@ -1,186 +1,303 @@
-from PySide6.QtWidgets import (
-    QDialog, QVBoxLayout, QHBoxLayout, QTableWidget, QTableWidgetItem,
-    QPushButton, QLabel, QGroupBox, QHeaderView, QSizePolicy, QMessageBox, QCheckBox
-)
-from PySide6.QtCore import Qt
+import re
+from typing import List, Dict
 
 
-class CompoundAttributeEditor(QDialog):
-    """复合属性编辑窗口"""
+def parse_hazard_vehicle(code: str) -> List[Dict[str, List[Dict[str, str]]]]:
+    """
+    解析提供的代码，提取所有 part 定义的名称、属性 (attribute)、item 和 ref。
+    同时解析 action 定义，记录 perform action 的 in 和 out 变量。
 
-    def __init__(self, attribute_name, attribute_type, selected_entities, parent=None):
-        super().__init__(parent)
-        self.setWindowTitle("复合属性编辑")
-        self.resize(800, 600)
+    :param code: 包含 part 和 action 定义的代码字符串
+    :return: 包含多个 part 名称、属性、item、ref 和 perform actions 的列表
+    """
+    parts = []
+    actions = {}
 
-        # 当前正在编辑的属性信息
-        self.attribute_name = attribute_name
-        self.attribute_type = attribute_type
+    # 正则表达式匹配所有 action 定义
+    action_pattern = re.compile(r"action\s+def\s+(\w+)\s*{([^}]*)}", re.DOTALL)
+    for action_match in action_pattern.finditer(code):
+        action_name = action_match.group(1)
+        action_body = action_match.group(2)
 
-        # 当前复合属性已经选中的实体
-        self.selected_entities = selected_entities
+        in_vars = []
+        out_vars = []
 
-        self.init_ui()
+        # 匹配 in 变量，支持 'in var;' 和 'in var = value;'
+        in_pattern = re.compile(r"in\s+(\w+)\s*(?:=\s*[^;]+)?;")
+        # 匹配 out 变量，支持 'out var;' 和 'out var = value;'
+        out_pattern = re.compile(r"out\s+(\w+)\s*(?:=\s*[^;]+)?;")
 
-    def init_ui(self):
-        # 创建复合属性分组框
-        resource_group = QGroupBox("复合属性编辑")
-        resource_layout = QVBoxLayout()
-        resource_layout.setContentsMargins(10, 10, 10, 10)
+        in_matches = in_pattern.findall(action_body)
+        out_matches = out_pattern.findall(action_body)
 
-        # 创建顶部描述信息
-        label_layout = QHBoxLayout()
-        self.current_behavior_label = QLabel(f"当前正在编辑复合属性：{self.attribute_name}，属性类型：{self.attribute_type}")
-        self.current_behavior_label.setAlignment(Qt.AlignCenter)
-        self.current_behavior_label.setStyleSheet("font-weight:bold;color:gray;")
-        label_layout.addWidget(self.current_behavior_label)
+        in_vars.extend(in_matches)
+        out_vars.extend(out_matches)
 
-        resource_layout.addLayout(label_layout)
-
-        # 创建表格
-        self.resource_table = QTableWidget(0, 5)
-        self.resource_table.setHorizontalHeaderLabels(["选中", "实体名称", "类型", "值", "备注"])
-        self.resource_table.setEditTriggers(QTableWidget.NoEditTriggers)
-        self.resource_table.setSelectionBehavior(QTableWidget.SelectRows)
-        self.resource_table.setSelectionMode(QTableWidget.SingleSelection)
-        self.resource_table.verticalHeader().setVisible(False)
-        self.resource_table.setAlternatingRowColors(True)
-        self.resource_table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
-        self.resource_table.setShowGrid(False)
-        self.resource_table.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-        self.apply_table_style(self.resource_table)
-
-        # 加载初始实体数据并默认勾选
-        self.load_entities()
-
-        resource_layout.addWidget(self.resource_table)
-
-        # 创建按钮布局
-        button_layout = QHBoxLayout()
-        self.add_resource_btn = QPushButton("增加")
-        self.edit_resource_btn = QPushButton("修改")
-        self.delete_resource_btn = QPushButton("删除")
-
-        self.add_resource_btn.setFixedWidth(110)
-        self.edit_resource_btn.setFixedWidth(110)
-        self.delete_resource_btn.setFixedWidth(110)
-
-        button_layout.addWidget(self.add_resource_btn)
-        button_layout.addWidget(self.edit_resource_btn)
-        button_layout.addWidget(self.delete_resource_btn)
-
-        resource_layout.addLayout(button_layout)
-
-        resource_group.setLayout(resource_layout)
-
-        # 设置主布局
-        main_layout = QVBoxLayout(self)
-        main_layout.addWidget(resource_group)
-        self.setLayout(main_layout)
-
-        # 绑定按钮事件
-        self.add_resource_btn.clicked.connect(self.add_resource)
-        self.edit_resource_btn.clicked.connect(self.edit_resource)
-        self.delete_resource_btn.clicked.connect(self.delete_resource)
-
-    def apply_table_style(self, table):
-        """应用表格样式"""
-        table.setStyleSheet("""
-            QTableWidget {
-                border: 1px solid #dcdcdc;
-                gridline-color: #dcdcdc;
-                font-size: 12px;
-            }
-            QTableWidget::item:selected {
-                background-color: #0078d7;
-                color: white;
-            }
-        """)
-
-    def load_entities(self):
-        """加载初始实体数据并默认勾选"""
-        for entity in self.selected_entities:
-            row_count = self.resource_table.rowCount()
-            self.resource_table.insertRow(row_count)
-
-            # 创建复选框，并默认勾选当前已经选择的实体
-            checkbox = QCheckBox()
-            checkbox.setChecked(entity.get("selected", False))
-            self.resource_table.setCellWidget(row_count, 0, checkbox)
-
-            self.resource_table.setItem(row_count, 1, QTableWidgetItem(entity["name"]))
-            self.resource_table.setItem(row_count, 2, QTableWidgetItem(entity["type"]))
-            self.resource_table.setItem(row_count, 3, QTableWidgetItem(entity["value"]))
-            self.resource_table.setItem(row_count, 4, QTableWidgetItem(entity["remarks"]))
-
-    def add_resource(self):
-        """增加新实体"""
-        print("增加新实体")
-        new_entity = {
-            "name": "新实体",
-            "type": "默认类型",
-            "value": "默认值",
-            "remarks": "默认备注",
-            "selected": True  # 新增实体默认选中
+        actions[action_name] = {
+            'in': in_vars,
+            'out': out_vars
         }
-        self.selected_entities.append(new_entity)
-        self.add_entity_to_table(new_entity)
 
-    def add_entity_to_table(self, entity):
-        """将实体添加到表格"""
-        row_count = self.resource_table.rowCount()
-        self.resource_table.insertRow(row_count)
+        # 调试输出
+        print(f"解析 action: {action_name}")
+        print(f"  in: {in_vars}")
+        print(f"  out: {out_vars}\n")
 
-        # 创建复选框，并设置选中状态
-        checkbox = QCheckBox()
-        checkbox.setChecked(entity.get("selected", False))
-        self.resource_table.setCellWidget(row_count, 0, checkbox)
+    # 正则表达式匹配所有 part 定义
+    part_pattern = re.compile(r"part\s+(\w+)\s*:\s*\w+\s*{([^}]*)}", re.DOTALL)
+    for part_match in part_pattern.finditer(code):
+        part_name = part_match.group(1)
+        part_body = part_match.group(2)
 
-        self.resource_table.setItem(row_count, 1, QTableWidgetItem(entity["name"]))
-        self.resource_table.setItem(row_count, 2, QTableWidgetItem(entity["type"]))
-        self.resource_table.setItem(row_count, 3, QTableWidgetItem(entity["value"]))
-        self.resource_table.setItem(row_count, 4, QTableWidgetItem(entity["remarks"]))
+        part_dict = {
+            "name": part_name,
+            "attributes": [],
+            "items": [],
+            "refs": [],
+            "performs": []
+        }
 
-    def edit_resource(self):
-        """修改实体"""
-        print("修改实体")
-        selected_items = self.resource_table.selectedItems()
-        if selected_items:
-            row = selected_items[0].row()
-            entity_name = self.resource_table.item(row, 1).text()
+        # 调试输出
+        print(f"解析 part: {part_name}")
+        print(f"part 内容:\n{part_body}\n")
 
-            # 弹出对话框编辑实体
-            QMessageBox.information(self, "修改实体", f"修改实体：{entity_name}")
-            self.resource_table.setItem(row, 3, QTableWidgetItem("修改后的值"))
-            self.resource_table.setItem(row, 4, QTableWidgetItem("修改后的备注"))
+        # 匹配 attribute 定义（支持 redefines）
+        attribute_pattern = re.compile(
+            r"attribute\s+(?:redefines\s+)?(\w+)\s*(?::\s*(\w+))?\s*(?:=\s*([^;]+))?;",
+            re.MULTILINE
+        )
+        for attr_match in attribute_pattern.finditer(part_body):
+            attr_name = attr_match.group(1)
+            attr_type = attr_match.group(2) if attr_match.group(2) else "normal"
+            attr_value = attr_match.group(3).strip() if attr_match.group(3) else "None"
+            part_dict["attributes"].append({
+                "attribute_name": attr_name,
+                "type": attr_type,
+                "value": attr_value
+            })
+            # 调试输出
+            print(f"  解析 attribute: {attr_name}, 类型: {attr_type}, 值: {attr_value}")
 
-    def delete_resource(self):
-        """删除实体"""
-        print("删除实体")
-        selected_items = self.resource_table.selectedItems()
-        if selected_items:
-            row = selected_items[0].row()
-            entity_name = self.resource_table.item(row, 1).text()
-            reply = QMessageBox.question(
-                self, "确认删除", f"确定要删除实体“{entity_name}”吗？",
-                QMessageBox.Yes | QMessageBox.No, QMessageBox.No
-            )
-            if reply == QMessageBox.Yes:
-                self.resource_table.removeRow(row)
-                del self.selected_entities[row]
+        # 匹配 item 定义
+        item_pattern = re.compile(r"item\s+(\w+)\s*:\s*(\w+);", re.MULTILINE)
+        for item_match in item_pattern.finditer(part_body):
+            item_name = item_match.group(1)
+            item_type = item_match.group(2)
+            part_dict["items"].append({
+                "item_name": item_name,
+                "type": item_type
+            })
+            # 调试输出
+            print(f"  解析 item: {item_name}, 类型: {item_type}")
+
+        # 匹配 ref 定义
+        ref_pattern = re.compile(r"ref\s+part\s+(\w+);", re.MULTILINE)
+        for ref_match in ref_pattern.finditer(part_body):
+            ref_name = ref_match.group(1)
+            part_dict["refs"].append({
+                "ref_name": ref_name,
+                "type": "part"
+            })
+            # 调试输出
+            print(f"  解析 ref: {ref_name}, 类型: part")
+
+        # 匹配 perform action 定义，捕获 perform_name 和可选的 action_type
+        perform_pattern = re.compile(r"perform\s+action\s+(\w+)(?:\s*:\s*(\w+))?;", re.MULTILINE)
+        for perform_match in perform_pattern.finditer(part_body):
+            perform_name = perform_match.group(1)
+            action_type = perform_match.group(2)
+
+            if action_type:
+                # 如果指定了 action_type，则使用它
+                associated_action = actions.get(action_type, {})
+            else:
+                # 如果未指定 action_type，则假设 action_type 与 perform_name 相同
+                associated_action = actions.get(perform_name, {})
+
+            perform_in = associated_action.get('in', [])
+            perform_out = associated_action.get('out', [])
+
+            part_dict["performs"].append({
+                "perform_name": perform_name,
+                "in": perform_in,
+                "out": perform_out
+            })
+            # 调试输出
+            print(f"  解析 perform: {perform_name}, in: {perform_in}, out: {perform_out}")
+
+        parts.append(part_dict)
+
+    return parts
 
 
-# 测试窗口
-if __name__ == "__main__":
-    from PySide6.QtWidgets import QApplication
-    import sys
+# 示例代码1：带类型的 perform action
+hazard_vehicle_code_with_type = """
+package ResponsePlanElement{
+    part def ResponsePlanElement{
+        ref part Action : ResponseAction;
+        ref part Resource : ResponseResource;
+    }
+    part def ResponseAction{
+        attribute implementationCondition : Boolean;
+        attribute startTime : String;
+        attribute endTime : String;
+    }
+    part def ResponseResource{
+        attribute utilizedCondition : Boolean;
+        attribute usageAmount : Real;
+    }
 
-    app = QApplication(sys.argv)
-    # 示例初始数据
-    selected_entities = [
-        {"name": "实体1", "type": "类型A", "value": "值1", "remarks": "备注1", "selected": True},
-        {"name": "实体2", "type": "类型B", "value": "值2", "remarks": "备注2", "selected": False},
-        {"name": "实体3", "type": "类型C", "value": "值3", "remarks": "备注3", "selected": True},
-    ]
-    dialog = CompoundAttributeEditor("行车道数", "int", selected_entities)
-    dialog.exec()
+
+    part aid : ResponseAction{
+        attribute redefines implementationCondition = true;
+        attribute redefines startTime = "2022:01:17:00:28";
+        attribute redefines endTime = "2022:01:17:00:39";
+        ref part ambulance;
+        exhibit state aidStates;
+    }
+    part firefighting : ResponseAction{
+        attribute redefines implementationCondition = true;
+        attribute redefines startTime = "2022:01:17:00:34";
+        attribute redefines endTime = "2022:01:17:00:47";
+        ref part fireFightingTruck;
+        exhibit state firefightingStates;
+    }
+    part tow : ResponseAction{
+        attribute redefines implementationCondition = true;
+        attribute redefines startTime = "2022:01:17:00:37";
+        attribute redefines endTime = "2022:01:17:01:20";
+        ref part tractor;
+        exhibit state towStates;
+    }
+    part rescue : ResponseAction{
+        attribute redefines implementationCondition = true;
+        attribute redefines startTime = "2022:01:17:01:03";
+        attribute redefines endTime = "2022:01:17:01:31";
+        ref part emergencyVehicle;
+        exhibit state rescueStates;
+    }
+
+
+    part ambulance : ResponseResource{
+        attribute redefines utilizedCondition = true;
+        attribute redefines usageAmount = 1.0;
+        perform action aid : Action;
+    }
+    part fireFightingTruck : ResponseResource{
+        attribute redefines utilizedCondition =true;
+        attribute redefines usageAmount = 1.0;
+        perform action firefighting : Action;
+    }
+    part tractor : ResponseResource{
+        attribute redefines utilizedCondition = true;
+        attribute redefines usageAmount = 1.0;
+        perform action rescue : Action;
+    }
+    part emergencyVehicle : ResponseResource{
+        attribute redefines utilizedCondition = true;
+        attribute redefines usageAmount = 1.0;
+        perform action rescue : Action;
+    }
+
+    action def Action{
+        out implementationCondition;
+        out startTime;
+        out endTime;
+    }
+
+    state def aidStates{
+        entry; then idleState;
+        state idleState;
+        accept Aid:Action
+            then implementState;
+        state implementState;
+    }
+    state def firefightingStates{
+        entry; then idleState;
+        state idleState;
+        accept FireFighting:Action
+            then implementState;
+        state implementState;
+    }
+    state def towStates{
+        entry; then idleState;
+        state idleState;
+        accept Tow:Action
+            then implementState;
+        state implementState;
+    }
+    state def rescueStates{
+        entry; then idleState;
+        state idleState;
+        accept Rescue:Action
+            then implementState;
+        state implementState;
+    }
+}
+"""
+
+# 示例代码2：不带类型的 perform action
+hazard_vehicle_code_without_type = """
+package HazardElement{
+    part def HazardElement{}
+
+    item def People{
+         attribute Casualty : Boolean;
+    }
+    item def Cargo{
+         attribute DetachedCondition : Boolean;
+    }
+
+    action def Collide{
+        in CollideCondition = true;
+        out DamageCondition = true;
+        out Casualty = true;
+    }
+    action def Spill{
+        out SpillCondition = true;
+        out PullotedCondition = true;
+        out DetachedCondition = true;
+    }
+    action def Explode{
+        out ExplodeCondition = true;
+    }
+    state def HazardStates{
+        entry; then DriveState;
+        state DriveState;
+        accept Collide
+            then CollideState;
+        state CollideState;
+        accept Spill
+            then SpillState;
+        state SpillState;
+    }
+    part HazardVehicle : HazardElement{
+        attribute position : String = "ND569";
+        attribute drivingDirection : String = "forward";
+        attribute vehicleType : String = "truck";
+        attribute CollideCondition : Boolean = true;
+        attribute SpillCondition : Boolean = true;
+        attribute ExplodeCondition : Boolean = false;
+
+        item passenger : People;
+        item cargo : Cargo;
+        ref part Road;
+
+        perform action Collide;
+        perform action Spill;
+        exhibit state HazardStates;
+
+    }
+
+}
+"""
+
+# 选择要测试的代码样例
+test_sample = hazard_vehicle_code_without_type  # 更换为 hazard_vehicle_code_without_type 以测试另一种情况
+
+# 解析并打印结果
+parsed_result = parse_hazard_vehicle(test_sample)
+import pprint
+
+print("\n最终解析结果：")
+pprint.pprint(parsed_result)

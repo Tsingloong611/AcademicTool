@@ -31,7 +31,7 @@ class CustomErrorDialog(QDialog):
         button.clicked.connect(self.accept)
         layout.addWidget(button, alignment=Qt.AlignCenter)
         # 设置固定的按钮宽度
-        button.setFixedWidth(50)
+        button.setFixedWidth(110)
 
     def show_dialog(self):
         self.exec()

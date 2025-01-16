@@ -1,9 +1,12 @@
 # element_setting.py
+import copy
 import sys
 import json
 import os
 import time
 from functools import partial
+from multiprocessing.util import debug
+from typing import Dict, Any, List
 
 from PySide6.QtCore import Signal, Qt, QObject, QEvent, QTimer, QEventLoop
 from PySide6.QtWidgets import (
@@ -14,14 +17,18 @@ from PySide6.QtWidgets import (
 )
 from PySide6.QtGui import QFont, QIntValidator, QDoubleValidator, QIcon
 from PySide6.QtWidgets import QStyledItemDelegate
+from attr import attributes
 from debugpy.common.timestamp import current
 from pydot.dot_parser import add_elements
 from sqlalchemy import text
+from sqlalchemy.orm import Session
 
-from models.models import BehaviorObject, BehaviorBaseObject, BehaviorBase, Behavior, AttributeAssociation, \
-    AttributeBaseAssociation, AttributeBase, Element, ElementBase, Attribute
+from models.models import Template, Category
+from utils.sysml2json import parse_to_json, sysml2json
 from views.dialogs.custom_information_dialog import CustomInformationDialog
 from views.dialogs.custom_input_dialog import CustomInputDialog
+from views.dialogs.custom_question_dialog import CustomQuestionDialog
+from views.dialogs.custom_select_dialog import CustomSelectDialog
 from views.dialogs.custom_warning_dialog import CustomWarningDialog
 
 
@@ -98,12 +105,12 @@ class SaveResultDialog(QDialog):
         self.view_details_button = QPushButton(self.tr("查看详情"))
         self.view_details_button.clicked.connect(lambda: self.open_details_dialog(detailed_info))
         self.view_details_button.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
-        self.view_details_button.setFixedWidth(100)
+        self.view_details_button.setFixedWidth(110)
 
         self.ok_button = QPushButton(self.tr("确定"))
         self.ok_button.clicked.connect(self.accept)
         self.ok_button.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
-        self.ok_button.setFixedWidth(100)
+        self.ok_button.setFixedWidth(110)
 
         button_layout.addWidget(self.view_details_button)
         button_layout.addWidget(self.ok_button)
@@ -135,7 +142,7 @@ class DetailsDialog(QDialog):
 
         close_button = QPushButton(self.tr("确定"))
         close_button.clicked.connect(self.accept)
-        close_button.setFixedWidth(100)
+        close_button.setFixedWidth(110)
         close_button_layout = QHBoxLayout()
         close_button_layout.addStretch()
         close_button_layout.addWidget(close_button)
@@ -316,9 +323,17 @@ class EditAttributeDialog(QDialog):
         button_layout = QHBoxLayout()
         self.save_button = QPushButton(self.tr("保存"))
         self.cancel_button = QPushButton(self.tr("取消"))
+        self.save_button.setFixedWidth(110)
+        self.cancel_button.setFixedWidth(110)
+
+        # 设置按钮的大小策略，让它们水平扩展以占满空间
+        self.save_button.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+        self.cancel_button.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+
         self.save_button.clicked.connect(self.validate_and_accept)
         self.cancel_button.clicked.connect(self.reject)
-        button_layout.addStretch()
+
+        # 将按钮添加到布局
         button_layout.addWidget(self.save_button)
         button_layout.addWidget(self.cancel_button)
 
@@ -326,7 +341,7 @@ class EditAttributeDialog(QDialog):
 
     def create_editor(self):
         """根据属性类型创建相应的编辑控件。"""
-        if self.attr_type == "enum":
+        if self.attr_type == "Enum":
             combobox = QComboBox()
             if not self.is_required:
                 combobox.addItem("<空>")
@@ -341,7 +356,7 @@ class EditAttributeDialog(QDialog):
                     combobox.addItem(item)
                 combobox.setCurrentText(self.attr_value)
             return combobox
-        elif self.attr_type == "boolean":
+        elif self.attr_type == "Bool":
             checkbox = QCheckBox()
             checkbox.setChecked(str(self.attr_value).lower() in ["true", "1", "yes"])
             return checkbox
@@ -363,9 +378,9 @@ class EditAttributeDialog(QDialog):
 
     def validate_and_accept(self):
         """验证输入并接受对话框。"""
-        if self.attr_type == "boolean":
+        if self.attr_type == "Bool":
             new_value = "True" if self.value_edit.isChecked() else "False"
-        elif self.attr_type == "enum":
+        elif self.attr_type == "Enum":
             new_value = self.value_edit.currentText()
             if new_value == "<空>":
                 new_value = ""
@@ -383,14 +398,601 @@ class EditAttributeDialog(QDialog):
         """获取编辑后的属性值。"""
         return self.new_value
 
+class EditEntityDialog(QDialog):
+    """用于编辑实体的对话框，集成了属性模型和行为模型的布局。"""
+
+    def __init__(self, entity_data, parent=None):
+        super().__init__(parent)
+        self.setWindowTitle("编辑实体")
+        self.resize(800, 600)
+        self.parent = parent
+        self.entity_data = entity_data  # 要编辑的实体数据
+        self.init_ui()
+        self.update_current_element_data()
+        self.behavior_table.cellDoubleClicked.connect(self.behavior_table_cell_double_clicked)
+        # 默认显示属性模型
+        self.switch_model_display("Attribute")
+
+    def behavior_table_cell_double_clicked(self, row, column):
+        """处理行为表格单元格双击事件。"""
+        behavior = self.get_behavior_from_row(row)
+        if behavior:
+            self.open_related_object_editor(behavior, "behavior")
+
+    def get_behavior_from_row(self, row):
+        """根据行号获取对应的行为对象。"""
+        if hasattr(self, 'current_behaviors') and 0 <= row < len(self.current_behaviors):
+            return self.current_behaviors[row]
+        return None
+
+    def init_ui(self):
+        main_layout = QVBoxLayout(self)
+
+        # 创建顶部描述信息
+        label_layout = QHBoxLayout()
+        self.entity_label = QLabel(f"正在编辑实体：{self.entity_data.get('element_name', '')}")
+        self.entity_label.setAlignment(Qt.AlignCenter)
+        self.entity_label.setStyleSheet("font-weight:bold;color:gray;")
+        label_layout.addWidget(self.entity_label)
+
+        main_layout.addLayout(label_layout)
+
+        # 创建模型容器和堆叠布局
+        self.setup_model_container()
+        self.setup_model_stacked_layout()
+
+        main_layout.addWidget(self.model_container)
+
+
+
+    def setup_model_container(self, stretch=5):
+        """设置模型容器"""
+        self.model_container = QFrame()
+        self.model_container.setObjectName("ModelContainer")
+        self.model_container.setStyleSheet("""
+                    QFrame#ModelContainer {
+                        border: 1px solid #ccc;
+                        border-radius: 10px;
+                        background-color: white;
+                    }
+                """)
+        self.model_layout = QVBoxLayout(self.model_container)
+        self.model_layout.setContentsMargins(0, 0, 0, 10)
+        self.model_layout.setSpacing(10)
+
+        self.button_layout = QHBoxLayout()
+        self.button_layout.setContentsMargins(0, 0, 0, 0)
+        self.button_layout.setSpacing(0)
+
+        self.attribute_button = QPushButton(self.tr("属性模型"))
+        self.attribute_button.setObjectName("AttributeButton")
+        self.attribute_button.setStyleSheet("""
+                    border-top-left-radius:10px;
+                """)
+        self.attribute_button.setCheckable(True)
+        self.attribute_button.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+
+        self.behavior_button = QPushButton(self.tr("行为模型"))
+        self.behavior_button.setObjectName("BehaviorButton")
+        self.behavior_button.setStyleSheet("""
+                    border-top-right-radius: 10px;
+                """)
+        self.behavior_button.setCheckable(True)
+        self.behavior_button.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+
+        self.button_group = QButtonGroup(self)
+        self.button_group.setExclusive(True)
+        self.button_group.addButton(self.attribute_button)
+        self.button_group.addButton(self.behavior_button)
+
+        self.button_layout.addWidget(self.attribute_button)
+        self.button_layout.addWidget(self.behavior_button)
+        self.model_layout.addLayout(self.button_layout)
+        self.main_layout = QVBoxLayout(self)
+        self.main_layout.addWidget(self.model_container, stretch=stretch)
+        # 绑定按钮事件
+        self.attribute_button.clicked.connect(partial(self.switch_model_display, "Attribute"))
+        self.behavior_button.clicked.connect(partial(self.switch_model_display, "Behavior"))
+
+    def setup_model_stacked_layout(self):
+        """设置模型堆叠布局"""
+        self.model_stacked_layout = QStackedLayout()
+
+        # 默认显示页面
+        self.default_display_widget = QWidget()
+        self.default_display_layout = QVBoxLayout(self.default_display_widget)
+        self.default_display_layout.setContentsMargins(0, 0, 0, 0)
+        self.default_display_layout.setAlignment(Qt.AlignCenter)
+        self.default_label = QLabel(self.tr("请选择模型类别"))
+        self.default_label.setStyleSheet("""
+                    color: gray;
+                    font-size: 20pt;
+                    border-radius: 10px;
+                    border: 0px solid #c0c0c0;
+                    background-color: #ffffff;
+                """)
+        self.default_display_layout.addWidget(self.default_label)
+
+        # 属性模型显示页面
+        self.attribute_display_widget = QWidget()
+        self.attribute_display_widget.setObjectName("AttributeDisplay")
+        self.attribute_display_layout = QVBoxLayout(self.attribute_display_widget)
+        self.attribute_display_layout.setContentsMargins(10, 0, 10, 0)
+        self.attribute_display_layout.setSpacing(0)
+
+        self.attribute_scroll = QScrollArea()
+        self.attribute_scroll.setWidgetResizable(True)
+        self.attribute_scroll.setFrameStyle(QFrame.NoFrame)
+
+        self.attribute_content_widget = QWidget()
+        self.attribute_content_layout = QGridLayout(self.attribute_content_widget)
+        self.attribute_content_layout.setSpacing(20)
+        self.attribute_content_layout.setContentsMargins(15, 15, 15, 15)
+        self.attribute_content_layout.setAlignment(Qt.AlignTop)
+        # 移除固定列宽，改为设置列伸缩因子
+        self.attribute_content_layout.setColumnStretch(0, 1)
+        self.attribute_content_layout.setColumnStretch(1, 1)
+        self.attribute_content_layout.setColumnStretch(2, 1)
+        self.attribute_content_layout.setColumnStretch(3, 1)
+
+        self.attribute_content_widget.setLayout(self.attribute_content_layout)
+        self.attribute_content_widget.setStyleSheet("background-color: white;")
+        self.attribute_content_widget.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
+
+        self.attribute_placeholder = QLabel(self.tr("等待上传情景要素模型"))
+        self.attribute_placeholder.setAlignment(Qt.AlignCenter)
+        self.attribute_placeholder.setObjectName("placeholder")
+
+        self.attribute_switch_layout = QVBoxLayout()
+        self.attribute_switch_layout.setContentsMargins(0, 0, 0, 0)
+        self.attribute_switch_layout.setSpacing(0)
+        self.attribute_switch_layout.addWidget(self.attribute_content_widget)
+        self.attribute_switch_layout.addWidget(self.attribute_placeholder)
+        self.attribute_switch_layout.setStretch(0, 1)
+        self.attribute_switch_layout.setStretch(1, 0)
+
+        self.attribute_content_widget.hide()
+        self.attribute_placeholder.show()
+
+        attribute_container = QWidget()
+        attribute_container.setLayout(self.attribute_switch_layout)
+        self.attribute_scroll.setWidget(attribute_container)
+
+        self.attribute_display_layout.addWidget(self.attribute_scroll)
+
+        # 行为模型显示页面
+        self.behavior_display_widget = QWidget()
+        self.behavior_display_widget.setObjectName("BehaviorDisplay")
+        self.behavior_display_layout = QVBoxLayout(self.behavior_display_widget)
+        self.behavior_display_layout.setContentsMargins(10, 0, 10, 0)
+        self.behavior_display_layout.setSpacing(0)
+
+        self.behavior_table = QTableWidget()
+        self.behavior_table.setColumnCount(3)
+        self.behavior_table.setHorizontalHeaderLabels([self.tr("行为名称"), self.tr("行为主体"), self.tr("行为对象")])
+        self.behavior_table.horizontalHeader().setFont(QFont("SimSun", 16, QFont.Bold))
+        self.behavior_table.horizontalHeader().setDefaultAlignment(Qt.AlignCenter)
+        self.behavior_table.setSelectionBehavior(QTableWidget.SelectRows)
+        self.behavior_table.setSelectionMode(QTableWidget.SingleSelection)
+
+        self.apply_three_line_table_style(self.behavior_table)
+
+        self.behavior_table.horizontalHeader().setStretchLastSection(True)
+        self.behavior_table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        self.behavior_table.verticalHeader().setVisible(False)
+        self.behavior_table.setAlternatingRowColors(True)
+        self.behavior_table.setStyleSheet("alternate-background-color: #e9e7e3")
+
+        self.behavior_table.setEditTriggers(QTableWidget.NoEditTriggers)
+        self.behavior_table.setShowGrid(False)
+        self.behavior_table.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+
+        self.behavior_placeholder = QLabel(self.tr("等待上传情景要素模型"))
+        self.behavior_placeholder.setAlignment(Qt.AlignCenter)
+        self.behavior_placeholder.setObjectName("placeholder")
+        self.behavior_placeholder.hide()
+
+        self.behavior_display_layout.addWidget(self.behavior_table)
+        self.behavior_display_layout.addWidget(self.behavior_placeholder)
+
+        # 将各个页面添加到堆叠布局中
+        self.model_stacked_layout.addWidget(self.default_display_widget)
+        self.model_stacked_layout.addWidget(self.attribute_display_widget)
+        self.model_stacked_layout.addWidget(self.behavior_display_widget)
+
+        self.model_layout.addLayout(self.model_stacked_layout)
+
+    def apply_three_line_table_style(self, table: QTableWidget):
+        """应用三线表样式到表格"""
+        table.setStyleSheet("""
+            QTableWidget {
+                border: none;
+                font-size: 14px;
+                border-bottom: 1px solid black; 
+                background-color: white;
+                alternate-background-color: #e9e7e3;
+            }
+            QHeaderView::section {
+                border-top: 1px solid black;
+                border-bottom: 1px solid black;
+                background-color: #f0f0f0;
+                font-weight: bold;
+                padding: 4px;
+                color: #333333;
+                text-align: center;
+            }
+            QTableWidget::item {
+                border: none;
+                padding: 5px;
+                text-align: center;
+            }
+            QTableWidget::item:selected {
+                background-color: #cce5ff;
+                color: black;
+                border: none;
+            }
+            QTableWidget:focus {
+                outline: none;
+            }
+        """)
+        self.force_refresh_table_headers(table)
+
+    def force_refresh_table_headers(self, table: QTableWidget):
+        """强制刷新表头样式"""
+        table.horizontalHeader().setStyleSheet("""
+            QHeaderView::section {
+                border-top: 1px solid black;
+                border-bottom: 1px solid black;
+                background-color: #f0f0f0;
+                font-weight: bold;
+                padding: 4px;
+                color: #333333;
+                text-align: center;
+            }
+        """)
+        table.horizontalHeader().repaint()
+
+    def clear_layout(self, layout):
+        """清空布局中的所有小部件"""
+        while layout.count():
+            child = layout.takeAt(0)
+            if child.widget():
+                child.widget().deleteLater()
+
+    def populate_attribute_model(self, attributes):
+        """填充属性模型数据到布局中，并实现每行显示两个属性（四个组件）。"""
+        self.clear_layout(self.attribute_content_layout)
+        if attributes:
+            self.attribute_placeholder.hide()
+            self.attribute_content_widget.show()
+
+            row = 0
+            column = 0
+            for i in range(0, len(attributes), 2):
+                for j in range(2):
+                    if i + j < len(attributes):
+                        attr = attributes[i + j]
+                        attr_name = attr.get("attribute_name", "")
+                        attr_value = self.show_object_value(attr,"attribute")
+                        attr_type = attr.get("attribute_type", "")
+
+                        attr_widget = ClickableAttributeWidget(attr_name, attr_value, attr_type)
+                        attr_widget.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)  # 组件大小策略
+                        attr_widget.clicked.connect(self.open_attribute_editor)
+
+                        self.attribute_content_layout.addWidget(attr_widget, row, column)
+                        column += 1
+                row += 1
+                column = 0
+
+            # 设置列伸缩因子为两列
+            for col in range(2):
+                self.attribute_content_layout.setColumnStretch(col, 1)
+            # 多余列设置为无效
+            for col in range(2, 4):
+                self.attribute_content_layout.setColumnStretch(col, 0)
+
+        else:
+            self.reset_attribute_model(self.tr("没有属性模型"))
+
+    def show_object_value(self, object,type):
+        print(f"[DEBUG] 234324234234显示对象值: {object}")
+        if type == 'attribute':
+            if self.is_related_data(object):
+                # 获取关联数据的id
+                related_data_id = object['attribute_value']
+                if isinstance(related_data_id, int):
+                    related_data_id = [related_data_id]
+                # 如果是空值
+                if not related_data_id:
+                    return []
+                related_data_name = []
+                for id in related_data_id:
+                    for item in self.parent.element_data:
+                        if self.parent.element_data[item]['element_id'] == id:
+                            related_data_name.append(item)
+                print(related_data_name)
+                return related_data_name
+            else:
+                return object['attribute_value']
+        elif type == 'behavior':
+            related_objects = object['related_objects']
+            related_objects_name = []
+            for id in related_objects:
+                for item in self.parent.element_data:
+                    if self.parent.element_data[item]['element_id'] == id:
+                        related_objects_name.append(item)
+            return related_objects_name
+
+    def is_related_data(self, object):
+        """检查对象是否是关联数据。"""
+        # 获取所有的基础属性类型ID
+        # basic_data_type = ['string', 'enum', 'int', 'float', 'boolean']
+        # basic_data_type_id = self.get_result_by_sql(
+        #     f"SELECT attribute_type_id FROM attribute_type WHERE code IN {tuple(basic_data_type)}")
+        # basic_data_type_id = [row[0] for row in basic_data_type_id]
+        if object['is_reference'] == 0 or False:
+            return False
+        return True
+
+    def switch_model_display(self, model_type):
+        """切换显示的模型类型"""
+        if self.focusWidget():
+            self.focusWidget().clearFocus()
+
+        if model_type == "Attribute":
+            self.attribute_button.setChecked(True)
+            self.model_stacked_layout.setCurrentWidget(self.attribute_display_widget)
+            self.behavior_display_widget.hide()
+            self.attribute_display_widget.show()
+        elif model_type == "Behavior":
+            self.behavior_button.setChecked(True)
+            self.model_stacked_layout.setCurrentWidget(self.behavior_display_widget)
+            self.attribute_display_widget.hide()
+            self.behavior_display_widget.show()
+
+    def open_attribute_editor(self, attr_name):
+        """打开属性编辑对话框，允许用户编辑属性值。"""
+        if self.entity_data:
+            element = self.entity_data
+            # 查找属性的值和类型
+            attr = next((a for a in element.get("attributes", []) if a["attribute_name"] == attr_name), None)
+            is_edit = False
+            print(attr)
+            attr_widget = None
+            for i in range(self.attribute_content_layout.count()):
+                item = self.attribute_content_layout.itemAt(i)
+                if item:
+                    widget = item.widget()
+                    if isinstance(widget, ClickableAttributeWidget) and widget.attr_name == attr_name:
+                        attr_widget = widget
+                        break
+            attribute_type_result = self.parent.get_result_by_sql(r"SELECT attribute_type_id FROM attribute_type WHERE code IN ('string','enum','int','float','boolean')")
+            print(attribute_type_result)
+            valid_attribute_type_ids = [row[0] for row in attribute_type_result]  # 提取所有的 attribute_type_id
+            print(valid_attribute_type_ids)
+            enum_values = []
+            if attr and attr["attribute_type_id"] in valid_attribute_type_ids:
+                print("基础类型")
+                enum_id_result = self.parent.get_result_by_sql(
+                    r"SELECT attribute_type_id FROM attribute_type WHERE code IN ('enum')")
+                enum_id = [row[0] for row in enum_id_result][0]  # enumid
+
+                # 解析enum_value字符串为列表
+                enum_values_result = self.parent.get_result_by_sql(
+                    f"SELECT value FROM enum_value WHERE enum_value_id = {attr['enum_value_id']}")
+                print(enum_values_result)
+
+
+
+
+                if attr["attribute_type_id"] == enum_id:
+                    # 提取查询结果中的字符串并去掉方括号
+                    enum_str = enum_values_result[0][0].strip("[]")  # 获取元组中的字符串，并去掉方括号
+
+                    # 根据中文逗号分割字符串
+                    enum_values = [item.strip() for item in enum_str.split("，")]
+                    print(enum_values)
+
+                if attr_widget:
+                    # 高亮显示正在编辑的标签
+                    attr_widget.highlight()
+
+                dialog = EditAttributeDialog(
+                    attr_name=attr["attribute_name"],
+                    attr_value=self.show_object_value(attr,"attribute"),
+                    attr_type=self.parent.get_result_by_sql(f"SELECT code FROM attribute_type WHERE attribute_type_id = {attr['attribute_type_id']};")[0][0],
+                    attr_type_name=self.parent.get_result_by_sql(f"SELECT name FROM attribute_type WHERE attribute_type_id = {attr['attribute_type_id']};")[0][0],
+                    is_required=attr["is_required"],
+                    enum_values=enum_values,
+                    parent=self.parent
+                )
+                if dialog.exec():
+                    print("确认更新")
+                    new_value = dialog.get_value()
+                    is_edit = True  # 确认用户进行了编辑
+
+                    if new_value is not None:
+                        # 更新属性值
+                        attr["attribute_value"] = new_value
+                        # 当前元素名字
+                        element_name = element.get("element_name")
+                        if element_name == "道路环境要素":
+                            for attribute in self.parent.element_data['道路承灾要素']['attributes']:
+                                if attribute['attribute_name'] == attr_name:
+                                    attribute['attribute_value'] = new_value
+                        elif element_name == "道路承灾要素":
+                            for attribute in self.parent.element_data['道路环境要素']['attributes']:
+                                if attribute['attribute_name'] == attr_name:
+                                    attribute['attribute_value'] = new_value
+                        # 更新显示
+                        self.update_current_element_data()
+                    attr_widget.unhighlight(is_edit)
+                else:
+                    print("用户取消了编辑")
+                    attr_widget.unhighlight(is_edit)
+            else:
+                print("编辑复合属性")
+                if attr_widget:
+                    # 高亮显示正在编辑的标签
+                    attr_widget.highlight()
+
+                self.open_related_object_editor(attr,"attribute")
+
+
+        else:
+            CustomWarningDialog(
+                self.tr("编辑错误"),
+                self.tr("未选中要素。"),
+                parent=self
+            ).exec_()
+
+    def reset_attribute_model(self, message=None):
+        """重置属性模型，显示占位符信息。"""
+        self.clear_layout(self.attribute_content_layout)
+        self.attribute_content_widget.hide()
+        self.attribute_placeholder.setText(message or self.tr("没有属性模型"))
+        self.attribute_placeholder.show()
+    def reset_behavior_model(self, message=None):
+        """重置行为模型，显示占位符信息。"""
+        self.behavior_table.setRowCount(0)
+        self.behavior_placeholder.setText(message or self.tr("没有行为模型"))
+        self.behavior_placeholder.show()
+        self.behavior_table.hide()
+
+    def populate_behavior_model(self, behaviors):
+        """将行为模型数据填充到表格中。"""
+
+        self.behavior_table.setRowCount(0)  # 清空表格中的所有行
+        if behaviors:
+            self.behavior_placeholder.hide()
+            self.behavior_table.show()
+
+            self.behavior_table.setRowCount(len(behaviors))
+            for row_idx, behavior in enumerate(behaviors):
+                name_item = QTableWidgetItem(behavior.get("behavior_name", ""))
+                name_item.setFlags(name_item.flags() & ~Qt.ItemIsEditable)
+                name_item.setTextAlignment(Qt.AlignCenter)
+                self.behavior_table.setItem(row_idx, 0, name_item)
+
+                # 处理行为主体名称
+                subject = behavior.get("behavior_id", "")
+                if isinstance(subject, int):
+                    subject_name_result = self.parent.get_result_by_sql(
+                        f"SELECT element_name FROM element WHERE element_id = (SELECT element_id FROM behavior WHERE behavior_id = {subject})"
+                    )
+                    subject_name = subject_name_result[0][0] if subject_name_result else "未知"
+                else:
+                    subject_name = str(subject)
+                subject_item = QTableWidgetItem(subject_name)
+                subject_item.setTextAlignment(Qt.AlignCenter)
+                self.behavior_table.setItem(row_idx, 1, subject_item)
+
+                # 处理行为对象名称
+                object_ids = behavior.get("related_objects", [])
+                if isinstance(object_ids, list):
+                    object_names = self.show_object_value(behavior, "behavior")
+
+                    object_text = ", ".join(object_names)
+                else:
+                    object_text = "后续处理" if isinstance(object_ids, int) else str(object_ids)
+                object_item = QTableWidgetItem(object_text)
+                object_item.setTextAlignment(Qt.AlignCenter)
+                self.behavior_table.setItem(row_idx, 2, object_item)
+
+            self.apply_three_line_table_style(self.behavior_table)
+            self.force_refresh_table_headers(self.behavior_table)
+        else:
+            self.reset_behavior_model(self.tr("没有行为模型"))
+
+    def update_current_element_data(self):
+        """更新当前选中要素的数据到属性和行为模型显示，并确保类别信息存在。"""
+        if self.entity_data:
+            element = self.entity_data
+            print(f"[DEBUG] 更新当234324前要素数据: {element}")
+            # 处理属性模型
+            self.current_attributes = element.get("attributes", [])
+            self.populate_attribute_model(self.current_attributes)
+            # 处理行为模型
+
+            self.current_behaviors = element.get("behaviors", [])
+            self.populate_behavior_model(self.current_behaviors)
+        else:
+            self.reset_attribute_model()
+            self.reset_behavior_model()
+
+
+
+    def open_related_object_editor(self, object, type):
+        print(object)
+        is_multi_valued = object['is_multi_valued']
+        print(is_multi_valued)
+        if type == "attribute":
+            print(f"编辑属性模型{object['attribute_name']}，属性类型{object['attribute_type_id']}")
+            # 获取关联数据的id
+            # related_data_id = self.get_result_by_sql(
+            #     f"SELECT associated_element_id FROM attribute_association WHERE attribute_id ={object['attribute_id']}")
+            # related_data_id = [row[0] for row in related_data_id]
+            # print(related_data_id)
+            # # 获取关联数据的名称
+            # if len(related_data_id) == 1:
+            #     # 只有一个元素，使用 = 而不是 IN
+            #     query = f"SELECT element_name FROM element WHERE element_id = {related_data_id[0]}"
+            # else:
+            #     # 多个元素，使用 IN
+            #     query = f"SELECT element_name FROM element WHERE element_id IN {tuple(related_data_id)}"
+            #
+            # # 执行查询
+            # related_data_name = self.get_result_by_sql(query)
+            # related_data_name = [row[0] for row in related_data_name]
+            # print(related_data_name)
+            dialog = EditRelatedObjectDialog(
+                object_parent=self.parent.element_data,
+                object = object,
+                type = type,
+                parent=self.parent,
+                debug=False,
+            )
+            if dialog.exec():
+                print("确认更新")
+            else:
+                self.update_current_element_data()
+        if type == "behavior":
+            print(f"编辑行为模型{object['behavior_name']}")
+            dialog = EditRelatedObjectDialog(
+                object_parent=self.parent.element_data,
+                object=object,
+                type=type,
+                parent=self.parent,
+                debug=False,
+            )
+            if dialog.exec():
+                print("确认更新")
+            else:
+                self.update_current_element_data()
+
+class NegativeIdGenerator:
+    """全局负数 ID 生成器，从 -1 开始，每次 -1。"""
+    def __init__(self, start: int = -1):
+        self.current = start
+
+    def next_id(self) -> int:
+        nid = self.current
+        self.current -= 1
+        return nid
+
+
 class EditRelatedObjectDialog(QDialog):
     """复合属性编辑窗口"""
 
-    def __init__(self, object_parent,object,type, parent=None):
+    def __init__(self,object_parent,object,type, parent=None,debug = True):
         super().__init__(parent)
+        self.associated_element_id = []
+        self.is_add = False
         self.all_entities_name = []
         self.all_entities_id = []
         self.new_entities = dict()
+        self.selected_entities = set()  # 初始化选中实体集合
         self.setWindowTitle("复合属性编辑")
         self.resize(800, 600)
 
@@ -398,6 +1000,7 @@ class EditRelatedObjectDialog(QDialog):
         self.object = object
         self.type = type
         self.parent = parent
+        self.debug = debug
         self.init_basic_info()
 
         self.init_ui()
@@ -405,21 +1008,33 @@ class EditRelatedObjectDialog(QDialog):
     def init_basic_info(self):
         """初始化基本信息"""
         if self.type == "attribute":
-            self.current_name = self.parent.get_result_by_sql(f"SELECT attribute_name FROM {self.type} WHERE attribute_id = {self.object['attribute_id']}")[0][0]
-            self.current_type_id = self.parent.get_result_by_sql(f"SELECT attribute_type_id FROM {self.type} WHERE attribute_id = {self.object['attribute_id']}")[0][0]
-            self.current_type_name = self.parent.get_result_by_sql(f"SELECT name FROM attribute_type WHERE attribute_type_id = {self.current_type_id}")[0][0]
-            self.is_required = self.parent.get_result_by_sql(f"SELECT is_required FROM attribute WHERE attribute_id = {self.object['attribute_id']}")[0][0]
-            self.scenario_id = self.parent.get_result_by_sql(f"SELECT scenario_id FROM element WHERE element_id = (SELECT element_id FROM attribute WHERE attribute_id = {self.object['attribute_id']})")[0][0]
-            self.current_element_name = self.parent.get_result_by_sql(f"SELECT element_name FROM element WHERE element_id = (SELECT element_id FROM attribute WHERE attribute_id = {self.object['attribute_id']})")[0][0]
+
+            self.is_multi_valued = self.object['is_multi_valued']
+            self.current_name = self.object['attribute_name']
+            self.current_type_id = self.parent.get_result_by_sql(f"SELECT attribute_type_id FROM attribute_type WHERE attribute_type_code = '{self.object['attribute_type_code']}'")[0][0]
+            self.current_type_name = self.object['attribute_type_code']
+            self.is_required = self.object['is_required']
+            self.scenario_id = self.parent.scenario_data["scenario_id"]
+            for item_key, item_value in self.object_parent.items():
+                attributes = item_value.get("attributes", [])
+                for attribute in attributes:
+                    if int(attribute["attribute_value_id"]) == int(self.object['attribute_value_id']):
+                        self.current_element_name = item_key
+                        break
 
         else:
-            self.current_name = self.parent.get_result_by_sql(f"SELECT behavior_name FROM {self.type} WHERE behavior_id = {self.object['behavior_id']}")[0][0]
-            self.current_type_id = self.parent.get_result_by_sql(f"SELECT behavior_type_id FROM {self.type} WHERE behavior_id = {self.object['behavior_id']}")[0][0]
-            self.current_type_name = self.parent.get_result_by_sql(f"SELECT name FROM behavior_type WHERE  behavior_type_id = {self.current_type_id}")[0][0]
-            self.is_required = self.parent.get_result_by_sql(f"SELECT is_required FROM behavior WHERE behavior_id = {self.object['behavior_id']}")[0][0]
-            self.scenario_id = self.parent.get_result_by_sql(f"SELECT scenario_id FROM element WHERE element_id = (SELECT element_id FROM behavior WHERE behavior_id = {self.object['behavior_id']})")[0][0]
-            self.current_element_name = self.parent.get_result_by_sql(f"SELECT element_name FROM element WHERE element_id = (SELECT element_id FROM behavior WHERE behavior_id = {self.object['behavior_id']})")[0][0]
-
+            self.is_multi_valued = self.object['is_multi_valued']
+            self.current_name = self.object['behavior_name']
+            self.current_type_id = self.object['object_entity_type_id']
+            self.current_type_name = self.parent.get_result_by_sql(f"SELECT entity_type_name FROM entity_type WHERE entity_type_id = {self.object['object_entity_type_id']}")[0][0]
+            self.is_required = self.object['is_required']
+            self.scenario_id = self.parent.scenario_data["scenario_id"]
+            for item_key, item_value in self.object_parent.items():
+                behaviors = item_value.get("behaviors", [])
+                for behavior in behaviors:
+                    if int(behavior["behavior_value_id"]) == int(self.object['behavior_value_id']):
+                        self.current_element_name = item_key
+                        break
 
 
     def init_ui(self):
@@ -485,6 +1100,7 @@ class EditRelatedObjectDialog(QDialog):
         self.resource_table.setFocusPolicy(Qt.NoFocus)
         self.setFocusPolicy(Qt.NoFocus)
 
+
     def load_entities(self):
         """加载初始实体数据并默认勾选"""
         # 清空表格
@@ -492,122 +1108,163 @@ class EditRelatedObjectDialog(QDialog):
         # 清空实体列表
         self.all_entities_id.clear()
         self.all_entities_name.clear()
-
+        # 清空选中实体集合
+        self.selected_entities.clear
 
         if self.type == "attribute":
-            # 查询中介文件中所有符合要求的实体id
-            for item in self.object_parent:
-                if self.object_parent[item]["element_type_id"] == self.parent.get_result_by_sql(f"SELECT element_type_id FROM element_type WHERE name = '{self.current_type_name}'")[0][0]:
-                    self.all_entities_id.append(self.object_parent[item]["element_id"])
-                    self.all_entities_name.append(item)
+            # 获取当前属性类型的 element_type_id
+            element_type_id = self.object["reference_target_type_id"]
+            print(f"当前属性类型的element_type_id：{element_type_id}")
 
-            # 查询中介文件中当前属性关联的实体id
-            attributes = self.object_parent[f"{self.current_element_name}"]["attributes"]
+            for item_key, item_value in self.object_parent.items():
+                if item_value["entity_type_id"] == element_type_id:
+                    self.all_entities_id.append(item_value["entity_id"])
+                    self.all_entities_name.append(item_key)
+
+            # 获取当前属性关联的实体 id
+            attributes = self.object_parent.get(f"{self.current_element_name}", {}).get("attributes", [])
 
             # 遍历属性列表，找到匹配的 attribute_name
+            self.associated_element_id = []
             for attribute in attributes:
                 if attribute["attribute_name"] == self.current_name:
                     # 获取对应的 attribute_value
-                    self.associated_element_id = attribute["attribute_value"]
-                    break  # 找到后可以跳出循环
+                    if isinstance(attribute["attribute_value"], list):
+                        self.associated_element_id = attribute["attribute_value"]
+                    else:
+                        self.associated_element_id = [attribute["attribute_value"]]
+                    break  # 找到后退出循环
 
         elif self.type == "behavior":
-            for item in self.object_parent:
-                if self.object_parent[item]["element_type_id"] == self.parent.get_result_by_sql(f"SELECT element_type_id FROM element_type WHERE name = '{self.current_type_name}'")[0][0]:
-                    self.all_entities_id.append(self.object_parent[item]["element_id"])
-                    self.all_entities_name.append(item)
+            # 获取当前行为类型的 element_type_id
+            element_type_id = self.object["object_entity_type_id"]
 
-            behaviors = self.object_parent[f"{self.current_element_name}"]["behaviors"]
+            for item_key, item_value in self.object_parent.items():
+                if item_value["entity_type_id"] == element_type_id:
+                    self.all_entities_id.append(item_value["entity_id"])
+                    self.all_entities_name.append(item_key)
+
+            behaviors = self.object_parent.get(f"{self.current_element_name}", {}).get("behaviors", [])
 
             # 遍历行为列表，找到匹配的 behavior_name
+            self.associated_element_id = []
             for behavior in behaviors:
                 if behavior["behavior_name"] == self.current_name:
-                    # 获取对应的 behavior_value
-                    self.associated_element_id = behavior["related_objects"]
+                    # 获取对应的 related_objects
+                    if isinstance(behavior["object_entities"], list):
+                        self.associated_element_id = behavior["object_entities"]
+                    else:
+                        self.associated_element_id = [behavior["object_entities"]]
                     break
 
         print("[EDIT RELATED OBJECT DIALOG MAIN INFO]: 捕获到associated_element_id:", self.associated_element_id)
 
-        # 如果是单个数字，转换为列表
-        if isinstance(self.associated_element_id, int):
-            self.associated_element_id = [self.associated_element_id]
-
-
-
-        # 把所有类型相符的实体插入表格
-        for i in range(len(self.all_entities_id)):
-            self.resource_table.insertRow(i)
+        # 插入所有类型匹配的实体到表格
+        for idx, (entity_id, entity_name) in enumerate(zip(self.all_entities_id, self.all_entities_name)):
+            self.resource_table.insertRow(idx)
 
             # 设置ID隐藏列
-            id_item = QTableWidgetItem(str(self.all_entities_id[i]))
+            id_item = QTableWidgetItem(str(entity_id))
             id_item.setTextAlignment(Qt.AlignCenter)
-            self.resource_table.setItem(i, 0, id_item)
+            self.resource_table.setItem(idx, 0, id_item)
 
             # 创建并居中复选框
             checkbox = QCheckBox()
-            checkbox.setChecked(self.all_entities_id[i] in self.associated_element_id)
+            checkbox.setChecked(entity_id in self.associated_element_id)
             checkbox.setStyleSheet("background-color:transparent;")
 
-            # Create a widget to center the checkbox
+            # 将选中状态同步到 selected_entities
+            if checkbox.isChecked():
+                self.selected_entities.add(entity_id)
+
+            # 连接信号，传递 entity_id
+            checkbox.stateChanged.connect(lambda state, eid=entity_id: self.on_checkbox_state_changed(eid, state))
+
+            # 创建用于居中复选框的小部件
             checkbox_widget = QWidget()
             checkbox_layout = QHBoxLayout(checkbox_widget)
             checkbox_layout.addStretch()
             checkbox_layout.addWidget(checkbox)
             checkbox_layout.addStretch()
             checkbox_layout.setContentsMargins(0, 0, 0, 0)
-            # 透明背景
             checkbox_widget.setStyleSheet("background-color:transparent;")
 
-            self.resource_table.setCellWidget(i, 1, checkbox_widget)
+            self.resource_table.setCellWidget(idx, 1, checkbox_widget)
 
             # 设置实体名称并居中
-            name_item = QTableWidgetItem(self.all_entities_name[i])
+            name_item = QTableWidgetItem(entity_name)
             name_item.setTextAlignment(Qt.AlignCenter)
-            self.resource_table.setItem(i, 2, name_item)
+            self.resource_table.setItem(idx, 2, name_item)
 
-            # 把捕获到的associated_element也插入，不与数据库中的重复
-            if self.associated_element_id:
-                for i in range(len(self.associated_element_id)):
-                    if self.associated_element_id[i] not in self.all_entities_id:
-                        self.resource_table.insertRow(i)
+        # 处理 associated_element_id 中不在 all_entities_id 的情况
+        additional_entities = [eid for eid in self.associated_element_id if eid not in self.all_entities_id]
+        starting_row = self.resource_table.rowCount()
 
-                        # 设置ID隐藏列
-                        id_item = QTableWidgetItem(str(self.associated_element_id[i]))
-                        id_item.setTextAlignment(Qt.AlignCenter)
-                        self.resource_table.setItem(i, 0, id_item)
+        for idx, additional_id in enumerate(additional_entities):
+            self.resource_table.insertRow(starting_row + idx)
 
-                        # 创建并居中复选框
-                        checkbox = QCheckBox()
-                        checkbox.setChecked(True)
-                        checkbox.setStyleSheet("background-color:transparent;")
+            # 设置ID隐藏列
+            id_item = QTableWidgetItem(str(additional_id))
+            id_item.setTextAlignment(Qt.AlignCenter)
+            self.resource_table.setItem(starting_row + idx, 0, id_item)
 
-                        # Create a widget to center the checkbox
-                        checkbox_widget = QWidget()
-                        checkbox_layout = QHBoxLayout(checkbox_widget)
-                        checkbox_layout.addStretch()
-                        checkbox_layout.addWidget(checkbox)
-                        checkbox_layout.addStretch()
-                        checkbox_layout.setContentsMargins(0, 0, 0, 0)
-                        # 透明背景
-                        checkbox_widget.setStyleSheet("background-color:transparent;")
+            # 创建并居中复选框
+            checkbox = QCheckBox()
+            checkbox.setChecked(True)
+            checkbox.setStyleSheet("background-color:transparent;")
 
-                        self.resource_table.setCellWidget(i, 1, checkbox_widget)
+            # 将选中状态同步到 selected_entities
+            self.selected_entities.add(additional_id)
+            # 连接信号
+            checkbox.stateChanged.connect(lambda state, eid=additional_id: self.on_checkbox_state_changed(eid, state))
 
-                        # 设置实体名称并居中
-                        for item in self.object_parent:
-                            if self.object_parent[item]["element_id"] == self.associated_element_id[i]:
-                                name = item["element_name"]
-                                break
-                        name_item = QTableWidgetItem(f"{name}")
-                        name_item.setTextAlignment(Qt.AlignCenter)
-                        self.resource_table.setItem(i, 2, name_item)
+            # 创建用于居中复选框的小部件
+            checkbox_widget = QWidget()
+            checkbox_layout = QHBoxLayout(checkbox_widget)
+            checkbox_layout.addStretch()
+            checkbox_layout.addWidget(checkbox)
+            checkbox_layout.addStretch()
+            checkbox_layout.setContentsMargins(0, 0, 0, 0)
+            checkbox_widget.setStyleSheet("background-color:transparent;")
 
-            # 清 any selection
-            self.resource_table.clearSelection()
-            self.resource_table.horizontalHeader().setStretchLastSection(True)  # 自动伸展列宽
-            self.resource_table.resizeColumnsToContents()  # 调整列宽以适应内容
+            self.resource_table.setCellWidget(starting_row + idx, 1, checkbox_widget)
 
+            # 获取实体名称
+            name = None
+            for item_key, item_value in self.object_parent.items():
+                if item_value["element_id"] == additional_id:
+                    name = item_key  # 假设 item_key 是名称
+                    break
+            if name:
+                name_item = QTableWidgetItem(name)
+                name_item.setTextAlignment(Qt.AlignCenter)
+                self.resource_table.setItem(starting_row + idx, 2, name_item)
+            else:
+                name_item = QTableWidgetItem("")
+                name_item.setTextAlignment(Qt.AlignCenter)
+                self.resource_table.setItem(starting_row + idx, 2, name_item)
 
+        # 移除名字为空的行
+        for row in range(self.resource_table.rowCount()):
+            if self.resource_table.item(row, 2) and self.resource_table.item(row, 2).text() == "":
+                self.resource_table.removeRow(row)
+
+        # 清除任何选择
+        self.resource_table.clearSelection()
+        self.resource_table.horizontalHeader().setStretchLastSection(True)  # 自动伸展列宽
+
+        # 发送状态信号
+        self.on_checkbox_state_changed(None, None)
+
+        # 如果是新建的，直接弹出编辑对话框
+        if self.is_add:
+            # 获取最后一行
+            last_row = self.resource_table.rowCount() - 1
+            # 选中最后一行
+            self.resource_table.selectRow(last_row)
+            # 弹出编辑对话框
+            self.edit_resource()
+            self.is_add = False
 
 
     def add_resource(self):
@@ -650,130 +1307,348 @@ class EditRelatedObjectDialog(QDialog):
         name, ok = QInputDialog.getText(self, "输入名称", "输入名称")
         if not ok:
             return
+        # 如果名字为空
+        if name == "":
+            CustomWarningDialog("输入错误","名字不能为空").exec_()
+            return
         print(f"[EDIT RELATED OBJECT DIALOG MAIN INFO]: 用户输入了name:{name}")
         self.add_element_for_scenario(name, element_base_id)
-
-
         self.load_entities()
 
-    def add_element_for_scenario(self, name, element_base_id):
-        """为情景增加新实体"""
-        # 从 element_base 中构建新实体
-        print(f"[ADD ELEMENT MAIN INFO]: 现在根据{element_base_id}和{name},创建element")
-        element_row = self.parent.get_result_by_sql(f"SELECT * FROM element_base WHERE element_base_id = '{element_base_id}'")
-        # 获取实际的element_parent_id
-        element_parent_id = self.parent.get_result_by_sql(f"SELECT element_id FROM element WHERE element_name = (SELECT element_base_name FROM element_base WHERE element_base_id = {element_base_id})")
-        element_parent_id = element_parent_id[0][0]
-        print(f"[ADD ELEMETN MAIN INFO]: 查询到：{element_row}")
-        current_time = int(time.time())
-        data = {
-            "element_id": f"element_{current_time}", # 作为一个标记
-            "element_name": name,
-            "element_type_id": element_row[0][2],
-            "element_parent_id": element_parent_id,
-            "attributes": [],
-            "behaviors": []
-        }
-
-        # 从 attribute_base 中获取属性
-        attributes_rows = self.parent.get_result_by_sql(f"SELECT * FROM attribute_base WHERE element_base_id = '{element_base_id}'")
-        for row in attributes_rows:
-            attribute = {
-                "attribute_id": f"attribute_{current_time}",  # 作为一个标记
-                "attribute_name": row[1],
-                "attribute_type_id": row[2],
-                "is_required": bool(row[3]),
-                "is_multi_valued": bool(row[4]),
-                "enum_value_id": row[5],
-                "attribute_value": "", # 留空，让用户填写
-            }
-            data["attributes"].append(attribute)
-
-        # 从 behavior_base 中获得行为
-        behaviors_rows = self.parent.get_result_by_sql(f"SELECT * FROM behavior_base WHERE element_base_id = '{element_base_id}'")
-        for row in behaviors_rows:
-            behavior = {
-                "behavior_id": f"behavior_{current_time}",  # 作为一个标记
-                "behavior_name": row[1],
-                "is_required": bool(row[2]),
-                "object_type_id": row[3],
-                "is_multi_valued": bool(row[4]),
-                "related_objects": []
-            }
-            data["behaviors"].append(behavior)
-
-        # 打印json格式的data,有缩进，中文不要转码
-        print(f"[ADD ELEMETN MAIN INFO]: 新的element数据：{json.dumps(data, ensure_ascii=False, indent=4)}")
-        # 加入到中介数据object_parent中
-        # 如果重名，提示用户
-        # TODO 重名局部域检测
-        #if f"{name}" in self.object_parent and self.object_parent[f"{name}"]["element_type_id"] == self.parent.get_result_by_sql(f"SELECT element_type_id FROM element_type WHERE name = '{self.current_type_name}'")[0][0]:
-            # 键已经存在，弹出警告
-        if f"{name}" in self.object_parent:
-            CustomWarningDialog("添加失败", "已存在同名实体，请更改名称后重试").exec_()
-            return
-        else:
-            try:
-                # 键不存在，插入新数据
-                self.object_parent[f"{name}"] = data
-            except Exception as e:
-                print(f"[ADD ELEMENT MAIN INFO]: {e}")
-                # 这里可以进行其他异常处理
-                CustomWarningDialog("添加失败", "出现意外错误，请稍后再试").exec_()
-                return
-        self.new_entities[name] = data  # 将新建实体存入字典或列表
-
-        # 加入到关联列表中
-        for attribute in self.object_parent[f"{self.current_element_name}"]["attributes"]:
-            if attribute["attribute_name"] == self.current_name:
-                attribute["attribute_value"].append(f"{data['element_id']}")
-                break
-
-
-        # 打印现在的object_parent，缩进
-        print(f"[ADD ELEMENT MAIN INFO]: 现在的object_parent数据：{json.dumps(self.object_parent, ensure_ascii=False, indent=4)}")
-
-
-
-    def add_entity_to_table(self, entity):
-        """将实体添加到表格"""
-        row_count = self.resource_table.rowCount()
-        self.resource_table.insertRow(row_count)
-
-        # 创建复选框，并设置选中状态
-        checkbox = QCheckBox()
-        checkbox.setChecked(entity.get("selected", False))
-        self.resource_table.setCellWidget(row_count, 0, checkbox)
-
-        self.resource_table.setItem(row_count, 1, QTableWidgetItem(entity["name"]))
-
+    # def add_element_for_scenario(self, name, element_base_id):
+    #     """为情景增加新实体"""
+    #     # 从 element_base 中构建新实体
+    #     print(f"[ADD ELEMENT MAIN INFO]: 现在根据{element_base_id}和{name},创建element")
+    #     element_row = self.parent.get_result_by_sql(f"SELECT * FROM element_base WHERE element_base_id = '{element_base_id}'")
+    #     # 获取实际的element_parent_id
+    #     element_parent_id = self.parent.get_result_by_sql(f"SELECT element_id FROM element WHERE element_name = (SELECT element_base_name FROM element_base WHERE element_base_id = {element_base_id})")
+    #     element_parent_id = element_parent_id[0][0]
+    #     print(f"[ADD ELEMETN MAIN INFO]: 查询到：{element_row}")
+    #
+    #     data = {
+    #         "element_id": f"0000{int(count.increment())}", # 作为一个标记
+    #         "element_name": name,
+    #         "element_type_id": element_row[0][2],
+    #         "element_parent_id": element_parent_id,
+    #         "attributes": [],
+    #         "behaviors": []
+    #     }
+    #
+    #     # 从 attribute_base 中获取属性
+    #     attributes_rows = self.parent.get_result_by_sql(f"SELECT * FROM attribute_base WHERE element_base_id = '{element_base_id}'")
+    #     for row in attributes_rows:
+    #         attribute = {
+    #             "attribute_id": f"00000{int(count.increment())}",  # 作为一个标记
+    #             "attribute_name": row[1],
+    #             "attribute_type_id": row[2],
+    #             "is_required": bool(row[3]),
+    #             "is_multi_valued": bool(row[4]),
+    #             "enum_value_id": row[5],
+    #             "attribute_value": "", # 留空，让用户填写
+    #         }
+    #         data["attributes"].append(attribute)
+    #
+    #     # 从 behavior_base 中获得行为
+    #     behaviors_rows = self.parent.get_result_by_sql(f"SELECT * FROM behavior_base WHERE element_base_id = '{element_base_id}'")
+    #     for row in behaviors_rows:
+    #         behavior = {
+    #             "behavior_id": f"000000{int(count.increment())}",  # 作为一个标记
+    #             "behavior_name": row[1],
+    #             "is_required": bool(row[2]),
+    #             "object_type_id": row[3],
+    #             "is_multi_valued": bool(row[4]),
+    #             "related_objects": []
+    #         }
+    #         data["behaviors"].append(behavior)
+    #
+    #     # 打印json格式的data,有缩进，中文不要转码
+    #     print(f"[ADD ELEMETN MAIN INFO]: 新的element数据：{json.dumps(data, ensure_ascii=False, indent=4)}")
+    #     # 加入到中介数据object_parent中
+    #     # 如果重名，提示用户
+    #     # TODO 重名局部域检测
+    #     #if f"{name}" in self.object_parent and self.object_parent[f"{name}"]["element_type_id"] == self.parent.get_result_by_sql(f"SELECT element_type_id FROM element_type WHERE name = '{self.current_type_name}'")[0][0]:
+    #         # 键已经存在，弹出警告
+    #     if f"{name}" in self.object_parent:
+    #         CustomWarningDialog("添加失败", "已存在同名实体，请更改名称后重试").exec_()
+    #         return
+    #     else:
+    #         try:
+    #             # 键不存在，插入新数据
+    #             self.object_parent[f"{name}"] = data
+    #         except Exception as e:
+    #             print(f"[ADD ELEMENT MAIN INFO]: {e}")
+    #             # 这里可以进行其他异常处理
+    #             CustomWarningDialog("添加失败", "出现意外错误，请稍后再试").exec_()
+    #             return
+    #     self.new_entities[name] = data  # 将新建实体存入字典或列表
+    #
+    #     # 加入到关联列表中
+    #     for attribute in self.object_parent[f"{self.current_element_name}"]["attributes"]:
+    #         if attribute["attribute_name"] == self.current_name:
+    #             # 如果是int，转为list
+    #             if isinstance(attribute["attribute_value"], int):
+    #                 attribute["attribute_value"] = [attribute["attribute_value"]]
+    #             attribute["attribute_value"].append(f"{data['element_id']}")
+    #             break
+    #
+    #     self.previous_selected_entities = set(self.selected_entities)
+    #     self.is_add = True
+    #     # 打印现在的object_parent，缩进
+    #     print(f"[ADD ELEMENT MAIN INFO]: 现在的object_parent数据：{json.dumps(self.object_parent, ensure_ascii=False, indent=4)}")
 
     def edit_resource(self):
         """修改实体"""
-        print("修改实体")
+        # 获取选定的实体信息
         selected_items = self.resource_table.selectedItems()
         if selected_items:
             row = selected_items[0].row()
-            entity_name = self.resource_table.item(row, 1).text()
+            entity_name_item = self.resource_table.item(row, 2)
+            entity_id_item = self.resource_table.item(row, 0)
+            if not entity_name_item or not entity_id_item:
+                CustomWarningDialog("错误", "无法获取选定实体的信息。").exec_()
+                return
 
-            # 弹出对话框编辑实体
-            QMessageBox.information(self, "修改实体", f"修改实体：{entity_name}")
+            entity_name = entity_name_item.text()
+            entity_id = int(entity_id_item.text())  # 确保为整数
 
+            print(f"尝试修改实体：名称={entity_name}, ID={entity_id}")
+
+            # 获取要编辑的实体数据
+            entity_data = None
+            for item_key, item_value in self.object_parent.items():
+                if item_value["element_name"] == entity_name:
+                    entity_data = item_value
+                    break
+
+            if not entity_data:
+                CustomWarningDialog("错误", "无法找到要编辑的实体。").exec_()
+                return
+
+            # 打开编辑对话框
+            edit_dialog = EditEntityDialog(entity_data=entity_data, parent=self.parent).exec_()
+
+
+        else:
+            CustomWarningDialog("修改失败", "请先选择要修改的实体。").exec_()
 
     def delete_resource(self):
         """删除实体"""
         print("删除实体")
         selected_items = self.resource_table.selectedItems()
+
         if selected_items:
             row = selected_items[0].row()
-            entity_name = self.resource_table.item(row, 1).text()
-            reply = QMessageBox.question(
-                self, "确认删除", f"确定要删除实体“{entity_name}”吗？",
-                QMessageBox.Yes | QMessageBox.No, QMessageBox.No
-            )
-            if reply == QMessageBox.Yes:
-                self.resource_table.removeRow(row)
-                del self.selected_entities[row]
+            # 从第 3 列获取实体名称
+            entity_name_item = self.resource_table.item(row, 2)
+            entity_state_item = self.resource_table.cellWidget(row, 1)
+            entity_id_item = self.resource_table.item(row, 0)
+            if not entity_name_item or not entity_id_item:
+                QMessageBox.warning(self, "错误", "无法获取选定实体的信息。")
+                return
+            if entity_state_item.findChild(QCheckBox).isChecked():
+                CustomWarningDialog("删除失败", "请先取消选中实体后再删除。").exec_()
+                return
+
+            entity_name = entity_name_item.text()
+            entity_id = int(entity_id_item.text())  # 确保为整数
+
+            print(f"尝试删除实体：名称={entity_name}, ID={entity_id}")
+
+            # TODO 核心要素不得删除
+            core_element = [item[0] for item in self.parent.get_result_by_sql(f"SELECT element_base_name FROM element_base")]
+            if entity_name in core_element:
+                CustomWarningDialog("删除失败", "核心要素不得删除。").exec_()
+                return
+
+            # 遍历是否有正在使用该实体的属性或行为
+            for element_key, element in self.object_parent.items():
+                if element_key == self.current_element_name:
+                    continue
+                # 检查属性
+                for attribute in element.get("attributes", []):
+                    if self.parent.is_related_data(attribute):
+                        attribute_values = attribute.get("attribute_value", [])
+                        # 确保 attribute_values 是列表
+                        if isinstance(attribute_values, int):
+                            attribute_values = [attribute_values]
+                        elif isinstance(attribute_values, list):
+                            attribute_values = [val for val in attribute_values]
+                        else:
+                            continue  # 不支持的类型，跳过
+
+                        print(f"检查属性 '{attribute['attribute_name']}' 的值: {attribute_values}")
+
+                        if entity_id in attribute_values:
+                            CustomWarningDialog(
+                                "删除失败",
+                                f"该实体被属性 '{attribute['attribute_name']}' 使用，请先解除关联。"
+                            ).exec_()
+                            return
+
+                # 检查行为
+                for behavior in element.get("behaviors", []):
+                    related_objects = behavior.get("related_objects", [])
+                    # 确保 related_objects 是列表
+                    if isinstance(related_objects, int):
+                        related_objects = [related_objects]
+                    elif isinstance(related_objects, list):
+                        related_objects = [obj for obj in related_objects]
+                    else:
+                        continue  # 不支持的类型，跳过
+
+                    print(f"检查行为 '{behavior['behavior_name']}' 的相关对象: {related_objects}")
+
+                    if entity_id in related_objects:
+                        CustomWarningDialog(
+                            "删除失败",
+                            f"该实体被行为 '{behavior['behavior_name']}' 使用，请先解除关联。"
+                        ).exec_()
+                        return
+
+            # 从 object_parent 中删除实体
+            if entity_name in self.object_parent:
+                # 从字典中删除
+                self.object_parent.pop(entity_name)
+                print(f"已删除实体 '{entity_name}' 从 object_parent。")
+                # 从关联列表中删除
+                if self.type == "attribute":
+                    for attribute in self.object_parent[f"{self.current_element_name}"]["attributes"]:
+                        if attribute["attribute_name"] == self.current_name:
+                            print(f"删除前：{attribute['attribute_value']}")
+                            print(f"删除的实体ID：{entity_id}")
+                            # 如果是int，转为list
+                            if isinstance(attribute["attribute_value"], int):
+                                attribute["attribute_value"] = [attribute["attribute_value"]]
+                            # 直接移除实体 ID
+                            attribute["attribute_value"].remove(entity_id)
+                            break
+                elif self.type == "behavior":
+                    for behavior in self.object_parent[f"{self.current_element_name}"]["behaviors"]:
+                        if behavior["behavior_name"] == self.current_name:
+                            print(f"删除前：{behavior['related_objects']}")
+                            print(f"删除的实体ID：{entity_id}")
+                            # 如果是int，转为list
+                            if isinstance(behavior["related_objects"], int):
+                                behavior["related_objects"] = [behavior["related_objects"]]
+                            # 直接移除实体 ID
+                            behavior["related_objects"].remove(entity_id)
+                            break
+
+                # 输出格式化的object_parent
+                print(
+                    f"[DELETE ELEMENT MAIN INFO]: 现在的object_parent数据：{json.dumps(self.object_parent, ensure_ascii=False, indent=4)}")
+
+                self.load_entities()
+                CustomWarningDialog("删除成功", f"实体 '{entity_name}' 已删除。").exec_()
+            else:
+                CustomWarningDialog("删除失败", "无法找到要删除的实体。").exec_()
+        else:
+            CustomWarningDialog("删除失败", "请先取消选中实体后再删除。").exec_()
+
+    def on_checkbox_state_changed(self, entity_id, state):
+        """处理复选框状态变化"""
+        # 记录当前的选中状态
+        if not self.is_add:
+            self.previous_selected_entities = set(self.selected_entities)
+
+        if state == 2:
+            self.selected_entities.add(entity_id)
+            print(f"实体 {entity_id} 被选中。当前选中列表: {self.selected_entities}")
+
+        else:
+            self.selected_entities.discard(entity_id)
+            print(f"实体 {entity_id} 被取消选中。当前选中列表: {self.selected_entities}")
+
+        flag = False
+        if not self.debug:
+            # 如果该属性不是多选项，检查是否选择了多个实体
+            if not self.is_multi_valued:
+                if len(self.selected_entities) > 1:
+                    # 弹出警告框
+                    CustomWarningDialog("选择错误", "该属性不支持多选，请只选择一个实体。").exec_()
+                    flag = True
+
+                    # 选中刚刚选择的实体，也就是取消之前的选择，就是现在的和之前的做差
+                    self.selected_entities = self.selected_entities - self.previous_selected_entities
+                    self.previous_selected_entities = self.selected_entities
+                    print(f"选中列表已恢复: {self.selected_entities}")
+
+                    # 恢复复选框状态
+                    for row in range(self.resource_table.rowCount()):
+                        current_entity_id = self.resource_table.item(row, 0).text()
+                        if current_entity_id == entity_id:
+                            checkbox_widget = self.resource_table.cellWidget(row, 1)
+                            if checkbox_widget:
+                                checkbox = checkbox_widget.findChild(QCheckBox)
+                                if checkbox:
+                                    # 阻止信号触发，避免递归调用
+                                    checkbox.blockSignals(True)
+                                    checkbox.setChecked(entity_id in self.selected_entities)
+                                    checkbox.blockSignals(False)
+                            break
+
+
+
+            # 如果该属性是必选项，检查是否选择了至少一个实体
+            if self.is_required and self.previous_selected_entities is not set():
+                if not self.selected_entities:
+                    # 弹出警告框
+                    print(f"214134{self.previous_selected_entities}")
+                    if not self.previous_selected_entities or self.previous_selected_entities == {None}:
+                        return
+                    else:
+                        # 如果之前不空，现在空了，才真的要恢复
+                        CustomWarningDialog("选择错误", "该属性为必选项，请至少选择一个实体。").exec_()
+
+
+                    # 恢复之前的选中状态
+                    self.selected_entities = self.previous_selected_entities
+                    flag = True
+                    print(f"选中列表已恢复: {self.selected_entities}")
+
+                    # 恢复复选框状态
+                    for row in range(self.resource_table.rowCount()):
+                        current_entity_id = self.resource_table.item(row, 0).text()
+                        if current_entity_id == entity_id:
+                            checkbox_widget = self.resource_table.cellWidget(row, 1)
+                            if checkbox_widget:
+                                checkbox = checkbox_widget.findChild(QCheckBox)
+                                if checkbox:
+                                    # 阻止信号触发，避免递归调用
+                                    checkbox.blockSignals(True)
+                                    checkbox.setChecked(entity_id in self.selected_entities)
+                                    checkbox.blockSignals(False)
+                            break
+
+        self.update_element()
+
+        if flag:
+            # 刷新界面
+            self.load_entities()
+            return
+
+    def update_element(self):
+        # 更新 object_parent
+        if self.type == "attribute":
+            for attribute in self.object_parent[self.current_element_name]["attributes"]:
+                if attribute["attribute_name"] == self.current_name:
+                    attribute["attribute_value"] = list(self.selected_entities)
+                    break
+            # 如果是道路环境要素或者道路承灾要素，同步更新
+            if self.current_element_name == "道路环境要素" or self.current_element_name == "道路承灾要素":
+                for attribute in self.object_parent["道路环境要素"]["attributes"]:
+                    if attribute["attribute_name"] == self.current_name:
+                        attribute["attribute_value"] = list(self.selected_entities)
+                        break
+                for attribute in self.object_parent["道路承灾要素"]["attributes"]:
+                    if attribute["attribute_name"] == self.current_name:
+                        attribute["attribute_value"] = list(self.selected_entities)
+        else:
+            for behavior in self.object_parent[self.current_element_name]["behaviors"]:
+                if behavior["behavior_name"] == self.current_name:
+                    behavior["related_objects"] = list(self.selected_entities)
+                    break
+
 
 class ElementSettingTab(QWidget):
     """情景要素设置标签页"""
@@ -783,6 +1658,7 @@ class ElementSettingTab(QWidget):
     request_sql_query = Signal(str)
     # 接收查询结果的信号
     receive_sql_result = Signal(list)
+    save_to_database_signal= Signal(list)
 
     def __init__(self):
         super().__init__()
@@ -796,31 +1672,43 @@ class ElementSettingTab(QWidget):
         self.init_ui()
         self.setup_connections()
 
+        self.session = None
+        self.neg_id_gen = NegativeIdGenerator()
+
         self.switch_model_display("Attribute")
 
     def init_data(self):
         """初始化数据，加载JSON文件并整理要素数据"""
-        try:
-            # 使用硬编码路径
-            json_path = r"D:\PythonProjects\AcademicTool_PySide\test.json"
-            if not os.path.exists(json_path):
-                raise FileNotFoundError(f"JSON文件未找到: {json_path}")
-            with open(json_path, "r", encoding="utf-8") as f:
-                self.scenario_data = json.load(f)
-            # 创建一个字典，键为要素名称，值为要素数据
-            self.element_data = {element["element_name"]: element for element in
-                                 self.scenario_data["scenario"]["elements"]}
+        # try:
+        #     # 使用硬编码路径
+        #     json_path = r"D:\PythonProjects\AcademicTool_PySide\test.json"
+        #     if not os.path.exists(json_path):
+        #         raise FileNotFoundError(f"JSON文件未找到: {json_path}")
+        #     with open(json_path, "r", encoding="utf-8") as f:
+        #         self.scenario_data = json.load(f)
+        #     # 创建一个字典，键为要素名称，值为要素数据
+        #     self.element_data = {element["element_name"]: element for element in
+        #                          self.scenario_data["scenario"]["elements"]}
+        #
+        #     self.show_element = [
+        #         "道路环境要素", "气象环境要素", "车辆致灾要素", "车辆承灾要素",
+        #         "道路承灾要素", "人类承灾要素", "应急资源要素",
+        #         "应急行为要素"
+        #     ]
+        # except Exception as e:
+        #     print(f"加载JSON文件失败: {e}")
+        #     self.scenario_data = {}
+        #     self.element_data = {}
+        #     self.show_element = []
+        self.scenario_data = {}
+        # 创建一个字典，键为要素名称，值为要素数据
+        self.element_data = {}
 
-            self.show_element = [
-                "道路环境要素", "气象环境要素", "车辆致灾要素", "车辆承灾要素",
-                "道路承灾要素", "人类承灾要素", "应急资源要素",
-                "应急行为要素"
-            ]
-        except Exception as e:
-            print(f"加载JSON文件失败: {e}")
-            self.scenario_data = {}
-            self.element_data = {}
-            self.show_element = []
+        self.show_element = [
+            "道路环境要素", "气象环境要素", "车辆致灾要素", "车辆承灾要素",
+            "道路承灾要素", "人类承灾要素", "应急资源要素",
+            "应急行为要素"
+        ]
 
 
     def init_ui(self):
@@ -1265,14 +2153,7 @@ class ElementSettingTab(QWidget):
                 self.behavior_table.setItem(row_idx, 0, name_item)
 
                 # 处理行为主体名称
-                subject = behavior.get("behavior_id", "")
-                if isinstance(subject, int):
-                    subject_name_result = self.get_result_by_sql(
-                        f"SELECT element_name FROM element WHERE element_id = (SELECT element_id FROM behavior WHERE behavior_id = {subject})"
-                    )
-                    subject_name = subject_name_result[0][0] if subject_name_result else "未知"
-                else:
-                    subject_name = str(subject)
+                subject_name = self.element_data[self.current_selected_entity].get("entity_name", "")
                 subject_item = QTableWidgetItem(subject_name)
                 subject_item.setTextAlignment(Qt.AlignCenter)
                 self.behavior_table.setItem(row_idx, 1, subject_item)
@@ -1280,13 +2161,8 @@ class ElementSettingTab(QWidget):
                 # 处理行为对象名称
                 object_ids = behavior.get("related_objects", [])
                 if isinstance(object_ids, list):
-                    object_names = []
-                    for obj_id in object_ids:
-                        obj_result = self.get_result_by_sql(
-                            f"SELECT element_name FROM element WHERE element_id = {obj_id}"
-                        )
-                        obj_name = obj_result[0][0] if obj_result else "未知"
-                        object_names.append(obj_name)
+                    object_names = self.show_object_value(behavior, "behavior")
+
                     object_text = ", ".join(object_names)
                 else:
                     object_text = "后续处理" if isinstance(object_ids, int) else str(object_ids)
@@ -1370,7 +2246,7 @@ class ElementSettingTab(QWidget):
                 for j in range(2):
                     if i + j < len(attributes):
                         attr = attributes[i + j]
-                        attr_name = attr.get("attribute_name", "")
+                        attr_name = attr.get("china_default_name", "")
                         attr_value = self.show_object_value(attr,"attribute")
                         attr_type = attr.get("attribute_type", "")
 
@@ -1395,10 +2271,11 @@ class ElementSettingTab(QWidget):
 
     def open_attribute_editor(self, attr_name):
         """打开属性编辑对话框，允许用户编辑属性值。"""
-        if self.current_selected_element and self.current_selected_element in self.element_data:
-            element = self.element_data[self.current_selected_element]
+        if self.current_selected_entity:
+            element = self.element_data[self.current_selected_entity]
+            print(f"当前选中编辑的要素：{element}")
             # 查找属性的值和类型
-            attr = next((a for a in element.get("attributes", []) if a["attribute_name"] == attr_name), None)
+            attr = next((a for a in element.get("attributes", []) if a["china_default_name"] == attr_name), None)
             is_edit = False
             print(attr)
             attr_widget = None
@@ -1409,31 +2286,22 @@ class ElementSettingTab(QWidget):
                     if isinstance(widget, ClickableAttributeWidget) and widget.attr_name == attr_name:
                         attr_widget = widget
                         break
-            attribute_type_result = self.get_result_by_sql(r"SELECT attribute_type_id FROM attribute_type WHERE code IN ('string','enum','int','float','boolean')")
-            print(attribute_type_result)
-            valid_attribute_type_ids = [row[0] for row in attribute_type_result]  # 提取所有的 attribute_type_id
-            print(valid_attribute_type_ids)
+
             enum_values = []
-            if attr and attr["attribute_type_id"] in valid_attribute_type_ids:
+            print(f"当前属性：{attr}")
+            if attr and attr["attribute_type_code"] in ["String", "Enum", "Int", "Real", "Bool"]:
                 print("基础类型")
-                enum_id_result = self.get_result_by_sql(
-                    r"SELECT attribute_type_id FROM attribute_type WHERE code IN ('enum')")
-                enum_id = [row[0] for row in enum_id_result][0]  # enumid
-
-                # 解析enum_value字符串为列表
-                enum_values_result = self.get_result_by_sql(
-                    f"SELECT value FROM enum_value WHERE enum_value_id = {attr['enum_value_id']}")
-                print(enum_values_result)
 
 
 
 
-                if attr["attribute_type_id"] == enum_id:
-                    # 提取查询结果中的字符串并去掉方括号
-                    enum_str = enum_values_result[0][0].strip("[]")  # 获取元组中的字符串，并去掉方括号
+                if attr["attribute_type_code"] == "Enum":
 
-                    # 根据中文逗号分割字符串
-                    enum_values = [item.strip() for item in enum_str.split("，")]
+                    enum_values_result = self.get_result_by_sql(
+                        f"SELECT enum_value FROM enum_value WHERE attribute_definition_id = {attr['attribute_definition_id']};")
+                    print(enum_values_result)
+
+                    enum_values = [item[0] for item in enum_values_result]
                     print(enum_values)
 
                 if attr_widget:
@@ -1443,8 +2311,8 @@ class ElementSettingTab(QWidget):
                 dialog = EditAttributeDialog(
                     attr_name=attr["attribute_name"],
                     attr_value=self.show_object_value(attr,"attribute"),
-                    attr_type=self.get_result_by_sql(f"SELECT code FROM attribute_type WHERE attribute_type_id = {attr['attribute_type_id']};")[0][0],
-                    attr_type_name=self.get_result_by_sql(f"SELECT name FROM attribute_type WHERE attribute_type_id = {attr['attribute_type_id']};")[0][0],
+                    attr_type=attr["attribute_type_code"],
+                    attr_type_name=self.get_result_by_sql(f"SELECT attribute_type_name FROM attribute_type WHERE attribute_type_code = '{attr['attribute_type_code']}';")[0][0],
                     is_required=attr["is_required"],
                     enum_values=enum_values,
                     parent=self
@@ -1457,6 +2325,15 @@ class ElementSettingTab(QWidget):
                     if new_value is not None:
                         # 更新属性值
                         attr["attribute_value"] = new_value
+                        element_name = element.get("element_name")
+                        # if element_name == "道路环境要素":
+                        #     for attribute in self.element_data['道路承灾要素']['attributes']:
+                        #         if attribute['attribute_name'] == attr_name:
+                        #             attribute['attribute_value'] = new_value
+                        # elif element_name == "道路承灾要素":
+                        #     for attribute in self.element_data['道路环境要素']['attributes']:
+                        #         if attribute['attribute_name'] == attr_name:
+                        #             attribute['attribute_value'] = new_value
                         # 更新显示
                         self.update_current_element_data()
                     attr_widget.unhighlight(is_edit)
@@ -1487,6 +2364,9 @@ class ElementSettingTab(QWidget):
                 if isinstance(related_data_id, int):
                     related_data_id = [related_data_id]
                 related_data_name = []
+                # 如果是空值
+                if not related_data_id:
+                    return []
                 for id in related_data_id:
                     for item in self.element_data:
                         if self.element_data[item]['element_id'] == id:
@@ -1496,7 +2376,7 @@ class ElementSettingTab(QWidget):
             else:
                 return object['attribute_value']
         elif type == 'behavior':
-            related_objects = object['related_objects']
+            related_objects = object['object_entities']
             related_objects_name = []
             for id in related_objects:
                 for item in self.element_data:
@@ -1507,44 +2387,77 @@ class ElementSettingTab(QWidget):
     def is_related_data(self, object):
         """检查对象是否是关联数据。"""
         # 获取所有的基础属性类型ID
-        basic_data_type = ['string', 'enum', 'int', 'float', 'boolean']
-        basic_data_type_id = self.get_result_by_sql(
-            f"SELECT attribute_type_id FROM attribute_type WHERE code IN {tuple(basic_data_type)}")
-        basic_data_type_id = [row[0] for row in basic_data_type_id]
-        if object['attribute_type_id'] in basic_data_type_id:
+        # basic_data_type = ['string', 'enum', 'int', 'float', 'boolean']
+        # basic_data_type_id = self.get_result_by_sql(
+        #     f"SELECT attribute_type_id FROM attribute_type WHERE code IN {tuple(basic_data_type)}")
+        # basic_data_type_id = [row[0] for row in basic_data_type_id]
+        if object['is_reference'] == 0 or False:
             return False
         return True
 
+    def phrased_upload_data(self, data,element_name):
+        """解析上传的数据，将其填充到element_data中"""
+        data = sysml2json(data[0])
+        extracted_data = []
+        print(f"23124{element_name}")
 
+        for item in data:
+            name = item.get("@name", "")
+            datavalue = item.get("datavalue", "")
+            # 清理 datavalue 中多余的双引号
+            if isinstance(datavalue, str):
+                datavalue = datavalue.strip('"')
+
+            extracted_data.append({"name": name, "datavalue": datavalue})
+
+        # 打印格式化后的数据，有缩进
+        print(f"解析结果{json.dumps(extracted_data, indent=4, ensure_ascii=False)}")
+
+
+        # 更新element_data
 
     def open_related_object_editor(self, object, type):
         print(object)
         is_multi_valued = object['is_multi_valued']
         print(is_multi_valued)
         if type == "attribute":
-            print(f"编辑属性模型{object['attribute_name']}，属性类型{object['attribute_type_id']}")
+            print(f"编辑属性模型{object['attribute_name']}，属性类型{object['attribute_type_code']}")
             # 获取关联数据的id
-            related_data_id = self.get_result_by_sql(
-                f"SELECT associated_element_id FROM attribute_association WHERE attribute_id ={object['attribute_id']}")
-            related_data_id = [row[0] for row in related_data_id]
-            print(related_data_id)
-            # 获取关联数据的名称
-            if len(related_data_id) == 1:
-                # 只有一个元素，使用 = 而不是 IN
-                query = f"SELECT element_name FROM element WHERE element_id = {related_data_id[0]}"
-            else:
-                # 多个元素，使用 IN
-                query = f"SELECT element_name FROM element WHERE element_id IN {tuple(related_data_id)}"
-
-            # 执行查询
-            related_data_name = self.get_result_by_sql(query)
-            related_data_name = [row[0] for row in related_data_name]
-            print(related_data_name)
+            # related_data_id = self.get_result_by_sql(
+            #     f"SELECT associated_element_id FROM attribute_association WHERE attribute_id ={object['attribute_id']}")
+            # related_data_id = [row[0] for row in related_data_id]
+            # print(related_data_id)
+            # # 获取关联数据的名称
+            # if len(related_data_id) == 1:
+            #     # 只有一个元素，使用 = 而不是 IN
+            #     query = f"SELECT element_name FROM element WHERE element_id = {related_data_id[0]}"
+            # else:
+            #     # 多个元素，使用 IN
+            #     query = f"SELECT element_name FROM element WHERE element_id IN {tuple(related_data_id)}"
+            #
+            # # 执行查询
+            # related_data_name = self.get_result_by_sql(query)
+            # related_data_name = [row[0] for row in related_data_name]
+            # print(related_data_name)
             dialog = EditRelatedObjectDialog(
                 object_parent=self.element_data,
                 object = object,
                 type = type,
-                parent=self
+                parent=self,
+                debug = False
+            )
+            if dialog.exec():
+                print("确认更新")
+            else:
+                self.update_current_element_data()
+        if type == "behavior":
+            print(f"编辑行为模型{object['behavior_name']}")
+            dialog = EditRelatedObjectDialog(
+                object_parent=self.element_data,
+                object=object,
+                type=type,
+                parent=self,
+                debug=False
             )
             if dialog.exec():
                 print("确认更新")
@@ -1554,15 +2467,19 @@ class ElementSettingTab(QWidget):
 
     def update_current_element_data(self):
         """更新当前选中要素的数据到属性和行为模型显示，并确保类别信息存在。"""
-        print(self.current_selected_element)
-        if self.current_selected_element and self.current_selected_element in self.element_data:
-            element = self.element_data[self.current_selected_element]
+        print(self.current_selected_entity)
+        if self.current_selected_entity:
+            element = self.element_data[self.current_selected_entity]
+            print(f"更新要素{self.current_selected_element}的数据")
+            print(f"要素数据{json.dumps(element, ensure_ascii=False, indent=2)}")
             # 处理属性模型
             self.current_attributes = element.get("attributes", [])
+            print(f"属性模型数据{self.current_attributes}")
             self.populate_attribute_model(self.current_attributes)
             # 处理行为模型
 
             self.current_behaviors = element.get("behaviors", [])
+            print(f"行为模型数据{self.current_behaviors}")
             self.populate_behavior_model(self.current_behaviors)
         else:
             self.reset_attribute_model()
@@ -1576,78 +2493,305 @@ class ElementSettingTab(QWidget):
         # 设置当前选中的要素
         new_checkbox = self.checkboxes[element].checkbox
         new_label = self.checkboxes[element].label
-        print(f"[DEBUG] Selecting element '{element}'")
+        new_label.selected = True
 
-        # 检查是否已经上传过文件
-        already_uploaded = element in self.uploaded_files
-        print(f"[DEBUG] Element '{element}' already uploaded: {already_uploaded}")
-
-        if already_uploaded:
-            # 提示是否重新上传
-            reply = QMessageBox.question(
-                self,
-                self.tr("重新上传"),
-                self.tr("该要素已上传文件。是否重新上传？"),
-                QMessageBox.Yes | QMessageBox.No,
-                QMessageBox.No
-            )
-            if reply == QMessageBox.No:
-                # 用户选择不重新上传，保持原有状态
-                print(f"[DEBUG] User chose not to re-upload element '{element}'")
-                new_label.set_selected(True)
-                for element, checkbox in self.checkboxes.items():
-                    if checkbox.checkbox is not new_checkbox:
-                        checkbox.label.set_selected(False)
-                    checkbox.label.update_style()
-                # 更新当前要素的数据展示
-                self.update_current_element_data()
-                print(f"[DEBUG] Current selected element: {element}")
-                return
-
-
-        # 弹出文件上传对话框
-        file_dialog = QFileDialog(self, self.tr("上传文件"), "", "All Files (*)")
-        file_dialog.setFileMode(QFileDialog.ExistingFile)
-
-        if file_dialog.exec():
-            selected_files = file_dialog.selectedFiles()
-            if selected_files:
-                # 用户选择了文件，存储上传的文件路径
-                self.uploaded_files[element] = selected_files[0]
-                print(f"[DEBUG] Uploaded file for element '{element}': {selected_files[0]}")
-                new_checkbox.setChecked(True)
-                new_label.set_uploaded(True)
-
+        # 弹出实体窗口
+        CustomSelectDialog(
+            parent=self
+        ).exec()
+        # rule = self.get_result_by_sql(
+        #     f"SELECT template_restrict FROM template WHERE template_name = '{element}'"
+        # )
+        # rule = json.loads(rule[0][0])
+        # print(f"规则：{rule}")
+        #
+        # filtered_data = self.filter_entities_by_select_rule(self.element_data, rule)
+        # print(f"过滤后的数据：{filtered_data}")
+        #
+        # # 询问名字
+        # ask_name = CustomInputDialog(
+        #     self.tr("新建实体"),
+        #     self.tr("请输入新建实体的名称"),
+        #     parent=self
+        # )
+        # ask_name.exec()
+        # new_entity = self.create_entities_with_negative_ids(element,ask_name.get_input())
+        # print(f"新建的实体：{new_entity}")
+        #
+        # print(f"[DEBUG] Selecting element '{element}'")
+        #
+        # # 检查是否已经上传过文件
+        # already_uploaded = element in self.uploaded_files
+        # print(f"[DEBUG] Element '{element}' already uploaded: {already_uploaded}")
+        #
+        # if already_uploaded:
+        #     # 提示是否重新上传
+        #     reply = CustomQuestionDialog(
+        #         self.tr("重新上传"),
+        #         self.tr("该要素已上传文件。是否重新上传？"),
+        #         parent=self
+        #     ).ask()
+        #     if not reply:
+        #         # 用户选择不重新上传，保持原有状态
+        #         print(f"[DEBUG] User chose not to re-upload element '{element}'")
+        #         new_label.set_selected(True)
+        #         for element, checkbox in self.checkboxes.items():
+        #             if checkbox.checkbox is not new_checkbox:
+        #                 checkbox.label.set_selected(False)
+        #             checkbox.label.update_style()
+        #         # 更新当前要素的数据展示
+        #         print(f"[DEBUG] Current selected element: {element}")
+        #         self.update_current_element_data()
+        #
+        #         return
+        #
+        #
+        # # 弹出文件上传对话框
+        # file_dialog = QFileDialog(self, self.tr("上传文件"), "", "All Files (*)")
+        # file_dialog.setFileMode(QFileDialog.ExistingFile)
+        #
+        # if file_dialog.exec():
+        #     selected_files = file_dialog.selectedFiles()
+        #     if selected_files:
+        #         # 用户选择了文件，存储上传的文件路径
+        #         self.phrased_upload_data(selected_files,element)
+        #         self.uploaded_files[element] = selected_files[0]
+        #         print(f"[DEBUG] Uploaded file for element '{element}': {selected_files[0]}")
+        #         new_checkbox.setChecked(True)
+        #         new_label.set_uploaded(True)
+        #
+        new_checkbox.setChecked(True)
+        new_label.set_uploaded(True)
         new_label.set_selected(True)
         for element,checkbox in self.checkboxes.items():
             if checkbox.checkbox is not new_checkbox:
                 checkbox.label.set_selected(False)
             checkbox.label.update_style()
-        # 更新当前要素的数据展示
+        # # 更新当前要素的数据展示
         self.update_current_element_data()
-        print(f"[DEBUG] Current selected element: {element}")
+        # print(f"[DEBUG] Current selected element: {element}")
+
+    def filter_entities_by_select_rule(self,
+            entity_data: Dict[str, Dict[str, Any]],
+            select_rule: Dict[str, Any]
+    ) -> Dict[str, Dict[str, Any]]:
+
+
+        # 1. 从 select_rule 中获取可能的过滤条件
+        desired_entity_type = select_rule['select'].get("entity_type", None)
+        print(f"desired_entity_type: {desired_entity_type}")
+        desired_category_type = select_rule['select'].get("category_type", None)
+        print(f"desired_category_type: {desired_category_type}")
+        attribute_limit = select_rule['select'].get("attribute", None)
+
+        ENTITY_TYPE_MAP = {
+            1: "Vehicle",  # 车辆
+            2: "Road",  # 路段
+            3: "Meteorology",  # 自然环境
+            4: "ResponseResource",  # 应急资源
+            5: "ResponseAction",  # 应急行为
+            6: "VehiclePart",  # 车辆部件
+            7: "VehicleLoad",  # 承载物
+            8: "Facility",  # 基础设施
+            11: "Lane",  # 车道
+            12: "People",  # 人类
+            13: "ResponsePlan",  # 应急预案
+        }
+
+        # 2. 定义一个帮助函数, 判断单个实体是否匹配
+        def match_entity(einfo: Dict[str, Any]) -> bool:
+            # (a) 检查 entity_type
+            if desired_entity_type:
+                # 根据 entity_type_id 转成字符串(如 "Vehicle")
+                etid = einfo.get("entity_type_id")
+                et_code = ENTITY_TYPE_MAP.get(etid, None)
+                if et_code != desired_entity_type:
+                    return False
+
+            # (b) 检查 category_type
+            if desired_category_type:
+                categories = einfo.get("categories", [])
+                # categories: List[Dict[str, Any]] with "category_name", etc.
+
+                # 先取该实体所有的 category_name
+                entity_cat_names = [c["category_name"] for c in categories if "category_name" in c]
+
+                if isinstance(desired_category_type, str):
+                    # 模糊匹配：检查是否有任何 category_name 包含 desired_category_type
+                    if not any(desired_category_type in cat for cat in entity_cat_names):
+                        return False
+
+                elif isinstance(desired_category_type, list):
+                    # 需要该实体包含列表中任意(或全部?) 这里假设只要包含其一即可
+                    # 若需“实体包含全部列表”逻辑，可改写
+                    intersect = set(entity_cat_names) & set(desired_category_type)
+                    if not intersect:
+                        return False
+
+            # (c) 检查 attribute
+            if attribute_limit:
+                for limit in attribute_limit:
+                    for key, value in limit.items():
+                        for attribute in einfo["attributes"]:
+                            if attribute["attribute_name"] == key:
+                                # 如果是布尔值, 则转换为字符串
+                                print(f"a324324ttribute: {attribute}")
+                                if attribute["attribute_type_code"] == "Bool":
+                                    # 把true转为1, false转为0
+                                    attribute["attribute_value"] = "0" if attribute["attribute_value"] == "False" else attribute["attribute_value"]
+                                    attribute["attribute_value"] = "1" if attribute["attribute_value"] == "True" else attribute["attribute_value"]
+                                if attribute["attribute_value"] != value:
+                                    return False
+
+            # 如果没被任何条件筛掉, 表示匹配
+            return True
+
+        # 3. 逐个实体检查, 构造返回结果
+        filtered = []
+        for ename, einfo in entity_data.items():
+            if match_entity(einfo):
+                filtered.append(ename)
+
+        return filtered
+
+    def create_entities_with_negative_ids(self, element,name) -> Dict[str, Any]:
+        """
+        1. 遍历所有 template;
+        2. 为每个 template 构造一个“复制品” JSON 对象:
+           - entity_id 用负数 ID
+           - categories 来自 template_restrict["create"]["category_type"]
+           - attributes、behaviors 来自 template.attribute_definitions / template.behavior_definitions
+             并将 attribute_value = default_value(若非None)或None
+        3. 返回 dict: { "xxx_复制品": { entity JSON }, ... }
+        """
+        neg_id_gen = self.neg_id_gen  # 从 -1 开始
+
+        # 最终的字典
+        replicated_data: Dict[str, Any] = {}
+        #抓取指定模板
+        templates: List[Template] = self.session.query(Template).filter(Template.template_name == element).all()
+        print(f"模板{templates}")
+
+        for tpl in templates:
+            # 不要直接 json.loads(tpl.template_restrict)
+            if isinstance(tpl.template_restrict, dict):
+                restrict_dict = tpl.template_restrict
+            elif isinstance(tpl.template_restrict, str):
+                # 如果是字符串，再手动 loads
+                restrict_dict = json.loads(tpl.template_restrict)
+            else:
+                raise TypeError(f"template_restrict is unexpected type: {type(tpl.template_restrict)}")
+
+            create_part = restrict_dict.get("create", {})
+            cat_names = create_part.get("category_type", [])  # ["AffectedElement","HazardElement"]等
+            if isinstance(cat_names, str):
+                cat_names = [cat_names]  # 确保是列表
+            attribute_limit = create_part.get("attribute", [])
+
+            # 给该“实体”分配一个负数ID
+            entity_negative_id = neg_id_gen.next_id()
+            entity_key = entity_negative_id  # 作为外层 dict key
+
+            # 构建 entity JSON
+            entity_json = {
+                "entity_id": entity_negative_id,
+                "entity_name": name,
+                "entity_type_id": tpl.entity_type_id,
+                "entity_parent_id": None,
+                "scenario_id": self.scenario_data["scenario_id"],
+                "create_time": "2025-01-15 15:04:45",
+                "update_time": "2025-01-15 15:04:45",
+                "categories": [],
+                "attributes": [],
+                "behaviors": []
+            }
+
+            # 处理分类(来自category_type)
+            for cname in cat_names:
+                cat_obj = self.session.query(Category).filter(Category.category_name == cname).first()
+                print(f"分类{cat_obj}")
+
+                if cat_obj:
+                    entity_json["categories"].append({
+                        "category_id": cat_obj.category_id,
+                        "category_name": cat_obj.category_name,
+                        "description": cat_obj.description
+                    })
+                else:
+                    # 如果数据库没有该分类
+                    entity_json["categories"].append({
+                        "category_id": 0,
+                        "category_name": cname,
+                        "description": None
+                    })
+
+            # 构建 attributes
+            for attr_def in tpl.attribute_definitions:
+                # 不一定要给每个 AttributeValue 分配负数 ID
+                # 若需要可以类似 next_id() => -2, -3...
+                attribute_json = {
+                    "attribute_value_id": neg_id_gen.next_id(),  # 也可以 neg_id_gen.next_id()
+                    "attribute_definition_id": attr_def.attribute_definition_id,
+                    "attribute_name": attr_def.attribute_code.attribute_code_name,
+                    "china_default_name": attr_def.china_default_name,
+                    "english_default_name": attr_def.english_default_name,
+                    "attribute_code_name": attr_def.attribute_code.attribute_code_name,
+                    "attribute_aspect_name": attr_def.attribute_aspect.attribute_aspect_name,
+                    "attribute_type_code": attr_def.attribute_type.attribute_type_code,
+                    "is_required": bool(attr_def.is_required),
+                    "is_multi_valued": bool(attr_def.is_multi_valued),
+                    "is_reference": bool(attr_def.is_reference),
+                    "reference_target_type_id": attr_def.reference_target_type_id,
+                    "default_value": attr_def.default_value,
+                    "description": attr_def.description,
+                    "attribute_value": attr_def.default_value if attr_def.default_value is not None else None,
+                    "referenced_entities": []
+                }
+                entity_json["attributes"].append(attribute_json)
+
+            # 形如：[{"CasualtyCondition": "1"}]
+            if attribute_limit:
+                for limit in attribute_limit:
+                    for key, value in limit.items():
+                        for attribute in entity_json["attributes"]:
+                            if attribute["attribute_code_name"] == key:
+                                attribute["attribute_value"] = value
+
+
+            # 构建 behaviors
+            for bhv_def in tpl.behavior_definitions:
+                behavior_json = {
+                    "behavior_value_id": neg_id_gen.next_id(),  # 同理,可用负数 if needed
+                    "behavior_definition_id": bhv_def.behavior_definition_id,
+                    "behavior_name": bhv_def.behavior_name,
+                    "object_entity_type_id": bhv_def.object_entity_type_id,
+                    "is_required": bool(bhv_def.is_required),
+                    "is_multi_valued": bool(bhv_def.is_multi_valued),
+                    "description": bhv_def.description,
+                    "create_time": "2025-01-15 15:04:45",
+                    "update_time": "2025-01-15 15:04:45",
+                    "object_entities": []
+                }
+                entity_json["behaviors"].append(behavior_json)
+
+            replicated_data[entity_key] = entity_json
+
+        return replicated_data
 
     def handle_save(self):
         """处理保存按钮点击事件，仅展示保存的数据。"""
         try:
             saved_elements = []
+            # 深拷贝要素数据
+            data = copy.deepcopy(self.element_data)
+            flag = False
             for element, checkbox in self.checkboxes.items():
-                if checkbox.checkbox.isChecked():
-                    data = self.element_data.get(element, {})
-                    print(f"Saving element: {element}")
-                    print(f"Data: {json.dumps(data, ensure_ascii=False, indent=2)}")
-                    attributes = data.get("attributes", [])
-                    behaviors = data.get("behaviors", [])
-                    saved_elements.append({
-                        "element_id": data.get("element_id"),
-                        "element_name": element,  # 确保与JSON中的键名一致
-                        "element_type": data.get("element_type"),
-                        "element_parent_id": data.get("element_parent_id"),
-                        "attributes": attributes,
-                        "behaviors": behaviors
-                    })
+                if not checkbox.checkbox.isChecked():
+                    data.pop(element, None)
+                else:
+                    flag = True
 
-            if not saved_elements:
+            if not flag:
                 CustomInformationDialog(
                     self.tr("保存结果"),
                     self.tr("没有要保存的要素。"),
@@ -1655,17 +2799,58 @@ class ElementSettingTab(QWidget):
                 ).exec()
                 return
 
+            print(f"Data to be saved: {json.dumps(data, ensure_ascii=False, indent=2)}")
+
+            for item in data.values():
+                saved_element = {
+                    "element_id": item["element_id"],
+                    "element_name": item["element_name"],
+                    "element_type_id": item["element_type_id"],
+                    "element_parent_id": item["element_parent_id"],
+                    "attributes": item.get("attributes", []),
+                    "behaviors": item.get("behaviors", [])
+                }
+                saved_elements.append(saved_element)
+
+            # 检测is_required属性是否为空
+            for item in saved_elements:
+                for attr in item['attributes']:
+                    if attr['is_required'] == 1 and not attr['attribute_value']:
+                        CustomWarningDialog(
+                            self.tr("保存失败"),
+                            self.tr(f"{item['element_name']} 的属性 {attr['attribute_name']} 不能为空。"),
+                            parent=self
+                        ).exec()
+                        return
+                for behavior in item['behaviors']:
+                    if behavior['is_required'] == 1 and not behavior['related_objects']:
+                        CustomWarningDialog(
+                            self.tr("保存失败"),
+                            self.tr(f"{item['element_name']} 的行为 {behavior['behavior_name']} 不能为空。"),
+                            parent=self
+                        ).exec()
+                        return
+
+
+
             print(f"Saving categories: {json.dumps(saved_elements, ensure_ascii=False, indent=2)}")
+            # 保存到result,json
+            with open("result.json", "w", encoding="utf-8") as f:
+                f.write(json.dumps(saved_elements, ensure_ascii=False, indent=2))
+                print(f"保存成功，保存路径为{os.path.abspath('result.json')}")
+
+            show_saved_elements = [item for item in saved_elements if item['element_name'] in self.show_element]
 
             # 生成详细信息的HTML内容
-            detailed_info = self.generate_detailed_info_html(saved_elements)
+            detailed_info = self.generate_detailed_info_html(show_saved_elements)
 
             # 显示保存结果对话框
-            save_dialog = SaveResultDialog(saved_elements, detailed_info, parent=self)
+            save_dialog = SaveResultDialog(show_saved_elements, detailed_info, parent=self)
             save_dialog.exec()
 
             # 触发保存请求信号
             self.save_requested.emit()
+            self.save_to_database_signal.emit(saved_elements)
 
         except Exception as e:
             print(f"保存过程中发生错误: {e}")
@@ -1675,8 +2860,9 @@ class ElementSettingTab(QWidget):
                 parent=self
             ).exec_()
 
-    def generate_detailed_info_html(self, saved_elements):
+    def generate_detailed_info_html(self, show_saved_elements):
         """生成保存结果的详细信息HTML内容。"""
+        # 去除八大情景要素之外的
         detailed_info = """
         <html>
         <head>
@@ -1720,7 +2906,7 @@ class ElementSettingTab(QWidget):
         <h2>""" + self.tr("保存结果详情") + """</h2>
         """
 
-        for item in saved_elements:
+        for item in show_saved_elements:
             detailed_info += f"<h3>{self.tr('元素')}: {item['element_name']}</h3>"
 
             detailed_info += """
@@ -1772,7 +2958,7 @@ class ElementSettingTab(QWidget):
 
     def handle_generate(self):
         """处理生成情景模型按钮点击事件"""
-        CustomInformationDialog("", self.tr("已成功生成情景级孪生模型。"), parent=self).exec()
+        CustomInformationDialog(" ", self.tr("已成功生成情景级孪生模型。"), parent=self).exec()
 
     def switch_model_display(self, model_type):
         """切换显示的模型类型"""
