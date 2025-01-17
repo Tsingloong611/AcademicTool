@@ -3,10 +3,11 @@
 # @FileName: scenario_controller.py
 # @Software: PyCharm
 import json
-from datetime import datetime
+import datetime
 
 from PySide6.QtCore import QObject, Slot, Qt, Signal
 from PySide6.QtWidgets import QInputDialog, QMessageBox, QDialog
+from requests import session
 from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import joinedload
@@ -147,16 +148,16 @@ class ScenarioController(QObject):
     from typing import Dict, Any
     from sqlalchemy.orm import Session
 
-    def get_scenario_data(self,session: Session, scenario_id: int) -> Dict[str, Any]:
+    def get_scenario_data(self, session: Session, scenario_id: int) -> Dict[str, Any]:
         """
         根据 scenario_id，获取该场景下所有的实体(Entity)、
         以及与实体相关的属性(AttributeValue) / 行为(BehaviorValue) / 类别(Category) 等信息，
-        组织成一个包含 scenario + entities + attributes + behaviors 等的字典。
+        并组织成一个包含 scenario + entities + attributes + behaviors 等的字典。
         """
-        # 1. 先查询场景自身
+        # 1. 查找对应的场景
         scenario = session.query(Scenario).filter_by(scenario_id=scenario_id).one()
 
-        # 构建最外层 scenario 数据结构
+        # 2. 组织顶层结构
         scenario_data = {
             "scenario_id": scenario.scenario_id,
             "scenario_name": scenario.scenario_name,
@@ -167,9 +168,8 @@ class ScenarioController(QObject):
             "entities": []
         }
 
-        # 2. 遍历该 scenario 下的所有 entity
+        # 3. 遍历该 scenario 下的所有 entity
         for entity in scenario.entities:
-            # entity 自身信息
             entity_dict = {
                 "entity_id": entity.entity_id,
                 "entity_name": entity.entity_name,
@@ -183,7 +183,7 @@ class ScenarioController(QObject):
                 "behaviors": []
             }
 
-            # 3. 收集多对多关联的 category
+            # 4. 收集关联的 category
             for cat in entity.categories:
                 entity_dict["categories"].append({
                     "category_id": cat.category_id,
@@ -191,32 +191,37 @@ class ScenarioController(QObject):
                     "description": cat.description
                 })
 
-            # 4. 收集该 entity 的所有 attribute_value
+            # 5. 收集 attribute_value
             for av in entity.attribute_values:
                 attr_def = av.attribute_definition
+                # 优先使用 attribute_value.attribute_name，如果没有则 fallback 到 attribute_code_name
+                final_attr_name = av.attribute_name or attr_def.attribute_code.attribute_code_name
 
                 attribute_item = {
                     "attribute_value_id": av.attribute_value_id,
                     "attribute_definition_id": attr_def.attribute_definition_id,
-                    "attribute_name": av.attribute_name,
                     "china_default_name": attr_def.china_default_name,
                     "english_default_name": attr_def.english_default_name,
-                    "attribute_code_name": attr_def.attribute_code.attribute_code_name,  # 对应 attribute_code
-                    "attribute_aspect_name": attr_def.attribute_aspect.attribute_aspect_name,  # 对应 attribute_aspect
-                    "attribute_type_code": attr_def.attribute_type.attribute_type_code,  # 对应 attribute_type
+                    "attribute_code_name": attr_def.attribute_code.attribute_code_name,
+                    "attribute_aspect_name": attr_def.attribute_aspect.attribute_aspect_name,
+                    "attribute_type_code": attr_def.attribute_type.attribute_type_code,
                     "is_required": bool(attr_def.is_required),
                     "is_multi_valued": bool(attr_def.is_multi_valued),
                     "is_reference": bool(attr_def.is_reference),
                     "reference_target_type_id": attr_def.reference_target_type_id,
                     "default_value": attr_def.default_value,
                     "description": attr_def.description,
-                    # 存储在 attribute_value 表里的值
+                    # 读取存放在 attribute_value 表里的值
                     "attribute_value": av.attribute_value,
-                    # 若是引用型属性，可收集其 references
+
+                    # 最终的展示名称(可能来自 attribute_name, 或者 attribute_code_name)
+                    "attribute_name": final_attr_name,
+
+                    # referenced_entities
                     "referenced_entities": []
                 }
 
-                # 如果是引用型 (attr_def.is_reference = True)，检查 attribute_value_reference
+                # 如果是引用型属性 (is_reference=True)，从 attribute_value_reference 表查所有引用
                 if attr_def.is_reference:
                     for ref in av.references:
                         attribute_item["referenced_entities"].append({
@@ -225,28 +230,26 @@ class ScenarioController(QObject):
 
                 entity_dict["attributes"].append(attribute_item)
 
-            # 5. 收集该 entity 的所有行为(behavior_value)
-            #    由于 model 中定义: entity.behavior_values => BehaviorValue
+            # 6. 收集 behavior_value
             for bv in entity.behavior_values:
                 bh_def = bv.behavior_definition
-                # 提取 BehaviorDefinition 的中文、英文名、行为代码等信息
-                # 如需还原旧字段 "behavior_name"，可以用 bh_def.china_default_name
-                # 也可以添加 "english_behavior_name": bh_def.english_default_name
+                # behavior_value.behavior_name 若不为空，就直接用；否则 fallback 到 behavior_code_name
+                code_obj = bh_def.behavior_code_ref  # BehaviorCode
+                fallback_name = code_obj.behavior_code_name if code_obj else ""
 
-                # 获取 behavior_code 表中的代码名称
-                #   bh_def.behavior_code_ref 是 BehaviorCode 对象
-                #   bh_def.behavior_code_ref.behavior_code_name 即数据库 behavior_code.behavior_code_name
+                final_behavior_name = bv.behavior_name or fallback_name
+
                 behavior_item = {
                     "behavior_value_id": bv.behavior_value_id,
                     "behavior_definition_id": bh_def.behavior_definition_id,
-
-                    # 原先的 "behavior_name" 用中文名替代
-                    "behavior_name": bh_def.behavior_code_ref.behavior_code_name,
+                    # 用中文名 english_default_name 也可以存到这里视具体需求
                     "china_default_name": bh_def.china_default_name,
-                    "english_behavior_name": bh_def.english_default_name,
+                    "english_default_name": bh_def.english_default_name,
+                    # 最终的行为名
+                    "behavior_name": final_behavior_name,
 
-                    # 代码名称(如果需要)
-                    "behavior_code_name": bh_def.behavior_code_ref.behavior_code_name if bh_def.behavior_code_ref else None,
+                    # behavior_code_name => fallback_name
+                    "behavior_code_name": fallback_name,
 
                     "object_entity_type_id": bh_def.object_entity_type_id,
                     "is_required": bool(bh_def.is_required),
@@ -254,218 +257,252 @@ class ScenarioController(QObject):
                     "description": bh_def.description,
                     "create_time": str(bv.create_time),
                     "update_time": str(bv.update_time),
-                    # 如果该行为还引用其他对象实体(behavior_value_reference)，可在此收集
+
+                    # behavior_value_references
                     "object_entities": []
                 }
 
-                # bv.references => BehaviorValueReference
+                # 收集 behavior_value_reference
                 for ref in bv.references:
-                    behavior_item["object_entities"].append({
-                        "object_entity_id": ref.object_entity_id
-                    })
+                    behavior_item["object_entities"].append(ref.object_entity_id)
 
                 entity_dict["behaviors"].append(behavior_item)
 
-            # 将完整的 entity_dict 加入 scenario_data
             scenario_data["entities"].append(entity_dict)
 
         return scenario_data
 
-    def apply_changes_from_json(session: Session, scenario_data: Dict[str, Any]) -> None:
+    def apply_changes_from_json(self,entity_data_list: List[Dict[str, Any]]):
         """
-        回写逻辑:
-        1. 若 scenario_id 存在且>0 => 更新; 若没有 => 新建
-        2. entity_id>0 => UPDATE; entity_id<=0 => INSERT
-        3. attribute_value_id>0 => UPDATE; 否则 => INSERT
-        4. behavior_value_id>0 => UPDATE; 否则 => INSERT
-        5. 处理引用 (attribute_value_reference, behavior_value_reference):
-           - 若 refer id>0 => 直接指向已有实体
-           - 若 refer id<0 => 需先新建对应实体, flush 出其id后再指向
+        将 JSON 列表中的多个实体（含 attributes/behaviors 等）批量写回数据库。
+
+        - entity_data_list: 形如您贴出的 JSON 数组，每个元素是一个 Entity 的完整信息。
         """
+        session = self.session
+        # 0. 用于记录临时负数ID => 数据库生成ID 的映射
+        temp_id_map = {}
 
-        # 0. 建立 "临时ID -> 实际ID" 的映射缓存，用来处理新建对象之间的引用
-        temp_id_map: Dict[int, int] = {}  # 存储 {负数ID: 数据库生成的正数ID}
+        # 1. 先插入/更新所有 Entity，拿到它们的真实 ID
+        for ent_data in entity_data_list:
+            self._process_single_entity(session, ent_data, temp_id_map)
 
-        # ----------------------------------------------------------------
-        # 1. 处理 scenario 本身
-        # ----------------------------------------------------------------
-        sc_id = scenario_data.get("scenario_id", None)
-        if sc_id and sc_id > 0:
-            # 已存在 => 查找并更新
-            scenario_obj = session.query(Scenario).get(sc_id)
-            if not scenario_obj:
-                raise ValueError(f"Scenario with ID={sc_id} not found in DB.")
-            # 可以更新 scenario_name / scenario_description 等, 这里只示范 name
-            if "scenario_name" in scenario_data:
-                scenario_obj.scenario_name = scenario_data["scenario_name"]
-            if "scenario_description" in scenario_data:
-                scenario_obj.scenario_description = scenario_data["scenario_description"]
-            # 不需要 manually add, 因为 scenario_obj 已是持久化对象
-        else:
-            # 没 ID 或 ID<=0 => 新建一个 scenario
-            scenario_obj = Scenario(
-                scenario_name=scenario_data.get("scenario_name", "新场景"),
-                scenario_description=scenario_data.get("scenario_description", None),
-                # 其余字段(如 emergency_id) 按需补充
+        # 2. 第二轮：处理 “Item”/“Entity” 引用关系（因为可能后面才出现被引用对象）
+        for ent_data in entity_data_list:
+            self._process_entity_attributes(session, ent_data, temp_id_map)
+            self._process_entity_behaviors(session, ent_data, temp_id_map)
+
+        session.commit()
+        print("回写完成。")
+
+    def _process_single_entity(self,session: Session, ent_data: Dict[str, Any], temp_id_map: Dict[int, int]) -> int:
+        """
+        第一阶段：只处理 Entity 本身（含 categories），不处理 attributes/behaviors 的引用。
+        返回该实体在数据库中的真实 ID。
+        """
+        e_id = ent_data["entity_id"]
+        # 解析基础字段
+        entity_name = ent_data["entity_name"]
+        entity_type_id = ent_data["entity_type_id"]
+        scenario_id = ent_data["scenario_id"]
+        create_time = self._parse_datetime(ent_data.get("create_time"))
+        update_time = self._parse_datetime(ent_data.get("update_time"))
+        parent_id = ent_data.get("entity_parent_id", None)
+
+        if e_id < 0:
+            # 新建
+            entity_obj = Entity(
+                entity_name=entity_name,
+                entity_type_id=entity_type_id,
+                scenario_id=scenario_id,
+                entity_parent_id=parent_id,
+                create_time=create_time,
+                update_time=update_time
             )
-            session.add(scenario_obj)
-            session.flush()  # 以便获得新的 scenario_id
+            session.add(entity_obj)
+            session.flush()  # 让数据库生成新的 entity_id
+            real_eid = entity_obj.entity_id
+            temp_id_map[e_id] = real_eid
+        else:
+            # 更新
+            entity_obj = session.query(Entity).filter_by(entity_id=e_id).one()
+            entity_obj.entity_name = entity_name
+            entity_obj.entity_type_id = entity_type_id
+            entity_obj.scenario_id = scenario_id
+            entity_obj.entity_parent_id = parent_id
+            entity_obj.update_time = update_time
+            session.flush()
+            real_eid = e_id
 
-        # ----------------------------------------------------------------
-        # 2. 处理 entities
-        # ----------------------------------------------------------------
-        entities_data: List[Dict[str, Any]] = scenario_data.get("entities", [])
-
-        # 函数内部：存储从 JSON -> 数据库 Entity对象 的映射, 以便后续引用
-        entity_map: Dict[Union[int, None], Entity] = {}
-
-        for ent_data in entities_data:
-            e_id = ent_data.get("entity_id", None)
-            if e_id and e_id > 0:
-                # 已存在 => UPDATE
-                entity_obj = session.query(Entity).get(e_id)
-                if not entity_obj:
-                    raise ValueError(f"Entity with ID={e_id} not found.")
-                # 更新字段
-                entity_obj.entity_name = ent_data.get("entity_name", entity_obj.entity_name)
-                entity_obj.entity_type_id = ent_data.get("entity_type_id", entity_obj.entity_type_id)
-                # 也可更新 entity_parent_id, scenario_id 等
-            else:
-                # 新建
-                entity_obj = Entity(
-                    entity_name=ent_data.get("entity_name", "新Entity"),
-                    entity_type_id=ent_data.get("entity_type_id", 1),  # 默认1 => Vehicle
-                    scenario_id=scenario_obj.scenario_id,
+        # 处理 categories (多对多) -- 仅覆盖或增量看业务需求
+        # 先清空再插入(简单方式)
+        session.execute(
+            entity_category.delete().where(entity_category.c.entity_id == real_eid)
+        )
+        # ent_data["categories"] 形如: [{"category_id":3, "category_name":"HazardElement", ...}, ...]
+        for cat_dict in ent_data.get("categories", []):
+            cat_id = cat_dict["category_id"]
+            if cat_id < 0:
+                # 新建 Category
+                cat_obj = Category(
+                    category_name=cat_dict["category_name"],
+                    description=cat_dict.get("description"),
+                    create_time=datetime.datetime.now(),
+                    update_time=datetime.datetime.now()
                 )
-                session.add(entity_obj)
-                session.flush()  # 让数据库自动生成 entity_id
+                session.add(cat_obj)
+                session.flush()
+                cat_id = cat_obj.category_id
+            # 建立多对多
+            session.execute(
+                entity_category.insert().values(entity_id=real_eid, category_id=cat_id)
+            )
+        session.flush()
 
-                # 若 JSON 中是一个负数, 则记录到 temp_id_map
-                if e_id and e_id < 0:
-                    temp_id_map[e_id] = entity_obj.entity_id
+        return real_eid
 
-            # 无论新建还是更新，都放到 entity_map
-            # 注意: 这里 e_id 若为 None, 也可以作为key
-            entity_map[e_id] = entity_obj
+    def _process_entity_attributes(self,session: Session, ent_data: Dict[str, Any], temp_id_map: Dict[int, int]):
+        """
+        第二阶段：处理该 Entity 下的 Attributes。
+        若 attribute_type_code == "Item" => 给referenced_entities对应的实体设 parent=当前
+        若 attribute_type_code == "Entity" => 写 attribute_value_reference
+        否则 => 正常写 attribute_value
+        """
+        e_id = ent_data["entity_id"]
+        if e_id < 0:
+            e_id = temp_id_map[e_id]
+        # e_id 现已为数据库真实 ID
 
-            # ----------------------------------------------------------------
-            # 2.1. 处理 categories (多对多)
-            # ----------------------------------------------------------------
-            entity_obj.categories.clear()  # 简化处理：先清空，再根据 JSON 重新添加
-            for cat_data in ent_data.get("categories", []):
-                # cat_data 可能同时有 "category_id" / "category_name"
-                c_id = cat_data.get("category_id")
-                if c_id:
-                    category_obj = session.query(Category).get(c_id)
-                    # 若找不到, 也可自行决定报错 或者 新建 Category
-                    if not category_obj:
-                        raise ValueError(f"Category ID={c_id} not found.")
-                    entity_obj.categories.append(category_obj)
-                else:
-                    # 没有 category_id => 根据 name 查或者新建
-                    cat_name = cat_data.get("category_name", None)
-                    if not cat_name:
-                        continue
-                    category_obj = session.query(Category).filter_by(category_name=cat_name).first()
-                    if not category_obj:
-                        # 新建 Category, 仅示例
-                        category_obj = Category(category_name=cat_name)
-                        session.add(category_obj)
-                        session.flush()
-                    entity_obj.categories.append(category_obj)
+        for attr_dict in ent_data.get("attributes", []):
+            av_id = attr_dict["attribute_value_id"]
+            attr_value = attr_dict.get("attribute_value", None)
+            attr_type_code = attr_dict.get("attribute_type_code", None)
+            create_time = datetime.datetime.now()  # 或自己从 JSON 里取
+            update_time = datetime.datetime.now()
 
-            # ----------------------------------------------------------------
-            # 2.2. 处理 attributes (AttributeValue)
-            # ----------------------------------------------------------------
-            for attr_data in ent_data.get("attributes", []):
-                av_id = attr_data.get("attribute_value_id", None)
-                if av_id and av_id > 0:
-                    # 更新
-                    av_obj = session.query(AttributeValue).get(av_id)
-                    if not av_obj:
-                        raise ValueError(f"AttributeValue ID={av_id} not found.")
-                    av_obj.attribute_value = attr_data.get("attribute_value", av_obj.attribute_value)
-                else:
-                    # 新建
-                    definition_id = attr_data["attribute_definition_id"]
-                    av_obj = AttributeValue(
-                        entity_id=entity_obj.entity_id,
-                        attribute_definition_id=definition_id,
-                        attribute_value=attr_data.get("attribute_value", None)
-                    )
-                    session.add(av_obj)
+            # 1) upsert attribute_value
+            if av_id < 0:
+                # 新建
+                av_obj = AttributeValue(
+                    entity_id=e_id,
+                    attribute_definition_id=attr_dict["attribute_definition_id"],
+                    attribute_name=attr_dict.get("attribute_name"),
+                    attribute_value=None,  # 先留空,根据类型再决定
+                    create_time=create_time,
+                    update_time=update_time
+                )
+                session.add(av_obj)
+                session.flush()
+                real_av_id = av_obj.attribute_value_id
+                temp_id_map[av_id] = real_av_id
+            else:
+                # 更新
+                av_obj = session.query(AttributeValue).filter_by(attribute_value_id=av_id).one()
+                av_obj.attribute_name = attr_dict.get("attribute_name")
+                av_obj.update_time = update_time
+                real_av_id = av_id
+
+            # 2) 根据 attribute_type_code 处理
+            if attr_type_code == "Item":
+                # 不写 attribute_value_reference； attribute_value留空
+                # referenced_entities => 让这些实体的 parent = 当前 entity
+                for ref_id in attr_dict.get("referenced_entities", []):
+                    if ref_id < 0:
+                        ref_id = temp_id_map[ref_id]  # 找到真实ID
+                    # fetch referenced entity
+                    ref_entity = session.query(Entity).filter_by(entity_id=ref_id).one()
+                    # 让 ref_entity 的 parent = 当前 e_id
+                    ref_entity.entity_parent_id = e_id
                     session.flush()
+                av_obj.attribute_value = None
 
-                # 处理引用 (attribute_value_reference)
-                # 先清空原有引用 (若要保留原引用，则需做差异更新; 此处简单做覆盖)
-                av_obj.references.clear()
-                for ref_data in attr_data.get("referenced_entities", []):
-                    ref_id = ref_data["referenced_entity_id"]  # 可能是正数, 也可能是负数
-                    real_ref_id = None
-                    if ref_id > 0:
-                        real_ref_id = ref_id  # 已存在实体
-                    else:
-                        # 负数 => 新建(或已新建)对应实体, 要到 temp_id_map 找
-                        if ref_id in temp_id_map:
-                            real_ref_id = temp_id_map[ref_id]
-                        else:
-                            raise ValueError(f"Referenced entity with temp ID={ref_id} not created yet.")
-                    # 添加关系
+            elif attr_type_code == "Entity":
+                # 写 attribute_value_reference
+                # attribute_value 置空
+                av_obj.attribute_value = None
+                # 先清空旧引用
+                session.query(AttributeValueReference).filter_by(attribute_value_id=real_av_id).delete()
+                # 新增
+                for ref_id in attr_dict.get("referenced_entities", []):
+                    if ref_id < 0:
+                        ref_id = temp_id_map[ref_id]
                     avr = AttributeValueReference(
-                        attribute_value_id=av_obj.attribute_value_id,
-                        referenced_entity_id=real_ref_id
+                        attribute_value_id=real_av_id,
+                        referenced_entity_id=ref_id
                     )
                     session.add(avr)
-                # end of attribute_value
+            else:
+                # 其他类型 => 直接把 attribute_value 写入
+                av_obj.attribute_value = attr_value
 
-            # ----------------------------------------------------------------
-            # 2.3. 处理 behaviors (BehaviorValue)
-            # ----------------------------------------------------------------
-            for bhv_data in ent_data.get("behaviors", []):
-                bv_id = bhv_data.get("behavior_value_id", None)
-                if bv_id and bv_id > 0:
-                    # 更新
-                    bv_obj = session.query(BehaviorValue).get(bv_id)
-                    if not bv_obj:
-                        raise ValueError(f"BehaviorValue ID={bv_id} not found.")
-                    # 也可以更新 behavior_definition_id, ...
-                else:
-                    # 新建
-                    def_id = bhv_data["behavior_definition_id"]
-                    bv_obj = BehaviorValue(
-                        behavior_definition_id=def_id,
-                        subject_entity_id=entity_obj.entity_id
-                    )
-                    session.add(bv_obj)
-                    session.flush()
+            session.flush()
 
-                    if bv_id and bv_id < 0:
-                        temp_id_map[bv_id] = bv_obj.behavior_value_id
+    def _process_entity_behaviors(self,session: Session, ent_data: Dict[str, Any], temp_id_map: Dict[int, int]):
+        """
+        处理 behaviors: 负数 => 新建, 正数 => 更新
+        若 behavior => "object_entities", type为 "Entity" => behavior_value_reference
+        (代码中可以从 behavior_definition_id 找 object_entity_type_id => entity or item?)
+        这里做个示例: object_entity_type_id指向 entity => ref
+        """
+        e_id = ent_data["entity_id"]
+        if e_id < 0:
+            e_id = temp_id_map[e_id]
 
-                # 清空引用(behavior_value_reference)
-                bv_obj.references.clear()
-                for ref_data in bhv_data.get("object_entities", []):
-                    obj_eid = ref_data["object_entity_id"]
-                    if obj_eid > 0:
-                        real_eid = obj_eid
-                    else:
-                        # 在 temp_id_map中找
-                        if obj_eid in temp_id_map:
-                            real_eid = temp_id_map[obj_eid]
-                        else:
-                            raise ValueError(f"Referenced entity with temp ID={obj_eid} not created yet.")
-                    bvr = BehaviorValueReference(
-                        behavior_value_id=bv_obj.behavior_value_id,
-                        object_entity_id=real_eid
-                    )
-                    session.add(bvr)
-        # end for ent_data in entities
+        for bhv_dict in ent_data.get("behaviors", []):
+            bv_id = bhv_dict["behavior_value_id"]
+            behavior_definition_id = bhv_dict["behavior_definition_id"]
+            create_time = self._parse_datetime(bhv_dict.get("create_time", None)) or datetime.datetime.now()
+            update_time = self._parse_datetime(bhv_dict.get("update_time", None)) or datetime.datetime.now()
 
-        # ----------------------------------------------------------------
-        # 最后, commit 提交所有改动
-        # ----------------------------------------------------------------
-        session.commit()
-        print("JSON回写数据库成功。")
+            if bv_id < 0:
+                # 新建
+                bv_obj = BehaviorValue(
+                    behavior_definition_id=behavior_definition_id,
+                    behavior_name=bhv_dict.get("behavior_name"),
+                    subject_entity_id=e_id,
+                    create_time=create_time,
+                    update_time=update_time
+                )
+                session.add(bv_obj)
+                session.flush()
+                real_bv_id = bv_obj.behavior_value_id
+                temp_id_map[bv_id] = real_bv_id
+            else:
+                # 更新
+                bv_obj = session.query(BehaviorValue).filter_by(behavior_value_id=bv_id).one()
+                bv_obj.behavior_name = bhv_dict.get("behavior_name")
+                bv_obj.update_time = update_time
+                real_bv_id = bv_id
+
+            # 清空旧引用
+            session.query(BehaviorValueReference).filter_by(behavior_value_id=real_bv_id).delete()
+
+            # 如果是类似 entity 引用，就往 behavior_value_reference 写
+            # 这里可以从 behavior_definition(object_entity_type_id) 来判断是否 item/entity
+            # 为简单，假设“都按 entity 处理”
+            for ref_data in bhv_dict.get("object_entities", []):
+                obj_id = ref_data
+                # 可能 ref_data 就是个 int；如果是dict,自行拆
+                if isinstance(ref_data, dict):
+                    obj_id = ref_data["object_entity_id"]
+
+                if obj_id < 0:
+                    obj_id = temp_id_map[obj_id]
+                bvr = BehaviorValueReference(
+                    behavior_value_id=real_bv_id,
+                    object_entity_id=obj_id
+                )
+                session.add(bvr)
+            session.flush()
+
+    def _parse_datetime(self,dt_str: Union[str, None]) -> datetime.datetime:
+        """
+        尝试解析 datetime 字符串，若无则返回 None
+        """
+        if not dt_str:
+            return None
+        # 可能日期格式: "2025-01-17 15:14:24"
+        # 做一个简单的 parse
+        return datetime.datetime.strptime(dt_str, "%Y-%m-%d %H:%M:%S")
 
     def reset_status_bar(self):
         """重置状态栏的内容"""
@@ -541,7 +578,8 @@ class ScenarioController(QObject):
             return
         self.scenario_manager.list_widget.setCurrentItem(None)
 
-        self.get_result_by_sql(f"DELETE FROM scenario WHERE scenario_id = {scenario_id}")
+        self.session.execute(text(f"DELETE FROM scenario WHERE scenario_id = {scenario_id}"))
+        self.session.commit()
         self.load_scenarios()
         if self.current_scenario and self.current_scenario.scenario_id == scenario_id:
             self.current_scenario = None
@@ -554,8 +592,8 @@ class ScenarioController(QObject):
             new_scenario = Scenario(
                 scenario_name=scenario_name,
                 scenario_description=scenario_description,
-                scenario_create_time=datetime.utcnow(),  # Set to current UTC time
-                scenario_update_time=datetime.utcnow(),  # Optionally set update time
+                scenario_create_time=datetime.datetime.utcnow(),  # Set to current UTC time
+                scenario_update_time=datetime.datetime.utcnow(),  # Optionally set update time
                 emergency_id=1  # 根据实际需求调整
             )
             self.session.add(new_scenario)

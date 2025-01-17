@@ -1,0 +1,54 @@
+package AffectedElement{
+
+    part def AffectedElement{}
+
+    item def VehicleCargo{
+    }
+
+    item def VehiclePassengers{
+    }
+
+    item def VehicleComponents{
+    }
+
+    action def VehicleMotion{
+    }
+
+    action def VehicleTransport{
+    }
+
+    action def VehicleDeparture{
+    }
+
+    action def VehicleExplosion{
+    }
+
+    action def VehicleSpillage{
+    }
+
+    action def VehicleSpeedChange{
+    }
+
+    part 324 : AffectedElement{
+        attribute VehicleType : String = null;
+        attribute CombustionCondition : Bool = "0";
+        attribute SpillCondition : Bool = "0";
+        attribute DrivingDirection : Enum = "正向";
+        attribute VehiclePosition : String = null;
+        attribute VehicleSpeed : Real = null;
+        attribute DamageCondition : Bool = "0";
+
+        item VehicleCargo : VehicleCargo;
+        item VehiclePassengers : VehiclePassengers;
+        item VehicleComponents : VehicleComponents;
+
+        perform action VehicleMotion;
+        perform action VehicleTransport;
+        perform action VehicleDeparture;
+        perform action VehicleExplosion;
+        perform action VehicleSpillage;
+        perform action VehicleSpeedChange;
+
+    }
+
+}

@@ -4,6 +4,7 @@ import sys
 import json
 import os
 import time
+import datetime
 from functools import partial
 from multiprocessing.util import debug
 from typing import Dict, Any, List
@@ -24,7 +25,6 @@ from sqlalchemy import text
 from sqlalchemy.orm import Session
 
 from models.models import Template, Category
-from utils.sysml2json import parse_to_json, sysml2json
 from views.dialogs.custom_information_dialog import CustomInformationDialog
 from views.dialogs.custom_input_dialog import CustomInputDialog
 from views.dialogs.custom_question_dialog import CustomQuestionDialog
@@ -87,7 +87,7 @@ class SaveResultDialog(QDialog):
 
         self.summary_list = QListWidget()
         for item in saved_categories:
-            self.summary_list.addItem(item['element_name'])  # 使用 element_name 而非 'element'
+            self.summary_list.addItem(item['entity_name'])  # 使用 element_name 而非 'element'
         self.summary_list.setSelectionMode(QListWidget.NoSelection)
         self.summary_list.setStyleSheet("""
             QListWidget {
@@ -430,7 +430,7 @@ class EditEntityDialog(QDialog):
 
         # 创建顶部描述信息
         label_layout = QHBoxLayout()
-        self.entity_label = QLabel(f"正在编辑实体：{self.entity_data.get('element_name', '')}")
+        self.entity_label = QLabel(f"正在编辑实体：{self.entity_data.get('entity_name', '')}")
         self.entity_label.setAlignment(Qt.AlignCenter)
         self.entity_label.setStyleSheet("font-weight:bold;color:gray;")
         label_layout.addWidget(self.entity_label)
@@ -668,22 +668,26 @@ class EditEntityDialog(QDialog):
 
             row = 0
             column = 0
-            for i in range(0, len(attributes), 2):
-                for j in range(2):
-                    if i + j < len(attributes):
-                        attr = attributes[i + j]
-                        attr_name = attr.get("attribute_name", "")
-                        attr_value = self.show_object_value(attr,"attribute")
-                        attr_type = attr.get("attribute_type", "")
+            for attr in attributes:
+                # 检查 self.element 的值，决定是否显示该属性
+                if self.parent.should_hide_attribute(attr):
+                    continue
 
-                        attr_widget = ClickableAttributeWidget(attr_name, attr_value, attr_type)
-                        attr_widget.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)  # 组件大小策略
-                        attr_widget.clicked.connect(self.open_attribute_editor)
+                attr_name = attr.get("china_default_name", "")
+                attr_value = self.show_object_value(attr, "attribute")
+                attr_type = attr.get("attribute_type", "")
 
-                        self.attribute_content_layout.addWidget(attr_widget, row, column)
-                        column += 1
-                row += 1
-                column = 0
+                attr_widget = ClickableAttributeWidget(attr_name, attr_value, attr_type)
+                attr_widget.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)  # 组件大小策略
+                attr_widget.clicked.connect(self.open_attribute_editor)
+
+                self.attribute_content_layout.addWidget(attr_widget, row, column)
+                column += 1
+
+                # 每行显示两个组件，满两列后换行
+                if column >= 2:
+                    column = 0
+                    row += 1
 
             # 设置列伸缩因子为两列
             for col in range(2):
@@ -709,18 +713,18 @@ class EditEntityDialog(QDialog):
                 related_data_name = []
                 for id in related_data_id:
                     for item in self.parent.element_data:
-                        if self.parent.element_data[item]['element_id'] == id:
+                        if self.parent.element_data[item]['entity_id'] == id:
                             related_data_name.append(item)
                 print(related_data_name)
                 return related_data_name
             else:
                 return object['attribute_value']
         elif type == 'behavior':
-            related_objects = object['related_objects']
+            related_objects = object['object_entities']
             related_objects_name = []
             for id in related_objects:
                 for item in self.parent.element_data:
-                    if self.parent.element_data[item]['element_id'] == id:
+                    if self.parent.element_data[item]['entity_id'] == id:
                         related_objects_name.append(item)
             return related_objects_name
 
@@ -755,8 +759,9 @@ class EditEntityDialog(QDialog):
         """打开属性编辑对话框，允许用户编辑属性值。"""
         if self.entity_data:
             element = self.entity_data
+            print(f"当前选中编辑的要素：{element}")
             # 查找属性的值和类型
-            attr = next((a for a in element.get("attributes", []) if a["attribute_name"] == attr_name), None)
+            attr = next((a for a in element.get("attributes", []) if a["china_default_name"] == attr_name), None)
             is_edit = False
             print(attr)
             attr_widget = None
@@ -767,31 +772,22 @@ class EditEntityDialog(QDialog):
                     if isinstance(widget, ClickableAttributeWidget) and widget.attr_name == attr_name:
                         attr_widget = widget
                         break
-            attribute_type_result = self.parent.get_result_by_sql(r"SELECT attribute_type_id FROM attribute_type WHERE code IN ('string','enum','int','float','boolean')")
-            print(attribute_type_result)
-            valid_attribute_type_ids = [row[0] for row in attribute_type_result]  # 提取所有的 attribute_type_id
-            print(valid_attribute_type_ids)
+
             enum_values = []
-            if attr and attr["attribute_type_id"] in valid_attribute_type_ids:
+            print(f"当前属性：{attr}")
+            if attr and attr["attribute_type_code"] in ["String", "Enum", "Int", "Real", "Bool"]:
                 print("基础类型")
-                enum_id_result = self.parent.get_result_by_sql(
-                    r"SELECT attribute_type_id FROM attribute_type WHERE code IN ('enum')")
-                enum_id = [row[0] for row in enum_id_result][0]  # enumid
-
-                # 解析enum_value字符串为列表
-                enum_values_result = self.parent.get_result_by_sql(
-                    f"SELECT value FROM enum_value WHERE enum_value_id = {attr['enum_value_id']}")
-                print(enum_values_result)
 
 
 
 
-                if attr["attribute_type_id"] == enum_id:
-                    # 提取查询结果中的字符串并去掉方括号
-                    enum_str = enum_values_result[0][0].strip("[]")  # 获取元组中的字符串，并去掉方括号
+                if attr["attribute_type_code"] == "Enum":
 
-                    # 根据中文逗号分割字符串
-                    enum_values = [item.strip() for item in enum_str.split("，")]
+                    enum_values_result = self.parent.get_result_by_sql(
+                        f"SELECT enum_value FROM enum_value WHERE attribute_definition_id = {attr['attribute_definition_id']};")
+                    print(enum_values_result)
+
+                    enum_values = [item[0] for item in enum_values_result]
                     print(enum_values)
 
                 if attr_widget:
@@ -801,8 +797,8 @@ class EditEntityDialog(QDialog):
                 dialog = EditAttributeDialog(
                     attr_name=attr["attribute_name"],
                     attr_value=self.show_object_value(attr,"attribute"),
-                    attr_type=self.parent.get_result_by_sql(f"SELECT code FROM attribute_type WHERE attribute_type_id = {attr['attribute_type_id']};")[0][0],
-                    attr_type_name=self.parent.get_result_by_sql(f"SELECT name FROM attribute_type WHERE attribute_type_id = {attr['attribute_type_id']};")[0][0],
+                    attr_type=attr["attribute_type_code"],
+                    attr_type_name=self.parent.get_result_by_sql(f"SELECT attribute_type_name FROM attribute_type WHERE attribute_type_code = '{attr['attribute_type_code']}';")[0][0],
                     is_required=attr["is_required"],
                     enum_values=enum_values,
                     parent=self.parent
@@ -815,16 +811,15 @@ class EditEntityDialog(QDialog):
                     if new_value is not None:
                         # 更新属性值
                         attr["attribute_value"] = new_value
-                        # 当前元素名字
                         element_name = element.get("element_name")
-                        if element_name == "道路环境要素":
-                            for attribute in self.parent.element_data['道路承灾要素']['attributes']:
-                                if attribute['attribute_name'] == attr_name:
-                                    attribute['attribute_value'] = new_value
-                        elif element_name == "道路承灾要素":
-                            for attribute in self.parent.element_data['道路环境要素']['attributes']:
-                                if attribute['attribute_name'] == attr_name:
-                                    attribute['attribute_value'] = new_value
+                        # if element_name == "道路环境要素":
+                        #     for attribute in self.element_data['道路承灾要素']['attributes']:
+                        #         if attribute['attribute_name'] == attr_name:
+                        #             attribute['attribute_value'] = new_value
+                        # elif element_name == "道路承灾要素":
+                        #     for attribute in self.element_data['道路环境要素']['attributes']:
+                        #         if attribute['attribute_name'] == attr_name:
+                        #             attribute['attribute_value'] = new_value
                         # 更新显示
                         self.update_current_element_data()
                     attr_widget.unhighlight(is_edit)
@@ -870,7 +865,7 @@ class EditEntityDialog(QDialog):
 
             self.behavior_table.setRowCount(len(behaviors))
             for row_idx, behavior in enumerate(behaviors):
-                name_item = QTableWidgetItem(behavior.get("behavior_name", ""))
+                name_item = QTableWidgetItem(behavior.get("china_default_name", ""))
                 name_item.setFlags(name_item.flags() & ~Qt.ItemIsEditable)
                 name_item.setTextAlignment(Qt.AlignCenter)
                 self.behavior_table.setItem(row_idx, 0, name_item)
@@ -889,11 +884,12 @@ class EditEntityDialog(QDialog):
                 self.behavior_table.setItem(row_idx, 1, subject_item)
 
                 # 处理行为对象名称
-                object_ids = behavior.get("related_objects", [])
+                object_ids = behavior.get("object_entities", [])
                 if isinstance(object_ids, list):
                     object_names = self.show_object_value(behavior, "behavior")
 
-                    object_text = ", ".join(object_names)
+                    object_text = ", ".join([str(name) for name in object_names])
+
                 else:
                     object_text = "后续处理" if isinstance(object_ids, int) else str(object_ids)
                 object_item = QTableWidgetItem(object_text)
@@ -928,7 +924,7 @@ class EditEntityDialog(QDialog):
         is_multi_valued = object['is_multi_valued']
         print(is_multi_valued)
         if type == "attribute":
-            print(f"编辑属性模型{object['attribute_name']}，属性类型{object['attribute_type_id']}")
+            print(f"编辑属性模型{object['attribute_name']}，属性类型{object['attribute_type_code']}")
             # 获取关联数据的id
             # related_data_id = self.get_result_by_sql(
             #     f"SELECT associated_element_id FROM attribute_association WHERE attribute_id ={object['attribute_id']}")
@@ -1010,30 +1006,34 @@ class EditRelatedObjectDialog(QDialog):
         if self.type == "attribute":
 
             self.is_multi_valued = self.object['is_multi_valued']
-            self.current_name = self.object['attribute_name']
+            self.current_name = self.object['attribute_code_name']
             self.current_type_id = self.parent.get_result_by_sql(f"SELECT attribute_type_id FROM attribute_type WHERE attribute_type_code = '{self.object['attribute_type_code']}'")[0][0]
-            self.current_type_name = self.object['attribute_type_code']
+            self.current_type_name = self.object['attribute_type_code'] # 属性类型代码
             self.is_required = self.object['is_required']
             self.scenario_id = self.parent.scenario_data["scenario_id"]
+            self.target_type_id = self.object['reference_target_type_id']
+            self.target_type_name = self.parent.get_result_by_sql(f"SELECT entity_type_name FROM entity_type WHERE entity_type_id = {self.object['reference_target_type_id']}")[0][0]
             for item_key, item_value in self.object_parent.items():
                 attributes = item_value.get("attributes", [])
                 for attribute in attributes:
                     if int(attribute["attribute_value_id"]) == int(self.object['attribute_value_id']):
-                        self.current_element_name = item_key
+                        self.current_element_name = item_key # 这里实际上是id
                         break
 
         else:
             self.is_multi_valued = self.object['is_multi_valued']
-            self.current_name = self.object['behavior_name']
+            self.current_name = self.object['behavior_code_name']
             self.current_type_id = self.object['object_entity_type_id']
             self.current_type_name = self.parent.get_result_by_sql(f"SELECT entity_type_name FROM entity_type WHERE entity_type_id = {self.object['object_entity_type_id']}")[0][0]
             self.is_required = self.object['is_required']
             self.scenario_id = self.parent.scenario_data["scenario_id"]
+            self.target_type_id = self.object['object_entity_type_id']
+            self.target_type_name = self.parent.get_result_by_sql(f"SELECT entity_type_name FROM entity_type WHERE entity_type_id = {self.object['object_entity_type_id']}")[0][0]
             for item_key, item_value in self.object_parent.items():
                 behaviors = item_value.get("behaviors", [])
                 for behavior in behaviors:
                     if int(behavior["behavior_value_id"]) == int(self.object['behavior_value_id']):
-                        self.current_element_name = item_key
+                        self.current_element_name = item_key # 这里实际上是id
                         break
 
 
@@ -1042,7 +1042,7 @@ class EditRelatedObjectDialog(QDialog):
 
         # 创建顶部描述信息
         label_layout = QHBoxLayout()
-        self.current_behavior_label = QLabel(f"当前正在编辑复合属性：{self.current_name}，属性类型：{self.current_type_name}")
+        self.current_behavior_label = QLabel(f"当前正在编辑复合属性：{self.current_name}，属性类型：{self.current_type_name}, 实体类型：{self.target_type_name}")
         self.current_behavior_label.setAlignment(Qt.AlignCenter)
         self.current_behavior_label.setStyleSheet("font-weight:bold;color:gray;")
         label_layout.addWidget(self.current_behavior_label)
@@ -1119,15 +1119,18 @@ class EditRelatedObjectDialog(QDialog):
             for item_key, item_value in self.object_parent.items():
                 if item_value["entity_type_id"] == element_type_id:
                     self.all_entities_id.append(item_value["entity_id"])
-                    self.all_entities_name.append(item_key)
+                    self.all_entities_name.append(item_value["entity_name"])
 
             # 获取当前属性关联的实体 id
-            attributes = self.object_parent.get(f"{self.current_element_name}", {}).get("attributes", [])
+            attributes = self.object_parent.get(self.current_element_name, {}).get("attributes", [])
 
             # 遍历属性列表，找到匹配的 attribute_name
+            print(f"324234324{self.current_name}")
+            print(f"324234324{attributes}")
             self.associated_element_id = []
             for attribute in attributes:
-                if attribute["attribute_name"] == self.current_name:
+                print(f"324234324当前属性：{attribute}")
+                if attribute["attribute_code_name"] == self.current_name:
                     # 获取对应的 attribute_value
                     if isinstance(attribute["attribute_value"], list):
                         self.associated_element_id = attribute["attribute_value"]
@@ -1142,14 +1145,14 @@ class EditRelatedObjectDialog(QDialog):
             for item_key, item_value in self.object_parent.items():
                 if item_value["entity_type_id"] == element_type_id:
                     self.all_entities_id.append(item_value["entity_id"])
-                    self.all_entities_name.append(item_key)
+                    self.all_entities_name.append(item_value["entity_name"])
 
-            behaviors = self.object_parent.get(f"{self.current_element_name}", {}).get("behaviors", [])
+            behaviors = self.object_parent.get(self.current_element_name, {}).get("behaviors", [])
 
             # 遍历行为列表，找到匹配的 behavior_name
             self.associated_element_id = []
             for behavior in behaviors:
-                if behavior["behavior_name"] == self.current_name:
+                if behavior["behavior_code_name"] == self.current_name:
                     # 获取对应的 related_objects
                     if isinstance(behavior["object_entities"], list):
                         self.associated_element_id = behavior["object_entities"]
@@ -1232,7 +1235,7 @@ class EditRelatedObjectDialog(QDialog):
             # 获取实体名称
             name = None
             for item_key, item_value in self.object_parent.items():
-                if item_value["element_id"] == additional_id:
+                if item_value["entity_id"] == additional_id:
                     name = item_key  # 假设 item_key 是名称
                     break
             if name:
@@ -1269,51 +1272,180 @@ class EditRelatedObjectDialog(QDialog):
 
     def add_resource(self):
         """增加新实体"""
-        print("增加新实体")
-        # 获取可用实体父级
-        parent_id = self.parent.get_result_by_sql(
-            f"SELECT element_base_parent_id FROM element_base WHERE element_base_id IN (SELECT element_base_id FROM element_base WHERE element_base_type_id = (SELECT element_type_id FROM element_type WHERE name = '{self.current_type_name}'))")
-        print(f"[EDIT RELATED OBJECT DIALOG MAIN INFO]: 捕获到parent_id:{parent_id}")
-        parent_id = [item[0] for item in parent_id]
-        print(f"[EDIT RELATED OBJECT DIALOG MAIN INFO]: 转换后parent_id:{parent_id}")
-        # 根据parent_id 获取element_base_name
-        # 如果只有一个父类，用 = 号，如果有多个父类，用 in
-        if len(parent_id) == 1:
-            parent_id = parent_id[0]
-            parent_name = self.parent.get_result_by_sql(
-                f"SELECT element_base_name FROM element_base WHERE element_base_id = {parent_id}")
-        else:
-            parent_name = self.parent.get_result_by_sql(
-            f"SELECT element_base_name FROM element_base WHERE element_base_id IN {tuple(parent_id)}")
-        parent_name = [item[0] for item in parent_name]
-        print(f"[EDIT RELATED OBJECT DIALOG MAIN INFO]: 捕获到parent_name:{parent_name}")
-        # 新建时候弹出对话框，询问父类和名称
-        # 选择父类，也就是选择element_base_parent_id
-        # 选择父类
-        parent_name, ok = QInputDialog.getItem(self, "选择父类", "选择父类", parent_name, 0, False)
-        if not ok:
-            return
-        print(f"[EDIT RELATED OBJECT DIALOG MAIN INFO]: 用户选择了parent_name:{parent_name}")
-        # 根据parent_name 获取element_base_id
-        parent_id = self.parent.get_result_by_sql(
-            f"SELECT element_base_id FROM element_base WHERE element_base_name = '{parent_name}'")[0][0]
-        print(f"[EDIT RELATED OBJECT DIALOG MAIN INFO]: 对应parent_id:{parent_id}")
-        # 结合element_base_type_id和element_base_parent_id，获取element_base_id
-        element_base_id = self.parent.get_result_by_sql(
-            f"SELECT element_base_id FROM element_base WHERE element_base_type_id = (SELECT element_type_id FROM element_type WHERE name = '{self.current_type_name}') AND element_base_parent_id = {parent_id}")[0][0]
-        print(f"[EDIT RELATED OBJECT DIALOG MAIN INFO]: 对应element_base_id:{element_base_id}")
-
-        # 输入名称
+        # 获取新建实体名字
         name, ok = QInputDialog.getText(self, "输入名称", "输入名称")
         if not ok:
             return
         # 如果名字为空
         if name == "":
-            CustomWarningDialog("输入错误","名字不能为空").exec_()
+            CustomWarningDialog("输入错误", "名字不能为空").exec_()
             return
-        print(f"[EDIT RELATED OBJECT DIALOG MAIN INFO]: 用户输入了name:{name}")
-        self.add_element_for_scenario(name, element_base_id)
-        self.load_entities()
+        # 判断是属性还是行为
+        if self.type == "attribute":
+            # 判断属性类型
+            if self.current_type_name == "Item":
+                # 调用parent的方法建立实体
+                # 获取模板名称
+                template_name = self.parent.get_result_by_sql(f"SELECT template_name FROM template WHERE entity_type_id = {self.target_type_id} AND category_id = 5")[0][0]
+                new_entity = self.parent.create_entities_with_negative_ids(template_name, name)
+                # 打印信息
+                print(f"[EDIT RELATED OBJECT DIALOG MAIN INFO]: 创建了新实体{name}:{template_name}:{new_entity}")
+                self.parent.element_data.update(new_entity)
+                print(f"[EDIT RELATED OBJECT DIALOG MAIN INFO]: 更新后的element_data:{self.parent.element_data}")
+                self.new_entities.update(new_entity)
+                self.is_add = True
+                self.load_entities()
+
+            else:
+                # 调用parent的方法建立实体
+                # 获取符合entity_type_id的模板的类别信息
+                # 获取所有类别的 category_id
+                category_id = self.parent.get_result_by_sql(
+                    f"SELECT category_id FROM template WHERE entity_type_id = {self.target_type_id}")
+                category_ids = [item[0] for item in category_id]
+
+                # 确保类别 ID 存在
+                if len(category_ids) == 0:
+                    CustomWarningDialog("错误", "无法找到类别信息").exec_()
+                    return
+
+                # 查询所有类别的名称，并建立 ID 与名称的映射
+                query = f"SELECT category_id, category_name FROM category WHERE category_id IN {tuple(category_ids)}"
+                result = self.parent.get_result_by_sql(query)
+
+                # 构建 ID 与名称的对应关系
+                category_map = {row[0]: row[1] for row in result}
+
+                # 打印映射关系用于调试
+                print(f"[DEBUG] category_map: {category_map}")
+                # 弹出对话框，选择类别
+                category_name, ok = QInputDialog.getItem(self, "选择类别", "选择类别", category_map.values(), 0, False)
+                if not ok:
+                    return
+                print(f"[EDIT RELATED OBJECT DIALOG MAIN INFO]: 用户选择了类别:{category_name}")
+                # 根据类别名称获取类别 ID
+                category_id = [key for key, value in category_map.items() if value == category_name][0]
+                print(f"[EDIT RELATED OBJECT DIALOG MAIN INFO]: 对应category_id:{category_id}")
+
+                # 获取模板名称
+                template_name = self.parent.get_result_by_sql(f"SELECT template_name FROM template WHERE entity_type_id = {self.target_type_id} AND category_id = {category_id}")[0][0]
+                new_entity = self.parent.create_entities_with_negative_ids(template_name, name)
+                # # 打印信息
+                print(f"[EDIT RELATED OBJECT DIALOG MAIN INFO]: 创建了新实体{name}:{template_name}:{new_entity}")
+                self.parent.element_data.update(new_entity)
+                self.new_entities.update(new_entity)
+                self.is_add = True
+                self.load_entities()
+        else:
+            # 判断属性类型
+            if self.current_type_name == "Item":
+                # 调用parent的方法建立实体
+                # 获取模板名称
+                template_name = self.parent.get_result_by_sql(
+                    f"SELECT template_name FROM template WHERE entity_type_id = {self.target_type_id} AND category_id = 5")[
+                    0][0]
+                new_entity = self.parent.create_entities_with_negative_ids(template_name, name)
+                # 打印信息
+                print(f"[EDIT RELATED OBJECT DIALOG MAIN INFO]: 创建了新实体{name}:{template_name}:{new_entity}")
+                self.parent.element_data.update(new_entity)
+                print(f"[EDIT RELATED OBJECT DIALOG MAIN INFO]: 更新后的element_data:{self.parent.element_data}")
+                self.new_entities.update(new_entity)
+                self.is_add = True
+                self.load_entities()
+
+            else:
+                # 调用parent的方法建立实体
+                # 获取符合entity_type_id的模板的类别信息
+                # 获取所有类别的 category_id
+                category_id = self.parent.get_result_by_sql(
+                    f"SELECT category_id FROM template WHERE entity_type_id = {self.target_type_id}")
+                category_ids = [item[0] for item in category_id]
+
+                # 确保类别 ID 存在
+                if len(category_ids) == 0:
+                    CustomWarningDialog("错误", "无法找到类别信息").exec_()
+                    return
+
+                # 查询所有类别的名称，并建立 ID 与名称的映射
+                # 如果是一个值，同=
+                if len(category_ids) == 1:
+                    query = f"SELECT category_id, category_name FROM category WHERE category_id = {category_ids[0]}"
+
+                else:
+                    query = f"SELECT category_id, category_name FROM category WHERE category_id IN {tuple(category_ids)}"
+                result = self.parent.get_result_by_sql(query)
+
+                # 构建 ID 与名称的对应关系
+                category_map = {row[0]: row[1] for row in result}
+
+                # 打印映射关系用于调试
+                print(f"[DEBUG] category_map: {category_map}")
+                # 弹出对话框，选择类别
+                category_name, ok = QInputDialog.getItem(self, "选择类别", "选择类别", category_map.values(), 0, False)
+                if not ok:
+                    return
+                print(f"[EDIT RELATED OBJECT DIALOG MAIN INFO]: 用户选择了类别:{category_name}")
+                # 根据类别名称获取类别 ID
+                category_id = [key for key, value in category_map.items() if value == category_name][0]
+                print(f"[EDIT RELATED OBJECT DIALOG MAIN INFO]: 对应category_id:{category_id}")
+
+                # 获取模板名称
+                template_name = self.parent.get_result_by_sql(
+                    f"SELECT template_name FROM template WHERE entity_type_id = {self.target_type_id} AND category_id = {category_id}")[
+                    0][0]
+                new_entity = self.parent.create_entities_with_negative_ids(template_name, name)
+                # # 打印信息
+                print(f"[EDIT RELATED OBJECT DIALOG MAIN INFO]: 创建了新实体{name}:{template_name}:{new_entity}")
+                self.parent.element_data.update(new_entity)
+                self.new_entities.update(new_entity)
+                self.is_add = True
+                self.load_entities()
+
+        # print("增加新实体")
+        # # 获取可用实体父级
+        # parent_id = self.parent.get_result_by_sql(
+        #     f"SELECT element_base_parent_id FROM element_base WHERE element_base_id IN (SELECT element_base_id FROM element_base WHERE element_base_type_id = (SELECT element_type_id FROM element_type WHERE name = '{self.current_type_name}'))")
+        # print(f"[EDIT RELATED OBJECT DIALOG MAIN INFO]: 捕获到parent_id:{parent_id}")
+        # parent_id = [item[0] for item in parent_id]
+        # print(f"[EDIT RELATED OBJECT DIALOG MAIN INFO]: 转换后parent_id:{parent_id}")
+        # # 根据parent_id 获取element_base_name
+        # # 如果只有一个父类，用 = 号，如果有多个父类，用 in
+        # if len(parent_id) == 1:
+        #     parent_id = parent_id[0]
+        #     parent_name = self.parent.get_result_by_sql(
+        #         f"SELECT element_base_name FROM element_base WHERE element_base_id = {parent_id}")
+        # else:
+        #     parent_name = self.parent.get_result_by_sql(
+        #     f"SELECT element_base_name FROM element_base WHERE element_base_id IN {tuple(parent_id)}")
+        # parent_name = [item[0] for item in parent_name]
+        # print(f"[EDIT RELATED OBJECT DIALOG MAIN INFO]: 捕获到parent_name:{parent_name}")
+        # # 新建时候弹出对话框，询问父类和名称
+        # # 选择父类，也就是选择element_base_parent_id
+        # # 选择父类
+        # parent_name, ok = QInputDialog.getItem(self, "选择父类", "选择父类", parent_name, 0, False)
+        # if not ok:
+        #     return
+        # print(f"[EDIT RELATED OBJECT DIALOG MAIN INFO]: 用户选择了parent_name:{parent_name}")
+        # # 根据parent_name 获取element_base_id
+        # parent_id = self.parent.get_result_by_sql(
+        #     f"SELECT element_base_id FROM element_base WHERE element_base_name = '{parent_name}'")[0][0]
+        # print(f"[EDIT RELATED OBJECT DIALOG MAIN INFO]: 对应parent_id:{parent_id}")
+        # # 结合element_base_type_id和element_base_parent_id，获取element_base_id
+        # element_base_id = self.parent.get_result_by_sql(
+        #     f"SELECT element_base_id FROM element_base WHERE element_base_type_id = (SELECT element_type_id FROM element_type WHERE name = '{self.current_type_name}') AND element_base_parent_id = {parent_id}")[0][0]
+        # print(f"[EDIT RELATED OBJECT DIALOG MAIN INFO]: 对应element_base_id:{element_base_id}")
+        #
+        # # 输入名称
+        # name, ok = QInputDialog.getText(self, "输入名称", "输入名称")
+        # if not ok:
+        #     return
+        # # 如果名字为空
+        # if name == "":
+        #     CustomWarningDialog("输入错误","名字不能为空").exec_()
+        #     return
+        # print(f"[EDIT RELATED OBJECT DIALOG MAIN INFO]: 用户输入了name:{name}")
+        # self.add_element_for_scenario(name, element_base_id)
+        # self.load_entities()
 
     # def add_element_for_scenario(self, name, element_base_id):
     #     """为情景增加新实体"""
@@ -1416,7 +1548,7 @@ class EditRelatedObjectDialog(QDialog):
             # 获取要编辑的实体数据
             entity_data = None
             for item_key, item_value in self.object_parent.items():
-                if item_value["element_name"] == entity_name:
+                if item_value["entity_name"] == entity_name:
                     entity_data = item_value
                     break
 
@@ -1487,7 +1619,7 @@ class EditRelatedObjectDialog(QDialog):
 
                 # 检查行为
                 for behavior in element.get("behaviors", []):
-                    related_objects = behavior.get("related_objects", [])
+                    related_objects = behavior.get("object_entities", [])
                     # 确保 related_objects 是列表
                     if isinstance(related_objects, int):
                         related_objects = [related_objects]
@@ -1506,10 +1638,11 @@ class EditRelatedObjectDialog(QDialog):
                         return
 
             # 从 object_parent 中删除实体
-            if entity_name in self.object_parent:
+            if entity_id in self.object_parent:
                 # 从字典中删除
-                self.object_parent.pop(entity_name)
+                self.object_parent.pop(entity_id)
                 print(f"已删除实体 '{entity_name}' 从 object_parent。")
+                CustomInformationDialog("删除成功", f"实体 '{entity_name}' 已删除。").exec_()
                 # 从关联列表中删除
                 if self.type == "attribute":
                     for attribute in self.object_parent[f"{self.current_element_name}"]["attributes"]:
@@ -1525,13 +1658,13 @@ class EditRelatedObjectDialog(QDialog):
                 elif self.type == "behavior":
                     for behavior in self.object_parent[f"{self.current_element_name}"]["behaviors"]:
                         if behavior["behavior_name"] == self.current_name:
-                            print(f"删除前：{behavior['related_objects']}")
+                            print(f"删除前：{behavior['object_entities']}")
                             print(f"删除的实体ID：{entity_id}")
                             # 如果是int，转为list
                             if isinstance(behavior["related_objects"], int):
-                                behavior["related_objects"] = [behavior["related_objects"]]
+                                behavior["object_entities"] = [behavior["object_entities"]]
                             # 直接移除实体 ID
-                            behavior["related_objects"].remove(entity_id)
+                            behavior["object_entities"].remove(entity_id)
                             break
 
                 # 输出格式化的object_parent
@@ -1629,24 +1762,19 @@ class EditRelatedObjectDialog(QDialog):
 
     def update_element(self):
         # 更新 object_parent
+        print(f"更新 {self.current_element_name} 的 {self.current_name} 属性/行为")
         if self.type == "attribute":
             for attribute in self.object_parent[self.current_element_name]["attributes"]:
-                if attribute["attribute_name"] == self.current_name:
+                if attribute["attribute_code_name"] == self.current_name:
                     attribute["attribute_value"] = list(self.selected_entities)
+                    attribute["referenced_entities"] = list(self.selected_entities)
                     break
-            # 如果是道路环境要素或者道路承灾要素，同步更新
-            if self.current_element_name == "道路环境要素" or self.current_element_name == "道路承灾要素":
-                for attribute in self.object_parent["道路环境要素"]["attributes"]:
-                    if attribute["attribute_name"] == self.current_name:
-                        attribute["attribute_value"] = list(self.selected_entities)
-                        break
-                for attribute in self.object_parent["道路承灾要素"]["attributes"]:
-                    if attribute["attribute_name"] == self.current_name:
-                        attribute["attribute_value"] = list(self.selected_entities)
+
         else:
             for behavior in self.object_parent[self.current_element_name]["behaviors"]:
-                if behavior["behavior_name"] == self.current_name:
-                    behavior["related_objects"] = list(self.selected_entities)
+                if behavior["behavior_code_name"] == self.current_name:
+                    behavior["object_entities"] = list(self.selected_entities)
+                    behavior["object_entities"] = list(self.selected_entities)
                     break
 
 
@@ -2147,7 +2275,7 @@ class ElementSettingTab(QWidget):
 
             self.behavior_table.setRowCount(len(behaviors))
             for row_idx, behavior in enumerate(behaviors):
-                name_item = QTableWidgetItem(behavior.get("behavior_name", ""))
+                name_item = QTableWidgetItem(behavior.get("china_default_name", ""))
                 name_item.setFlags(name_item.flags() & ~Qt.ItemIsEditable)
                 name_item.setTextAlignment(Qt.AlignCenter)
                 self.behavior_table.setItem(row_idx, 0, name_item)
@@ -2159,11 +2287,12 @@ class ElementSettingTab(QWidget):
                 self.behavior_table.setItem(row_idx, 1, subject_item)
 
                 # 处理行为对象名称
-                object_ids = behavior.get("related_objects", [])
+                object_ids = behavior.get("object_entities", [])
                 if isinstance(object_ids, list):
                     object_names = self.show_object_value(behavior, "behavior")
 
-                    object_text = ", ".join(object_names)
+                    object_text = ", ".join([str(name) for name in object_names])
+
                 else:
                     object_text = "后续处理" if isinstance(object_ids, int) else str(object_ids)
                 object_item = QTableWidgetItem(object_text)
@@ -2242,22 +2371,26 @@ class ElementSettingTab(QWidget):
 
             row = 0
             column = 0
-            for i in range(0, len(attributes), 2):
-                for j in range(2):
-                    if i + j < len(attributes):
-                        attr = attributes[i + j]
-                        attr_name = attr.get("china_default_name", "")
-                        attr_value = self.show_object_value(attr,"attribute")
-                        attr_type = attr.get("attribute_type", "")
+            for attr in attributes:
+                # 检查 self.element 的值，决定是否显示该属性
+                if self.should_hide_attribute(attr):
+                    continue
 
-                        attr_widget = ClickableAttributeWidget(attr_name, attr_value, attr_type)
-                        attr_widget.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)  # 组件大小策略
-                        attr_widget.clicked.connect(self.open_attribute_editor)
+                attr_name = attr.get("china_default_name", "")
+                attr_value = self.show_object_value(attr, "attribute")
+                attr_type = attr.get("attribute_type", "")
 
-                        self.attribute_content_layout.addWidget(attr_widget, row, column)
-                        column += 1
-                row += 1
-                column = 0
+                attr_widget = ClickableAttributeWidget(attr_name, attr_value, attr_type)
+                attr_widget.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)  # 组件大小策略
+                attr_widget.clicked.connect(self.open_attribute_editor)
+
+                self.attribute_content_layout.addWidget(attr_widget, row, column)
+                column += 1
+
+                # 每行显示两个组件，满两列后换行
+                if column >= 2:
+                    column = 0
+                    row += 1
 
             # 设置列伸缩因子为两列
             for col in range(2):
@@ -2369,7 +2502,7 @@ class ElementSettingTab(QWidget):
                     return []
                 for id in related_data_id:
                     for item in self.element_data:
-                        if self.element_data[item]['element_id'] == id:
+                        if self.element_data[item]['entity_id'] == id:
                             related_data_name.append(item)
                 print(related_data_name)
                 return related_data_name
@@ -2380,7 +2513,7 @@ class ElementSettingTab(QWidget):
             related_objects_name = []
             for id in related_objects:
                 for item in self.element_data:
-                    if self.element_data[item]['element_id'] == id:
+                    if self.element_data[item]['entity_id'] == id:
                         related_objects_name.append(item)
             return related_objects_name
 
@@ -2397,7 +2530,7 @@ class ElementSettingTab(QWidget):
 
     def phrased_upload_data(self, data,element_name):
         """解析上传的数据，将其填充到element_data中"""
-        data = sysml2json(data[0])
+
         extracted_data = []
         print(f"23124{element_name}")
 
@@ -2467,14 +2600,18 @@ class ElementSettingTab(QWidget):
 
     def update_current_element_data(self):
         """更新当前选中要素的数据到属性和行为模型显示，并确保类别信息存在。"""
-        print(self.current_selected_entity)
+
         if self.current_selected_entity:
+            print(self.current_selected_entity)
             element = self.element_data[self.current_selected_entity]
             print(f"更新要素{self.current_selected_element}的数据")
             print(f"要素数据{json.dumps(element, ensure_ascii=False, indent=2)}")
             # 处理属性模型
             self.current_attributes = element.get("attributes", [])
             print(f"属性模型数据{self.current_attributes}")
+            # TO DO 解析模板显示规则
+
+
             self.populate_attribute_model(self.current_attributes)
             # 处理行为模型
 
@@ -2654,63 +2791,66 @@ class ElementSettingTab(QWidget):
 
         return filtered
 
-    def create_entities_with_negative_ids(self, element,name) -> Dict[str, Any]:
+    def create_entities_with_negative_ids(self, template_name: str, name: str) -> Dict[int, Any]:
         """
-        1. 遍历所有 template;
-        2. 为每个 template 构造一个“复制品” JSON 对象:
-           - entity_id 用负数 ID
-           - categories 来自 template_restrict["create"]["category_type"]
-           - attributes、behaviors 来自 template.attribute_definitions / template.behavior_definitions
-             并将 attribute_value = default_value(若非None)或None
-        3. 返回 dict: { "xxx_复制品": { entity JSON }, ... }
+        1. 根据 template_name 查找 Template;
+        2. 为每个 Template 构造一个“复制品” JSON 对象(负数ID)，结构与 get_scenario_data 输出保持一致：
+           {
+             entity_id, entity_name, entity_type_id, ...
+             categories: [...],
+             attributes: [...],
+             behaviors: [...]
+           }
+           其中 attributes/behaviors 字段，与 get_scenario_data 中的 attribute_value / behavior_value 保持同样的键。
+        3. 返回形如: { -1: { ... entityJson ... }, -2: { ... }, ... }
         """
-        neg_id_gen = self.neg_id_gen  # 从 -1 开始
+        session: Session = self.session
+        neg_id_gen = self.neg_id_gen
 
-        # 最终的字典
-        replicated_data: Dict[str, Any] = {}
-        #抓取指定模板
-        templates: List[Template] = self.session.query(Template).filter(Template.template_name == element).all()
-        print(f"模板{templates}")
+        # 先查数据库 Template
+        tpl_list: List[Template] = session.query(Template).filter(Template.template_name == template_name).all()
+        if not tpl_list:
+            print(f"[WARN] 未找到名为 {template_name} 的 template，返回空字典。")
+            return {}
 
-        for tpl in templates:
-            # 不要直接 json.loads(tpl.template_restrict)
+        # 用于返回的结果
+        replicated_data: Dict[int, Any] = {}
+
+        for tpl in tpl_list:
+            # 解析 template_restrict
             if isinstance(tpl.template_restrict, dict):
                 restrict_dict = tpl.template_restrict
-            elif isinstance(tpl.template_restrict, str):
-                # 如果是字符串，再手动 loads
-                restrict_dict = json.loads(tpl.template_restrict)
             else:
-                raise TypeError(f"template_restrict is unexpected type: {type(tpl.template_restrict)}")
+                restrict_dict = json.loads(tpl.template_restrict)
 
+            # 取 create 下的 category_type
             create_part = restrict_dict.get("create", {})
-            cat_names = create_part.get("category_type", [])  # ["AffectedElement","HazardElement"]等
+            cat_names = create_part.get("category_type", [])
             if isinstance(cat_names, str):
-                cat_names = [cat_names]  # 确保是列表
-            attribute_limit = create_part.get("attribute", [])
+                cat_names = [cat_names]
 
-            # 给该“实体”分配一个负数ID
-            entity_negative_id = neg_id_gen.next_id()
-            entity_key = entity_negative_id  # 作为外层 dict key
+            # 准备 entity 负数ID
+            e_id = neg_id_gen.next_id()
 
-            # 构建 entity JSON
+            # entity 的基础字段：与 get_scenario_data 对应
+            now_str = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             entity_json = {
-                "entity_id": entity_negative_id,
+                "entity_id": e_id,
                 "entity_name": name,
                 "entity_type_id": tpl.entity_type_id,
                 "entity_parent_id": None,
-                "scenario_id": self.scenario_data["scenario_id"],
-                "create_time": "2025-01-15 15:04:45",
-                "update_time": "2025-01-15 15:04:45",
+                "scenario_id": self.scenario_data["scenario_id"],  # 你上下文里的场景ID
+                "create_time": now_str,
+                "update_time": now_str,
                 "categories": [],
                 "attributes": [],
                 "behaviors": []
             }
 
-            # 处理分类(来自category_type)
-            for cname in cat_names:
-                cat_obj = self.session.query(Category).filter(Category.category_name == cname).first()
-                print(f"分类{cat_obj}")
+            # ========== 处理 Categories ==========
 
+            for cname in cat_names:
+                cat_obj = session.query(Category).filter_by(category_name=cname).first()
                 if cat_obj:
                     entity_json["categories"].append({
                         "category_id": cat_obj.category_id,
@@ -2718,21 +2858,28 @@ class ElementSettingTab(QWidget):
                         "description": cat_obj.description
                     })
                 else:
-                    # 如果数据库没有该分类
+                    # 如果数据库不存在该分类，可先用一个占位
                     entity_json["categories"].append({
                         "category_id": 0,
                         "category_name": cname,
                         "description": None
                     })
 
-            # 构建 attributes
+            # ========== 处理 Attributes ==========
+            # template <-> attribute_definitions 多对多
+            # 这里产生类似 get_scenario_data 中 attribute_values 的结构
             for attr_def in tpl.attribute_definitions:
-                # 不一定要给每个 AttributeValue 分配负数 ID
-                # 若需要可以类似 next_id() => -2, -3...
-                attribute_json = {
-                    "attribute_value_id": neg_id_gen.next_id(),  # 也可以 neg_id_gen.next_id()
+                # 给 attribute_value_id 也分配一个负数ID
+                av_id = neg_id_gen.next_id()
+
+                # 当我们在 get_scenario_data 中：
+                # final_attr_name = av.attribute_name or attr_def.attribute_code.attribute_code_name
+                # 这里没有 av.attribute_name(因为是新建), 你可以将其设为 None 或直接用 code_name
+                fallback_attr_name = attr_def.attribute_code.attribute_code_name
+
+                attribute_item = {
+                    "attribute_value_id": av_id,
                     "attribute_definition_id": attr_def.attribute_definition_id,
-                    "attribute_name": attr_def.attribute_code.attribute_code_name,
                     "china_default_name": attr_def.china_default_name,
                     "english_default_name": attr_def.english_default_name,
                     "attribute_code_name": attr_def.attribute_code.attribute_code_name,
@@ -2744,50 +2891,89 @@ class ElementSettingTab(QWidget):
                     "reference_target_type_id": attr_def.reference_target_type_id,
                     "default_value": attr_def.default_value,
                     "description": attr_def.description,
+
+                    # 我们要类似 get_scenario_data 里: av.attribute_value
+                    # 目前还没存任何值 => 可以先初始化为 default_value or None
                     "attribute_value": attr_def.default_value if attr_def.default_value is not None else None,
+
+                    # attribute_name => 在 get_scenario_data 里是 av.attribute_name or code
+                    # 这里没有 av.attribute_name, 我们就设为空或直接用 fallback
+                    "attribute_name": fallback_attr_name,
+
+                    # referenced_entities => []
                     "referenced_entities": []
                 }
-                entity_json["attributes"].append(attribute_json)
+                entity_json["attributes"].append(attribute_item)
 
-            # 形如：[{"CasualtyCondition": "1"}]
-            if attribute_limit:
-                for limit in attribute_limit:
-                    for key, value in limit.items():
-                        for attribute in entity_json["attributes"]:
-                            if attribute["attribute_code_name"] == key:
-                                attribute["attribute_value"] = value
+            # ========== 处理 Behaviors ==========
+            # template <-> behavior_definitions 多对多
+            for bh_def in tpl.behavior_definitions:
+                # behavior_value_id => 负数
+                bv_id = neg_id_gen.next_id()
 
+                # get_scenario_data 中：
+                # final_behavior_name = bv.behavior_name or fallback_code_name
+                # 这里“bv.behavior_name”尚不存在(新建), 所以我们可以先赋值 None
+                # fallback_code_name = bh_def.behavior_code_ref.behavior_code_name (若 behavior_code_ref 存在)
+                code_ref = bh_def.behavior_code_ref
+                fallback_code_name = code_ref.behavior_code_name if code_ref else "UnknownBehaviorCode"
 
-            # 构建 behaviors
-            for bhv_def in tpl.behavior_definitions:
-                behavior_json = {
-                    "behavior_value_id": neg_id_gen.next_id(),  # 同理,可用负数 if needed
-                    "behavior_definition_id": bhv_def.behavior_definition_id,
-                    "behavior_name": bhv_def.behavior_name,
-                    "object_entity_type_id": bhv_def.object_entity_type_id,
-                    "is_required": bool(bhv_def.is_required),
-                    "is_multi_valued": bool(bhv_def.is_multi_valued),
-                    "description": bhv_def.description,
-                    "create_time": "2025-01-15 15:04:45",
-                    "update_time": "2025-01-15 15:04:45",
+                # 你也可以先令 final_behavior_name = None => 让后面回写
+                # 或者默认就用 bh_def.china_default_name
+                final_behavior_name = None
+
+                behavior_item = {
+                    "behavior_value_id": bv_id,
+                    "behavior_definition_id": bh_def.behavior_definition_id,
+
+                    "china_default_name": bh_def.china_default_name,
+                    "english_default_name": bh_def.english_default_name,
+
+                    "behavior_name": final_behavior_name,  # 先置空; 若需要可用 bh_def.china_default_name
+                    "behavior_code_name": fallback_code_name,  # 供 fallback
+
+                    "object_entity_type_id": bh_def.object_entity_type_id,
+                    "is_required": bool(bh_def.is_required),
+                    "is_multi_valued": bool(bh_def.is_multi_valued),
+                    "description": bh_def.description,
+                    "create_time": now_str,
+                    "update_time": now_str,
+
+                    # object_entities => []
                     "object_entities": []
                 }
-                entity_json["behaviors"].append(behavior_json)
+                entity_json["behaviors"].append(behavior_item)
 
-            replicated_data[entity_key] = entity_json
+            # 把本次生成的“复制品”放进返回 dict
+            replicated_data[e_id] = entity_json
 
         return replicated_data
+
+    def load_template_mapping(self):
+        """
+        加载所有模板并创建一个 (entity_type_id, category_id) -> template_name 的映射。
+        """
+        try:
+            query = "SELECT entity_type_id, category_id, template_name FROM template"
+            results = self.get_result_by_sql(query)
+            template_mapping = {}
+            for row in results:
+                entity_type_id, category_id, template_name = row
+                template_mapping[(entity_type_id, category_id)] = template_name
+            return template_mapping
+        except Exception as e:
+            print(f"加载模板映射时发生错误: {e}")
+            return {}
 
     def handle_save(self):
         """处理保存按钮点击事件，仅展示保存的数据。"""
         try:
-            saved_elements = []
             # 深拷贝要素数据
             data = copy.deepcopy(self.element_data)
             flag = False
-            for element, checkbox in self.checkboxes.items():
+            for entity_id, checkbox in self.checkboxes.items():
                 if not checkbox.checkbox.isChecked():
-                    data.pop(element, None)
+                    data.pop(entity_id, None)
                 else:
                     flag = True
 
@@ -2799,49 +2985,55 @@ class ElementSettingTab(QWidget):
                 ).exec()
                 return
 
+            # 将筛选后的数据转换为列表
+            saved_elements = list(data.values())
+
             print(f"Data to be saved: {json.dumps(data, ensure_ascii=False, indent=2)}")
 
-            for item in data.values():
-                saved_element = {
-                    "element_id": item["element_id"],
-                    "element_name": item["element_name"],
-                    "element_type_id": item["element_type_id"],
-                    "element_parent_id": item["element_parent_id"],
-                    "attributes": item.get("attributes", []),
-                    "behaviors": item.get("behaviors", [])
-                }
-                saved_elements.append(saved_element)
+            # 加载模板映射
+            template_mapping = self.load_template_mapping()
 
-            # 检测is_required属性是否为空
+            # # 检测 is_required 属性是否为空
+            # for item in saved_elements:
+            #     # 使用 entity_name 代替 element_name
+            #     element_name = item.get('entity_name', '未知要素')
+            #     for attr in item.get('attributes', []):
+            #         if attr.get('is_required', False) and not attr.get('attribute_value'):
+            #             CustomWarningDialog(
+            #                 self.tr("保存失败"),
+            #                 self.tr(f"{element_name} 的属性 {attr.get('attribute_name', '未知属性')} 不能为空。"),
+            #                 parent=self
+            #             ).exec()
+            #             return
+            #     for behavior in item.get('behaviors', []):
+            #         if behavior.get('is_required', False) and not behavior.get('object_entities'):
+            #             CustomWarningDialog(
+            #                 self.tr("保存失败"),
+            #                 self.tr(
+            #                     f"{element_name} 的行为 {behavior.get('behavior_code_name', '未知行为')} 不能为空。"),
+            #                 parent=self
+            #             ).exec()
+            #             return
+
+            # 生成 show_saved_elements
+            show_saved_elements = []
             for item in saved_elements:
-                for attr in item['attributes']:
-                    if attr['is_required'] == 1 and not attr['attribute_value']:
-                        CustomWarningDialog(
-                            self.tr("保存失败"),
-                            self.tr(f"{item['element_name']} 的属性 {attr['attribute_name']} 不能为空。"),
-                            parent=self
-                        ).exec()
-                        return
-                for behavior in item['behaviors']:
-                    if behavior['is_required'] == 1 and not behavior['related_objects']:
-                        CustomWarningDialog(
-                            self.tr("保存失败"),
-                            self.tr(f"{item['element_name']} 的行为 {behavior['behavior_name']} 不能为空。"),
-                            parent=self
-                        ).exec()
-                        return
+                entity_type_id = item.get('entity_type_id')
+                categories = item.get('categories', [])
+                for category in categories:
+                    category_id = category.get('category_id')
+                    template = template_mapping.get((entity_type_id, category_id))
+                    if template and template in self.show_element:
+                        show_saved_elements.append(item)
+                        break  # 如果至少有一个模板匹配，则包含该要素
 
-
-
-            print(f"Saving categories: {json.dumps(saved_elements, ensure_ascii=False, indent=2)}")
-            # 保存到result,json
+            print(f"Saving categories: {json.dumps(show_saved_elements, ensure_ascii=False, indent=2)}")
+            # 保存到 result.json
             with open("result.json", "w", encoding="utf-8") as f:
                 f.write(json.dumps(saved_elements, ensure_ascii=False, indent=2))
                 print(f"保存成功，保存路径为{os.path.abspath('result.json')}")
 
-            show_saved_elements = [item for item in saved_elements if item['element_name'] in self.show_element]
-
-            # 生成详细信息的HTML内容
+            # 生成详细信息的 HTML 内容
             detailed_info = self.generate_detailed_info_html(show_saved_elements)
 
             # 显示保存结果对话框
@@ -2862,7 +3054,6 @@ class ElementSettingTab(QWidget):
 
     def generate_detailed_info_html(self, show_saved_elements):
         """生成保存结果的详细信息HTML内容。"""
-        # 去除八大情景要素之外的
         detailed_info = """
         <html>
         <head>
@@ -2907,7 +3098,8 @@ class ElementSettingTab(QWidget):
         """
 
         for item in show_saved_elements:
-            detailed_info += f"<h3>{self.tr('元素')}: {item['element_name']}</h3>"
+            entity_name = item.get('entity_name', '未知要素')
+            detailed_info += f"<h3>{self.tr('元素')}: {entity_name}</h3>"
 
             detailed_info += """
             <b>""" + self.tr("属性") + """:</b>
@@ -2918,18 +3110,21 @@ class ElementSettingTab(QWidget):
                     <th>""" + self.tr("属性类别") + """</th>
                 </tr>
             """
-            for attr in item['attributes']:
+            for attr in item.get('attributes', []):
+                attribute_type_code = attr.get('attribute_type_code', '未知类别')
+                attribute_value = str(self.show_object_value(attr, "attribute")).strip("[]").replace("'", "")
+                attribute_value_display = attribute_value if attribute_value else self.tr("无")
                 detailed_info += f"""
                 <tr>
-                    <td>{attr['attribute_name']}</td>
-                    <td>{str(self.show_object_value(attr,"attribute")).strip("[]").replace("'", "")}</td>
-                    <td>{self.get_result_by_sql(f"SELECT name FROM attribute_type WHERE attribute_type_id = {attr['attribute_type_id']}")[0][0]}</td>
+                    <td>{attr.get('attribute_name', '未知属性')}</td>
+                    <td>{attribute_value_display}</td>
+                    <td>{attribute_type_code}</td>
                 </tr>
                 """
             detailed_info += "</table>"
 
             detailed_info += "<b>" + self.tr("行为模型") + ":</b>"
-            if item['behaviors']:
+            if item.get('behaviors'):
                 detailed_info += """
                 <table>
                     <tr>
@@ -2939,14 +3134,15 @@ class ElementSettingTab(QWidget):
                     </tr>
                 """
                 for behavior in item['behaviors']:
-                    behavior_name = behavior.get('behavior_name', '')
-                    behavior_subject = item['element_name']
-                    behavior_object = str(self.show_object_value(behavior,"behavior")).strip("[]").replace("'", "")
+                    behavior_name = behavior.get('behavior_code_name', '未知行为')
+                    behavior_subject = entity_name
+                    behavior_object = str(self.show_object_value(behavior, "behavior")).strip("[]").replace("'", "")
+                    behavior_object_display = behavior_object if behavior_object else self.tr("无")
                     detailed_info += f"""
                     <tr>
                         <td>{behavior_name}</td>
                         <td>{behavior_subject}</td>
-                        <td>{behavior_object}</td>
+                        <td>{behavior_object_display}</td>
                     </tr>
                     """
                 detailed_info += "</table>"
@@ -3006,6 +3202,16 @@ class ElementSettingTab(QWidget):
 
 
         return self.query_result
+
+    def should_hide_attribute(self, attr):
+        if self.current_selected_element == "道路环境要素":  # 替换 "xxx" 为需要隐藏属性时的特定值
+            # 根据条件判断是否隐藏此属性，例如：
+            if attr.get("attribute_aspect_name") == 'Affected':
+                return True
+        elif self.current_selected_element == "道路承灾要素":
+            if attr.get("attribute_aspect_name") == 'Environment':
+                return True
+        return False
 
 # 主程序入口
 class MainWindow(QDialog):

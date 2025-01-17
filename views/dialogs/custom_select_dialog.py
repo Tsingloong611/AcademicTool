@@ -15,9 +15,11 @@ from PySide6.QtWidgets import (
 )
 from PySide6.QtGui import QIcon
 import os
+from utils import json2sysml
 
 from sqlalchemy import text
 
+from utils.json2sysml import json_to_sysml2_txt
 from views.dialogs.custom_input_dialog import CustomInputDialog
 
 class CreateDefinitionDialog(QDialog):
@@ -495,61 +497,42 @@ class CustomSelectDialog(QDialog):
 
     def fill_new_entity_with_parts_and_code_map(self, new_entity: dict, parts: list):
         """
-        将 parts 中解析到的属性名经过 attribute_code_name 映射到 attribute_code_id,
-        再找到(或新建)对应的 attribute_definition, 最终在 new_entity 中覆盖/填充 attribute_value.
-
-        参数:
-          new_entity: 负数ID结构, e.g. {
-             -1: {
-               "entity_id": -1, "entity_name": "HazardVehicle",
-               "attributes": [
-                 { "attribute_value_id": -2, "attribute_name": "VehicleType", ... }, ...
-               ],
-               "behaviors": [...]
-             }
-          }
-
-          parts: 文件解析结果, e.g.
-          [
-            {
-              "name": "HazardVehicle",
-              "attributes": [
-                {"attribute_name": "position", "type":"String",   "value":"\"ND569\""},
-                {"attribute_name": "SpillCondition","type":"Boolean","value":"true"},
-                {"attribute_name": "ExplodeCondition","type":"Boolean","value":"false"}
-              ],
-              "items": [...],
-              "refs": [...],
-              "performs": [...]
-            }
-          ]
+        处理解析好的 SysML2 part，给 new_entity 填充属性 attribute_value，
+        同时按需求处理 items、refs、performs：
+          - items: 若无对应 entity_type 或现有实体，就自动 create_entity_from_template(...) 。
+          - refs: 同理，可以让用户选已有或自动创建；若用户放弃则跳过。
+          - performs: 若 out code 未映射，就让用户指定；若用户不选则跳过。若无实体则自动 create; 若有则直接使用。
         """
+
         session = self.get_session()
         if not parts:
             print("parts 为空，无法填充。")
             return
 
-        # 只处理 parts[0]
-        part_data = parts[0]
         if not new_entity:
             print("new_entity 为空。")
             return
 
+        # 只处理 parts[0]
+        part_data = parts[0]
+
+        # new_entity 只有一个键(负数ID)
         neg_entity_id = list(new_entity.keys())[0]
         entity_dict = new_entity[neg_entity_id]
 
-        # 1. 覆盖 entity_name (如果存在)
+        # 1) 覆盖当前实体名称
         if "name" in part_data:
             entity_dict["entity_name"] = part_data["name"]
 
+        # 2) 处理 attributes（与之前一样）
         file_attrs = part_data.get("attributes", [])
         for fa in file_attrs:
-            file_attr_name = fa.get("attribute_name")  # 例 "position"
-            file_attr_value = fa.get("value")          # 例 "\"ND569\""
+            file_attr_name = fa.get("attribute_name")
+            file_attr_value = fa.get("value")
             if isinstance(file_attr_value, str):
-                file_attr_value = file_attr_value.strip('"')  # 去掉外层引号
+                file_attr_value = file_attr_value.strip('"')
 
-            # 2. 根据 file_attr_name 到 attribute_code_name表 查对应 attribute_code_id
+            # （1）先查 attribute_code
             code_map_sql = text("""
                 SELECT acn.attribute_code_id, c.attribute_code_name
                 FROM attribute_code_name AS acn
@@ -557,17 +540,13 @@ class CustomSelectDialog(QDialog):
                 WHERE acn.attribute_name = :fname
             """)
             result = session.execute(code_map_sql, {"fname": file_attr_name}).fetchone()
-
             if not result:
-                # 3. 若查不到 => 让用户手动选择 code
+                # => 用户手动选择 code_id
                 code_id = self.ask_user_to_select_code_for_name(file_attr_name)
                 if code_id is None:
-                    QMessageBox.warning(
-                        None, "未映射属性",
-                        f"文件属性 '{file_attr_name}' 无法与任一 attribute_code 映射,已跳过."
-                    )
+                    QMessageBox.warning(None, "未映射属性",
+                                        f"文件属性 '{file_attr_name}' 无法与任一 attribute_code 映射,已跳过.")
                     continue
-
                 # 插入 attribute_code_name
                 insert_sql = text("""
                     INSERT IGNORE INTO attribute_code_name (attribute_code_id, attribute_name)
@@ -576,24 +555,20 @@ class CustomSelectDialog(QDialog):
                 session.execute(insert_sql, {"cid": code_id, "aname": file_attr_name})
                 session.commit()
 
-                # 再查 attribute_code 的 name
-                code_name_sql = text("""SELECT attribute_code_name 
-                                   FROM attribute_code 
-                                   WHERE attribute_code_id=:cid
-                                """)
+                # 再查
+                code_name_sql = text("SELECT attribute_code_name FROM attribute_code WHERE attribute_code_id=:cid")
                 row2 = session.execute(code_name_sql, {"cid": code_id}).fetchone()
                 if row2:
                     attribute_code_name = row2[0]
                 else:
                     attribute_code_name = "UnknownCode"
             else:
-                code_id = result[0]           # int
-                attribute_code_name = result[1]  # str
+                code_id = result[0]
+                attribute_code_name = result[1]
 
-            # 4. 根据 code_id 找 attribute_definition(仅示例 取一条),
-            #    如果没有 => 让用户创建
+            # （2）查 attribute_definition
             def_sql = text("""
-                SELECT attribute_definition_id, 
+                SELECT attribute_definition_id,
                        china_default_name, english_default_name,
                        attribute_type_id, attribute_aspect_id,
                        is_required, is_multi_valued, is_reference,
@@ -604,13 +579,11 @@ class CustomSelectDialog(QDialog):
             """)
             def_row = session.execute(def_sql, {"cid": code_id}).fetchone()
             if not def_row:
-                # 让用户手动创建 definition
+                # => 用户手动创建 definition
                 definition_id = self.ask_user_create_definition_for_code(code_id, file_attr_name)
                 if not definition_id:
-                    QMessageBox.warning(
-                        None, "无法新建属性",
-                        f"属性 '{file_attr_name}' 无法在 code_id={code_id} 下创建 definition,跳过."
-                    )
+                    QMessageBox.warning(None, "无法新建属性",
+                                        f"属性 '{file_attr_name}' 无法在 code_id={code_id} 下创建 definition, 跳过.")
                     continue
                 # 再查
                 def_row = session.execute(def_sql, {"cid": code_id}).fetchone()
@@ -621,22 +594,19 @@ class CustomSelectDialog(QDialog):
              is_req, is_multi, is_ref, ref_tgt_id,
              def_val, desc) = def_row
 
-            # 5. 在 new_entity["attributes"] 找有没有 attribute_code_name=这个,
-            #    若有, 覆盖 attribute_value; 否则新建
+            # （3）看看当前 entity 的 attributes 是否已存在 code
             match_attr = None
             for a in entity_dict["attributes"]:
-                if a.get("attribute_code_name", "") == attribute_code_name:
+                if a.get("attribute_code_name") == attribute_code_name:
                     match_attr = a
                     break
-
             if match_attr:
                 # 覆盖 attribute_value
                 match_attr["attribute_value"] = file_attr_value
-                # 更新 attribute_name(可选)
                 match_attr["attribute_name"] = file_attr_name
             else:
                 # 新建
-                new_attr_neg_id = self.get_next_negative_id()
+                new_attr_neg_id = self.parent.neg_id_gen.next_id()
                 new_attr = {
                     "attribute_value_id": new_attr_neg_id,
                     "attribute_definition_id": def_id,
@@ -656,25 +626,199 @@ class CustomSelectDialog(QDialog):
                 }
                 entity_dict["attributes"].append(new_attr)
 
-        # 其余 items/refs/performs 逻辑(可仿照前例):
-        # ...
-        print("填充并完成 code映射后的 new_entity:", new_entity)
+        # 3) 处理 items
+        part_items = part_data.get("items", [])
+        for item_obj in part_items:
+            item_name = item_obj.get("item_name")
+            item_type_str = item_obj.get("type")  # e.g. "Cargo"
 
-    def create_entity_from_template(self, parent_dialog = None, template_name=None):
+            # 查 entity_type
+            type_sql = text("""
+                SELECT entity_type_id
+                FROM entity_type
+                WHERE entity_type_code = :tname
+                LIMIT 1
+            """)
+            type_row = session.execute(type_sql, {"tname": item_type_str}).fetchone()
+            if not type_row:
+                # => 如果数据库没有这个 code => 自动调用 create_entity_from_template?
+                #    也可能先让用户选择 => 这里简化自动创建.
+                #    create_entity_from_template(..., template_name=item_type_str, name=item_name)
+                #    或者若 "Item"是个固定模板名 => 视项目实际
+                # 这里仅打印提示:
+                print(f"[item] entity_type_code='{item_type_str}' 不存在，尝试自动从模板创建...")
+                # pseudo code:
+                # self.create_entity_from_template(template_name="Item", name=item_name)
+                continue
+            item_type_id = type_row[0]
+
+            # 在 entity_dict["attributes"] 里找 reference_target_type_id= item_type_id
+            # 只示范匹配第一个
+            ref_attr = None
+            for a in entity_dict["attributes"]:
+                if a["is_reference"] and a["reference_target_type_id"] == item_type_id:
+                    ref_attr = a
+                    break
+            if not ref_attr:
+                print(f"[item] 当前实体里无属性引用 item_type_id={item_type_id}, 跳过 item={item_name}")
+                continue
+
+            # 创建负数实体
+            item_neg_id = self.parent.neg_id_gen.next_id()
+            now_str = "2025-01-17 00:00:00"
+            item_entity = {
+                "entity_id": item_neg_id,
+                "entity_name": item_name,
+                "entity_type_id": item_type_id,
+                "entity_parent_id": neg_entity_id,  # items => parent=当前实体
+                "scenario_id": entity_dict["scenario_id"],
+                "create_time": now_str,
+                "update_time": now_str,
+                "categories": [],  # 是否加 "Item" category，看业务需求
+                "attributes": [],
+                "behaviors": []
+            }
+            # 加入 new_entity
+            new_entity[item_neg_id] = item_entity
+            # 把 item_neg_id 放进 ref_attr["referenced_entities"]
+            ref_attr["referenced_entities"].append(item_neg_id)
+
+        # 4) 处理 refs => 不设置 parent_id
+        part_refs = part_data.get("refs", [])
+        for ref_obj in part_refs:
+            ref_name = ref_obj.get("ref_name")
+            ref_type_str = ref_obj.get("type")  # "part" or whatever
+
+            # 可能让用户选已有实体 / 自行创建 => 这里简化
+            # 先查 entity_type
+            type_sql = text("""
+                SELECT entity_type_id
+                FROM entity_type
+                WHERE entity_type_code = :tname
+                LIMIT 1
+            """)
+            type_row = session.execute(type_sql, {"tname": ref_type_str}).fetchone()
+            if not type_row:
+                # => 让用户选择 code or skip
+                print(f"[ref] 未找到 entity_type_code='{ref_type_str}' => 用户可选 or skip.")
+                continue
+            ref_type_id = type_row[0]
+
+            # 在当前实体查属性
+            ref_attr = None
+            for a in entity_dict["attributes"]:
+                if a["is_reference"] and a["reference_target_type_id"] == ref_type_id:
+                    ref_attr = a
+                    break
+            if not ref_attr:
+                print(f"[ref] 当前实体无可引用 ref_type_id={ref_type_id} 的属性, skip.")
+                continue
+
+            # 查现有 scenario 中是否已存在 => user select or skip => 这里简化都自动新建
+            ref_neg_id = self.parent.neg_id_gen.next_id()
+            now_str = "2025-01-17 00:00:00"
+            ref_entity = {
+                "entity_id": ref_neg_id,
+                "entity_name": ref_name,
+                "entity_type_id": ref_type_id,
+                "entity_parent_id": None,
+                "scenario_id": entity_dict["scenario_id"],
+                "create_time": now_str,
+                "update_time": now_str,
+                "categories": [],
+                "attributes": [],
+                "behaviors": []
+            }
+            new_entity[ref_neg_id] = ref_entity
+            ref_attr["referenced_entities"].append(ref_neg_id)
+
+        # 5) performs
+        performs = part_data.get("performs", [])
+        for pfm in performs:
+            perform_name = pfm.get("perform_name")
+            in_list = pfm.get("in", [])
+            out_list = pfm.get("out", [])
+
+            # (a) 若当前 project 中 behavior_code_name (或 behavior_name_code) 里没有 perform_name => 让用户指定
+            #     user may skip => then we do not handle
+            #     else => get or create code
+            code_sql = text("""
+                SELECT bc.behavior_code_id
+                FROM behavior_name_code bnc
+                JOIN behavior_code bc ON bc.behavior_code_id = bnc.behavior_code_id
+                WHERE bnc.behavior_name = :bname
+            """)
+            code_row = session.execute(code_sql, {"bname": perform_name}).fetchone()
+            if not code_row:
+                # => 让用户指定 / 跳过
+                user_selected_code_id = self.ask_user_select_behavior_code_for_name(perform_name)
+                if user_selected_code_id is None:
+                    print(f"[perform] 用户跳过 action={perform_name}")
+                    continue
+                # => 插入 behavior_name_code
+                ins_sql = text("""
+                    INSERT INTO behavior_name_code (behavior_code_id, behavior_name)
+                    VALUES(:cid, :bname)
+                """)
+                session.execute(ins_sql, {"cid": user_selected_code_id, "bname": perform_name})
+                session.commit()
+                code_id_for_perform = user_selected_code_id
+            else:
+                code_id_for_perform = code_row[0]
+
+            # (b) out_list => attribute_code_name
+            #     在 self.parent.element_data 中找具备这些 out 属性的实体; 若无 => create
+            matched_entity_id = None
+            for out_code in out_list:
+                found = False
+                for e_id, e_data in self.parent.element_data.items():
+                    for attr in e_data.get("attributes", []):
+                        if attr.get("attribute_code_name") == out_code:
+                            # 给它赋 "true"
+                            attr["attribute_value"] = "true"
+                            matched_entity_id = e_id
+                            found = True
+                            break
+                    if found:
+                        break
+
+                if not found:
+                    # => 没找到 => 根据模板再建？
+                    #    需要知道哪张 template 里有此 out_code => 也可让用户选
+                    print(f"[perform] out_code={out_code} 未在已有实体找到, 自动创建 or user select skip.")
+                    # pseudo:
+                    # self.create_entity_from_template(template_name=..., name=out_code)
+                    # 这里仅跳过
+
+                # 如果成功 matched_entity_id => 把它加到 当前实体 behaviors => object_entities
+                if matched_entity_id is not None:
+                    for b_json in entity_dict["behaviors"]:
+                        if b_json.get("behavior_name") == perform_name:
+                            # object_entities
+                            b_json.setdefault("object_entities", [])
+                            b_json["object_entities"].append({"object_entity_id": matched_entity_id})
+                else:
+                    print(f"[perform] out_code={out_code} 未能创建or找到可用实体, skip out.")
+
+        print("[DONE] fill_new_entity_with_parts_and_code_map, new_entity=", new_entity)
+
+    def create_entity_from_template(self, parent_dialog = None, template_name=None, name= None):
         """从模板新建实体，需要用户输入名称"""
         if parent_dialog:
             parent_dialog.close()
         # 弹出输入对话框获取实体名称
         if not template_name:
             template_name = self.element
-        ask_name = CustomInputDialog(
-            self.tr("新建实体"),
-            self.tr("请输入新建实体的名称"),
-            parent=self
-        )
-        ask_name.exec()
+        if not name:
+            ask_name = CustomInputDialog(
+                self.tr("新建实体"),
+                self.tr("请输入新建实体的名称"),
+                parent=self
+            )
+            ask_name.exec()
+            name = ask_name.get_input()
 
-        new_entity = self.parent.create_entities_with_negative_ids(template_name,ask_name.get_input())
+        new_entity = self.parent.create_entities_with_negative_ids(template_name,name)
         print(f"new_entity: {new_entity}")
         print(f"element_data: {self.parent.element_data}")
         # 将new_entity添加到element_data中
@@ -686,7 +830,7 @@ class CustomSelectDialog(QDialog):
         self.update_view()
 
         # 弹出成功消息
-        QMessageBox.information(self, "成功", f"已成功从模板新建实体 '{ask_name.get_input()}'。")
+        QMessageBox.information(self, "成功", f"已成功从模板新建实体 '{name}'。")
 
         # 发射信号
         self.entity_created.emit(new_entity)
@@ -752,9 +896,14 @@ class CustomSelectDialog(QDialog):
 
         # 实现具体的读取逻辑，这里仅模拟
         # 例如，将实体数据写入sysml2文件或展示在界面上
+        # 先打印数据
+        print(f"读取实体 '{self.parent.element_data[entity_id]}' 至{destination}。")
         if destination == "sysml2文件":
-            # 保存到文件
-            pass
+            # 调用写入文件的方法
+            json_input_str = json.dumps(self.parent.element_data[entity_id], ensure_ascii=False)
+
+            content = json_to_sysml2_txt(json_input_str,self.parent.element_data)
+            print(content)
         else:
             self.parent.current_selected_entity = entity_id
 
@@ -800,6 +949,44 @@ class CustomSelectDialog(QDialog):
             return dlg.get_created_definition_id()
         else:
             return None
+
+    def ask_user_select_behavior_code_for_name(self, perform_name):
+        """
+        弹出对话框让用户选择 behavior_code_id.
+        若用户取消 => 返回 None
+        若用户确认 => 返回 behavior_code_id
+        """
+        session = self.get_session()
+        code_sql = text("""
+            SELECT behavior_code_id, behavior_name
+            FROM behavior_name_code
+            ORDER BY behavior_code_id
+        """)
+        codes = session.execute(code_sql).fetchall()
+
+        if not codes:
+            QMessageBox.warning(self, "无可用Code", "数据库中无任何 behavior_code 记录。")
+            return None
+
+        dlg = SelectCodeDialog(parent=self, codes=codes, file_attr_name=perform_name)
+        if dlg.exec_() == QDialog.Accepted:
+            return dlg.get_selected_code_id()
+        else:
+            return None
+
+    def get_type_code_by_id(self, type_id):
+        session = self.get_session()
+        type_sql = text("""
+            SELECT entity_type_code
+            FROM entity_type
+            WHERE entity_type_id = :tid
+            LIMIT 1
+        """)
+        type_row = session.execute(type_sql, {"tid": type_id}).fetchone()
+        if not type_row:
+            return "UnknownType"
+        return type_row[0]
+
 
 # 示例使用
 if __name__ == "__main__":

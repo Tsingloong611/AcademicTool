@@ -1,22 +1,13 @@
 import types
+
 from owlready2 import *
 import json
 from openpyxl import Workbook
-import datetime
-import os
 
 '''本体生成'''
-
-
-def create_ontology(input_path, output_path):
-    """
-    创建本体并保存到指定的位置。
-
-    :param input_path: 输入的JSON文件的完整路径。
-    :param output_path: 输出的OWL文件的完整路径（包含文件名，但不需要添加扩展名）。
-    """
+def create_ontology(file_path,filename):
     # 加载json文件
-    with open(input_path, "r", encoding='utf-8') as file:
+    with open(file_path, "r") as file:
         data = json.load(file)
 
     desired_order = ['part', 'partSub', 'partAssociate', 'item', 'state']
@@ -33,7 +24,8 @@ def create_ontology(input_path, output_path):
     classes = {}
 
     with onto:
-        # 创建ScenarioElement class及其子类
+        # 创建ScenarioElement class
+        # subclass为AffectedElement、HazardElement、EnvironmentElement、ResponsePlanElement
         class ScenarioElement(Thing):
             pass
 
@@ -53,7 +45,8 @@ def create_ontology(input_path, output_path):
         class ElementCompositions(Thing):
             pass
 
-        # 创建ElementState class及其子类
+        # 创建ElementState class
+        # subclass为AffectedStates、HazardStates、ResponseStates
         class ElementState(Thing):
             pass
 
@@ -63,10 +56,10 @@ def create_ontology(input_path, output_path):
         class HazardStates(ElementState):
             pass
 
-        class ResponseStates(ElementState):
-            pass  # 假设需要添加ResponseStates
+        #
+        class ResponsePlanElement(Thing):
+            pass
 
-        # ResponsePlanElement 的子类
         class ResponseResource(ResponsePlanElement):
             pass
 
@@ -118,7 +111,7 @@ def create_ontology(input_path, output_path):
                 classes[pA_name] = prop
 
             elif element['@type'] == 'item':
-                # 处理 item 类型，创建一个新的类
+                # 处理 partAssociate 类型，创建一个新的类
                 cls = types.new_class(element['@name'].strip(), (ElementCompositions,))
                 classes[element['@name'].strip()] = cls
 
@@ -127,8 +120,8 @@ def create_ontology(input_path, output_path):
                 state_cls = types.new_class(element['@name'].strip(), (Thing,))
                 classes[element['@name'].strip()] = state_cls
 
-                transition_class = list(set([transition['source'] for transition in element.get('transitions', [])] +
-                                            [transition['target'] for transition in element.get('transitions', [])]))
+                transition_class = list(set([transition['source'] for transition in element['transitions']] +
+                                            [transition['target'] for transition in element['transitions']]))
 
                 for i in transition_class:
                     if i not in classes:
@@ -137,7 +130,7 @@ def create_ontology(input_path, output_path):
                     else:
                         tran_cls = classes[i]
 
-                for i in element.get('transitions', []):
+                for i in element['transitions']:
                     sT_name = i['transit'].strip() + 'Transform'
                     prop = types.new_class(sT_name, (sT_prop,))
                     prop.domain = [classes.get(i['source'].strip())]
@@ -155,16 +148,14 @@ def create_ontology(input_path, output_path):
                         type_name = bool
                     elif element['datatype'] == 'String':
                         type_name = str
-                    elif element['datatype'] in ['Float', 'Double']:
+                    elif element['datatype'] == 'Float' or 'Double':
                         type_name = float
-                    elif element['datatype'] == 'DateTime':
+                    elif type_name == 'DateTime':
                         type_name = datetime.datetime
-                    elif element['datatype'] == 'Date':
+                    elif type_name == 'Date':
                         type_name = datetime.date
-                    elif element['datatype'] == 'Time':
+                    elif type_name == 'Time':
                         type_name = datetime.time
-                    else:
-                        type_name = str  # 默认类型
 
                     # 创建数据属性
                     attr_prop = types.new_class(attr_name, (DataProperty,))
@@ -180,6 +171,13 @@ def create_ontology(input_path, output_path):
                 prop.range = [classes.get(element['@name'].strip())]
                 classes[eS_name] = prop
 
+            elif element['@type'] == 'partAssociate':
+                pA_name = 'associate' + (element['@name'].strip())
+                prop = types.new_class(pA_name, (aW_prop,))
+                prop.domain = [classes.get(element['owner'].strip())]
+                prop.range = [classes.get(element['@name'].strip())]
+                classes[pA_name] = prop
+
             elif element['@type'] == 'itemComposition':
                 iC_name = 'consist' + (element['@name'].strip())
                 prop = types.new_class(iC_name, (cC_prop,))
@@ -191,41 +189,41 @@ def create_ontology(input_path, output_path):
                 aC_name = 'has' + (element['@name'].strip()) + 'EffectOn'
                 prop = types.new_class(aC_name, (hE_prop,))
 
-                for i in element.get('outparams', []):
+                for i in element['outparams']:
                     for j in elements:
-                        if j['@type'] == 'attribute' and i == j['@name']:
-                            if j['owner'] not in ['', 'none']:
-                                prop.range = [classes.get(j['owner'].strip())]
+                        if j['@type'] == 'attribute':
+                            if i == j['@name']:
+                                if j['owner'] != 'none' and j['owner'] != '':
+                                    prop.range = [classes.get(j['owner'].strip())]
+                                    classes[aC_name] = prop
 
-                for i in element.get('inparams', []):
+                for i in element['inparams']:
                     for j in elements:
-                        if j['@type'] == 'attribute' and i == j['@name']:
-                            if j['owner'] not in ['', 'none']:
-                                prop.domain = [classes.get(j['owner'].strip())]
+                        if j['@type'] == 'attribute':
+                            if i == j['@name']:
+                                if j['owner'] != 'none' and j['owner'] != '':
+                                    prop.domain = [classes.get(j['owner'].strip())]
+                                    classes[aC_name] = prop
 
                 for i in elements:
-                    if i['@type'] == 'actionSub' and i.get('parent') == element['@name']:
-                        if 'owner' in i and i['owner'] not in ['', 'none']:
-                            prop.domain = [classes.get(i['owner'].strip())]
-
-                classes[aC_name] = prop
-
-    # 确保输出目录存在
-    output_dir = os.path.dirname(output_path)
-    if output_dir and not os.path.exists(output_dir):
-        os.makedirs(output_dir)
-
-    # 保存本体到指定的位置
-    onto.save(file=output_path, format="rdfxml")
-    print(f"本体已保存到: {output_path}")
+                    # print(i)
+                    if i['@type'] == 'actionSub':
+                        if 'parent' in i:
+                            if i['parent'] is not None:
+                                if i['parent'] == element['@name']:
+                                    prop.domain = [classes.get(i['owner'].strip())]
+                                    classes[aC_name] = prop
 
 
-def Scenario_owl_creator(output_path):
-    """
-    创建Scenario本体并保存到指定的位置。
 
-    :param output_path: 输出的Scenario.owl文件的完整路径。
-    """
+
+    #filename = "Integrated_Scenario_3.owl" #保存的文件名
+    onto.save(file=filename+".owl", format="rdfxml")
+    #onto.save(file="Integrated_Scenario_1.owl", format="rdfxml")
+
+    # onto.save(file="Integrated_Scenario.owl", format="rdfxml")
+
+def Scenario_owl_creator():
     onto = get_ontology("http://example.org/scenario_3.owl")
     with onto:
         # Classes
@@ -325,21 +323,9 @@ def Scenario_owl_creator(output_path):
             domain = [Scenario]
             range = [ResilienceInfluentialFactors]
 
-    # 确保输出目录存在
-    output_dir = os.path.dirname(output_path)
-    if output_dir and not os.path.exists(output_dir):
-        os.makedirs(output_dir)
+    onto.save(file="Scenario.owl", format="rdfxml")
 
-    onto.save(file=output_path, format="rdfxml")
-    print(f"Scenario本体已保存到: {output_path}")
-
-
-def Emergency_owl_creator(output_path):
-    """
-    创建Emergency本体并保存到指定的位置。
-
-    :param output_path: 输出的Emergency.owl文件的完整路径。
-    """
+def Emergency_owl_creator():
     onto = get_ontology("http://example.org/scenario_3.owl")
     with onto:
         # Classes
@@ -362,33 +348,17 @@ def Emergency_owl_creator(output_path):
             namespace = onto
             domain = [Emergency]
             range = [InvolvedScenario]
-
-    # 确保输出目录存在
-    output_dir = os.path.dirname(output_path)
-    if output_dir and not os.path.exists(output_dir):
-        os.makedirs(output_dir)
-
-    onto.save(file=output_path, format="rdfxml")
-    print(f"Emergency本体已保存到: {output_path}")
-
+    onto.save(file="Emergency.owl", format="rdfxml")
 
 '''整理为excel'''
-
-
-def owl_excel_creator(input_owl_path, output_excel_path):
-    """
-    将OWL文件中的属性信息整理为Excel文件。
-
-    :param input_owl_path: 输入的OWL文件的完整路径（包含文件名和扩展名）。
-    :param output_excel_path: 输出的Excel文件的完整路径。
-    """
+def owl_excel_creator(filename):
     # 加载OWL文件
-    onto = get_ontology(input_owl_path).load()
+    onto = get_ontology(filename + ".owl").load()
 
     # 创建一个新的Excel工作簿
     wb = Workbook()
     ws = wb.active
-    ws.title = os.path.splitext(os.path.basename(output_excel_path))[0] + "_Prop"
+    ws.title = filename + "_Prop"
 
     # 初始化一个空列表来存储属性信息的字典
     data_properties_list = []
@@ -425,58 +395,36 @@ def owl_excel_creator(input_owl_path, output_excel_path):
         ws.append([prop["label"], prop["name"], prop["domain"], prop["range"]])
 
     # 保存Excel文件
-    wb.save(output_excel_path)
-    print(f"Excel文件已保存为: {output_excel_path}")
+    excel_file = filename + "_Prop.xlsx"
+    wb.save(excel_file)
+    print("Excel文件已保存为:", excel_file)
 
+# 文件路径
+file_paths = ["AffectedElement.json", "EnvironmentElement.json", "HazardElement.json", "ResponsePlanElement.json"]
 
-if __name__ == '__main__':
-    # 定义输入和输出目录
-    input_dir = os.path.join(os.path.dirname(__file__), '../data/sysml2/result')
-    output_dir = os.path.join(os.path.dirname(__file__), '../data/sysml2/owl')
+for file_path in file_paths:
+    #filename = file_path.split(".")[0]
+    filename = "Integrated_Scenario_5"
+    create_ontology(file_path,filename)
 
-    # 确保输出目录存在
-    if not os.path.exists(output_dir):
-        os.makedirs(output_dir)
+# 加载OWL文件
+onto = get_ontology(filename + ".owl").load()
+# 删除Action和Resource类及其子类
+if onto.Action is not None:
+    with onto:
+        destroy_entity(onto.Action)
 
-    # 获取所有JSON文件
-    json_files = [f for f in os.listdir(input_dir) if f.endswith('.json')]
+if onto.Resource is not None:
+    with onto:
+        destroy_entity(onto.Resource)
 
-    # 对应的输出OWL文件路径
-    output_owl_paths = [os.path.join(output_dir, os.path.splitext(f)[0]) for f in json_files]
+# 保存修改后的OWL文件
+onto.save(file=filename + ".owl", format="rdfxml")
 
-    # 创建本体文件
-    for input_file, output_owl in zip(json_files, output_owl_paths):
-        input_path = os.path.join(input_dir, input_file)
-        create_ontology(input_path, output_owl + ".owl")
+owl_excel_creator(filename)
 
-    # 加载OWL文件并进行后续操作
-    for output_owl in output_owl_paths:
-        owl_path = output_owl + ".owl"
-        # 加载OWL文件
-        onto = get_ontology(owl_path).load()
-        # 删除Action和Resource类及其子类
-        with onto:
-            if 'Action' in onto.classes():
-                destroy_entity(onto.Action)
-                print(f"已删除类 Action 及其子类 from {owl_path}")
-            if 'Resource' in onto.classes():
-                destroy_entity(onto.Resource)
-                print(f"已删除类 Resource 及其子类 from {owl_path}")
+Scenario_owl_creator()
+owl_excel_creator("Scenario")
+Emergency_owl_creator()
+owl_excel_creator("Emergency")
 
-        # 保存修改后的OWL文件
-        onto.save(file=owl_path, format="rdfxml")
-        print(f"修改后的OWL文件已保存到: {owl_path}")
-
-        # 创建对应的Excel文件
-        excel_output_path = output_owl + "_Prop.xlsx"
-        owl_excel_creator(owl_path, excel_output_path)
-
-    # 创建Scenario本体
-    scenario_output_path = os.path.join(output_dir, "Scenario.owl")
-    Scenario_owl_creator(scenario_output_path)
-    owl_excel_creator(scenario_output_path, os.path.join(output_dir, "Scenario_Prop.xlsx"))
-
-    # 创建Emergency本体
-    emergency_output_path = os.path.join(output_dir, "Emergency.owl")
-    Emergency_owl_creator(emergency_output_path)
-    owl_excel_creator(emergency_output_path, os.path.join(output_dir, "Emergency_Prop.xlsx"))
