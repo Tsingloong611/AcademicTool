@@ -59,10 +59,12 @@ def json_to_sysml2_txt(
 
     lines = []
     indent = "    "
+    print(parsed_json)
 
     # 1. 解析 Package 名称
     categories = parsed_json.get('categories', [])
     if not categories:
+
         raise ValueError("JSON 数据中缺少 'categories' 信息。")
 
     # 假设第一个类别作为包名
@@ -212,7 +214,7 @@ def json_to_sysml2_txt(
     script_dir = os.path.dirname(os.path.abspath(__file__))
 
     # 定义目标文件夹相对路径
-    relative_dir = "../data/sysml2"
+    relative_dir = f"../data/sysml2/{json.loads(json_str)['scenario_id']}"
 
     # 计算目标文件夹的绝对路径
     absolute_dir = os.path.abspath(os.path.join(script_dir, relative_dir))

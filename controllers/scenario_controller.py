@@ -4,18 +4,19 @@
 # @Software: PyCharm
 import json
 import datetime
+import os
 
 from PySide6.QtCore import QObject, Slot, Qt, Signal
 from PySide6.QtWidgets import QInputDialog, QMessageBox, QDialog
-from requests import session
+from requests import session, delete
 from sqlalchemy import text
-from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.exc import SQLAlchemyError, IntegrityError
 from sqlalchemy.orm import joinedload
 from sqlalchemy.orm.sync import update
 from sqlalchemy.sql.base import elements
 
 from models.models import Scenario, BehaviorValue, AttributeValue, Category, Entity, Template, BehaviorValueReference, \
-    AttributeValueReference, entity_category
+    AttributeValueReference, entity_category, Owl, Bayes, OwlClassBehavior, OwlClassAttribute, OwlClass
 # 假设您已经在 models/scenario.py 中定义了 Scenario 类，
 # 其中字段为 scenario_id, scenario_name, scenario_description, ...
 from views.dialogs.custom_error_dialog import CustomErrorDialog
@@ -26,7 +27,7 @@ from views.scenario_manager import ScenarioDialog
 import logging
 import json
 from sqlalchemy.orm import Session
-from typing import Dict, Any, Union, List
+from typing import Dict, Any, Union, List, Tuple
 
 # 配置日志
 logging.basicConfig(level=logging.INFO)
@@ -56,6 +57,7 @@ class ScenarioController(QObject):
         self.tab_widget.ElementSettingTab.request_sql_query.connect(self.execute_sql_query)
         self.send_sql_result.connect(self.tab_widget.ElementSettingTab.receive_sql_result)
         self.tab_widget.ElementSettingTab.save_to_database_signal.connect(self.apply_changes_from_json)
+        self.tab_widget.generate_model_save_to_database.connect(self.generate_model_save_to_database)
         # 加载初始数据
         self.load_scenarios()
 
@@ -97,10 +99,19 @@ class ScenarioController(QObject):
             username = connection_info.get('username', '未知用户')
             database = connection_info.get('database', '未知数据库')
 
-            # 如果 Scenario 中还有 owl_status, bayes_status, updated_at 之类字段，
-            # 也要相应做修改与获取；以下仅作示例
-            owl_state = getattr(scenario, 'owl_status', "未知")
-            bayes_state = getattr(scenario, 'bayes_status', "未知")
+
+            owl_record = self.session.query(Owl).filter(Owl.scenario_id == scenario.scenario_id).first()
+
+            if owl_record:
+                owl_state = "就绪"
+            else:
+                owl_state = "未完成"
+
+            bayes_record = self.session.query(Bayes).filter(Bayes.scenario_id == scenario.scenario_id).first()
+            if bayes_record:
+                bayes_state = "就绪"
+            else:
+                bayes_state = "未完成"
             update_time = getattr(scenario, 'scenario_update_time', None)
             if update_time is not None:
                 update_time = update_time.strftime("%Y-%m-%d %H:%M:%S")
@@ -224,9 +235,7 @@ class ScenarioController(QObject):
                 # 如果是引用型属性 (is_reference=True)，从 attribute_value_reference 表查所有引用
                 if attr_def.is_reference:
                     for ref in av.references:
-                        attribute_item["referenced_entities"].append({
-                            "referenced_entity_id": ref.referenced_entity_id
-                        })
+                        attribute_item["referenced_entities"].append(ref.referenced_entity_id)
 
                 entity_dict["attributes"].append(attribute_item)
 
@@ -279,12 +288,42 @@ class ScenarioController(QObject):
         - entity_data_list: 形如您贴出的 JSON 数组，每个元素是一个 Entity 的完整信息。
         """
         session = self.session
+        # -1. 把json中不存在的实体删除
+
+        current_entities = session.query(Entity).filter_by(
+            scenario_id=self.current_scenario.scenario_id
+        ).all()
+        current_entity_ids = {entity.entity_id for entity in current_entities}
+        json_ids = {entity["entity_id"] for entity in entity_data_list}
+
+        entities_to_delete = current_entity_ids - json_ids
+
+        if entities_to_delete:
+            try:
+                session.query(Entity).filter(
+                    Entity.scenario_id == self.current_scenario.scenario_id,
+                    Entity.entity_id.in_(entities_to_delete)
+                ).delete(synchronize_session='fetch')
+                session.flush()
+            except Exception as e:
+                session.rollback()
+                print(f"删除失败: {str(e)}")
+                raise
         # 0. 用于记录临时负数ID => 数据库生成ID 的映射
         temp_id_map = {}
 
         # 1. 先插入/更新所有 Entity，拿到它们的真实 ID
         for ent_data in entity_data_list:
             self._process_single_entity(session, ent_data, temp_id_map)
+        # 2. 现在可以更新parent关系了
+        if hasattr(self, '_pending_parents'):
+            for child_id, temp_parent_id in self._pending_parents:
+                real_parent_id = temp_id_map[temp_parent_id]
+                entity = session.query(Entity).filter_by(entity_id=child_id).one()
+                entity.entity_parent_id = real_parent_id
+            session.flush()
+            # 清理临时数据
+            del self._pending_parents
 
         # 2. 第二轮：处理 “Item”/“Entity” 引用关系（因为可能后面才出现被引用对象）
         for ent_data in entity_data_list:
@@ -307,6 +346,9 @@ class ScenarioController(QObject):
         create_time = self._parse_datetime(ent_data.get("create_time"))
         update_time = self._parse_datetime(ent_data.get("update_time"))
         parent_id = ent_data.get("entity_parent_id", None)
+        parent_is_temp = parent_id is not None and parent_id < 0
+        if parent_is_temp:
+            parent_id = None  # 临时设为None
 
         if e_id < 0:
             # 新建
@@ -322,6 +364,11 @@ class ScenarioController(QObject):
             session.flush()  # 让数据库生成新的 entity_id
             real_eid = entity_obj.entity_id
             temp_id_map[e_id] = real_eid
+            if parent_is_temp:
+                # 可以用一个列表存储待更新的parent关系
+                if not hasattr(self, '_pending_parents'):
+                    self._pending_parents = []
+                self._pending_parents.append((real_eid, ent_data["entity_parent_id"]))
         else:
             # 更新
             entity_obj = session.query(Entity).filter_by(entity_id=e_id).one()
@@ -360,33 +407,28 @@ class ScenarioController(QObject):
 
         return real_eid
 
-    def _process_entity_attributes(self,session: Session, ent_data: Dict[str, Any], temp_id_map: Dict[int, int]):
+    def _process_entity_attributes(self, session: Session, ent_data: Dict[str, Any], temp_id_map: Dict[int, int]):
         """
-        第二阶段：处理该 Entity 下的 Attributes。
-        若 attribute_type_code == "Item" => 给referenced_entities对应的实体设 parent=当前
-        若 attribute_type_code == "Entity" => 写 attribute_value_reference
-        否则 => 正常写 attribute_value
+        Process Entity Attributes with duplicate reference handling.
         """
         e_id = ent_data["entity_id"]
         if e_id < 0:
             e_id = temp_id_map[e_id]
-        # e_id 现已为数据库真实 ID
 
         for attr_dict in ent_data.get("attributes", []):
             av_id = attr_dict["attribute_value_id"]
             attr_value = attr_dict.get("attribute_value", None)
             attr_type_code = attr_dict.get("attribute_type_code", None)
-            create_time = datetime.datetime.now()  # 或自己从 JSON 里取
+            create_time = datetime.datetime.now()
             update_time = datetime.datetime.now()
 
             # 1) upsert attribute_value
             if av_id < 0:
-                # 新建
                 av_obj = AttributeValue(
                     entity_id=e_id,
                     attribute_definition_id=attr_dict["attribute_definition_id"],
                     attribute_name=attr_dict.get("attribute_name"),
-                    attribute_value=None,  # 先留空,根据类型再决定
+                    attribute_value=None,
                     create_time=create_time,
                     update_time=update_time
                 )
@@ -395,47 +437,58 @@ class ScenarioController(QObject):
                 real_av_id = av_obj.attribute_value_id
                 temp_id_map[av_id] = real_av_id
             else:
-                # 更新
                 av_obj = session.query(AttributeValue).filter_by(attribute_value_id=av_id).one()
                 av_obj.attribute_name = attr_dict.get("attribute_name")
                 av_obj.update_time = update_time
                 real_av_id = av_id
 
-            # 2) 根据 attribute_type_code 处理
+            # 2) Handle different attribute types
             if attr_type_code == "Item":
-                # 不写 attribute_value_reference； attribute_value留空
-                # referenced_entities => 让这些实体的 parent = 当前 entity
-                for ref_id in attr_dict.get("referenced_entities", []):
+                # Handle Item references - update parent relationships
+                referenced_entities = attr_dict.get("referenced_entities", [])
+                unique_refs = list(set(referenced_entities))  # Remove duplicates
+
+                for ref_id in unique_refs:
                     if ref_id < 0:
-                        ref_id = temp_id_map[ref_id]  # 找到真实ID
-                    # fetch referenced entity
+                        ref_id = temp_id_map[ref_id]
                     ref_entity = session.query(Entity).filter_by(entity_id=ref_id).one()
-                    # 让 ref_entity 的 parent = 当前 e_id
                     ref_entity.entity_parent_id = e_id
-                    session.flush()
+
                 av_obj.attribute_value = None
 
             elif attr_type_code == "Entity":
-                # 写 attribute_value_reference
-                # attribute_value 置空
+                # Handle Entity references
                 av_obj.attribute_value = None
-                # 先清空旧引用
                 session.query(AttributeValueReference).filter_by(attribute_value_id=real_av_id).delete()
-                # 新增
+
+                # Get referenced entities and remove duplicates
+                referenced_entities = []
                 for ref_id in attr_dict.get("referenced_entities", []):
+                    if isinstance(ref_id, dict):
+                        ref_id = ref_id["referenced_entity_id"]
                     if ref_id < 0:
                         ref_id = temp_id_map[ref_id]
+                    referenced_entities.append(ref_id)
+
+                # Remove duplicates while preserving order
+                unique_refs = list(dict.fromkeys(referenced_entities))
+
+                # Add unique references
+                for ref_id in unique_refs:
                     avr = AttributeValueReference(
                         attribute_value_id=real_av_id,
                         referenced_entity_id=ref_id
                     )
                     session.add(avr)
             else:
-                # 其他类型 => 直接把 attribute_value 写入
+                # Handle regular attributes
                 av_obj.attribute_value = attr_value
 
-            session.flush()
-
+            try:
+                session.flush()
+            except IntegrityError as e:
+                session.rollback()
+                raise ValueError(f"Integrity error processing attribute {attr_dict.get('attribute_name')}: {str(e)}")
     def _process_entity_behaviors(self,session: Session, ent_data: Dict[str, Any], temp_id_map: Dict[int, int]):
         """
         处理 behaviors: 负数 => 新建, 正数 => 更新
@@ -764,3 +817,222 @@ class ScenarioController(QObject):
         # 3. 一次性 commit
         self.session.commit()
         print(f"复制完成: scenario_id={scenario_id} 已新增 {len(all_templates)} 个entity。")
+
+    def populate_owl_database(self, session, scenario_id, owl_dir):
+        # 1. Insert OWL files
+        owl_files = {
+            'Merge.owl': 1,
+            'Emergency.owl': 2,
+            'ScenarioElement.owl': 3,
+            'Scenario.owl': 4
+        }
+
+        owl_records = []
+        for owl_file, owl_type_id in owl_files.items():
+            owl_path = os.path.join(owl_dir, owl_file)
+            if os.path.exists(owl_path):
+                owl = Owl(
+                    owl_type_id=owl_type_id,
+                    owl_file_path=owl_path,
+                    scenario_id=scenario_id
+                )
+                session.add(owl)
+                session.flush()  # Get the owl_id
+                owl_records.append((owl, owl_file))
+
+        # 2. Process corresponding structure files
+        for owl, owl_file in owl_records:
+            json_file = owl_file.replace('.owl', '_ontology_structure.json')
+            json_path = os.path.join(owl_dir, json_file)
+
+            if os.path.exists(json_path):
+                with open(json_path, 'r') as f:
+                    structure = json.load(f)
+                    self.process_owl_structure(session, structure, owl.owl_id)
+
+    def process_owl_structure(self,session, structure, owl_id):
+        # Keep track of class IDs for parent relationships
+        class_map = {}
+
+        # First pass: Create all classes
+        for class_name, class_data in structure.items():
+            owl_class = OwlClass(
+                owl_class_name=class_name,
+                owl_id=owl_id
+            )
+            session.add(owl_class)
+            session.flush()
+            class_map[class_name] = owl_class.owl_class_id
+
+        # Second pass: Set parent relationships
+        for class_name, class_data in structure.items():
+            if 'parent_class' in class_data and class_data['parent_class'] in class_map:
+                owl_class = session.query(OwlClass).filter_by(
+                    owl_class_name=class_name,
+                    owl_id=owl_id
+                ).first()
+                if owl_class:
+                    owl_class.owl_class_parent = class_map[class_data['parent_class']]
+
+        # Third pass: Add properties
+        current_time = datetime.datetime.utcnow()
+
+        for class_name, class_data in structure.items():
+            if 'Properties' in class_data:
+                owl_class = session.query(OwlClass).filter_by(
+                    owl_class_name=class_name,
+                    owl_id=owl_id
+                ).first()
+
+                if owl_class:
+                    for prop in class_data['Properties']:
+                        if prop['property_type'].lower() == 'datatypeproperty':
+                            # Add attribute
+                            attr = OwlClassAttribute(
+                                owl_class_attribute_name=prop['property_name'],
+                                owl_class_attribute_range=prop['property_range'],
+                                owl_class_id=owl_class.owl_class_id,
+                                create_time=current_time,
+                                update_time=current_time
+                            )
+                            session.add(attr)
+
+                        elif prop['property_type'].lower() == 'objectproperty':
+                            # Add behavior
+                            behavior = OwlClassBehavior(
+                                owl_class_behavior_name=prop['property_name'],
+                                owl_class_behavior_range=prop['property_range'],
+                                owl_class_id=owl_class.owl_class_id,
+                                create_time=current_time,
+                                update_time=current_time
+                            )
+                            session.add(behavior)
+
+    def generate_model_save_to_database(self):
+        session = self.session
+
+        # Delete existing OWL records
+        try:
+            rows_deleted = session.query(Owl).filter(
+                Owl.scenario_id == self.current_scenario.scenario_id
+            ).delete()
+
+            if rows_deleted > 0:
+                print(f"已删除 {rows_deleted} 条记录")
+            else:
+                print(f"没有找到符合条件的记录需要删除")
+
+            session.commit()
+
+        except Exception as e:
+            session.rollback()
+            print(f"删除记录时出错: {e}")
+            return
+
+        # Add new records
+        owl_dir = os.path.abspath(os.path.join(
+            os.path.dirname(__file__),
+            f'../data/sysml2/{self.current_scenario.scenario_id}/owl'
+        ))
+
+        try:
+            self.populate_owl_database(session, self.current_scenario.scenario_id, owl_dir)
+            session.commit()
+            self.status_bar.owl_status_label.setText(self.tr("OWL 文件状态: ") + self.tr("就绪"))
+            print("OWL数据库更新成功")
+            self.update_gui_with_data()
+
+        except Exception as e:
+            session.rollback()
+            print(f"插入OWL数据时出错: {e}")
+            self.status_bar.owl_status_label.setText(self.tr("OWL 文件状态: ") + self.tr("错误"))
+
+    def fetch_ontology_data(self,session, scenario_id: int) -> Tuple[Dict, Dict, Dict, Dict]:
+        """
+        从数据库获取数据并组织成所需的字典格式
+
+        Returns:
+            Tuple[Dict, Dict, Dict, Dict]: 返回SVG_FILES, CLASS_OPTIONS, ATTRIBUTE_SAMPLE_DATA, BEHAVIOR_SAMPLE_DATA
+        """
+
+        # 1. 获取OWL文件信息
+        owl_type_to_name = {
+            1: "整体",
+            2: "突发事件本体",
+            3: "情景要素本体",
+            4: "情景本体"
+        }
+
+        svg_files = {}
+        owl_records = session.query(Owl).filter_by(scenario_id=scenario_id).all()
+
+        for owl in owl_records:
+            owl_name = owl_type_to_name.get(owl.owl_type_id)
+            if owl_name:
+                # 获取完整的SVG路径
+                svg_path = owl.owl_file_path.replace('.owl', '.svg')
+                svg_files[owl_name] = svg_path
+
+        # 2. 获取每个本体的类
+        class_options = {name: [] for name in owl_type_to_name.values()}
+
+        for owl in owl_records:
+            owl_name = owl_type_to_name.get(owl.owl_type_id)
+            if owl_name:
+                # 查询该owl_id下的所有类
+                classes = session.query(OwlClass).filter_by(owl_id=owl.owl_id).all()
+                class_options[owl_name] = [cls.owl_class_name for cls in classes]
+
+        # 3. 获取每个类的属性
+        attribute_sample_data = {}
+
+        # 获取所有类
+        all_classes = session.query(OwlClass).join(Owl).filter(Owl.scenario_id == scenario_id).all()
+
+        for cls in all_classes:
+            # 查询该类的所有属性
+            attributes = session.query(OwlClassAttribute).filter_by(owl_class_id=cls.owl_class_id).all()
+
+            if attributes:  # 只添加有属性的类
+                attribute_sample_data[cls.owl_class_name] = [
+                    (attr.owl_class_attribute_name, attr.owl_class_attribute_range)
+                    for attr in attributes
+                ]
+
+        # 4. 获取每个类的行为
+        behavior_sample_data = {}
+
+        for cls in all_classes:
+            # 查询该类的所有行为
+            behaviors = session.query(OwlClassBehavior).filter_by(owl_class_id=cls.owl_class_id).all()
+
+            if behaviors:  # 只添加有行为的类
+                behavior_sample_data[cls.owl_class_name] = [
+                    (behavior.owl_class_behavior_name, behavior.owl_class_behavior_range)
+                    for behavior in behaviors
+                ]
+
+        return svg_files, class_options, attribute_sample_data, behavior_sample_data
+
+    def update_gui_with_data(self):
+        """
+        用于在GUI类中调用，更新界面数据
+        """
+        try:
+            svg_files, class_options, attribute_data, behavior_data = self.fetch_ontology_data(
+                self.session,
+                self.current_scenario.scenario_id
+            )
+
+            # 更新类变量
+            self.tab_widget.ModelGenerationTab.SVG_FILES = svg_files
+            self.tab_widget.ModelGenerationTab.CLASS_OPTIONS = class_options
+            self.tab_widget.ModelGenerationTab.ATTRIBUTE_SAMPLE_DATA = attribute_data
+            self.tab_widget.ModelGenerationTab.BEHAVIOR_SAMPLE_DATA = behavior_data
+            print("数据获取成功")
+
+
+            return True, "数据获取成功"
+
+        except Exception as e:
+            return False, f"数据获取失败: {str(e)}"

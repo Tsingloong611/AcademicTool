@@ -20,11 +20,15 @@ package ResponsePlanElement{
     action def RoadControl{
     }
 
-    part 66 : ResponsePlanElement{
+    part 1 : ResponsePlanElement{
         attribute BehaviorType : Enum = null;
         attribute ImplementationCondition : Bool = "0";
         attribute Duration : Real = null;
 
+        ref part 115;
+        ref part 114;
+        ref part 115;
+        ref part 115;
 
         perform action Firefighting;
         perform action PersonnalRescue;

@@ -21,6 +21,8 @@ from sqlalchemy import text
 
 from utils.json2sysml import json_to_sysml2_txt
 from views.dialogs.custom_input_dialog import CustomInputDialog
+from views.dialogs.custom_warning_dialog import CustomWarningDialog
+
 
 class CreateDefinitionDialog(QDialog):
     def __init__(self, parent, code_id, file_attr_name):
@@ -630,107 +632,80 @@ class CustomSelectDialog(QDialog):
         part_items = part_data.get("items", [])
         for item_obj in part_items:
             item_name = item_obj.get("item_name")
-            item_type_str = item_obj.get("type")  # e.g. "Cargo"
+            item_type_str = item_obj.get("type")
+            map_dict = {'People':'人类','Road':'道路承灾要素'}
+
 
             # 查 entity_type
             type_sql = text("""
-                SELECT entity_type_id
-                FROM entity_type
-                WHERE entity_type_code = :tname
-                LIMIT 1
-            """)
+                    SELECT entity_type_id
+                    FROM entity_type
+                    WHERE entity_type_code = :tname
+                    LIMIT 1
+                """)
             type_row = session.execute(type_sql, {"tname": item_type_str}).fetchone()
             if not type_row:
-                # => 如果数据库没有这个 code => 自动调用 create_entity_from_template?
-                #    也可能先让用户选择 => 这里简化自动创建.
-                #    create_entity_from_template(..., template_name=item_type_str, name=item_name)
-                #    或者若 "Item"是个固定模板名 => 视项目实际
-                # 这里仅打印提示:
                 print(f"[item] entity_type_code='{item_type_str}' 不存在，尝试自动从模板创建...")
-                # pseudo code:
-                # self.create_entity_from_template(template_name="Item", name=item_name)
+                CustomWarningDialog("实体类型不存在", f"实体类型 '{item_type_str}' 不存在，跳过").exec_()
                 continue
-            item_type_id = type_row[0]
 
-            # 在 entity_dict["attributes"] 里找 reference_target_type_id= item_type_id
-            # 只示范匹配第一个
-            ref_attr = None
-            for a in entity_dict["attributes"]:
-                if a["is_reference"] and a["reference_target_type_id"] == item_type_id:
-                    ref_attr = a
-                    break
+            item_type_id = type_row[0]
+            # 在 attributes 中找对应的引用属性
+            ref_attr = next((a for a in entity_dict["attributes"]
+                             if a["is_reference"] and a["reference_target_type_id"] == item_type_id), None)
+
             if not ref_attr:
                 print(f"[item] 当前实体里无属性引用 item_type_id={item_type_id}, 跳过 item={item_name}")
                 continue
 
-            # 创建负数实体
-            item_neg_id = self.parent.neg_id_gen.next_id()
-            now_str = "2025-01-17 00:00:00"
-            item_entity = {
-                "entity_id": item_neg_id,
-                "entity_name": item_name,
-                "entity_type_id": item_type_id,
-                "entity_parent_id": neg_entity_id,  # items => parent=当前实体
-                "scenario_id": entity_dict["scenario_id"],
-                "create_time": now_str,
-                "update_time": now_str,
-                "categories": [],  # 是否加 "Item" category，看业务需求
-                "attributes": [],
-                "behaviors": []
-            }
-            # 加入 new_entity
-            new_entity[item_neg_id] = item_entity
-            # 把 item_neg_id 放进 ref_attr["referenced_entities"]
-            ref_attr["referenced_entities"].append(item_neg_id)
+            # 使用 create_entity_from_template 创建新实体
 
-        # 4) 处理 refs => 不设置 parent_id
+            print(f"[item] 创建 item={item_name} 类型={map_dict[item_type_str]}")
+            item_entity = self.create_entity_from_template(template_name=map_dict[item_type_str], name=item_name)
+            print(f"[item] 创建结果: {item_entity}")
+            # 取第一个键
+            item_entity_id = list(item_entity.keys())[0]
+
+            ref_attr["referenced_entities"].append(item_entity_id)
+
+
+        # 4) 处理 refs
         part_refs = part_data.get("refs", [])
         for ref_obj in part_refs:
             ref_name = ref_obj.get("ref_name")
-            ref_type_str = ref_obj.get("type")  # "part" or whatever
+            ref_type_str = ref_obj.get("type")
 
-            # 可能让用户选已有实体 / 自行创建 => 这里简化
-            # 先查 entity_type
+            # 查 entity_type
             type_sql = text("""
-                SELECT entity_type_id
-                FROM entity_type
-                WHERE entity_type_code = :tname
-                LIMIT 1
-            """)
-            type_row = session.execute(type_sql, {"tname": ref_type_str}).fetchone()
+                    SELECT entity_type_id
+                    FROM entity_type
+                    WHERE entity_type_code = :tname
+                    LIMIT 1
+                """)
+            type_row = session.execute(type_sql, {"tname": ref_name}).fetchone()
             if not type_row:
-                # => 让用户选择 code or skip
-                print(f"[ref] 未找到 entity_type_code='{ref_type_str}' => 用户可选 or skip.")
+                print(f"[ref] 未找到 entity_type_code='{ref_name}'，跳过")
+                CustomWarningDialog("实体类型不存在",f"[ref] 未找到 entity_type_code='{ref_name}'，跳过").exec_()
                 continue
+
             ref_type_id = type_row[0]
+            # 查找对应的引用属性
+            ref_attr = next((a for a in entity_dict["attributes"]
+                             if a["is_reference"] and a["reference_target_type_id"] == ref_type_id), None)
 
-            # 在当前实体查属性
-            ref_attr = None
-            for a in entity_dict["attributes"]:
-                if a["is_reference"] and a["reference_target_type_id"] == ref_type_id:
-                    ref_attr = a
-                    break
             if not ref_attr:
-                print(f"[ref] 当前实体无可引用 ref_type_id={ref_type_id} 的属性, skip.")
+                print(f"[ref] 当前实体无可引用 ref_type_id={ref_type_id} 的属性，跳过")
                 continue
 
-            # 查现有 scenario 中是否已存在 => user select or skip => 这里简化都自动新建
-            ref_neg_id = self.parent.neg_id_gen.next_id()
-            now_str = "2025-01-17 00:00:00"
-            ref_entity = {
-                "entity_id": ref_neg_id,
-                "entity_name": ref_name,
-                "entity_type_id": ref_type_id,
-                "entity_parent_id": None,
-                "scenario_id": entity_dict["scenario_id"],
-                "create_time": now_str,
-                "update_time": now_str,
-                "categories": [],
-                "attributes": [],
-                "behaviors": []
-            }
-            new_entity[ref_neg_id] = ref_entity
-            ref_attr["referenced_entities"].append(ref_neg_id)
+            # 使用 create_entity_from_template 创建新实体
+
+            ref_entity = self.create_entity_from_template(template_name=map_dict[ref_name], name=ref_name)
+            if ref_entity:
+                # 获取新创建实体的ID
+                ref_entity_id = list(ref_entity.keys())[0]
+                # 更新引用
+                ref_attr["referenced_entities"].append(ref_entity_id)
+
 
         # 5) performs
         performs = part_data.get("performs", [])
@@ -817,10 +792,16 @@ class CustomSelectDialog(QDialog):
             )
             ask_name.exec()
             name = ask_name.get_input()
+        # 如果是空的，不创建
+        if not name:
+            CustomWarningDialog(self.tr("警告"), self.tr("实体名称不能为空"), parent=self).exec()
+            return
 
         new_entity = self.parent.create_entities_with_negative_ids(template_name,name)
         print(f"new_entity: {new_entity}")
         print(f"element_data: {self.parent.element_data}")
+        # 提取parts中的数据覆盖new_entity
+
         # 将new_entity添加到element_data中
         self.parent.element_data.update(new_entity)
         print(f"updated_element_data: {self.parent.element_data}")
@@ -834,6 +815,7 @@ class CustomSelectDialog(QDialog):
 
         # 发射信号
         self.entity_created.emit(new_entity)
+        return new_entity
 
     def handle_delete(self):
         """处理删除按钮点击"""

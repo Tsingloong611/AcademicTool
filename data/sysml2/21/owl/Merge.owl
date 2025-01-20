@@ -1,0 +1,631 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rdf:RDF
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#ExplodeTransform">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_3.owl#stateTransform"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_3.owl#CollidedState"/>
+    <rdfs:range rdf:resource="http://example.org/scenario_3.owl#ExplodeState"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#Visibility">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_3.owl#5"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#VehicleType">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_3.owl#6"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#DamageCondition">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_3.owl#3"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#SegmentStartStakeNumber">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_3.owl#Road"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#BreakdownCondition">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_3.owl#6"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#actionType">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_3.owl#EconomicFactors"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#Emergency">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#hasVehicleLaneChangeEffectOn">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_3.owl#hasEffectOn"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#aidStates">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#EconomicFactors">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://example.org/scenario_3.owl#ResilienceInfluentialFactors"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#hasCollideEffectOn">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_3.owl#hasEffectOn"/>
+    <rdfs:range rdf:resource="http://example.org/scenario_3.owl#3"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#SnowfallIntensity">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_3.owl#5"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#RecoveryScenario">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://example.org/scenario_3.owl#Scenario"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#hasFirefightingEffectOn">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_3.owl#hasEffectOn"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#involvesScenario">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_3.owl#Emergency"/>
+    <rdfs:range rdf:resource="http://example.org/scenario_3.owl#InvolvedScenario"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#consistVehicleCargo">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_3.owl#consistComposition"/>
+    <rdfs:range rdf:resource="http://example.org/scenario_3.owl#VehicleCargo"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_3.owl#6"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#hasVehicleOverturnEffectOn">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_3.owl#hasEffectOn"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#NumberOfLanes">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_3.owl#Road"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#VehicleCargo">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://example.org/scenario_3.owl#ElementCompositions"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#FireFighting:ActionTransform">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_3.owl#stateTransform"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_3.owl#idleState"/>
+    <rdfs:range rdf:resource="http://example.org/scenario_3.owl#implementState"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#WeatherType">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_3.owl#5"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#IIIegalLaneOccupationCondition">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_3.owl#6"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#hasSpillEffectOn">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_3.owl#hasEffectOn"/>
+    <rdfs:range rdf:resource="http://example.org/scenario_3.owl#6"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#rescueStates">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#3">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://example.org/scenario_3.owl#AffectedElement"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#AbsorptionScenario">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://example.org/scenario_3.owl#Scenario"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#DamageConditon">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_3.owl#Road"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#Scenario">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#DrivingState">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://example.org/scenario_3.owl#AffectedStates"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#DrivingDirection">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_3.owl#6"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#involvesElement">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_3.owl#Scenario"/>
+    <rdfs:range rdf:resource="http://example.org/scenario_3.owl#InvolvedScenarioElement"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#ScenarioResilience">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#associate169">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_3.owl#associateWith"/>
+    <rdfs:range rdf:resource="http://example.org/scenario_3.owl#169"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#TrafficVolume">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_3.owl#Road"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#RoadName">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_3.owl#Road"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#hasRoadCleaningEffectOn">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_3.owl#hasEffectOn"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#hasVehicleCollisionEffectOn">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_3.owl#hasEffectOn"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#consistIncludedLanes">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_3.owl#consistComposition"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_3.owl#Road"/>
+    <rdfs:range rdf:resource="http://example.org/scenario_3.owl#IncludedLanes"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#hasVehicleSpeedChangeEffectOn">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_3.owl#hasEffectOn"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#exhibitState">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#EnvironmentElement">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://example.org/scenario_3.owl#ScenarioElement"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#SafetyFactors">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://example.org/scenario_3.owl#ResilienceInfluentialFactors"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#ResourceType">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_3.owl#7"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#5">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://example.org/scenario_3.owl#EnvironmentElement"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#WindForce">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_3.owl#5"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#consistVehiclePassengers">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_3.owl#consistComposition"/>
+    <rdfs:range rdf:resource="http://example.org/scenario_3.owl#VehiclePassengers"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_3.owl#6"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#casualties">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_3.owl#SafetyFactors"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#boolean"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#VehicleSpeed">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_3.owl#6"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#RollOverCondition">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_3.owl#6"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#hasVehicleSpillageEffectOn">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_3.owl#hasEffectOn"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#hasVehicleTurningEffectOn">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_3.owl#hasEffectOn"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#ResponseStates">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://example.org/scenario_3.owl#ElementState"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#AffectedElement">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://example.org/scenario_3.owl#ScenarioElement"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#towStates">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#AbnormalSpeedCondition">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_3.owl#6"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#inPhase">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_3.owl#Emergency"/>
+    <rdfs:range rdf:resource="http://example.org/scenario_3.owl#EmergencyPhase"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#hasEffectOn">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#consistVehicleComponents">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_3.owl#consistComposition"/>
+    <rdfs:range rdf:resource="http://example.org/scenario_3.owl#VehicleComponents"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_3.owl#6"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#RoadType">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_3.owl#Road"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#WindSpeed">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_3.owl#5"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#EmergencyPhase">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#CollisionCondition">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_3.owl#6"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#BehaviorType">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_3.owl#8"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#hasActionEffectOn">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_3.owl#hasEffectOn"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#ResponseResource">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://example.org/scenario_3.owl#ResponsePlanElement"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#ClosureCondition">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_3.owl#Road"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#consistComposition">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#hasRoadRepairEffectOn">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_3.owl#hasEffectOn"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#VehicleComponents">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://example.org/scenario_3.owl#ElementCompositions"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#roadLoss">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_3.owl#EconomicFactors"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#boolean"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#hasExplodeEffectOn">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_3.owl#hasEffectOn"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#hasVehicleBreakdownEffectOn">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_3.owl#hasEffectOn"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#SpillTransform">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_3.owl#stateTransform"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_3.owl#CollideState"/>
+    <rdfs:range rdf:resource="http://example.org/scenario_3.owl#SpillState"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#IncludedLanes">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://example.org/scenario_3.owl#ElementCompositions"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#hasResilience">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_3.owl#Scenario"/>
+    <rdfs:range rdf:resource="http://example.org/scenario_3.owl#ScenarioResilience"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#VehiclePassengers">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://example.org/scenario_3.owl#ElementCompositions"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#DesignSpeed">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_3.owl#Road"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#CollideTransform">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_3.owl#stateTransform"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_3.owl#DriveState"/>
+    <rdfs:range rdf:resource="http://example.org/scenario_3.owl#CollideState"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#ResourceUsageCondition">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_3.owl#7"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#SegmentEndStakeNumber">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_3.owl#Road"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#hasVehicleExplosionEffectOn">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_3.owl#hasEffectOn"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#ExplodeState">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://example.org/scenario_3.owl#AffectedStates"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Ontology"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#Aid:ActionTransform">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_3.owl#stateTransform"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_3.owl#idleState"/>
+    <rdfs:range rdf:resource="http://example.org/scenario_3.owl#implementState"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#CombustionCondition">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_3.owl#6"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#Tow:ActionTransform">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_3.owl#stateTransform"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_3.owl#idleState"/>
+    <rdfs:range rdf:resource="http://example.org/scenario_3.owl#implementState"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#firefightingStates">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#hasVehicleDepartureEffectOn">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_3.owl#hasEffectOn"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#VehiclePosition">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_3.owl#6"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#HazardVehicle">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://example.org/scenario_3.owl#AffectedElement"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#idleState">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://example.org/scenario_3.owl#aidStates"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#hasVehicleMotionEffectOn">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_3.owl#hasEffectOn"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#ResponseAction">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://example.org/scenario_3.owl#ResponsePlanElement"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#disposalDuration">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_3.owl#TimeFactors"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#influencedBy">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_3.owl#Scenario"/>
+    <rdfs:range rdf:resource="http://example.org/scenario_3.owl#ResilienceInfluentialFactors"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#FunctionFactors">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://example.org/scenario_3.owl#ResilienceInfluentialFactors"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#resourceType">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_3.owl#EconomicFactors"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#HazardStates">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://example.org/scenario_3.owl#ElementState"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#Road">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://example.org/scenario_3.owl#AffectedElement"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#SpillCondition">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_3.owl#6"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#8">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://example.org/scenario_3.owl#ResponsePlanElement"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#6">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://example.org/scenario_3.owl#HazardElement"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#ScenarioElement">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#implementState">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://example.org/scenario_3.owl#aidStates"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#AdaptionScenario">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://example.org/scenario_3.owl#Scenario"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#emergencyType">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_3.owl#SafetyFactors"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#Duration">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_3.owl#8"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#TimeFactors">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://example.org/scenario_3.owl#ResilienceInfluentialFactors"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#CollideState">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://example.org/scenario_3.owl#HazardStates"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#ResponsePlanElement">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://example.org/scenario_3.owl#ScenarioElement"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#associateWith">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#InvolvedScenarioElement">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#HazardElement">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://example.org/scenario_3.owl#ScenarioElement"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#hasPersonnalRescueEffectOn">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_3.owl#hasEffectOn"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#hasRoadControlEffectOn">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_3.owl#hasEffectOn"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#IncludedFacilities">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://example.org/scenario_3.owl#ElementCompositions"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#ImplementationCondition">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_3.owl#8"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#ResourceQuantityOrQuality">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_3.owl#7"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#stateTransform">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#PollutionCondition">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_3.owl#Road"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#CollidedState">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://example.org/scenario_3.owl#AffectedStates"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#Rescue:ActionTransform">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_3.owl#stateTransform"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_3.owl#idleState"/>
+    <rdfs:range rdf:resource="http://example.org/scenario_3.owl#implementState"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#responseDuration">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_3.owl#TimeFactors"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#DriveState">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://example.org/scenario_3.owl#HazardStates"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#hasVehicleTransportEffectOn">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_3.owl#hasEffectOn"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#169">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#AffectedStates">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://example.org/scenario_3.owl#ElementState"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#Rainfall">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_3.owl#5"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#ElementCompositions">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#ElementState">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#roadPassibility">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_3.owl#FunctionFactors"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#boolean"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#consistIncludedFacilities">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_3.owl#consistComposition"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_3.owl#Road"/>
+    <rdfs:range rdf:resource="http://example.org/scenario_3.owl#IncludedFacilities"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#hasVehicleTowingEffectOn">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_3.owl#hasEffectOn"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#InvolvedScenario">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#emergencyPeriod">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_3.owl#TimeFactors"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#ResilienceInfluentialFactors">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#7">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://example.org/scenario_3.owl#ResponsePlanElement"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_3.owl#SpillState">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://example.org/scenario_3.owl#HazardStates"/>
+  </rdf:Description>
+</rdf:RDF>

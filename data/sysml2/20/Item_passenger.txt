@@ -1,0 +1,11 @@
+package Item{
+
+    part def Item{}
+
+    part passenger : Item{
+
+
+
+    }
+
+}

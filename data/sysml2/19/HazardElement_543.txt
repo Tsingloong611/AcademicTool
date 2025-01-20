@@ -44,7 +44,7 @@ package HazardElement{
     action def VehicleSpeedChange{
     }
 
-    part 435 : HazardElement{
+    part 543 : HazardElement{
         attribute VehicleType : String = null;
         attribute CollisionCondition : Bool = "0";
         attribute CombustionCondition : Bool = "0";
@@ -53,7 +53,7 @@ package HazardElement{
         attribute RollOverCondition : Bool = "0";
         attribute AbnormalSpeedCondition : String = null;
         attribute IIIegalLaneOccupationCondition : Bool = "0";
-        attribute DrivingDirection : Enum = "????";
+        attribute DrivingDirection : Enum = "正向";
         attribute VehiclePosition : String = null;
         attribute VehicleSpeed : Real = null;
 

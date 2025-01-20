@@ -2,12 +2,23 @@
 # @Time    : 12/3/2024 10:11 AM
 # @FileName: tab_widget.py
 # @Software: PyCharm
+import os
+
+import rdflib
 from PySide6.QtGui import QFont
 from PySide6.QtWidgets import (
     QWidget, QHBoxLayout, QVBoxLayout,
     QPushButton, QLabel, QStackedWidget, QSizePolicy
 )
 from PySide6.QtCore import Qt, Signal, Slot
+from owlready2 import get_ontology, destroy_entity
+
+from test6 import convert_owl_to_svg
+from utils.combinesysml2 import combine_sysml2
+from utils.json2owl import create_ontology, owl_excel_creator, Scenario_owl_creator, Emergency_owl_creator
+from utils.parserowl import parse_owl
+
+from utils.sysml2json import process_file
 from views.tabs.element_setting import ElementSettingTab
 from views.tabs.model_generation import ModelGenerationTab
 from views.tabs.model_transformation import ModelTransformationTab
@@ -16,11 +27,13 @@ from views.tabs.condition_setting import ConditionSettingTab
 
 class CustomTabWidget(QWidget):
     tab_changed = Signal(int)
+    generate_model_save_to_database = Signal()
 
     def __init__(self, parent=None):
         super().__init__(parent)
+
         self.init_ui()
-        self.ElementSettingTab.generate_button.clicked.connect(self.generate_model)
+        self.ElementSettingTab.generate_model_show.connect(self.generate_model)
         self.ModelGenerationTab.generate_request.connect(self.generate_bayes)
         self.ModelTransformationTab.set_inference_request.connect(self.set_inference_conditions)
 
@@ -307,6 +320,99 @@ class CustomTabWidget(QWidget):
     def generate_model(self):
         self.unlock_tabs(2)
         self.switch_tab(2)
+        scenario_id = self.ElementSettingTab.scenario_data['scenario_id']
+        input_dir = os.path.join(os.path.dirname(__file__), f'../../data/sysml2/{scenario_id}')
+        output_dir = os.path.join(os.path.dirname(__file__), f'../../data/sysml2/{scenario_id}/combined')
+
+        config_path = os.path.join(os.path.dirname(__file__), '../../config.json')
+        combine_sysml2(input_dir, output_dir, config_path)
+
+        input_dir = output_dir
+        output_dir = os.path.join(os.path.dirname(__file__), f'../../data/sysml2/{scenario_id}/result')
+        # 确保输出目录存在
+        os.makedirs(output_dir, exist_ok=True)
+
+        # 遍历输入目录中的所有 .txt 文件
+        for file_name in os.listdir(input_dir):
+            if file_name.endswith('.txt'):
+                input_path = os.path.join(input_dir, file_name)
+                process_file(input_path, output_dir)
+
+        print("\n所有文件处理完成。")
+
+        input_dir = output_dir
+        output_dir = os.path.join(os.path.dirname(__file__), f'../../data/sysml2/{scenario_id}/owl')
+        # 确保输出目录存在
+        if not os.path.exists(output_dir):
+            os.makedirs(output_dir)
+
+        # 获取所有JSON文件
+        json_files = [f for f in os.listdir(input_dir) if f.endswith('.json')]
+
+        # 创建ScenarioElement本体文件
+        scenario_element_owl = os.path.join(output_dir, "ScenarioElement.owl")
+        for input_file in json_files:
+            input_path = os.path.join(input_dir, input_file)
+            create_ontology(input_path, scenario_element_owl)
+
+        # 加载ScenarioElement.owl文件并进行后续操作
+        onto = get_ontology(scenario_element_owl).load()
+        # 删除Action和Resource类及其子类
+        with onto:
+            if 'Action' in onto.classes():
+                destroy_entity(onto.Action)
+                print("已删除类 Action 及其子类")
+            if 'Resource' in onto.classes():
+                destroy_entity(onto.Resource)
+                print("已删除类 Resource 及其子类")
+
+        # 保存修改后的ScenarioElement.owl文件
+        onto.save(file=scenario_element_owl, format="rdfxml")
+        print(f"修改后的ScenarioElement.owl文件已保存到: {scenario_element_owl}")
+
+        # 创建对应的Excel文件
+        owl_excel_creator(scenario_element_owl, os.path.join(output_dir, "ScenarioElement_Prop.xlsx"))
+
+        # 创建Scenario本体
+        scenario_output_path = os.path.join(output_dir, "Scenario.owl")
+        Scenario_owl_creator(scenario_output_path)
+        owl_excel_creator(scenario_output_path, os.path.join(output_dir, "Scenario_Prop.xlsx"))
+
+        # 创建Emergency本体
+        emergency_output_path = os.path.join(output_dir, "Emergency.owl")
+        Emergency_owl_creator(emergency_output_path)
+        owl_excel_creator(emergency_output_path, os.path.join(output_dir, "Emergency_Prop.xlsx"))
+
+        # 合并OWL文件
+        input_owl_files = [
+            scenario_element_owl,
+            scenario_output_path,
+            emergency_output_path
+        ]
+        combined_output_path = os.path.join(output_dir, "Merge.owl")
+        combined_graph = rdflib.Graph()
+
+            # 读取三个OWL文件并将它们的数据合并到一个图中
+        combined_graph.parse(scenario_element_owl, format="xml")  # 假设OWL文件是RDF/XML格式
+        combined_graph.parse(scenario_output_path, format="xml")
+        combined_graph.parse(emergency_output_path, format="xml")
+
+            # 将合并后的图写入输出文件
+        combined_graph.serialize(destination=combined_output_path, format="xml")
+        print(f"OWL files merged successfully into {combined_output_path}")
+
+           # 创建owl图片
+        input_owl_files = input_owl_files + [combined_output_path]
+        convert_owl_to_svg(input_owl_files, output_dir)
+
+        # 解析模型
+        for input_owl in input_owl_files:
+            parse_owl(input_owl)
+
+        # 上传到数据库
+        self.generate_model_save_to_database.emit()
+
+
 
     def generate_bayes(self):
         self.unlock_tabs(3)
@@ -315,3 +421,13 @@ class CustomTabWidget(QWidget):
     def set_inference_conditions(self):
         self.unlock_tabs(4)
         self.switch_tab(4)
+
+if __name__ == '__main__':
+    input_dir = os.path.join(os.path.dirname(__file__), '../../data/sysml2')
+    output_dir = os.path.join(os.path.dirname(__file__), '../../data/sysml2/combined')
+
+    config_path = os.path.join(os.path.dirname(__file__), '../../config.json')
+    # 打印绝对路径，合并..后的格式
+    print(os.path.abspath(input_dir))
+    print(os.path.abspath(output_dir))
+    print(os.path.abspath(config_path))

@@ -60,7 +60,6 @@ package HazardElement{
         item VehicleCargo : VehicleCargo;
         item VehiclePassengers : VehiclePassengers;
         item VehicleComponents : VehicleComponents;
-        ref part -28;
 
         perform action VehicleMotion;
         perform action VehicleTransport;

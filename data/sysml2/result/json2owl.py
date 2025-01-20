@@ -90,9 +90,13 @@ def create_ontology(file_path,filename):
                 cls = types.new_class(element['@name'].strip(), (Thing,))
                 classes[element['@name'].strip()] = cls
 
+                print(f"DEBUG cls : {cls}")
+
             elif element['@type'] == 'partSub':
+
                 # 创建一个子类
                 parent_cls = classes.get(element['parent'].strip())
+                print(f"DEBUG parent_cls : {parent_cls}")
                 if parent_cls is not None:
                     sub_cls = types.new_class(element['@name'].strip(), (parent_cls,))
                     classes[element['@name'].strip()] = sub_cls
@@ -193,6 +197,7 @@ def create_ontology(file_path,filename):
                     for j in elements:
                         if j['@type'] == 'attribute':
                             if i == j['@name']:
+                                print(f"DEBUG 2031934 : {j['owner']}")
                                 if j['owner'] != 'none' and j['owner'] != '':
                                     prop.range = [classes.get(j['owner'].strip())]
                                     classes[aC_name] = prop
@@ -201,6 +206,7 @@ def create_ontology(file_path,filename):
                     for j in elements:
                         if j['@type'] == 'attribute':
                             if i == j['@name']:
+                                print(f"DEBUG 2031934 : {j['owner']}")
                                 if j['owner'] != 'none' and j['owner'] != '':
                                     prop.domain = [classes.get(j['owner'].strip())]
                                     classes[aC_name] = prop
@@ -404,7 +410,7 @@ file_paths = ["AffectedElement.json", "EnvironmentElement.json", "HazardElement.
 
 for file_path in file_paths:
     #filename = file_path.split(".")[0]
-    filename = "Integrated_Scenario_5"
+    filename = "ScenarioElement"
     create_ontology(file_path,filename)
 
 # 加载OWL文件

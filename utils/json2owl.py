@@ -5,6 +5,8 @@ from openpyxl import Workbook
 import datetime
 import os
 
+from rdflib import URIRef, RDF, OWL
+
 '''本体生成'''
 
 
@@ -429,6 +431,7 @@ def owl_excel_creator(input_owl_path, output_excel_path):
     print(f"Excel文件已保存为: {output_excel_path}")
 
 
+
 if __name__ == '__main__':
     # 定义输入和输出目录
     input_dir = os.path.join(os.path.dirname(__file__), '../data/sysml2/result')
@@ -441,35 +444,29 @@ if __name__ == '__main__':
     # 获取所有JSON文件
     json_files = [f for f in os.listdir(input_dir) if f.endswith('.json')]
 
-    # 对应的输出OWL文件路径
-    output_owl_paths = [os.path.join(output_dir, os.path.splitext(f)[0]) for f in json_files]
-
-    # 创建本体文件
-    for input_file, output_owl in zip(json_files, output_owl_paths):
+    # 创建ScenarioElement本体文件
+    scenario_element_owl = os.path.join(output_dir, "ScenarioElement.owl")
+    for input_file in json_files:
         input_path = os.path.join(input_dir, input_file)
-        create_ontology(input_path, output_owl + ".owl")
+        create_ontology(input_path, scenario_element_owl)
 
-    # 加载OWL文件并进行后续操作
-    for output_owl in output_owl_paths:
-        owl_path = output_owl + ".owl"
-        # 加载OWL文件
-        onto = get_ontology(owl_path).load()
-        # 删除Action和Resource类及其子类
-        with onto:
-            if 'Action' in onto.classes():
-                destroy_entity(onto.Action)
-                print(f"已删除类 Action 及其子类 from {owl_path}")
-            if 'Resource' in onto.classes():
-                destroy_entity(onto.Resource)
-                print(f"已删除类 Resource 及其子类 from {owl_path}")
+    # 加载ScenarioElement.owl文件并进行后续操作
+    onto = get_ontology(scenario_element_owl).load()
+    # 删除Action和Resource类及其子类
+    with onto:
+        if 'Action' in onto.classes():
+            destroy_entity(onto.Action)
+            print("已删除类 Action 及其子类")
+        if 'Resource' in onto.classes():
+            destroy_entity(onto.Resource)
+            print("已删除类 Resource 及其子类")
 
-        # 保存修改后的OWL文件
-        onto.save(file=owl_path, format="rdfxml")
-        print(f"修改后的OWL文件已保存到: {owl_path}")
+    # 保存修改后的ScenarioElement.owl文件
+    onto.save(file=scenario_element_owl, format="rdfxml")
+    print(f"修改后的ScenarioElement.owl文件已保存到: {scenario_element_owl}")
 
-        # 创建对应的Excel文件
-        excel_output_path = output_owl + "_Prop.xlsx"
-        owl_excel_creator(owl_path, excel_output_path)
+    # 创建对应的Excel文件
+    owl_excel_creator(scenario_element_owl, os.path.join(output_dir, "ScenarioElement_Prop.xlsx"))
 
     # 创建Scenario本体
     scenario_output_path = os.path.join(output_dir, "Scenario.owl")

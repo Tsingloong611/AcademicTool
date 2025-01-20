@@ -2,7 +2,7 @@ package EnvironmentElement{
 
     part def EnvironmentElement{}
 
-    part 324 : EnvironmentElement{
+    part 34 : EnvironmentElement{
         attribute WeatherType : Enum = "晴天";
         attribute Rainfall : Real = null;
         attribute Visibility : Real = null;

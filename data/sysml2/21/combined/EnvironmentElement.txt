@@ -1,0 +1,17 @@
+package EnvironmentElement{
+
+    part def EnvironmentElement{}
+
+    part 5 : EnvironmentElement{
+    attribute WeatherType : Enum = "晴天";
+    attribute Rainfall : Real = null;
+    attribute Visibility : Real = null;
+    attribute WindSpeed : Real = null;
+    attribute WindForce : Real = null;
+    attribute SnowfallIntensity : Enum = "大雪";
+
+
+
+    }
+
+}

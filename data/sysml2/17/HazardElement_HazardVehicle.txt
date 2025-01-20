@@ -1,6 +1,6 @@
-package AffectedElement{
+package HazardElement{
 
-    part def AffectedElement{}
+    part def HazardElement{}
 
     item def VehicleCargo{
     }
@@ -26,17 +26,36 @@ package AffectedElement{
     action def VehicleSpillage{
     }
 
+    action def VehicleOverturn{
+    }
+
+    action def VehicleBreakdown{
+    }
+
+    action def VehicleCollision{
+    }
+
+    action def VehicleTurning{
+    }
+
+    action def VehicleLaneChange{
+    }
+
     action def VehicleSpeedChange{
     }
 
-    part 324 : AffectedElement{
+    part HazardVehicle : HazardElement{
         attribute VehicleType : String = null;
+        attribute CollisionCondition : Bool = "0";
         attribute CombustionCondition : Bool = "0";
         attribute SpillCondition : Bool = "0";
+        attribute BreakdownCondition : Bool = "0";
+        attribute RollOverCondition : Bool = "0";
+        attribute AbnormalSpeedCondition : String = null;
+        attribute IIIegalLaneOccupationCondition : Bool = "0";
         attribute DrivingDirection : Enum = "正向";
         attribute VehiclePosition : String = null;
         attribute VehicleSpeed : Real = null;
-        attribute DamageCondition : Bool = "0";
 
         item VehicleCargo : VehicleCargo;
         item VehiclePassengers : VehiclePassengers;
@@ -47,6 +66,11 @@ package AffectedElement{
         perform action VehicleDeparture;
         perform action VehicleExplosion;
         perform action VehicleSpillage;
+        perform action VehicleOverturn;
+        perform action VehicleBreakdown;
+        perform action VehicleCollision;
+        perform action VehicleTurning;
+        perform action VehicleLaneChange;
         perform action VehicleSpeedChange;
 
     }

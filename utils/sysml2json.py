@@ -31,7 +31,6 @@ def read_input_file(input_path: str) -> str:
 
 
 def parse_to_json(input_text: str) -> Dict[str, Any]:
-    """将SysML文本转换为JSON结构。"""
     stack = []
     result = {"@type": "package", "@name": "", "children": []}
     current = result
@@ -47,21 +46,26 @@ def parse_to_json(input_text: str) -> Dict[str, Any]:
             parts = line[:-1].strip().split(' ')
             type_name = parts[0]
             tar_name = parts[1] if len(parts) > 1 else ""
+
             new_dict = {"@type": type_name, "@name": "", "children": []}
 
-            if len(parts) > 2 and "def" in parts[1]:
+            # 检查是否有冒号（表示继承关系）
+            if ':' in parts:
+                colon_index = parts.index(':')
+                new_dict["@type"] += "Sub"
+                new_dict["@name"] = parts[1]
+                # 明确设置 parent
+                new_dict["parent"] = parts[colon_index + 1].strip()
+            elif len(parts) > 2 and "def" in parts[1]:
                 new_dict["@type"] += f" {parts[1]}"
                 new_dict["@name"] = parts[2]
-            elif ':' in line:
-                new_dict["@type"] += " Sub"
-                new_dict["@name"] = parts[1]
-                new_dict["parent"] = parts[3] if len(parts) > 3 else ""
             else:
                 new_dict["@name"] = parts[1] if len(parts) > 1 else ""
 
             current["children"].append(new_dict)
             stack.append(current)
             current = new_dict
+
         elif line == '}':
             if stack:
                 current = stack.pop()
@@ -72,7 +76,7 @@ def parse_to_json(input_text: str) -> Dict[str, Any]:
                 name = parts[idx - 1]
                 type_parts = ' '.join(parts[:idx - 1])
 
-                if any(keyword in parts[idx + 1] for keyword in ['Boolean', 'String', 'Integer', 'Real']):
+                if any(keyword in parts[idx + 1] for keyword in ['Boolean', 'String', 'Integer', 'Real', 'Enum','Bool']):
                     datavalue = ' '.join(parts[idx + 3:]) if (idx + 2 < len(parts) and parts[idx + 2] == '=') else None
                     attribute = {
                         "@type": type_parts,
@@ -158,23 +162,27 @@ def parse_to_json(input_text: str) -> Dict[str, Any]:
 
 
 def extract_data(data: Any) -> List[Tuple[str, Any]]:
-    """提取JSON数据中的键值对。"""
     result = []
     if isinstance(data, dict):
+        # 首先添加基本字段
+        for key in ["@type", "@name", "parent"]:  # 明确列出要保留的字段
+            if key in data:
+                result.append((key, data[key]))
+
+        # 然后处理其他字段
         for key, value in data.items():
-            if isinstance(value, list):
-                result.append((key, ''))
-                for item in value:
-                    result.extend(extract_data(item))
-            elif isinstance(value, dict):
-                result.extend(extract_data(value))
-            else:
-                result.append((key, value))
+            if key not in ["@type", "@name", "parent"]:  # 跳过已处理的字段
+                if isinstance(value, list):
+                    for item in value:
+                        result.extend(extract_data(item))
+                elif isinstance(value, dict):
+                    result.extend(extract_data(value))
+                else:
+                    result.append((key, value))
     elif isinstance(data, list):
         for item in data:
             result.extend(extract_data(item))
     return result
-
 
 def process_states(result: List[Dict[str, Any]]) -> None:
     """处理状态相关的数据。"""
@@ -282,15 +290,13 @@ def rename_types(result: List[Dict[str, Any]]) -> None:
         'item def': 'item',
         'attribute def': 'attribute',
         'action def': 'action',
-        'state def': 'state'
+        'state def': 'state',
+        'partSub': 'partSub'  # 确保保留partSub类型
     }
     for item in result:
         original_type = item.get('@type')
         if original_type in type_mapping:
             item['@type'] = type_mapping[original_type]
-
-    # 移除不需要的类型
-    result[:] = [i for i in result if i.get('@type') not in ['in', 'out']]
 
 
 def process_attributes(result: List[Dict[str, Any]]) -> None:
@@ -423,13 +429,10 @@ def save_to_excel(result: List[Dict[str, Any]], excel_path: str) -> None:
 
 
 def process_file(input_path: str, output_dir: str) -> None:
-    """处理单个文件，从输入路径读取并保存结果到输出目录。"""
-    filename = os.path.splitext(os.path.basename(input_path))[0]
-    print(f"\n处理文件：{filename}.txt")
-
     input_str = read_input_file(input_path)
+    filename = os.path.splitext(os.path.basename(input_path))[0]
+
     if not input_str:
-        print(f"跳过文件：{filename}.txt，因为读取失败或内容为空。")
         return
 
     parsed_json = parse_to_json(input_str)
@@ -445,9 +448,12 @@ def process_file(input_path: str, output_dir: str) -> None:
             temp = {}
         temp[key] = value
 
+        # 确保 parent 字段被保留
+        if key == 'parent' and value:
+            temp['parent'] = value
+
     if temp:
         result.append(temp)
-
     # 处理不同的数据部分
     process_states(result)
     process_actions(result)

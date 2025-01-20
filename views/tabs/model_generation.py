@@ -18,49 +18,7 @@ from views.dialogs.custom_warning_dialog import CustomWarningDialog
 # Constants Definition
 ZOOM_IN_ICON = "resources/icons/zoom_in.png"
 ZOOM_OUT_ICON = "resources/icons/zoom_out.png"
-SVG_FILES = {
-    "整体": os.path.join(os.path.dirname(__file__), "temp.svg"),
-    "突发事件本体": "emergency_event_ontology.svg",
-    "情景本体": "scenario_ontology.svg",
-    "情景要素本体": "scenario_element_ontology.svg"
-}
-CLASS_OPTIONS = {
-    "整体": [
-        "class1", "class2","class3","class4"
-    ],
-    "突发事件本体": [
-        "突发事件类1", "突发事件类2", "突发事件类3"
-    ],
-    "情景本体": [
-        "情景类1", "情景类2"
-    ],
-    "情景要素本体": [
-        "情景要素类1", "情景要素类2", "情景要素类3", "情景要素类4"
-    ]
-}
-ATTRIBUTE_SAMPLE_DATA = {
-    "class1": [
-        ("属性1", "范围1"),
-        ("属性2", "范围2"),
-    ],
-    "class2": [
-        ("属性A", "范围A"),
-        ("属性B", "范围B"),
-        ("属性C", "范围C"),
-    ],
-    # Add other class attribute data
-}
-BEHAVIOR_SAMPLE_DATA = {
-    "class1": [
-        ("行为1", "范围X"),
-        ("行为2", "范围Y"),
-    ],
-    "class2": [
-        ("行为A", "范围A"),
-        ("行为B", "范围B"),
-    ],
-    # Add other class behavior data
-}
+
 
 class ZoomableLabel(QLabel):
     """Label supporting zoom functionality for displaying SVG images."""
@@ -118,12 +76,56 @@ class ZoomableLabel(QLabel):
 class ModelGenerationTab(QWidget):
     """Model Generation Tab"""
     generate_request = Signal()
+    SVG_FILES = {
+        "整体": os.path.join(os.path.dirname(__file__), "temp.svg"),
+        "突发事件本体": "emergency_event_ontology.svg",
+        "情景本体": "scenario_ontology.svg",
+        "情景要素本体": "scenario_element_ontology.svg"
+    }
+    CLASS_OPTIONS = {
+        "整体": [
+            "class1", "class2", "class3", "class4"
+        ],
+        "突发事件本体": [
+            "突发事件类1", "突发事件类2", "突发事件类3"
+        ],
+        "情景本体": [
+            "情景类1", "情景类2"
+        ],
+        "情景要素本体": [
+            "情景要素类1", "情景要素类2", "情景要素类3", "情景要素类4"
+        ]
+    }
+    ATTRIBUTE_SAMPLE_DATA = {
+        "class1": [
+            ("属性1", "范围1"),
+            ("属性2", "范围2"),
+        ],
+        "class2": [
+            ("属性A", "范围A"),
+            ("属性B", "范围B"),
+            ("属性C", "范围C"),
+        ],
+        # Add other class attribute data
+    }
+    BEHAVIOR_SAMPLE_DATA = {
+        "class1": [
+            ("行为1", "范围X"),
+            ("行为2", "范围Y"),
+        ],
+        "class2": [
+            ("行为A", "范围A"),
+            ("行为B", "范围B"),
+        ],
+        # Add other class behavior data
+    }
 
     def __init__(self):
         super().__init__()
         self.current_ontology = None  # Currently selected ontology
         self.current_class = None      # Currently selected class
         self.init_ui()
+
 
     def init_ui(self):
         """Initialize UI components and layout."""
@@ -426,7 +428,7 @@ QListWidget::item:selected {{
 
         self.ontology_combo = QComboBox()
         self.ontology_combo.addItem(self.tr("请选择本体"))
-        self.ontology_combo.addItems(list(SVG_FILES.keys()))
+        self.ontology_combo.addItems(list(self.SVG_FILES.keys()))
         self.ontology_combo.setCurrentIndex(0)
         self.ontology_combo.model().item(0).setEnabled(False)
         self.ontology_combo.currentIndexChanged.connect(self.handle_ontology_selection)
@@ -679,8 +681,9 @@ QListWidget::item:selected {{
 
         option = self.ontology_combo.currentText()
         self.current_ontology = option
-        svg_filename = SVG_FILES.get(option, "")
-        svg_path = os.path.join(os.getcwd(), svg_filename)
+        svg_filename = self.SVG_FILES.get(option, "")
+        svg_path = svg_filename
+        print(f"Selected ontology: {option}, SVG path: {svg_path}")
 
         if not os.path.exists(svg_path):
             self.ontology_image_label.setText(self.tr("无法找到 SVG 文件"))
@@ -730,8 +733,8 @@ QListWidget::item:selected {{
         self.class_list_widget.clear()
         self.class_placeholder_label.hide()
 
-        if self.current_ontology in CLASS_OPTIONS and CLASS_OPTIONS[self.current_ontology]:
-            class_options = CLASS_OPTIONS[self.current_ontology]
+        if self.current_ontology in self.CLASS_OPTIONS and self.CLASS_OPTIONS[self.current_ontology]:
+            class_options = self.CLASS_OPTIONS[self.current_ontology]
             self.current_class = None
 
             for option in class_options:
@@ -795,7 +798,7 @@ QListWidget::item:selected {{
             return
 
         # Update Attribute Model
-        attributes = ATTRIBUTE_SAMPLE_DATA.get(self.current_class, [])
+        attributes = self.ATTRIBUTE_SAMPLE_DATA.get(self.current_class, [])
         if attributes:
             self.attribute_placeholder_label.hide()
             self.attribute_table.show()
@@ -806,7 +809,7 @@ QListWidget::item:selected {{
             self.attribute_placeholder_label.show()
 
         # Update Behavior Model
-        behaviors = BEHAVIOR_SAMPLE_DATA.get(self.current_class, [])
+        behaviors = self.BEHAVIOR_SAMPLE_DATA.get(self.current_class, [])
         if behaviors:
             self.behavior_placeholder_label.hide()
             self.behavior_table.show()
@@ -844,8 +847,8 @@ QListWidget::item:selected {{
         """Load attribute and behavior data based on selected category."""
         print(f"Loading data for category: {category}")
 
-        attributes = ATTRIBUTE_SAMPLE_DATA.get(category, [])
-        behaviors = BEHAVIOR_SAMPLE_DATA.get(category, [])
+        attributes = self.ATTRIBUTE_SAMPLE_DATA.get(category, [])
+        behaviors = self.BEHAVIOR_SAMPLE_DATA.get(category, [])
 
         if attributes:
             self.attribute_placeholder_label.hide()
