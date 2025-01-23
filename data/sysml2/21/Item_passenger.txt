@@ -3,6 +3,7 @@ package Item{
     part def Item{}
 
     part passenger : Item{
+        attribute CasualtyCondition : Bool = "0";
 
 
 

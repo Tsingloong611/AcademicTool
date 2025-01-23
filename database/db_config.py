@@ -18,7 +18,7 @@ class DatabaseManager:
     def connect(self, username, password, host, port, database):
         try:
             connection_string = f"mysql+mysqlconnector://{username}:{password}@{host}:{port}/{database}?charset=utf8mb4"
-            self.engine = create_engine(connection_string, echo=True)
+            self.engine = create_engine(connection_string, echo=False)
             self.SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=self.engine)
             # 创建所有表（如果尚未创建）
             Base.metadata.create_all(bind=self.engine)

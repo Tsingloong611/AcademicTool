@@ -1,0 +1,15 @@
+package ResponsePlanElement{
+
+    part def ResponsePlanElement{}
+
+    part emergencyresource1 : ResponsePlanElement{
+        attribute ResourceType : Enum = null;
+        attribute ResourceUsageCondition : Bool = "0";
+        attribute ResourceQuantityOrQuality : Real = null;
+
+        ref part emergencyaction1;
+
+
+    }
+
+}

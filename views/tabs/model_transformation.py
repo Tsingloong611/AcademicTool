@@ -2,6 +2,8 @@
 
 import sys
 import os
+
+from PySide6.QtSvg import QSvgRenderer
 from PySide6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QGroupBox,
     QLabel, QScrollArea, QTableWidget, QTableWidgetItem, QPushButton,
@@ -9,7 +11,7 @@ from PySide6.QtWidgets import (
     QCheckBox, QGridLayout
 )
 from PySide6.QtCore import Qt, Signal, QSize
-from PySide6.QtGui import QPixmap, QFont, QIcon
+from PySide6.QtGui import QPixmap, QFont, QIcon, QWheelEvent, QPainter
 
 from views.dialogs.custom_warning_dialog import CustomWarningDialog
 from views.tabs.condition_setting import CustomTableWidget
@@ -19,40 +21,57 @@ ZOOM_IN_ICON = "resources/icons/zoom_in.png"
 ZOOM_OUT_ICON = "resources/icons/zoom_out.png"
 
 class ZoomableLabel(QLabel):
+    """Label supporting zoom functionality for displaying SVG images."""
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setAlignment(Qt.AlignCenter)
+        self.renderer = QSvgRenderer()
         self.scale_factor = 1.0
-        self.pixmap_original = None
+        self.image_loaded = False
 
-    def setPixmap(self, pixmap):
-        self.pixmap_original = pixmap
+    def set_svg(self, svg_path):
+        """Set and load the SVG image."""
+        if not self.renderer.load(svg_path):
+            self.setText(self.tr("无法加载图像"))
+            self.image_loaded = False
+            return
+        self.scale_factor = 1.0
+        self.image_loaded = True
         self.update_pixmap()
 
-    def wheelEvent(self, event):
-        angle = event.angleDelta().y()
-        if angle > 0:
-            self.scale_factor *= 1.1
+    def wheelEvent(self, event: QWheelEvent):
+        """Implement zoom with Ctrl + mouse wheel."""
+        if self.image_loaded and event.modifiers() & Qt.ControlModifier:
+            angle = event.angleDelta().y()
+            if angle > 0:
+                self.scale_factor *= 1.1
+            else:
+                self.scale_factor /= 1.1
+            self.scale_factor = max(0.1, min(self.scale_factor, 10.0))  # Limit zoom factor
+            self.update_pixmap()
         else:
-            self.scale_factor /= 1.1
-        self.scale_factor = max(self.scale_factor, 0.1)
-        self.scale_factor = min(self.scale_factor, 10.0)
-        self.update_pixmap()
+            super().wheelEvent(event)
 
     def update_pixmap(self):
-        if self.pixmap_original:
-            scaled_pixmap = self.pixmap_original.scaled(
-                self.pixmap_original.size() * self.scale_factor,
-                Qt.KeepAspectRatio,
-                Qt.SmoothTransformation
-            )
-            super().setPixmap(scaled_pixmap)
+        """Update the displayed image based on the zoom factor."""
+        if self.renderer.isValid() and self.image_loaded:
+            size = self.renderer.defaultSize() * self.scale_factor
+            pixmap = QPixmap(size)
+            pixmap.fill(Qt.transparent)
+
+            painter = QPainter(pixmap)
+            self.renderer.render(painter)
+            painter.end()
+
+            super().setPixmap(pixmap)
 
     def mousePressEvent(self, event):
-        if not self.pixmap_original:
-            CustomWarningDialog(self.tr("提示"), self.tr("未选择图像，请选择图像")).exec()
+        """Handle mouse click events to prompt user if image not loaded."""
+        if not self.image_loaded and event.button() == Qt.LeftButton:
+            pass
         else:
             super().mousePressEvent(event)
+
 
 
 class ModelTransformationTab(QWidget):
@@ -62,11 +81,12 @@ class ModelTransformationTab(QWidget):
     def __init__(self):
         super().__init__()
         self.node_data = {
-            "节点A": [("状态1", 0.3), ("状态2", 0.7)],
-            "节点B": [("状态1", 0.5), ("状态2", 0.5)],
-            "节点C": [("状态1", 0.2), ("状态2", 0.8)],
-            "节点D": [("状态1", 0.6), ("状态2", 0.4)],
+            "节点A": [["状态1", 0.3], ["状态2", 0.7]],
+            "节点B": [["状态1", 0.5], ["状态2", 0.5]],
+            "节点C": [["状态1", 0.2], ["状态2", 0.8]],
+            "节点D": [["状态1", 0.6], ["状态2", 0.4]],
         }
+        self.node_checkboxes = {}
         self.init_ui()
 
     def init_ui(self):
@@ -90,6 +110,7 @@ class ModelTransformationTab(QWidget):
         self.setLayout(main_layout)
 
     def set_stylesheet(self):
+        # 去除表格单元格的边框，并为后面添加悬浮显示工具提示做准备
         self.setStyleSheet(self.tr("""
 QGroupBox {
     border: 1px solid #ccc;
@@ -122,10 +143,14 @@ QLineEdit {
     padding: 5px;
     background-color: white;
 }
-QScrollArea {
-    background-color: #ffffff;
-    border: none;
-}
+    QScrollArea {
+        border: none;
+        background: transparent;
+    }
+    QAbstractScrollArea::corner {
+        background: transparent;  /* 或者改成 #ffffff，与主背景相同 */
+        border: none;
+    }
 QScrollBar:vertical, QScrollBar:horizontal {
     border: none;
     background: #f1f1f1;
@@ -158,10 +183,10 @@ QLabel#placeholder{
     background-color: #ffffff;
 }
 
+/* ---- 这里去除单元格本身的边框 ---- */
 QTableWidget {
     border: none;
     font-size: 14px;
-    border-bottom: 1px solid black; 
     background-color: #ffffff;
 }
 QHeaderView::section {
@@ -225,17 +250,25 @@ QTableWidget:focus {
         self.bayesian_network_label.setText(self.tr("贝叶斯网络图像加载区"))
         self.bayesian_network_label.setStyleSheet("background-color: #ffffff;")
 
-        default_png = os.path.join(os.path.dirname(__file__), "combined_bn.png")
-        if os.path.exists(default_png):
-            pixmap = QPixmap(default_png)
-            self.bayesian_network_label.setPixmap(pixmap)
+        default_svg = os.path.join(os.path.dirname(__file__), "combined_bn.png")
+        if os.path.exists(default_svg):
+            self.bayesian_network_label.set_svg(default_svg)
         else:
             self.bayesian_network_label.setText(self.tr("无法加载贝叶斯网络图像"))
 
         scroll_area = QScrollArea()
         scroll_area.setWidgetResizable(True)
         scroll_area.setWidget(self.bayesian_network_label)
-        scroll_area.setStyleSheet("QScrollArea {border: none; background-color: #ffffff;}")
+        scroll_area.setStyleSheet("""
+            QScrollArea {
+                border: none;
+        background: transparent;
+            }
+            QAbstractScrollArea::corner {
+                background: transparent;  /* 或者改成 #ffffff，与主背景相同 */
+                border: none;
+            }
+        """)
 
         group_layout.addLayout(button_layout)
         group_layout.addWidget(scroll_area, 1)
@@ -261,6 +294,7 @@ QTableWidget:focus {
                 font-size: 16px;
                 font-weight: bold;
                 background-color: #ffffff;
+                padding: 10px;
             }
         """)
 
@@ -268,85 +302,148 @@ QTableWidget:focus {
         outer_layout.setContentsMargins(10, 10, 10, 10)
         outer_layout.setSpacing(15)
 
-        main_v_layout = QVBoxLayout()
-        main_v_layout.setSpacing(0)
-        main_v_layout.setContentsMargins(0, 0, 0, 0)
-
+        # Create node selection area
         self.node_group_box = QGroupBox(self.tr("节点选择"))
+        self.node_group_box.setMinimumWidth(300)
+        self.node_group_box.setFixedHeight(200)
         self.node_group_box.setStyleSheet("""
             QGroupBox {
                 border: 1px solid #d0d0d0;
                 border-radius: 10px;
                 margin-top: 14px;
+                padding: 5px;
+            }
+            QScrollArea {
+                border: none;
+                background-color: transparent;
+            }
+            QScrollBar:vertical {
+                border: none;
+                background-color: #f0f0f0;
+                width: 8px;
+                margin: 0;
+            }
+            QScrollBar::handle:vertical {
+                background-color: #c1c1c1;
+                min-height: 20px;
+                border-radius: 4px;
+            }
+            QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
+                border: none;
+                height: 0px;
+            }
+            QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
+                background: none;
             }
         """)
 
-        scroll_for_checkboxes = QScrollArea()
-        scroll_for_checkboxes.setWidgetResizable(True)
-        scroll_for_checkboxes.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
-        scroll_for_checkboxes.setHorizontalScrollBarPolicy(Qt.ScrollBarAsNeeded)
-        scroll_for_checkboxes.setStyleSheet("background-color: #ffffff; border:none;")
+        # Create scroll area
+        scroll_area = QScrollArea(self.node_group_box)
+        scroll_area.setWidgetResizable(True)
+        scroll_area.setFrameShape(QScrollArea.NoFrame)
+        # 横纵向都需要在内容超出时才出现滚动条
+        scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarAsNeeded)
+        scroll_area.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
 
-        grid_layout = QGridLayout()
+        # Create content widget for checkboxes
+        content_widget = QWidget()
+        content_widget.setSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.Preferred)
+        self.grid_layout = QGridLayout(content_widget)
+        self.grid_layout.setSpacing(10)
+        self.grid_layout.setHorizontalSpacing(20)
+        self.grid_layout.setContentsMargins(10, 10, 10, 10)
+        self.grid_layout.setAlignment(Qt.AlignTop | Qt.AlignLeft)
+
+        # 设置每列弹性伸缩，保证复选框文本可完整显示
+        self.grid_layout.setColumnStretch(0, 1)
+        self.grid_layout.setColumnStretch(1, 1)
+
+        # 添加复选框
         self.node_checkboxes = {}
         nodes = list(self.node_data.keys())
         for i, node in enumerate(nodes):
             checkbox = QCheckBox(self.tr(node))
-            checkbox.setStyleSheet("background-color: #ffffff;")
+            checkbox.setStyleSheet("""
+                QCheckBox {
+                    background-color: #ffffff;
+                    padding: 5px;
+                    text-align: left;
+                }
+                QCheckBox::indicator {
+                    width: 16px;
+                    height: 16px;
+                    margin-right: 5px;
+                    subcontrol-position: left center;
+                }
+            """)
+            checkbox.setText(node)
+            checkbox.setToolTip(node)  # 鼠标悬浮提示
+            # 使复选框在水平方向可扩展
+            checkbox.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+
             checkbox.stateChanged.connect(self.on_checkbox_state_changed)
             self.node_checkboxes[node] = checkbox
             row = i // 2
             col = i % 2
-            grid_layout.addWidget(checkbox, row, col, alignment=Qt.AlignCenter)
+            self.grid_layout.addWidget(checkbox, row, col)
 
-        self.node_group_box.setLayout(grid_layout)
-        scroll_for_checkboxes.setWidget(self.node_group_box)
+        scroll_area.setWidget(content_widget)
+        node_layout = QVBoxLayout(self.node_group_box)
+        node_layout.addWidget(scroll_area)
 
-        self.display_area = QVBoxLayout()
-        self.display_area.setContentsMargins(0, 10, 0, 0)
-
+        # 创建并设置先验表格
         self.prior_table = CustomTableWidget()
         self.prior_table.setColumnCount(3)
         self.prior_table.setHorizontalHeaderLabels([self.tr("节点"), self.tr("状态"), self.tr("概率")])
-        self.apply_table_style(self.prior_table)
-
-        self.prior_table.horizontalHeader().setFont(QFont("SimSun", 16, QFont.Bold))
-        self.prior_table.horizontalHeader().setDefaultAlignment(Qt.AlignCenter)
-        self.prior_table.horizontalHeader().setStretchLastSection(True)
-        self.prior_table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
-        self.prior_table.verticalHeader().setVisible(False)
-        self.prior_table.setAlternatingRowColors(True)
-        self.prior_table.setEditTriggers(QTableWidget.NoEditTriggers)
-        self.prior_table.setShowGrid(False)
         self.prior_table.setSelectionBehavior(QTableWidget.SelectRows)
         self.prior_table.setSelectionMode(QTableWidget.SingleSelection)
-        self.prior_table.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        self.prior_table.setEditTriggers(QTableWidget.NoEditTriggers)
+        self.prior_table.setAlternatingRowColors(True)
+        # 去除表格边框
+        self.prior_table.setShowGrid(False)
+
+        self.apply_table_style(self.prior_table)
+
+        header = self.prior_table.horizontalHeader()
+        header.setSectionResizeMode(QHeaderView.Stretch)
+        header.setDefaultAlignment(Qt.AlignCenter)
+        self.prior_table.verticalHeader().setVisible(False)
 
         self.placeholder_label = QLabel(self.tr("请选择节点"))
         self.placeholder_label.setObjectName("placeholder")
         self.placeholder_label.setAlignment(Qt.AlignCenter)
+        self.placeholder_label.setStyleSheet("""
+            QLabel#placeholder {
+                color: gray;
+                font-size: 20pt;
+                background-color: #ffffff;
+                padding: 20px;
+            }
+        """)
 
-        for node, checkbox in self.node_checkboxes.items():
-            checkbox.setChecked(False)
-        self.update_prior_table()
+        table_container = QWidget()
+        table_layout = QVBoxLayout(table_container)
+        table_layout.setContentsMargins(0, 0, 0, 0)
+        table_layout.addWidget(self.placeholder_label)
+        table_layout.addWidget(self.prior_table)
 
-        self.display_area.addWidget(self.placeholder_label)
-        self.display_area.addWidget(self.prior_table)
+        outer_layout.addWidget(self.node_group_box)
+        outer_layout.addWidget(table_container, 4)
 
-        main_v_layout.addWidget(scroll_for_checkboxes, 1)
-        main_v_layout.addLayout(self.display_area, 4)
+        # Initialize display state
+        self.prior_table.hide()
+        self.placeholder_label.show()
 
-        outer_layout.addLayout(main_v_layout)
         return group_box
 
     def apply_table_style(self, table: QTableWidget):
+        # 此处保留对表格样式的基础设置，已去除单元格外边框
         table.setStyleSheet("""
             QTableWidget {
                 border: none;
                 font-size: 14px;
-                border-bottom: 1px solid black; 
-                    background-color: white;
-    alternate-background-color: #e9e7e3;
+                background-color: white;
+                alternate-background-color: #e9e7e3;
             }
             QHeaderView::section {
                 border-top: 1px solid black;
@@ -408,27 +505,67 @@ QTableWidget:focus {
                     for state_name, prob in self.node_data[node]:
                         row_position = self.prior_table.rowCount()
                         self.prior_table.insertRow(row_position)
+
                         item_node = QTableWidgetItem(node)
                         item_state = QTableWidgetItem(state_name)
                         item_prob = QTableWidgetItem(f"{prob:.4f}")
-                        item_node.setTextAlignment(Qt.AlignCenter)
-                        item_state.setTextAlignment(Qt.AlignCenter)
-                        item_prob.setTextAlignment(Qt.AlignCenter)
+
+                        # 设置文本居中 & 鼠标悬浮提示
+                        for item in (item_node, item_state, item_prob):
+                            item.setTextAlignment(Qt.AlignCenter)
+                            item.setToolTip(item.text())
+
                         self.prior_table.setItem(row_position, 0, item_node)
                         self.prior_table.setItem(row_position, 1, item_state)
                         self.prior_table.setItem(row_position, 2, item_prob)
 
     def zoom_in(self):
-        if self.bayesian_network_label.pixmap_original:
-            self.bayesian_network_label.scale_factor *= 1.1
-            self.bayesian_network_label.scale_factor = min(self.bayesian_network_label.scale_factor, 10.0)
-            self.bayesian_network_label.update_pixmap()
+        self.bayesian_network_label.scale_factor *= 1.1
+        self.bayesian_network_label.scale_factor = min(self.bayesian_network_label.scale_factor, 10.0)
+        self.bayesian_network_label.update_pixmap()
 
     def zoom_out(self):
-        if self.bayesian_network_label.pixmap_original:
-            self.bayesian_network_label.scale_factor /= 1.1
-            self.bayesian_network_label.scale_factor = max(self.bayesian_network_label.scale_factor, 0.1)
-            self.bayesian_network_label.update_pixmap()
+
+        self.bayesian_network_label.scale_factor /= 1.1
+        self.bayesian_network_label.scale_factor = max(self.bayesian_network_label.scale_factor, 0.1)
+        self.bayesian_network_label.update_pixmap()
 
     def reset_inputs(self):
-        pass
+        # Clear existing checkboxes
+        for checkbox in self.node_checkboxes.values():
+            checkbox.setChecked(False)
+
+        # Update the node selection grid with new node_data
+        self.update_node_selection_grid()
+
+        # Update the prior probability table
+        self.update_prior_table()
+
+    def update_node_selection_grid(self):
+        # 移除旧的复选框
+        for checkbox in self.node_checkboxes.values():
+            checkbox.setParent(None)
+        self.node_checkboxes.clear()
+
+        nodes = list(self.node_data.keys())
+        for i, node in enumerate(nodes):
+            checkbox = QCheckBox(self.tr(node))
+            checkbox.setStyleSheet("background-color: #ffffff;")
+            checkbox.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+            checkbox.stateChanged.connect(self.on_checkbox_state_changed)
+            self.node_checkboxes[node] = checkbox
+            row = i // 2
+            col = i % 2
+            self.grid_layout.addWidget(checkbox, row, col, alignment=Qt.AlignLeft)
+
+    def set_node_data(self, new_node_data):
+        """Update node_data and refresh the UI"""
+        self.node_data = new_node_data
+        self.reset_inputs()
+
+    def set_bayesian_network_image(self, image_path):
+        """Set the image of the Bayesian network"""
+        if os.path.exists(image_path):
+            self.bayesian_network_label.set_svg(image_path)
+        else:
+            self.bayesian_network_label.setText(self.tr("无法加载贝叶斯网络图像"))

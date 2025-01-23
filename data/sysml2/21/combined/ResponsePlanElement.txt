@@ -58,6 +58,17 @@ package ResponsePlanElement{
             state implementState;
         }
 
+    ref part 173;
+
+    perform action Firefighting;
+    perform action PersonnalRescue;
+    perform action VehicleTowing;
+    perform action RoadCleaning;
+    perform action RoadRepair;
+    perform action RoadControl;
+
+    }
+
     part 7 : ResponsePlanElement{
     attribute ResourceType : Enum = null;
     attribute ResourceUsageCondition : Bool = "0";
@@ -71,15 +82,5 @@ package ResponsePlanElement{
     attribute BehaviorType : Enum = null;
     attribute ImplementationCondition : Bool = "0";
     attribute Duration : Real = null;
-
-
-    perform action Firefighting;
-    perform action PersonnalRescue;
-    perform action VehicleTowing;
-    perform action RoadCleaning;
-    perform action RoadRepair;
-    perform action RoadControl;
-
-    }
 
 }

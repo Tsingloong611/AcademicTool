@@ -42,7 +42,7 @@ package AffectedElement{
         item VehicleCargo : VehicleCargo;
         item VehiclePassengers : VehiclePassengers;
         item VehicleComponents : VehicleComponents;
-        ref part 169;
+        ref part 177;
 
         perform action VehicleMotion;
         perform action VehicleTransport;

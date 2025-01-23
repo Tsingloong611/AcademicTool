@@ -26,8 +26,10 @@ def create_ontology(input_path, output_path):
     sorted_data = sorted(data, key=lambda x: desired_order.index(x['@type']) if x['@type'] in desired_order else len(
         desired_order))
 
-    # 创建一个新的本体
-    onto = get_ontology("http://example.org/scenario_3.owl")
+    # 清除之前的本体
+    default_world.ontologies.clear()
+    # 使用特定的 IRI
+    onto = get_ontology("http://example.org/scenario_element.owl")
 
     elements = sorted_data
 
@@ -151,9 +153,9 @@ def create_ontology(input_path, output_path):
                 attr_name = element['@name'].strip()
                 owner = classes.get(element['owner'].strip())
                 if owner is not None:
-                    if element['datatype'] == 'Integer':
+                    if element['datatype'] == 'Integer' or "Real":
                         type_name = int
-                    elif element['datatype'] == 'Boolean':
+                    elif element['datatype'] == 'Boolean' or "Bool":
                         type_name = bool
                     elif element['datatype'] == 'String':
                         type_name = str
@@ -228,7 +230,10 @@ def Scenario_owl_creator(output_path):
 
     :param output_path: 输出的Scenario.owl文件的完整路径。
     """
-    onto = get_ontology("http://example.org/scenario_3.owl")
+    # 清除之前的本体
+    default_world.ontologies.clear()
+    # 使用特定的 IRI
+    onto = get_ontology("http://example.org/scenario.owl")
     with onto:
         # Classes
         class ResilienceInfluentialFactors(Thing):
@@ -281,15 +286,31 @@ def Scenario_owl_creator(output_path):
             domain = [FunctionFactors]
             range = [bool]
 
-        class actionType(DataProperty):
-            namespace = onto
-            domain = [EconomicFactors]
-            range = [str]
 
         class resourceType(DataProperty):
             namespace = onto
             domain = [EconomicFactors]
             range = [str]
+
+        # class aidResource(DataProperty):
+        #     namespace = onto
+        #     domain = [EconomicFactors]
+        #     range = [str]
+        #
+        # class towResource(DataProperty):
+        #     namespace = onto
+        #     domain = [EconomicFactors]
+        #     range = [str]
+        #
+        # class firefightingResource(DataProperty):
+        #     namespace = onto
+        #     domain = [EconomicFactors]
+        #     range = [str]
+        #
+        # class rescueResource(DataProperty):
+        #     namespace = onto
+        #     domain = [EconomicFactors]
+        #     range = [str]
 
         class roadLoss(DataProperty):
             namespace = onto
@@ -342,7 +363,10 @@ def Emergency_owl_creator(output_path):
 
     :param output_path: 输出的Emergency.owl文件的完整路径。
     """
-    onto = get_ontology("http://example.org/scenario_3.owl")
+    # 清除之前的本体
+    default_world.ontologies.clear()
+    # 使用特定的 IRI
+    onto = get_ontology("http://example.org/emergency.owl")
     with onto:
         # Classes
         class Emergency(Thing):
@@ -440,6 +464,11 @@ if __name__ == '__main__':
     # 确保输出目录存在
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
+
+    # 清理旧的 owl 文件
+    for f in os.listdir(output_dir):
+        if f.endswith('.owl'):
+            os.remove(os.path.join(output_dir, f))
 
     # 获取所有JSON文件
     json_files = [f for f in os.listdir(input_dir) if f.endswith('.json')]

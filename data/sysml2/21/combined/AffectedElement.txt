@@ -62,7 +62,7 @@ package AffectedElement{
     item def VehiclePassengers{
     }
 
-    ref part 169;
+    ref part 177;
 
     perform action VehicleMotion;
     perform action VehicleTransport;

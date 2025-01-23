@@ -5,6 +5,7 @@
 import json
 import datetime
 import os
+import re
 
 from PySide6.QtCore import QObject, Slot, Qt, Signal
 from PySide6.QtWidgets import QInputDialog, QMessageBox, QDialog
@@ -16,7 +17,8 @@ from sqlalchemy.orm.sync import update
 from sqlalchemy.sql.base import elements
 
 from models.models import Scenario, BehaviorValue, AttributeValue, Category, Entity, Template, BehaviorValueReference, \
-    AttributeValueReference, entity_category, Owl, Bayes, OwlClassBehavior, OwlClassAttribute, OwlClass
+    AttributeValueReference, entity_category, Owl, Bayes, OwlClassBehavior, OwlClassAttribute, OwlClass, BayesNodeState, \
+    BayesNode, BayesNodeTarget
 # 假设您已经在 models/scenario.py 中定义了 Scenario 类，
 # 其中字段为 scenario_id, scenario_name, scenario_description, ...
 from views.dialogs.custom_error_dialog import CustomErrorDialog
@@ -58,6 +60,8 @@ class ScenarioController(QObject):
         self.send_sql_result.connect(self.tab_widget.ElementSettingTab.receive_sql_result)
         self.tab_widget.ElementSettingTab.save_to_database_signal.connect(self.apply_changes_from_json)
         self.tab_widget.generate_model_save_to_database.connect(self.generate_model_save_to_database)
+        self.tab_widget.generate_bayes_save_to_database.connect(self.generate_bayes_save_to_database)
+        self.tab_widget.ConditionSettingTab.save_plan_to_database_signal.connect(self.apply_changes_from_json)
         # 加载初始数据
         self.load_scenarios()
 
@@ -109,9 +113,9 @@ class ScenarioController(QObject):
 
             bayes_record = self.session.query(Bayes).filter(Bayes.scenario_id == scenario.scenario_id).first()
             if bayes_record:
-                bayes_state = "就绪"
+                bayes_state = "待推演"
             else:
-                bayes_state = "未完成"
+                bayes_state = "待推演"
             update_time = getattr(scenario, 'scenario_update_time', None)
             if update_time is not None:
                 update_time = update_time.strftime("%Y-%m-%d %H:%M:%S")
@@ -257,8 +261,8 @@ class ScenarioController(QObject):
                     # 最终的行为名
                     "behavior_name": final_behavior_name,
 
-                    # behavior_code_name => fallback_name
-                    "behavior_code_name": fallback_name,
+                    # behavior_code_name => behavior_code_ref.behavior_code_name
+                    "behavior_code_name": code_obj.behavior_code_name if code_obj else "",
 
                     "object_entity_type_id": bh_def.object_entity_type_id,
                     "is_required": bool(bh_def.is_required),
@@ -281,34 +285,35 @@ class ScenarioController(QObject):
 
         return scenario_data
 
-    def apply_changes_from_json(self,entity_data_list: List[Dict[str, Any]]):
+    def apply_changes_from_json(self,entity_data_list: List[Dict[str, Any]],delete_mode = True):
         """
         将 JSON 列表中的多个实体（含 attributes/behaviors 等）批量写回数据库。
 
         - entity_data_list: 形如您贴出的 JSON 数组，每个元素是一个 Entity 的完整信息。
         """
         session = self.session
-        # -1. 把json中不存在的实体删除
+        if delete_mode == True:
+            # -1. 把json中不存在的实体删除
 
-        current_entities = session.query(Entity).filter_by(
-            scenario_id=self.current_scenario.scenario_id
-        ).all()
-        current_entity_ids = {entity.entity_id for entity in current_entities}
-        json_ids = {entity["entity_id"] for entity in entity_data_list}
+            current_entities = session.query(Entity).filter_by(
+                scenario_id=self.current_scenario.scenario_id
+            ).all()
+            current_entity_ids = {entity.entity_id for entity in current_entities}
+            json_ids = {entity["entity_id"] for entity in entity_data_list}
 
-        entities_to_delete = current_entity_ids - json_ids
+            entities_to_delete = current_entity_ids - json_ids
 
-        if entities_to_delete:
-            try:
-                session.query(Entity).filter(
-                    Entity.scenario_id == self.current_scenario.scenario_id,
-                    Entity.entity_id.in_(entities_to_delete)
-                ).delete(synchronize_session='fetch')
-                session.flush()
-            except Exception as e:
-                session.rollback()
-                print(f"删除失败: {str(e)}")
-                raise
+            if entities_to_delete:
+                try:
+                    session.query(Entity).filter(
+                        Entity.scenario_id == self.current_scenario.scenario_id,
+                        Entity.entity_id.in_(entities_to_delete)
+                    ).delete(synchronize_session='fetch')
+                    session.flush()
+                except Exception as e:
+                    session.rollback()
+                    print(f"删除失败: {str(e)}")
+                    raise
         # 0. 用于记录临时负数ID => 数据库生成ID 的映射
         temp_id_map = {}
 
@@ -846,7 +851,7 @@ class ScenarioController(QObject):
             json_path = os.path.join(owl_dir, json_file)
 
             if os.path.exists(json_path):
-                with open(json_path, 'r') as f:
+                with open(json_path, 'r', encoding='utf-8') as f:
                     structure = json.load(f)
                     self.process_owl_structure(session, structure, owl.owl_id)
 
@@ -1036,3 +1041,114 @@ class ScenarioController(QObject):
 
         except Exception as e:
             return False, f"数据获取失败: {str(e)}"
+
+    def generate_bayes_save_to_database(self):
+        """
+        生成贝叶斯网络并保存到数据库
+        如果当前场景已存在贝叶斯网络则更新，否则创建新的
+        """
+        try:
+            # 查找当前场景的贝叶斯网络
+            existing_bayes = self.session.query(Bayes).filter(
+                Bayes.scenario_id == self.current_scenario.scenario_id
+            ).first()
+
+            # 获取新的文件路径
+            bn_file = os.path.abspath(os.path.join(
+                os.path.dirname(__file__),
+                f'../data/bn/{self.current_scenario.scenario_id}/bn_structure.bif'
+            ))
+
+            if existing_bayes:
+                # 更新现有贝叶斯网络的文件路径
+                existing_bayes.bayes_file_path = bn_file
+                bayes = existing_bayes
+            else:
+                # 创建新的贝叶斯网络记录
+                bayes = Bayes(
+                    bayes_file_path=bn_file,
+                    scenario_id=self.current_scenario.scenario_id
+                )
+                self.session.add(bayes)
+
+            self.session.flush()  # 获取bayes_id
+
+            # 读取节点数据
+            node_data_file = os.path.join(os.path.dirname(bn_file), 'node_data.json')
+            with open(node_data_file, 'r') as f:
+                node_data = json.load(f)
+
+            # 处理节点和状态
+            node_id_map = {}  # 用于存储节点名称到ID的映射
+            current_time = datetime.datetime.utcnow()
+
+            for node_name, states in node_data.items():
+                # 查找或创建节点
+                existing_node = self.session.query(BayesNode).filter(
+                    BayesNode.bayes_id == bayes.bayes_id,
+                    BayesNode.bayes_node_name == node_name
+                ).first()
+
+                if existing_node:
+                    node = existing_node
+                else:
+                    node = BayesNode(
+                        bayes_node_name=node_name,
+                        bayes_id=bayes.bayes_id
+                    )
+                    self.session.add(node)
+                    self.session.flush()
+
+                node_id_map[node_name] = node.bayes_node_id
+
+                # 更新节点状态
+                for state_name, probability in states:
+                    existing_state = self.session.query(BayesNodeState).filter(
+                        BayesNodeState.bayes_node_id == node.bayes_node_id,
+                        BayesNodeState.bayes_node_state_name == state_name
+                    ).first()
+
+                    if existing_state:
+                        # 更新现有状态的概率
+                        existing_state.bayes_node_state_prior_probability = float(probability)
+                        existing_state.update_time = current_time
+                    else:
+                        # 创建新的状态
+                        node_state = BayesNodeState(
+                            bayes_node_state_name=state_name,
+                            bayes_node_state_prior_probability=float(probability),
+                            bayes_node_id=node.bayes_node_id,
+                            create_time=current_time,
+                            update_time=current_time
+                        )
+                        self.session.add(node_state)
+
+            # 如果是新建的贝叶斯网络，需要创建节点关系
+            if not existing_bayes:
+                # 读取bif文件获取节点关系
+                with open(bn_file, 'r') as f:
+                    bif_content = f.read()
+
+                # 使用正则表达式提取节点关系
+                pattern = r'probability\s*\(\s*([^|]+)\s*\|\s*([^)]+)\)'
+                relationships = re.findall(pattern, bif_content)
+
+                # 创建节点关系记录
+                for target, sources in relationships:
+                    target_node = target.strip()
+                    source_nodes = [s.strip() for s in sources.split(',')]
+
+                    for source_node in source_nodes:
+                        node_target = BayesNodeTarget(
+                            source_node_id=node_id_map[source_node],
+                            target_node_id=node_id_map[target_node]
+                        )
+                        self.session.add(node_target)
+
+            self.session.commit()
+            print("贝叶斯网络数据已成功保存到数据库")
+
+        except Exception as e:
+            self.session.rollback()
+            print(f"保存贝叶斯网络数据时出错: {e}")
+            raise

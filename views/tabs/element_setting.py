@@ -1666,7 +1666,7 @@ class EditRelatedObjectDialog(QDialog):
             # 获取要编辑的实体数据
             entity_data = None
             for item_key, item_value in self.object_parent.items():
-                if item_value["entity_name"] == entity_name:
+                if item_value["entity_id"] == entity_id:
                     entity_data = item_value
                     break
 
@@ -3500,8 +3500,9 @@ class ElementSettingTab(QWidget):
             for key, value in data.items():
                 json_input_str = json.dumps(data[key], ensure_ascii=False)
                 json_to_sysml2_txt(json_input_str,data)
-            CustomInformationDialog(" ", self.tr("已成功生成情景级孪生模型。"), parent=self).exec()
+
             self.generate_model_show.emit()
+
 
     def switch_model_display(self, model_type):
         """切换显示的模型类型"""

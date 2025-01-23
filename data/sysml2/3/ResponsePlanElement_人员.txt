@@ -1,0 +1,15 @@
+package ResponsePlanElement{
+
+    part def ResponsePlanElement{}
+
+    part 人员 : ResponsePlanElement{
+        attribute ResourceType : Enum = null;
+        attribute ResourceUsageCondition : Bool = "0";
+        attribute ResourceQuantityOrQuality : Real = null;
+
+        ref part 救助;
+
+
+    }
+
+}

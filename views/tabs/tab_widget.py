@@ -2,23 +2,29 @@
 # @Time    : 12/3/2024 10:11 AM
 # @FileName: tab_widget.py
 # @Software: PyCharm
+import json
 import os
 
 import rdflib
 from PySide6.QtGui import QFont
 from PySide6.QtWidgets import (
     QWidget, QHBoxLayout, QVBoxLayout,
-    QPushButton, QLabel, QStackedWidget, QSizePolicy
+    QPushButton, QLabel, QStackedWidget, QSizePolicy, QProgressDialog, QApplication
 )
 from PySide6.QtCore import Qt, Signal, Slot
 from owlready2 import get_ontology, destroy_entity
 
 from test6 import convert_owl_to_svg
+from utils.bn_svg_update import NetworkVisualizer, ScenarioResilience, bn_svg_update, update_with_evidence
 from utils.combinesysml2 import combine_sysml2
 from utils.json2owl import create_ontology, owl_excel_creator, Scenario_owl_creator, Emergency_owl_creator
 from utils.parserowl import parse_owl
+from utils.plan import PlanDataCollector, convert_to_evidence, PlanData
 
 from utils.sysml2json import process_file
+from views.dialogs.custom_error_dialog import CustomErrorDialog
+from views.dialogs.custom_information_dialog import CustomInformationDialog
+from views.dialogs.custom_warning_dialog import CustomWarningDialog
 from views.tabs.element_setting import ElementSettingTab
 from views.tabs.model_generation import ModelGenerationTab
 from views.tabs.model_transformation import ModelTransformationTab
@@ -28,10 +34,12 @@ from views.tabs.condition_setting import ConditionSettingTab
 class CustomTabWidget(QWidget):
     tab_changed = Signal(int)
     generate_model_save_to_database = Signal()
+    generate_bayes_save_to_database = Signal()
 
     def __init__(self, parent=None):
         super().__init__(parent)
 
+        self.analyzer = None
         self.init_ui()
         self.ElementSettingTab.generate_model_show.connect(self.generate_model)
         self.ModelGenerationTab.generate_request.connect(self.generate_bayes)
@@ -318,107 +326,293 @@ class CustomTabWidget(QWidget):
                 button.setEnabled(True)
 
     def generate_model(self):
-        self.unlock_tabs(2)
-        self.switch_tab(2)
-        scenario_id = self.ElementSettingTab.scenario_data['scenario_id']
-        input_dir = os.path.join(os.path.dirname(__file__), f'../../data/sysml2/{scenario_id}')
-        output_dir = os.path.join(os.path.dirname(__file__), f'../../data/sysml2/{scenario_id}/combined')
+        try:
+            from PySide6.QtWidgets import QProgressDialog, QMessageBox
+            from PySide6.QtCore import Qt, QTimer
+            from PySide6.QtWidgets import QApplication
+            import time
 
-        config_path = os.path.join(os.path.dirname(__file__), '../../config.json')
-        combine_sysml2(input_dir, output_dir, config_path)
+            # 创建进度条对话框
+            progress = QProgressDialog("准备开始...", None, 0, 8, self)
+            progress.setWindowTitle("生成模型")
+            progress.setWindowModality(Qt.WindowModal)
+            progress.setMinimumDuration(0)  # 立即显示进度条
+            progress.setMinimumWidth(300)
+            progress.setCancelButton(None)  # 不显示取消按钮
+            progress.setAutoClose(True)
+            progress.show()
 
-        input_dir = output_dir
-        output_dir = os.path.join(os.path.dirname(__file__), f'../../data/sysml2/{scenario_id}/result')
-        # 确保输出目录存在
-        os.makedirs(output_dir, exist_ok=True)
+            def update_progress(step, text):
+                progress.setValue(step)
+                progress.setLabelText(text)
+                QApplication.processEvents()  # 强制刷新界面
+                time.sleep(0.1)  # 添加小延迟让进度条可见
 
-        # 遍历输入目录中的所有 .txt 文件
-        for file_name in os.listdir(input_dir):
-            if file_name.endswith('.txt'):
-                input_path = os.path.join(input_dir, file_name)
-                process_file(input_path, output_dir)
-
-        print("\n所有文件处理完成。")
-
-        input_dir = output_dir
-        output_dir = os.path.join(os.path.dirname(__file__), f'../../data/sysml2/{scenario_id}/owl')
-        # 确保输出目录存在
-        if not os.path.exists(output_dir):
-            os.makedirs(output_dir)
-
-        # 获取所有JSON文件
-        json_files = [f for f in os.listdir(input_dir) if f.endswith('.json')]
-
-        # 创建ScenarioElement本体文件
-        scenario_element_owl = os.path.join(output_dir, "ScenarioElement.owl")
-        for input_file in json_files:
-            input_path = os.path.join(input_dir, input_file)
-            create_ontology(input_path, scenario_element_owl)
-
-        # 加载ScenarioElement.owl文件并进行后续操作
-        onto = get_ontology(scenario_element_owl).load()
-        # 删除Action和Resource类及其子类
-        with onto:
-            if 'Action' in onto.classes():
-                destroy_entity(onto.Action)
-                print("已删除类 Action 及其子类")
-            if 'Resource' in onto.classes():
-                destroy_entity(onto.Resource)
-                print("已删除类 Resource 及其子类")
-
-        # 保存修改后的ScenarioElement.owl文件
-        onto.save(file=scenario_element_owl, format="rdfxml")
-        print(f"修改后的ScenarioElement.owl文件已保存到: {scenario_element_owl}")
-
-        # 创建对应的Excel文件
-        owl_excel_creator(scenario_element_owl, os.path.join(output_dir, "ScenarioElement_Prop.xlsx"))
-
-        # 创建Scenario本体
-        scenario_output_path = os.path.join(output_dir, "Scenario.owl")
-        Scenario_owl_creator(scenario_output_path)
-        owl_excel_creator(scenario_output_path, os.path.join(output_dir, "Scenario_Prop.xlsx"))
-
-        # 创建Emergency本体
-        emergency_output_path = os.path.join(output_dir, "Emergency.owl")
-        Emergency_owl_creator(emergency_output_path)
-        owl_excel_creator(emergency_output_path, os.path.join(output_dir, "Emergency_Prop.xlsx"))
-
-        # 合并OWL文件
-        input_owl_files = [
-            scenario_element_owl,
-            scenario_output_path,
-            emergency_output_path
-        ]
-        combined_output_path = os.path.join(output_dir, "Merge.owl")
-        combined_graph = rdflib.Graph()
-
-            # 读取三个OWL文件并将它们的数据合并到一个图中
-        combined_graph.parse(scenario_element_owl, format="xml")  # 假设OWL文件是RDF/XML格式
-        combined_graph.parse(scenario_output_path, format="xml")
-        combined_graph.parse(emergency_output_path, format="xml")
-
-            # 将合并后的图写入输出文件
-        combined_graph.serialize(destination=combined_output_path, format="xml")
-        print(f"OWL files merged successfully into {combined_output_path}")
-
-           # 创建owl图片
-        input_owl_files = input_owl_files + [combined_output_path]
-        convert_owl_to_svg(input_owl_files, output_dir)
-
-        # 解析模型
-        for input_owl in input_owl_files:
-            parse_owl(input_owl)
-
-        # 上传到数据库
-        self.generate_model_save_to_database.emit()
+            # 第1步：初始化
+            update_progress(0, "正在初始化...")
 
 
+            scenario_id = self.ElementSettingTab.scenario_data['scenario_id']
+            input_dir = os.path.join(os.path.dirname(__file__), f'../../data/sysml2/{scenario_id}')
+            output_dir = os.path.join(os.path.dirname(__file__), f'../../data/sysml2/{scenario_id}/combined')
+
+            # 第2步：合并SysML2文件
+            update_progress(1, "正在合并SysML2文件...")
+
+            try:
+                config_path = os.path.join(os.path.dirname(__file__), '../../config.json')
+                combine_sysml2(input_dir, output_dir, config_path)
+            except Exception as e:
+                raise Exception(f"合并SysML2文件失败: {str(e)}")
+
+            # 第3步：处理文件
+            update_progress(2, "正在处理文件...")
+
+            input_dir = output_dir
+            output_dir = os.path.join(os.path.dirname(__file__), f'../../data/sysml2/{scenario_id}/result')
+            os.makedirs(output_dir, exist_ok=True)
+
+            try:
+                for file_name in os.listdir(input_dir):
+                    if file_name.endswith('.txt'):
+                        input_path = os.path.join(input_dir, file_name)
+                        process_file(input_path, output_dir)
+            except Exception as e:
+                raise Exception(f"处理文件失败: {str(e)}")
+
+            # 第4步：生成ScenarioElement本体
+            update_progress(3, "正在生成ScenarioElement本体...")
+
+            try:
+                input_dir = output_dir
+                output_dir = os.path.join(os.path.dirname(__file__), f'../../data/sysml2/{scenario_id}/owl')
+                os.makedirs(output_dir, exist_ok=True)
+
+                for f in os.listdir(output_dir):
+                    if f.endswith('.owl'):
+                        os.remove(os.path.join(output_dir, f))
+
+                json_files = [f for f in os.listdir(input_dir) if f.endswith('.json')]
+                scenario_element_owl = os.path.join(output_dir, "ScenarioElement.owl")
+
+                for input_file in json_files:
+                    input_path = os.path.join(input_dir, input_file)
+                    create_ontology(input_path, scenario_element_owl)
+
+                onto = get_ontology(scenario_element_owl).load()
+                with onto:
+                    if 'Action' in onto.classes():
+                        destroy_entity(onto.Action)
+                    if 'Resource' in onto.classes():
+                        destroy_entity(onto.Resource)
+                onto.save(file=scenario_element_owl, format="rdfxml")
+
+                owl_excel_creator(scenario_element_owl, os.path.join(output_dir, "ScenarioElement_Prop.xlsx"))
+            except Exception as e:
+                raise Exception(f"生成ScenarioElement本体失败: {str(e)}")
+
+            # 第5步：创建其他本体文件
+            update_progress(4, "正在创建其他本体文件...")
+
+            try:
+                scenario_output_path = os.path.join(output_dir, "Scenario.owl")
+                Scenario_owl_creator(scenario_output_path)
+                owl_excel_creator(scenario_output_path, os.path.join(output_dir, "Scenario_Prop.xlsx"))
+
+                emergency_output_path = os.path.join(output_dir, "Emergency.owl")
+                Emergency_owl_creator(emergency_output_path)
+                owl_excel_creator(emergency_output_path, os.path.join(output_dir, "Emergency_Prop.xlsx"))
+            except Exception as e:
+                raise Exception(f"创建Scenario和Emergency本体失败: {str(e)}")
+
+            # 第6步：合并OWL文件
+            update_progress(5, "正在合并OWL文件...")
+
+            try:
+                input_owl_files = [
+                    scenario_element_owl,
+                    scenario_output_path,
+                    emergency_output_path
+                ]
+                combined_output_path = os.path.join(output_dir, "Merge.owl")
+                combined_graph = rdflib.Graph()
+
+                for owl_file in input_owl_files:
+                    combined_graph.parse(owl_file, format="xml")
+
+                combined_graph.serialize(destination=combined_output_path, format="xml")
+            except Exception as e:
+                raise Exception(f"合并OWL文件失败: {str(e)}")
+
+            # 第7步：创建OWL图片和解析模型
+            update_progress(6, "正在创建OWL图片和解析模型...")
+
+            try:
+                input_owl_files = input_owl_files + [combined_output_path]
+                convert_owl_to_svg(input_owl_files, output_dir)
+
+                for input_owl in input_owl_files:
+                    parse_owl(input_owl)
+            except Exception as e:
+                raise Exception(f"创建OWL图片或解析模型失败: {str(e)}")
+
+            # 第8步：保存到数据库
+            update_progress(7, "正在保存到数据库...")
+
+            try:
+                self.generate_model_save_to_database.emit()
+
+            except Exception as e:
+                raise Exception(f"保存到数据库失败: {str(e)}")
+
+            # 完成
+            update_progress(8, "完成")
+            time.sleep(0.5)  # 让用户看到100%的进度
+            progress.close()
+            self.unlock_tabs(2)
+            self.switch_tab(2)
+            CustomInformationDialog(" ", self.tr("已成功生成情景级孪生模型。"), parent=self).exec()
+
+        except Exception as e:
+            if 'progress' in locals():
+                progress.close()
+            QMessageBox.critical(None, "错误", f"模型生成失败:\n{str(e)}")
+            print(f"Error: {str(e)}")
 
     def generate_bayes(self):
-        self.unlock_tabs(3)
-        self.switch_tab(3)
+        try:
+            import time
+
+            # 创建进度条对话框
+            progress = QProgressDialog("准备开始...", None, 0, 8, self)
+            progress.setWindowTitle("生成贝叶斯网络")
+            progress.setWindowModality(Qt.WindowModal)
+            progress.setMinimumDuration(0)
+            progress.setMinimumWidth(300)
+            progress.setCancelButton(None)
+            progress.setAutoClose(True)
+            progress.show()
+
+            def update_progress(step, text):
+                progress.setValue(step)
+                progress.setLabelText(text)
+                QApplication.processEvents()
+                time.sleep(0.1)
+
+            # 步骤1：初始化
+            update_progress(0, "正在初始化...")
+
+            scenario_id = self.ElementSettingTab.scenario_data['scenario_id']
+
+            # 步骤2：加载OWL文件
+            update_progress(1, "正在加载OWL文件...")
+            try:
+                input_owl = os.path.abspath(os.path.join(os.path.dirname(__file__),
+                                                         f'../../data/sysml2/{scenario_id}/owl/Scenario.owl'))
+                analyzer = ScenarioResilience(input_owl)
+            except Exception as e:
+                raise Exception(f"加载OWL文件失败: {str(e)}")
+
+            # 步骤3：提取数据属性
+            update_progress(2, "正在提取数据属性...")
+            try:
+                analyzer.extract_data_properties()
+            except Exception as e:
+                raise Exception(f"提取数据属性失败: {str(e)}")
+
+            # 步骤4：创建贝叶斯网络结构
+            update_progress(3, "正在创建贝叶斯网络结构...")
+            try:
+                analyzer.create_bayesian_network()
+            except Exception as e:
+                raise Exception(f"创建贝叶斯网络结构失败: {str(e)}")
+
+            # 步骤5：设置先验概率
+            update_progress(4, "正在设置先验概率...")
+            try:
+                prior_prob_test_path = os.path.abspath(os.path.join(os.path.dirname(__file__),
+                                                                    f'../../data/required_information/prior prob test.xlsx'))
+                expert_info_path = os.path.abspath(os.path.join(os.path.dirname(__file__),
+                                                                f'../../data/required_information/expertInfo.xlsx'))
+                expert_estimation_path = os.path.abspath(os.path.join(os.path.dirname(__file__),
+                                                                      f'../../data/required_information/expert estimation test.xlsx'))
+
+                analyzer.set_prior_probabilities(prior_prob_test_path)
+            except Exception as e:
+                raise Exception(f"设置先验概率失败: {str(e)}")
+
+            # 步骤6：处理专家评估
+            update_progress(5, "正在处理专家评估...")
+            try:
+                expert_df = analyzer.process_expert_evaluation(
+                    expert_info_path=expert_info_path,
+                    expert_estimation_path=expert_estimation_path
+                )
+                analyzer.set_conditional_probabilities(expert_df)
+            except Exception as e:
+                raise Exception(f"处理专家评估失败: {str(e)}")
+
+            # 步骤7：执行推理和保存网络
+            update_progress(6, "正在执行推理和保存网络...")
+            try:
+                analyzer.make_inference()
+
+                output_dir = os.path.join(os.path.dirname(__file__), f'../../data/bn/{scenario_id}')
+                structure_path, params_path = analyzer.save_network(output_dir)
+            except Exception as e:
+                raise Exception(f"执行推理或保存网络失败: {str(e)}")
+
+            # 步骤8：可视化网络
+            update_progress(7, "正在可视化网络...")
+            try:
+                visualizer = NetworkVisualizer()
+                ie = visualizer.visualize_network(
+                    bn=analyzer.bn,
+                    output_dir=output_dir,
+                    state_mapping=analyzer.state_mapping
+                )
+
+                node_data_path = os.path.join(output_dir, "node_data.json")
+
+                # 创建会话和收集器实例
+                collector = PlanDataCollector(self.ElementSettingTab.session, scenario_id=scenario_id)
+
+                # 收集数据
+                plan_data = collector.collect_all_data(plan_name=None)
+
+                # 转换为贝叶斯网络证据
+                evidence = convert_to_evidence(plan_data)
+                update_with_evidence(analyzer, evidence,output_dir)
+
+                self.ModelTransformationTab.set_node_data(json.load(open(node_data_path, 'r')))
+                self.ModelTransformationTab.set_bayesian_network_image(
+                    os.path.join(output_dir, "combined_visualization.svg"))
+                self.generate_bayes_save_to_database.emit()
+            except Exception as e:
+                raise Exception(f"可视化网络失败: {str(e)}")
+
+            # 完成
+            update_progress(8, "完成")
+            time.sleep(0.5)  # 让用户看到100%的进度
+            progress.close()
+            self.unlock_tabs(3)
+            self.switch_tab(3)
+            self.analyzer = analyzer
+            CustomInformationDialog(" ", self.tr("已成功生成推演模型。"), parent=self).exec()
+
+        except Exception as e:
+            if 'progress' in locals():
+                progress.close()
+            CustomErrorDialog("错误", f"生成推演模型失败:\n{str(e)}", parent=self).exec()
+            print(f"Error: {str(e)}")
+
 
     def set_inference_conditions(self):
+        self.ConditionSettingTab.session = self.ElementSettingTab.session
+        self.ConditionSettingTab.scenario_id = self.ElementSettingTab.scenario_data['scenario_id']
+        self.ConditionSettingTab.analyzer = self.analyzer
+        self.ConditionSettingTab.new_plan_generator = PlanData(self.ConditionSettingTab.session,self.ConditionSettingTab.scenario_id,self.ConditionSettingTab.neg_id_gen)
+        self.ConditionSettingTab.load_saved_plans()
         self.unlock_tabs(4)
         self.switch_tab(4)
 

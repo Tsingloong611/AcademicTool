@@ -1,0 +1,108 @@
+package AffectedElement{
+
+    part def AffectedElement{}
+
+    action def Collide {
+            in CollideCondition = true;
+            out DamageCondition = true;
+            out Casualty = true;
+        }
+
+    action def Explode {
+            out ExplodeCondition = true;
+        }
+
+    action def Spill {
+            out SpillCondition = true;
+            out PullotedCondition = true;
+            out DetachedCondition = true;
+        }
+
+    action def VehicleDeparture{
+    }
+
+    action def VehicleExplosion{
+    }
+
+    action def VehicleMotion{
+    }
+
+    action def VehicleSpeedChange{
+    }
+
+    action def VehicleSpillage{
+    }
+
+    action def VehicleTransport{
+    }
+
+    state def AffectedStates{
+            entry; then DrivingState;
+            state DrivingState;
+            accept Collide
+                then CollidedState;
+            state CollidedState;
+            accept Explode
+                then ExplodeState;
+            state ExplodeState;
+        }
+
+    item def IncludedFacilities{
+    }
+
+    item def IncludedLanes{
+    }
+
+    item def VehicleCargo{
+    }
+
+    item def VehicleComponents{
+    }
+
+    item def VehiclePassengers{
+    }
+
+    ref part Road;
+
+    perform action VehicleMotion;
+    perform action VehicleTransport;
+    perform action VehicleDeparture;
+    perform action VehicleExplosion;
+    perform action VehicleSpillage;
+    perform action VehicleSpeedChange;
+
+    }
+
+    part HazardVehicle : AffectedElement{
+    attribute VehicleType : String = null;
+    attribute CombustionCondition : Bool = "0";
+    attribute SpillCondition : Bool = "0";
+    attribute DrivingDirection : Enum = "正向";
+    attribute VehiclePosition : String = null;
+    attribute VehicleSpeed : Real = null;
+    attribute DamageCondition : Bool = "0";
+    attribute CollisionCondition : Bool = "0";
+
+    item VehicleCargo : VehicleCargo;
+    item VehiclePassengers : VehiclePassengers;
+    item VehicleComponents : VehicleComponents;
+
+    part Road : AffectedElement{
+    attribute RoadName : String = null;
+    attribute RoadType : Enum = "主路";
+    attribute NumberOfLanes : Real = null;
+    attribute TrafficVolume : Real = null;
+    attribute SegmentStartStakeNumber : String = null;
+    attribute SegmentEndStakeNumber : String = null;
+    attribute DesignSpeed : Real = null;
+    attribute ClosureCondition : Bool = "0";
+    attribute RoadDamageCondition : Bool = "0";
+    attribute PollutionCondition : Bool = "0";
+
+    item IncludedLanes : IncludedLanes;
+    item IncludedFacilities : IncludedFacilities;
+
+
+    }
+
+}

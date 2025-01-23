@@ -1,10 +1,15 @@
 # Ontology Documentation
 
-Generated on: 2025-01-20 14:08:43
+Generated on: 2025-01-21 17:17:24
 
 ## Classes
 
-### 169
+### 173
+
+Super classes: Thing
+
+
+### 177
 
 Super classes: Thing
 
@@ -44,16 +49,6 @@ Super classes: ResponsePlanElement
 Properties: BehaviorType, Duration, ImplementationCondition
 
 
-### AbsorptionScenario
-
-Super classes: Scenario
-
-
-### AdaptionScenario
-
-Super classes: Scenario
-
-
 ### AffectedElement
 
 Super classes: ScenarioElement
@@ -90,13 +85,6 @@ Properties: CollideTransform
 Super classes: AffectedStates
 
 
-### EconomicFactors
-
-Super classes: ResilienceInfluentialFactors
-
-Properties: actionType, resourceType, roadLoss
-
-
 ### ElementCompositions
 
 Super classes: Thing
@@ -115,13 +103,6 @@ Super classes: ScenarioElement
 ### ExplodeState
 
 Super classes: AffectedStates
-
-
-### FunctionFactors
-
-Super classes: ResilienceInfluentialFactors
-
-Properties: roadPassibility
 
 
 ### HazardElement
@@ -147,21 +128,6 @@ Super classes: ElementCompositions
 ### IncludedLanes
 
 Super classes: ElementCompositions
-
-
-### InvolvedScenarioElement
-
-Super classes: Thing
-
-
-### RecoveryScenario
-
-Super classes: Scenario
-
-
-### ResilienceInfluentialFactors
-
-Super classes: Thing
 
 
 ### ResponseAction
@@ -191,26 +157,7 @@ Super classes: AffectedElement
 Properties: ClosureCondition, DamageConditon, DesignSpeed, NumberOfLanes, PollutionCondition, RoadName, RoadType, SegmentEndStakeNumber, SegmentStartStakeNumber, TrafficVolume, consistIncludedFacilities, consistIncludedLanes
 
 
-### SafetyFactors
-
-Super classes: ResilienceInfluentialFactors
-
-Properties: casualties, emergencyType
-
-
-### Scenario
-
-Super classes: Thing
-
-Properties: hasResilience, influencedBy, involvesElement
-
-
 ### ScenarioElement
-
-Super classes: Thing
-
-
-### ScenarioResilience
 
 Super classes: Thing
 
@@ -218,13 +165,6 @@ Super classes: Thing
 ### SpillState
 
 Super classes: HazardStates
-
-
-### TimeFactors
-
-Super classes: ResilienceInfluentialFactors
-
-Properties: disposalDuration, emergencyPeriod, responseDuration
 
 
 ### VehicleCargo
@@ -502,38 +442,6 @@ Type: ObjectProperty
 Range: CollideState
 
 
-### Properties of EconomicFactors
-
-#### actionType
-
-Type: DatatypeProperty
-
-Range: <class 'str'>
-
-
-#### resourceType
-
-Type: DatatypeProperty
-
-Range: <class 'str'>
-
-
-#### roadLoss
-
-Type: DatatypeProperty
-
-Range: <class 'bool'>
-
-
-### Properties of FunctionFactors
-
-#### roadPassibility
-
-Type: DatatypeProperty
-
-Range: <class 'bool'>
-
-
 ### Properties of Road
 
 #### ClosureCondition
@@ -618,68 +526,6 @@ Range: IncludedFacilities
 Type: ObjectProperty
 
 Range: IncludedLanes
-
-
-### Properties of SafetyFactors
-
-#### casualties
-
-Type: DatatypeProperty
-
-Range: <class 'bool'>
-
-
-#### emergencyType
-
-Type: DatatypeProperty
-
-Range: <class 'str'>
-
-
-### Properties of Scenario
-
-#### hasResilience
-
-Type: ObjectProperty
-
-Range: ScenarioResilience
-
-
-#### influencedBy
-
-Type: ObjectProperty
-
-Range: ResilienceInfluentialFactors
-
-
-#### involvesElement
-
-Type: ObjectProperty
-
-Range: InvolvedScenarioElement
-
-
-### Properties of TimeFactors
-
-#### disposalDuration
-
-Type: DatatypeProperty
-
-Range: <class 'str'>
-
-
-#### emergencyPeriod
-
-Type: DatatypeProperty
-
-Range: <class 'str'>
-
-
-#### responseDuration
-
-Type: DatatypeProperty
-
-Range: <class 'str'>
 
 
 ### Properties of idleState

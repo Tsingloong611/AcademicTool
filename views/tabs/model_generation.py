@@ -251,6 +251,10 @@ QLabel {{
 QCheckBox {{
     color: #333333;
 }}
+            QAbstractScrollArea::corner {{
+                background: transparent;  /* 或者改成 #ffffff，与主背景相同 */
+                border: none;
+            }}
 QLineEdit {{
     border: 1px solid #ccc;
     border-radius: 4px;
@@ -670,7 +674,7 @@ QListWidget::item:selected {{
 
     def handle_generate(self):
         """Handle the logic for generating the model."""
-        CustomInformationDialog(" ", self.tr("已成功生成推演模型。")).exec()
+
         self.generate_request.emit()
 
     def handle_ontology_selection(self, index):

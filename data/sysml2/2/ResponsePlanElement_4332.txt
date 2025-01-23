@@ -1,0 +1,14 @@
+package ResponsePlanElement{
+
+    part def ResponsePlanElement{}
+
+    part 4332 : ResponsePlanElement{
+        attribute PlanName : String = "默认预案";
+
+        ref part 人员;
+        ref part 救助;
+
+
+    }
+
+}

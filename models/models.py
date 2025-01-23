@@ -87,9 +87,29 @@ class AttributeAspect(Base):
         back_populates='attribute_aspect'
     )
 
+class AttributeCodeName(Base):
+    __tablename__ = 'attribute_code_name'
+
+    # 两列联合做主键
+    attribute_code_id = Column(
+        Integer,
+        ForeignKey('attribute_code.attribute_code_id',
+                   ondelete='CASCADE', onupdate='RESTRICT'),
+        primary_key=True
+    )
+    attribute_name = Column(String(255), nullable=False, primary_key=True)
+
+    # relationship 定义
+    attribute_code = relationship(
+        'AttributeCode',
+        back_populates='attribute_code_names',
+        passive_deletes=True
+    )
+
 
 class AttributeCode(Base):
     __tablename__ = 'attribute_code'
+
     attribute_code_id = Column(Integer, primary_key=True, autoincrement=True)
     attribute_code_name = Column(String(255), nullable=False)
     description = Column(Text, nullable=True)
@@ -97,7 +117,8 @@ class AttributeCode(Base):
     create_time = Column(
         DateTime,
         nullable=False,
-        server_default=func.now()
+        server_default=func.now(),
+        onupdate=func.now()
     )
     update_time = Column(
         DateTime,
@@ -106,7 +127,15 @@ class AttributeCode(Base):
         onupdate=func.now()
     )
 
+    # 原先就有的关系
     attribute_definitions = relationship('AttributeDefinition', back_populates='attribute_code')
+
+    # 新增：一对多到 AttributeCodeName
+    attribute_code_names = relationship(
+        'AttributeCodeName',
+        back_populates='attribute_code',
+        passive_deletes=True
+    )
 
 
 class AttributeType(Base):
@@ -484,7 +513,7 @@ class BehaviorNameCode(Base):
                               ForeignKey('behavior_code.behavior_code_id',
                                          ondelete='CASCADE', onupdate='RESTRICT'),
                               primary_key=True)
-    behavior_name = Column(String(255), nullable=False)
+    behavior_name = Column(String(255), nullable=False,primary_key=True)
 
     behavior_code = relationship('BehaviorCode', back_populates='behavior_name_codes')
 
@@ -495,7 +524,7 @@ class BehaviorDefinition(Base):
     china_default_name = Column(String(255), nullable=False)
     english_default_name = Column(String(255), nullable=False)
 
-    behavior_code = Column(Integer,
+    behavior_code_id = Column(Integer,
                            ForeignKey('behavior_code.behavior_code_id',
                                       ondelete='CASCADE', onupdate='RESTRICT'),
                            nullable=False, index=True)

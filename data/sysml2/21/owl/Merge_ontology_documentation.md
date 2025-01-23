@@ -1,10 +1,15 @@
 # Ontology Documentation
 
-Generated on: 2025-01-20 14:08:43
+Generated on: 2025-01-21 17:17:24
 
 ## Classes
 
-### 169
+### 173
+
+Super classes: Thing
+
+
+### 177
 
 Super classes: Thing
 
@@ -94,7 +99,7 @@ Super classes: AffectedStates
 
 Super classes: ResilienceInfluentialFactors
 
-Properties: actionType, resourceType, roadLoss
+Properties: resourceType, roadLoss
 
 
 ### ElementCompositions
@@ -520,13 +525,6 @@ Range: CollideState
 
 
 ### Properties of EconomicFactors
-
-#### actionType
-
-Type: DatatypeProperty
-
-Range: <class 'str'>
-
 
 #### resourceType
 

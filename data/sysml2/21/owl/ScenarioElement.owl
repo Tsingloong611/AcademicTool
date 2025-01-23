@@ -3,10 +3,10 @@
          xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
          xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
          xmlns:owl="http://www.w3.org/2002/07/owl#"
-         xml:base="http://example.org/scenario_3.owl"
-         xmlns="http://example.org/scenario_3.owl#">
+         xml:base="http://example.org/scenario_element.owl"
+         xmlns="http://example.org/scenario_element.owl#">
 
-<owl:Ontology rdf:about="http://example.org/scenario_3.owl"/>
+<owl:Ontology rdf:about="http://example.org/scenario_element.owl"/>
 
 <owl:ObjectProperty rdf:about="#associateWith"/>
 
@@ -18,9 +18,9 @@
 
 <owl:ObjectProperty rdf:about="#stateTransform"/>
 
-<owl:ObjectProperty rdf:about="#associate169">
+<owl:ObjectProperty rdf:about="#associate177">
   <rdfs:subPropertyOf rdf:resource="#associateWith"/>
-  <rdfs:range rdf:resource="#169"/>
+  <rdfs:range rdf:resource="#177"/>
 </owl:ObjectProperty>
 
 <owl:ObjectProperty rdf:about="#CollideTransform">
@@ -127,6 +127,11 @@
 
 <owl:ObjectProperty rdf:about="#hasVehicleTurningEffectOn">
   <rdfs:subPropertyOf rdf:resource="#hasEffectOn"/>
+</owl:ObjectProperty>
+
+<owl:ObjectProperty rdf:about="#associate173">
+  <rdfs:subPropertyOf rdf:resource="#associateWith"/>
+  <rdfs:range rdf:resource="#173"/>
 </owl:ObjectProperty>
 
 <owl:ObjectProperty rdf:about="#Aid:ActionTransform">
@@ -411,7 +416,7 @@
   <rdfs:subClassOf rdf:resource="#AffectedElement"/>
 </owl:Class>
 
-<owl:Class rdf:about="#169">
+<owl:Class rdf:about="#177">
   <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
 </owl:Class>
 
@@ -439,11 +444,11 @@
   <rdfs:subClassOf rdf:resource="#AffectedStates"/>
 </owl:Class>
 
-<owl:Class rdf:about="#CollidedState">
+<owl:Class rdf:about="#DrivingState">
   <rdfs:subClassOf rdf:resource="#AffectedStates"/>
 </owl:Class>
 
-<owl:Class rdf:about="#DrivingState">
+<owl:Class rdf:about="#CollidedState">
   <rdfs:subClassOf rdf:resource="#AffectedStates"/>
 </owl:Class>
 
@@ -455,15 +460,15 @@
   <rdfs:subClassOf rdf:resource="#HazardElement"/>
 </owl:Class>
 
-<owl:Class rdf:about="#SpillState">
-  <rdfs:subClassOf rdf:resource="#HazardStates"/>
-</owl:Class>
-
 <owl:Class rdf:about="#DriveState">
   <rdfs:subClassOf rdf:resource="#HazardStates"/>
 </owl:Class>
 
 <owl:Class rdf:about="#CollideState">
+  <rdfs:subClassOf rdf:resource="#HazardStates"/>
+</owl:Class>
+
+<owl:Class rdf:about="#SpillState">
   <rdfs:subClassOf rdf:resource="#HazardStates"/>
 </owl:Class>
 
@@ -473,6 +478,10 @@
 
 <owl:Class rdf:about="#8">
   <rdfs:subClassOf rdf:resource="#ResponsePlanElement"/>
+</owl:Class>
+
+<owl:Class rdf:about="#173">
+  <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
 </owl:Class>
 
 <owl:Class rdf:about="#aidStates">

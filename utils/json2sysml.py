@@ -169,21 +169,14 @@ def json_to_sysml2_txt(
     referenced_entities = []
     for attr in attributes:
         refs = attr.get('referenced_entities', [])
+        # print(f"refs: {refs}")
         for ref in refs:
-            if isinstance(ref, dict):
-                # 假设引用实体有 'referenced_entity_id'
-                ref_id = ref.get('referenced_entity_id')
-                if ref_id is not None:
-                    # 从 element_data 获取实体名称
-                    ref_entity = element_data.get(ref_id)
-                    if ref_entity and 'entity_name' in ref_entity:
-                        ref_name = ref_entity['entity_name']
-                        referenced_entities.append(ref_name)
-                    else:
-                        raise ValueError(f"未找到 referenced_entity_id {ref_id} 对应的实体名称。")
-            else:
-                # 如果 ref 不是字典，直接使用
-                referenced_entities.append(str(ref))
+            for key, value in element_data.items():
+                # print(f"key: {key}, value: {value}")
+                if key == ref:
+                    referenced_entities.append(value['entity_name'])
+                    # print(f"referenced_entities: {referenced_entities}")
+
 
     for ref in referenced_entities:
         lines.append(f"{indent * 2}ref part {ref};")

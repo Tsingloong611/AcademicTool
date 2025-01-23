@@ -1,7 +1,9 @@
 import json
 import os
 import sys
+from datetime import datetime
 from functools import partial
+from typing import Dict, Any, List
 
 import requests
 from PySide6.QtWebChannel import QWebChannel
@@ -14,7 +16,11 @@ from PySide6.QtWidgets import (
 )
 from PySide6.QtCore import Qt, Signal, QEvent, QObject, Slot, QUrl
 from PySide6.QtGui import QFont, QPainter, QPen, QColor, QIcon
+from sqlalchemy.orm import Session
 
+from models.models import Template, Category
+from utils.bn_svg_update import update_with_evidence
+from utils.plan import PlanData, evidence, PlanDataCollector, convert_to_evidence
 from views.dialogs.custom_information_dialog import CustomInformationDialog
 from views.dialogs.custom_input_dialog import CustomInputDialog
 from views.dialogs.custom_question_dialog import CustomQuestionDialog
@@ -509,11 +515,11 @@ class DetailsDialog(QDialog):
 class SaveResultDialog(QDialog):
     def __init__(self, saved_categories, info_html, parent=None):
         super().__init__(parent)
-        self.setWindowTitle(self.tr("保存结果"))
+        self.setWindowTitle(self.tr("实施结果"))
         self.setModal(True)
         self.resize(300,250)
         main_layout = QVBoxLayout(self)
-        lab = QLabel(self.tr("已保存的应急行为类别:"))
+        lab = QLabel(self.tr("已实施的应急行为:"))
         lab.setFont(QFont("SimSun",14,QFont.Bold))
         main_layout.addWidget(lab)
 
@@ -538,16 +544,35 @@ class SaveResultDialog(QDialog):
         dlg = DetailsDialog(info_html, parent=self)
         dlg.open()
 
+class NegativeIdGenerator:
+    """全局负数 ID 生成器，从 -1 开始，每次 -1。"""
+    def __init__(self, start: int = -1):
+        self.current = start
+
+    def next_id(self) -> int:
+        nid = self.current
+        self.current -= 1
+        return nid
 
 class ConditionSettingTab(QWidget):
     save_requested = Signal()
+    save_plan_to_database_signal = Signal(list,bool)
 
     def __init__(self, parent=None):
         super().__init__(parent)
+        self.new_plan_generator = None
+        self.posterior_probabilities = []
+        self.scenario_id = None
+        self.session = None
+        self.analyzer = None
+        self.neg_id_gen = NegativeIdGenerator()
         self.setWindowTitle(self.tr("应急预案设置"))
         self.behavior_resources = {b:[] for b in ["救助","牵引","抢修","消防"]}
         self.current_behavior = None
+        self.plans_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), "emergency_plans.json")
         self.init_ui()
+        self.init_simulation_table()  # 初始化表格结构
+
 
     def init_ui(self):
         self.set_stylesheet()
@@ -557,9 +582,7 @@ class ConditionSettingTab(QWidget):
         self.setLayout(main_layout)
 
         # =============== 第一层布局：执行推演按钮 =================
-        # （原代码似乎没有内容，如果需要可以自行添加或保持空白）
-
-
+        #
 
         # =============== 第二层布局：应急行为设置和应急资源设置 =================
         middle_layout = QHBoxLayout()
@@ -735,6 +758,189 @@ class ConditionSettingTab(QWidget):
         self.add_resource_btn.clicked.connect(self.add_resource)
         self.edit_resource_btn.clicked.connect(self.edit_resource)
         self.delete_resource_btn.clicked.connect(self.delete_resource)
+        self.simulation_table.itemDoubleClicked.connect(self.show_plan_details)
+
+    def save_plan_to_file(self, plan_data):
+        """Save plan data to JSON file"""
+        try:
+            # Load existing plans if file exists
+            if os.path.exists(self.plans_file):
+                with open(self.plans_file, 'r', encoding='utf-8') as f:
+                    self.plans_data = json.load(f)
+            else:
+                self.plans_data = {}
+
+            # Add timestamp to plan data
+            plan_data['timestamp'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+            # Save plan with its name as key
+            self.plans_data[plan_data['plan_name']] = plan_data
+
+            # Write updated plans to file
+            with open(self.plans_file, 'w', encoding='utf-8') as f:
+                json.dump(self.plans_data, ensure_ascii=False, indent=2, fp=f)
+
+            return True
+        except Exception as e:
+            print(f"Error saving plan: {str(e)}")
+            return False
+
+    def add_plan_to_simulation_table(self, plan_name, plan_data):
+        """Add a single plan to the simulation table"""
+        # Get current row count excluding header rows
+        current_data_rows = self.simulation_table.rowCount() - 2
+        new_row = current_data_rows + 2  # Add after headers
+
+        self.simulation_table.insertRow(new_row)
+
+        # Set plan name
+        self.simulation_table.setItem(new_row, 0, QTableWidgetItem(plan_name))
+
+        # Get simulation results from plan data or use defaults
+        simulation_results = plan_data.get('simulation_results', {
+            "推演前-较好": "30%",
+            "推演前-中等": "50%",
+            "推演前-较差": "20%",
+            "推演后-较好": "60%",
+            "推演后-中等": "30%",
+            "推演后-较差": "10%"
+        })
+
+        # Set simulation results
+        columns = [
+            simulation_results["推演前-较好"],
+            simulation_results["推演前-中等"],
+            simulation_results["推演前-较差"],
+            simulation_results["推演后-较好"],
+            simulation_results["推演后-中等"],
+            simulation_results["推演后-较差"]
+        ]
+
+        for col, value in enumerate(columns, 1):
+            item = QTableWidgetItem(value)
+            item.setTextAlignment(Qt.AlignCenter)
+            self.simulation_table.setItem(new_row, col, item)
+
+    def show_plan_details(self, item):
+        """Show detailed information for the selected plan"""
+        row = item.row()
+        plan_name = self.simulation_table.item(row, 0).text()
+
+        collector = PlanDataCollector(self.session, scenario_id=self.scenario_id)
+
+        # 收集数据
+        print(f"[DEBUG] Collecting data for plan: {plan_name}")
+        plan_data = collector.collect_all_data(plan_name=plan_name)
+        print(f"[DEBUG] Plan data: {plan_data}")
+
+        # 转换为贝叶斯网络证据
+        evidence = convert_to_evidence(plan_data)
+        print(f"[DEBUG] Evidence: {evidence}")
+
+        output_dir = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                                                  f"../../data/bn/{self.scenario_id}/plans/{plan_name}"))
+        print(f"[DEBUG] Output directory: {output_dir}")
+        update_with_evidence(self.analyzer, evidence, output_dir)
+
+        # 打开posteriot_probabilities.json
+        posteriors_file = os.path.join(output_dir, "posterior_probabilities.json")
+        posterior_probabilities = {}
+        if os.path.exists(posteriors_file):
+            with open(posteriors_file, 'r', encoding='utf-8') as f:
+                posterior_probabilities = json.load(f)
+        print(f"[DEBUG] Posterior probabilities: {posterior_probabilities}")
+
+        self.new_plan_generator.upsert_posterior_probability(plan_name, posterior_probabilities)
+
+        self.posterior_probabilities = self.convert_json_to_posterior_probabilities(posterior_probabilities)
+        print(f"[DEBUG] Posterior probabilities: {self.posterior_probabilities}")
+
+        self.update_evidence_table()
+
+        if plan_name in self.plans_data:
+            plan_data = self.plans_data[plan_name]
+            print(f"[DEBUG] Plan data: {plan_data}")
+
+            # Generate HTML content for the details dialog
+            info_html = self.generate_plan_details_html(plan_data)
+
+            # Show details dialog
+            details_dialog = DetailsDialog(info_html, self)
+            details_dialog.setWindowTitle(self.tr("预案详情 - ") + plan_name)
+            details_dialog.open()
+
+    def generate_plan_details_html(self, plan_data):
+        """Generate HTML content for plan details"""
+        info_html = """
+        <html><head><style>
+         body{font-family:"Microsoft YaHei";font-size:14px;color:#333}
+         h2{text-align:center;color:#0078d7;margin-bottom:20px}
+         h3{color:#005a9e;margin-top:30px;margin-bottom:10px}
+         .timestamp{color:#666;font-size:12px;text-align:right;margin-bottom:20px}
+         table{width:100%;border-collapse:collapse;margin-bottom:20px}
+         th,td{border:1px solid #ccc;padding:10px;text-align:center}
+         th{background-color:#f0f0f0}
+         .no-resource{color:red;font-style:italic;text-align:center}
+        </style></head><body>
+        """
+
+        info_html += f"<h2>{plan_data['plan_name']}</h2>"
+        info_html += f"<div class='timestamp'>{self.tr('创建时间')}: {plan_data['timestamp']}</div>"
+
+        for action in plan_data['emergency_actions']:
+            if action['implementation_status'] == 'True':
+                info_html += f"<h3>{self.tr('应急行为')}: {action['action_type']}</h3>"
+                info_html += f"<p><b>{self.tr('时长')}:</b> {action['duration']}</p>"
+
+                # Resources table
+                info_html += f"<b>{self.tr('资源列表')}:</b>"
+                if action['resources']:
+                    info_html += f"""
+                    <table>
+                    <tr>
+                        <th>{self.tr('资源名称')}</th>
+                        <th>{self.tr('类型')}</th>
+                        <th>{self.tr('数量')}</th>
+                        <th>{self.tr('位置')}</th>
+                    </tr>
+                    """
+                    for resource in action['resources']:
+                        info_html += f"""
+                        <tr>
+                            <td>{resource['resource_type']}</td>
+                            <td>{resource['resource_category']}</td>
+                            <td>{resource['quantity']}</td>
+                            <td>{resource['location']}</td>
+                        </tr>
+                        """
+                    info_html += "</table>"
+                else:
+                    info_html += f"<p class='no-resource'>{self.tr('无资源')}</p>"
+
+        info_html += "</body></html>"
+        return info_html
+
+    def load_saved_plans(self):
+        """Load saved plans from JSON file and update simulation table"""
+        try:
+            # Initialize table structure
+            self.init_simulation_table()
+
+            self.plans_data = self.new_plan_generator.get_all_plans()
+            print(f"[DEBUG] Loaded plans: {self.plans_data}")
+
+            # Add each plan to the simulation table
+            for plan_name, plan_data in self.plans_data.items():
+                self.add_plan_to_simulation_table(plan_name, plan_data)
+            return True
+        except Exception as e:
+            print(f"Error loading plans: {str(e)}")
+            CustomWarningDialog(
+                self.tr("错误"),
+                self.tr("加载预案数据时出现错误：") + str(e),
+                parent=self
+            ).open()
+
 
     def handle_label_clicked(self, behavior):
         self.check_execute_button()
@@ -865,19 +1071,36 @@ class ConditionSettingTab(QWidget):
 
     def check_execute_button(self):
         selected_b = [b for b in self.behaviors if self.behavior_settings[b].checkbox.isChecked()]
-        all_checked = any([len(self.behavior_resources[b]) > 0 for b in selected_b])
-        for b in selected_b:
-            if len(self.behavior_resources[b]) > 0:
-                duration = self.behavior_settings[b].get_duration()
-                if duration == 0:
-                    all_checked = False
-                    break
-        if not all_checked:
+
+        if not selected_b:
             self.execute_btn.setEnabled(False)
             self.execute_btn.setToolTip(self.tr("请配置应急行为"))
+            return
+
+        # 检查所有被勾选的应急行为是否有资源
+        all_have_resources = all(len(self.behavior_resources[b]) > 0 for b in selected_b)
+
+        # 检查所有被勾选的应急行为的时长是否大于0
+        all_have_duration = all(self.behavior_settings[b].get_duration() > 0 for b in selected_b)
+
+        # 如果所有被勾选的应急行为都满足上述两个条件，则启用按钮
+        if all_have_resources and all_have_duration:
+            self.execute_btn.setEnabled(True)
+            self.execute_btn.setToolTip("")
         else:
-            self.execute_btn.setEnabled(all_checked)
-            self.execute_btn.setToolTip(self.tr("请配置应急行为") if not all_checked else "")
+            self.execute_btn.setEnabled(False)
+            self.execute_btn.setToolTip(self.tr("请配置应急行为"))
+
+    def create_plan(self,name,plan_data) -> Dict[int, Any]:
+
+        new_plan_data = self.new_plan_generator.build_plan_structure(plan_data)
+        print(f"[DEBUG] New plan data: {new_plan_data}")
+        saved_plan = []
+        for entity_id, entity in new_plan_data.items():
+            saved_plan.append(entity)
+        self.save_plan_to_database_signal.emit(saved_plan,False)
+        return new_plan_data
+
 
     def handle_save(self):
         saved_categories = []
@@ -935,30 +1158,174 @@ class ConditionSettingTab(QWidget):
         input_dlg.accepted_text.connect(lambda name: self.on_plan_name_input(name))
         input_dlg.open()
 
+    def format_plan_as_json(self, plan_name):
+        """Format the emergency plan details as JSON."""
+        plan_data = {
+            "plan_name": plan_name,
+            "emergency_actions": [],
+            "simulation_results": {
+                "推演前-较好": "30%",
+                "推演前-中等": "50%",
+                "推演前-较差": "20%",
+                "推演后-较好": "60%",
+                "推演后-中等": "30%",
+                "推演后-较差": "10%"
+            }
+        }
+
+        # Collect data for each checked behavior
+        for behavior in self.behaviors:
+            checkbox = self.behavior_settings[behavior].checkbox
+
+            if checkbox.isChecked():
+                action_data = {
+                    "action_type": behavior,
+                    "duration": f"{self.behavior_settings[behavior].get_duration()} minutes",
+                    "implementation_status": "True",
+                    "resources": []
+                }
+
+                # Add all resources for this behavior
+                for resource in self.behavior_resources[behavior]:
+                    resource_data = {
+                        "resource_type": resource["资源"],
+                        "resource_category": resource["类型"],
+                        "quantity": resource["数量"],
+                        "location": resource["位置"]
+                    }
+                    action_data["resources"].append(resource_data)
+
+                plan_data["emergency_actions"].append(action_data)
+
+        return plan_data
+
+    def convert_json_to_posterior_probabilities(self,json_data):
+        """
+        将给定的 JSON 数据转换为 posterior_probabilities 列表格式。
+
+        参数：
+            json_data (dict): 包含要转换数据的字典。
+
+        返回：
+            list: 转换后的 posterior_probabilities 列表。
+        """
+        posterior_probabilities = []
+
+        for element_node, states in json_data.items():
+            # 遍历每个要素节点下的所有状态
+            for state, probability in states.items():
+                # 将概率转换为百分比字符串，保留两位小数
+                probability_percentage = f"{probability * 100:.2f}%"
+
+                # 创建一个字典并添加到列表中
+                entry = {
+                    "要素节点": element_node,
+                    "状态": state,
+                    "概率": probability_percentage
+                }
+                posterior_probabilities.append(entry)
+
+        return posterior_probabilities
+
     def on_plan_name_input(self, plan_name):
+        """Handle plan name input and save plan data"""
         plan_name = plan_name.strip()
         if plan_name:
+            # Format the plan data as JSON
+            plan_data = self.format_plan_as_json(plan_name)
+            print(f"[DEBUG] Plan data: {plan_data}")
+            self.create_plan(plan_name,plan_data)
+            collector = PlanDataCollector(self.session, scenario_id=self.scenario_id)
+
+            # 收集数据
+            print(f"[DEBUG] Collecting data for plan: {plan_name}")
+            plan_data = collector.collect_all_data(plan_name=plan_name)
+            print(f"[DEBUG] Plan data: {plan_data}")
+
+            # 转换为贝叶斯网络证据
+            evidence = convert_to_evidence(plan_data)
+            print(f"[DEBUG] Evidence: {evidence}")
+
+            output_dir = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), f"../../data/bn/{self.scenario_id}/plans/{plan_name}"))
+            print(f"[DEBUG] Output directory: {output_dir}")
+            update_with_evidence(self.analyzer, evidence, output_dir)
+
+            # 打开posteriot_probabilities.json
+            posteriors_file = os.path.join(output_dir, "posterior_probabilities.json")
+            posterior_probabilities = {}
+            if os.path.exists(posteriors_file):
+                with open(posteriors_file, 'r', encoding='utf-8') as f:
+                    posterior_probabilities = json.load(f)
+            print(f"[DEBUG] Posterior probabilities: {posterior_probabilities}")
+
+            self.new_plan_generator.upsert_posterior_probability(plan_name,posterior_probabilities)
+
+            self.posterior_probabilities = self.convert_json_to_posterior_probabilities(posterior_probabilities)
+            print(f"[DEBUG] Posterior probabilities: {self.posterior_probabilities}")
+
             self.update_evidence_table()
-            self.update_simulation_table(plan_name)
-            CustomInformationDialog(self.tr("成功"), self.tr("预案 '") + plan_name + self.tr("' 已保存并推演。"), parent=self).open()
+
+            new_plan_data = self.new_plan_generator.get_all_plans()
+            print(f"[DEBUG] New plan data: {new_plan_data}")
+
+            if self.load_saved_plans():
+                # Show success message
+                CustomInformationDialog(
+                    self.tr("成功"),
+                    self.tr("预案 '") + plan_name + self.tr("' 已保存并推演。"),
+                    parent=self
+                ).open()
+            else:
+                CustomWarningDialog(
+                    self.tr("错误"),
+                    self.tr("保存预案时出现错误。"),
+                    parent=self
+                ).open()
         else:
-            CustomWarningDialog(self.tr("提示"), self.tr("预案名字不能为空。")).exec_()
+            CustomWarningDialog(
+                self.tr("提示"),
+                self.tr("预案名字不能为空。"),
+                parent=self
+            ).open()
+
+    def init_simulation_table(self):
+        """Initialize simulation table with headers and structure"""
+        self.simulation_table.clearContents()
+        self.simulation_table.setRowCount(2)  # Initial header rows
+
+        # Set header structure
+        self.simulation_table.setSpan(0, 0, 2, 1)  # "韧性/预案" cell
+        self.simulation_table.setSpan(0, 1, 1, 3)  # "推演前" cell
+        self.simulation_table.setSpan(0, 4, 1, 3)  # "推演后" cell
+
+        # Initialize header rows with empty items
+        for col in range(7):
+            if self.simulation_table.item(0, col) is None:
+                self.simulation_table.setItem(0, col, QTableWidgetItem(""))
+            if self.simulation_table.item(1, col) is None:
+                self.simulation_table.setItem(1, col, QTableWidgetItem(""))
+
+        # Apply header delegate
+        header_delegate = FullHeaderDelegate(self.simulation_table)
+        for row in range(2):
+            for col in range(self.simulation_table.columnCount()):
+                self.simulation_table.setItemDelegateForRow(row, header_delegate)
 
     def update_evidence_table(self):
-        example_data = [
-            {self.tr("要素节点"):self.tr("节点1"),self.tr("状态"):self.tr("正常"),self.tr("概率"):"80%"},
-            {self.tr("要素节点"):self.tr("节点2"),self.tr("状态"):self.tr("异常"),self.tr("概率"):"20%"},
-        ]
         self.evidence_table.clearContents()
         self.evidence_table.setRowCount(0)
-        for d in example_data:
+        for d in self.posterior_probabilities:
             rowpos = self.evidence_table.rowCount()
             self.evidence_table.insertRow(rowpos)
             self.evidence_table.setItem(rowpos,0,QTableWidgetItem(d[self.tr("要素节点")]))
             self.evidence_table.setItem(rowpos,1,QTableWidgetItem(d[self.tr("状态")]))
             self.evidence_table.setItem(rowpos,2,QTableWidgetItem(d[self.tr("概率")]))
             for col in range(3):
-                self.evidence_table.item(rowpos,col).setTextAlignment(Qt.AlignCenter)
+                item = self.evidence_table.item(rowpos, col)
+                item.setTextAlignment(Qt.AlignCenter)
+                item.setToolTip(item.text())
+        # 设置tooltip,显示浮标所在单元格内容
+
 
     def update_simulation_table(self, plan_name):
         data = [

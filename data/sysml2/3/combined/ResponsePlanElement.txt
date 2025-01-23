@@ -1,0 +1,185 @@
+package ResponsePlanElement{
+
+    part def ResponsePlanElement{}
+
+    action def Action{
+            out implementationCondition;
+            out startTime;
+            out endTime;
+        }
+
+    action def Firefighting{
+    }
+
+    action def PersonnalRescue{
+    }
+
+    action def RoadCleaning{
+    }
+
+    action def RoadControl{
+    }
+
+    action def RoadRepair{
+    }
+
+    action def VehicleTowing{
+    }
+
+    state def aidStates{
+            entry; then idleState;
+            state idleState;
+            accept Aid:Action
+                then implementState;
+            state implementState;
+        }
+
+    state def firefightingStates{
+            entry; then idleState;
+            state idleState;
+            accept FireFighting:Action
+                then implementState;
+            state implementState;
+        }
+
+    state def rescueStates{
+            entry; then idleState;
+            state idleState;
+            accept Rescue:Action
+                then implementState;
+            state implementState;
+        }
+
+    state def towStates{
+            entry; then idleState;
+            state idleState;
+            accept Tow:Action
+                then implementState;
+            state implementState;
+        }
+
+    ref part 人员;
+
+    ref part 人员;
+
+    perform action Firefighting;
+    perform action PersonnalRescue;
+    perform action VehicleTowing;
+    perform action RoadCleaning;
+    perform action RoadRepair;
+    perform action RoadControl;
+
+    }
+
+    ref part 抢修;
+
+    ref part 抢修;
+
+
+    }
+
+    ref part 救助;
+
+    ref part 救助;
+
+
+    }
+
+    ref part 消防;
+
+
+    }
+
+    ref part 牵引;
+
+    ref part 牵引;
+
+
+    }
+
+    part 32635536 : ResponsePlanElement{
+    attribute PlanName : String = "默认预案";
+
+    part 32wqrw : ResponsePlanElement{
+    attribute PlanName : String = "默认预案";
+
+    part 44234 : ResponsePlanElement{
+    attribute PlanName : String = "默认预案";
+
+    part 7 : ResponsePlanElement{
+    attribute ResourceType : Enum = null;
+    attribute ResourceUsageCondition : Bool = "0";
+    attribute ResourceQuantityOrQuality : Real = null;
+
+
+
+    }
+
+    part 8 : ResponsePlanElement{
+    attribute BehaviorType : Enum = null;
+    attribute ImplementationCondition : Bool = "0";
+    attribute Duration : Real = null;
+
+
+    perform action Firefighting;
+    perform action PersonnalRescue;
+    perform action VehicleTowing;
+    perform action RoadCleaning;
+    perform action RoadRepair;
+    perform action RoadControl;
+
+    }
+
+    part ewa2 : ResponsePlanElement{
+    attribute PlanName : String = "默认预案";
+
+    part 人员 : ResponsePlanElement{
+    attribute ResourceType : Enum = null;
+    attribute ResourceUsageCondition : Bool = "0";
+    attribute ResourceQuantityOrQuality : Real = null;
+
+    part 你好 : ResponsePlanElement{
+    attribute PlanName : String = "默认预案";
+
+    part 抢修 : ResponsePlanElement{
+    attribute BehaviorType : Enum = null;
+    attribute ImplementationCondition : Bool = "0";
+    attribute Duration : Real = null;
+
+    part 救助 : ResponsePlanElement{
+    attribute BehaviorType : Enum = null;
+    attribute ImplementationCondition : Bool = "0";
+    attribute Duration : Real = null;
+
+    part 消防 : ResponsePlanElement{
+    attribute BehaviorType : Enum = null;
+    attribute ImplementationCondition : Bool = "0";
+    attribute Duration : Real = null;
+
+    part 牵引 : ResponsePlanElement{
+    attribute BehaviorType : Enum = null;
+    attribute ImplementationCondition : Bool = "0";
+    attribute Duration : Real = null;
+
+    part 那个 : ResponsePlanElement{
+    attribute PlanName : String = "默认预案";
+
+    part 预案1 : ResponsePlanElement{
+    attribute PlanName : String = "默认预案";
+
+    part 预案2 : ResponsePlanElement{
+    attribute PlanName : String = "默认预案";
+
+    part 预案3 : ResponsePlanElement{
+    attribute PlanName : String = "默认预案";
+
+    part 预案4 : ResponsePlanElement{
+    attribute PlanName : String = "默认预案";
+
+    part 预案5 : ResponsePlanElement{
+    attribute PlanName : String = "默认预案";
+
+    part 预案6 : ResponsePlanElement{
+    attribute PlanName : String = "默认预案";
+
+}

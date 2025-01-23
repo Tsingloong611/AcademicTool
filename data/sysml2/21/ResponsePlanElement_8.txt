@@ -25,6 +25,7 @@ package ResponsePlanElement{
         attribute ImplementationCondition : Bool = "0";
         attribute Duration : Real = null;
 
+        ref part 173;
 
         perform action Firefighting;
         perform action PersonnalRescue;
