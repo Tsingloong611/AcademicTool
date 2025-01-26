@@ -151,6 +151,7 @@ def seed_attribute_code(session):
         (72, 'PlanName', '预案名称', '2025-01-20 19:33:41', '2025-01-20 19:33:42'),
         (73, 'HasResource', '包含资源', '2025-01-20 19:34:16', '2025-01-20 19:34:18'),
         (74, 'HasAction', '包含行动', '2025-01-20 19:34:29', '2025-01-20 19:34:31'),
+        (75, 'Location', '资源位置', '2025-01-20 19:34:42', '2025-01-20 19:34:44'),
     ]
     # 该部分实际上和 seed_attribute_code 里有重叠, 注意不要重复插入。
     # 如果只想一次性插入 attribute_code，可放到同一个函数里；本处保留示例，可能需要手动调整。
@@ -173,7 +174,7 @@ def seed_attribute_code_name(session):
       (1, 'ExplodeCondition'), (1, 'VehicleType'), ..., (74, 'HasAction');
     """
     raw_data = [
-        (1, 'ExplodeCondition'), (1, 'VehicleType'),
+        (1, 'VehicleType'),
         (2, 'CollideCondition'), (2, 'CollisionCondition'),
         (3, 'CombustionCondition'), (4, 'SpillCondition'),
         (5, 'BreakdownCondition'), (6, 'RollOverCondition'),
@@ -206,7 +207,7 @@ def seed_attribute_code_name(session):
         (65, 'RoadSection'), (66, 'HasVehicles'), (67, 'VehiclePartType'),
         (68, 'IsDetached'), (69, 'VehiclePartsOf'),
         (70, 'VehicleLoadTyoe'), (71, 'LoadedOn'),
-        (72, 'PlanName'), (73, 'HasPlan'), (74, 'HasAction'),
+        (72, 'PlanName'), (73, 'HasPlan'), (74, 'HasAction'),(75,'Location')
     ]
     objs = []
     for (code_id, name) in raw_data:
@@ -435,7 +436,7 @@ def seed_template_attribute_definition(session):
         (8, 48), (8, 49), (8, 50), (8, 51), (8, 52), (8, 53), (8, 54),
         (9, 55), (9, 56), (9, 57), (9, 58), (10, 59), (10, 60), (10, 61), (10, 62),
         (10, 63), (10, 64), (10, 65), (10, 66), (12, 67), (12, 68), (13, 68),
-        (12, 69), (13, 70), (13, 71), (14, 72), (14, 73), (14, 74),
+        (12, 69), (13, 70), (13, 71), (14, 72), (14, 73), (14, 74), (7, 75),
     ]
     for (template_id, attr_def_id) in raw_data:
         tmpl = session.query(Template).filter_by(template_id=template_id).one()

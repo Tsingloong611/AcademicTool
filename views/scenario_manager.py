@@ -80,7 +80,7 @@ class ScenarioDialog(QDialog):
 
 
 class ScenarioManager(QWidget):
-    scenario_selected = Signal(int, str, str)
+    scenario_selected = Signal(int)
     add_requested = Signal()
     edit_requested = Signal(int)
     delete_requested = Signal(int)
@@ -227,7 +227,7 @@ QToolTip {
         reply = CustomQuestionDialog(self.tr("确认选择"), self.tr(f'您确定要选择情景 "{scenario_name}" 吗?')).ask()
 
         if reply:
-            self.scenario_selected.emit(scenario_id, scenario_name, scenario_description)
+            self.scenario_selected.emit(scenario_id)
         else:
             CustomInformationDialog(self.tr("取消选择"), self.tr("您已取消选择情景。")).get_result()
 
@@ -263,9 +263,7 @@ QToolTip {
                         self.list_widget.setCurrentItem(item)
                         item.setSelected(True)
                         self.scenario_selected.emit(
-                            item.data(Qt.UserRole),
-                            item.text(),
-                            item.data(Qt.UserRole + 1)
+                            item.data(Qt.UserRole)
                         )
                         selected = True
                         break

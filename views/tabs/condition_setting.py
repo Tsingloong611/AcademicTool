@@ -107,7 +107,7 @@ class FullHeaderDelegate(QStyledItemDelegate):
                 painter.drawLine(option.rect.topLeft(), option.rect.topRight())
                 painter.drawText(option.rect, Qt.AlignCenter, self.tr("推演前"))
 
-            elif r == 0 and c == 4:
+            elif r == 0 and c == 3:
                 # “推演后”，去掉下边线
                 pen_top = QPen(Qt.black, 2)
                 painter.setPen(pen_top)
@@ -117,14 +117,14 @@ class FullHeaderDelegate(QStyledItemDelegate):
             elif r == 0:
                 painter.fillRect(option.rect, QColor("#f0f0f0"))
 
-            elif r == 1 and c in [1,2,3,4,5,6]:
+            elif r == 1 and c in [1,2,3,4]:
                 # 第二行“较好/中等/较差”，去掉上边线
                 pen_bottom = QPen(Qt.black, 1)
                 painter.setPen(pen_bottom)
                 painter.drawLine(option.rect.bottomLeft(), option.rect.bottomRight())
                 text_map = {
-                    1:self.tr("较好"), 2:self.tr("中等"), 3:self.tr("较差"),
-                    4:self.tr("较好"), 5:self.tr("中等"), 6:self.tr("较差")
+                    1:self.tr("较好"), 2:self.tr("较差"),
+                    3:self.tr("较好"), 4:self.tr("较差")
                 }
                 painter.drawText(option.rect, Qt.AlignCenter, text_map[c])
 
@@ -726,7 +726,7 @@ class ConditionSettingTab(QWidget):
         simulation_group = QGroupBox(self.tr("推演结果"))
         simulation_layout = QVBoxLayout()
         simulation_layout.setContentsMargins(10, 20, 10, 10)
-        self.simulation_table = CustomTableWidget(2, 7)
+        self.simulation_table = CustomTableWidget(2, 5)
         self.simulation_table.setShowGrid(False)
         self.simulation_table.setSelectionBehavior(QTableWidget.SelectRows)
         self.simulation_table.setSelectionMode(QTableWidget.SingleSelection)
@@ -736,8 +736,8 @@ class ConditionSettingTab(QWidget):
         self.simulation_table.verticalHeader().setVisible(False)
 
         self.simulation_table.setSpan(0, 0, 2, 1)
-        self.simulation_table.setSpan(0, 1, 1, 3)
-        self.simulation_table.setSpan(0, 4, 1, 3)
+        self.simulation_table.setSpan(0, 1, 1, 2)
+        self.simulation_table.setSpan(0, 3, 1, 2)
 
         header_delegate = FullHeaderDelegate(self.simulation_table)
         for row in range(2):
@@ -795,24 +795,23 @@ class ConditionSettingTab(QWidget):
 
         # Set plan name
         self.simulation_table.setItem(new_row, 0, QTableWidgetItem(plan_name))
+        # 居中
+        item = self.simulation_table.item(new_row, 0)
+        item.setTextAlignment(Qt.AlignCenter)
 
         # Get simulation results from plan data or use defaults
         simulation_results = plan_data.get('simulation_results', {
             "推演前-较好": "30%",
-            "推演前-中等": "50%",
             "推演前-较差": "20%",
             "推演后-较好": "60%",
-            "推演后-中等": "30%",
             "推演后-较差": "10%"
         })
 
         # Set simulation results
         columns = [
             simulation_results["推演前-较好"],
-            simulation_results["推演前-中等"],
             simulation_results["推演前-较差"],
             simulation_results["推演后-较好"],
-            simulation_results["推演后-中等"],
             simulation_results["推演后-较差"]
         ]
 
@@ -1165,10 +1164,8 @@ class ConditionSettingTab(QWidget):
             "emergency_actions": [],
             "simulation_results": {
                 "推演前-较好": "30%",
-                "推演前-中等": "50%",
                 "推演前-较差": "20%",
                 "推演后-较好": "60%",
-                "推演后-中等": "30%",
                 "推演后-较差": "10%"
             }
         }
@@ -1295,11 +1292,11 @@ class ConditionSettingTab(QWidget):
 
         # Set header structure
         self.simulation_table.setSpan(0, 0, 2, 1)  # "韧性/预案" cell
-        self.simulation_table.setSpan(0, 1, 1, 3)  # "推演前" cell
-        self.simulation_table.setSpan(0, 4, 1, 3)  # "推演后" cell
+        self.simulation_table.setSpan(0, 1, 1, 2)  # "推演前" cell
+        self.simulation_table.setSpan(0, 3, 1, 2)  # "推演后" cell
 
         # Initialize header rows with empty items
-        for col in range(7):
+        for col in range(5):
             if self.simulation_table.item(0, col) is None:
                 self.simulation_table.setItem(0, col, QTableWidgetItem(""))
             if self.simulation_table.item(1, col) is None:
@@ -1332,10 +1329,8 @@ class ConditionSettingTab(QWidget):
             {
                 "预案名字": plan_name,
                 "推演前-较好":"30%",
-                "推演前-中等":"50%",
                 "推演前-较差":"20%",
                 "推演后-较好":"60%",
-                "推演后-中等":"30%",
                 "推演后-较差":"10%",
             }
         ]
@@ -1344,11 +1339,9 @@ class ConditionSettingTab(QWidget):
             self.simulation_table.setRowCount(rowpos+1)
             self.simulation_table.setItem(rowpos,0,QTableWidgetItem(d["预案名字"]))
             self.simulation_table.setItem(rowpos,1,QTableWidgetItem(d["推演前-较好"]))
-            self.simulation_table.setItem(rowpos,2,QTableWidgetItem(d["推演前-中等"]))
-            self.simulation_table.setItem(rowpos,3,QTableWidgetItem(d["推演前-较差"]))
-            self.simulation_table.setItem(rowpos,4,QTableWidgetItem(d["推演后-较好"]))
-            self.simulation_table.setItem(rowpos,5,QTableWidgetItem(d["推演后-中等"]))
-            self.simulation_table.setItem(rowpos,6,QTableWidgetItem(d["推演后-较差"]))
+            self.simulation_table.setItem(rowpos,2,QTableWidgetItem(d["推演前-较差"]))
+            self.simulation_table.setItem(rowpos,3,QTableWidgetItem(d["推演后-较好"]))
+            self.simulation_table.setItem(rowpos,4,QTableWidgetItem(d["推演后-较差"]))
             for col in range(7):
                 self.simulation_table.item(rowpos,col).setTextAlignment(Qt.AlignCenter)
 

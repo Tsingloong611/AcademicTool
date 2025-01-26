@@ -59,6 +59,7 @@ class ScenarioController(QObject):
         self.tab_widget.ElementSettingTab.request_sql_query.connect(self.execute_sql_query)
         self.send_sql_result.connect(self.tab_widget.ElementSettingTab.receive_sql_result)
         self.tab_widget.ElementSettingTab.save_to_database_signal.connect(self.apply_changes_from_json)
+        self.tab_widget.ElementSettingTab.refresh_scenario_data.connect(self.handle_scenario_selected)
         self.tab_widget.generate_model_save_to_database.connect(self.generate_model_save_to_database)
         self.tab_widget.generate_bayes_save_to_database.connect(self.generate_bayes_save_to_database)
         self.tab_widget.ConditionSettingTab.save_plan_to_database_signal.connect(self.apply_changes_from_json)
@@ -92,7 +93,7 @@ class ScenarioController(QObject):
             return []
 
     @Slot(int, str, str)
-    def handle_scenario_selected(self, scenario_id, scenario_name, scenario_description):
+    def handle_scenario_selected(self, scenario_id):
         """当用户在列表中选择了一个情景时触发"""
         scenario = self.get_scenario_by_id(scenario_id)
         self.scenario_id = scenario_id
@@ -591,7 +592,7 @@ class ScenarioController(QObject):
             if new_scenario:
                 self.load_scenarios(new_scenario.scenario_id)
                 # 自动加载
-                self.handle_scenario_selected(new_scenario.scenario_id,new_scenario.scenario_name,new_scenario.scenario_description)
+                self.handle_scenario_selected(new_scenario.scenario_id)
 
 
     @Slot()

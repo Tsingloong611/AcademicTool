@@ -609,21 +609,12 @@ class PlanData:
                 # 设置资源属性: ResourceType, ResourceQuantityOrQuality ...
                 self._set_attribute_value(res_json, "ResourceType", res_obj.get("resource_type"))
                 self._set_attribute_value(res_json, "ResourceQuantityOrQuality", res_obj.get("quantity"))
+                self._set_attribute_value(res_json, "Location", res_obj.get("location"))
 
-                # 如果数据库并无 resource_category / location 之类字段，可以做类似:
-                # self._set_attribute_value(res_json, "ResourceUsageCondition", "类型: %s, 位置: %s" % (res_obj["resource_category"], res_obj["location"]))
-                # 或者放到 description:
+
                 res_json["description"] = f"分类: {res_obj.get('resource_category')} / 位置: {res_obj.get('location')}"
 
-                # 再将该资源挂到行为的属性里，还是放到 behaviors？要看你数据库的定义。
-                # 这里演示在“行为”实体中，有个 "object_entities" 列表可以引用:
-                # act_json["behaviors"] -> 只有 behaviorDefinition ?
-                # 如果你的“应急行为要素”是 subject, 资源是 object，那么可以把 res_eid 加到 act_json["behaviors"][..]["object_entities"] 里
-                # 但是这需要先找到对应的 behavior_value。也可以用 attribute 的形式(HasResource)。
-                # 下面示例，假设“应急行为”模板并没有 "HasResource" 这个 attribute，但 "应急预案"才有。
-                # 如果你想让 Action -> Resource，也可以先自定义一个 “HasResource” attribute 给 Behavior(5) entity_type_id.
 
-                # 演示：若想把资源也挂到 预案 的 "HasResource" 中，写:
                 self._append_reference(plan_json, "HasResource", res_eid)
 
                 # 把 resource_entities 合并进整体字典
@@ -745,7 +736,6 @@ class PlanData:
 
             # 简单判断字符串是否包含 "人" => 加进 ImplementingPersonnel
             # 或者包含 "车" => 加进 EmergencyVehicles
-            # （你可做更精确匹配 == "人员" / == "车辆"）
             if resource_type and isinstance(resource_type, str):
                 # 遍历所有行为(看你是否只想挂到某个特定行为)
                 for bid in behavior_ids:
@@ -946,7 +936,7 @@ class PlanData:
                         "resource_type": res_attr_map.get("ResourceType", "未知资源"),
                         "resource_category": "类型A",  # 示例中写死
                         "quantity": res_attr_map.get("ResourceQuantityOrQuality", 0),
-                        "location": "暂无"     # 实体描述
+                        "location": res_attr_map.get("Location", "未知位置")
                     }
                     resource_list.append(resource_item)
 

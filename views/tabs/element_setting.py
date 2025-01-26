@@ -1935,9 +1935,11 @@ class ElementSettingTab(QWidget):
     receive_sql_result = Signal(list)
     save_to_database_signal= Signal(list)
     generate_model_show = Signal()
+    refresh_scenario_data = Signal(int)
 
     def __init__(self):
         super().__init__()
+
 
         self.current_selected_element = None
         self.uploaded_files = {}       # 初始化上传文件路径的字典
@@ -3424,6 +3426,21 @@ class ElementSettingTab(QWidget):
 
     def handle_generate(self):
         """处理生成情景模型按钮点击事件"""
+
+
+        # 询问是否保存进行的修改后再进行生成
+        reply = CustomQuestionDialog(
+            self.tr("保存并生成"),
+            self.tr("是否保存当前修改后生成情景模型？"),
+            parent=self
+        ).ask()
+        # 如果用户选择是，则保存并生成
+        if reply:
+            self.handle_save()
+
+
+        self.refresh_scenario_data.emit(self.scenario_data['scenario_id'])
+
         # 将筛选后的数据转换为列表
         data = copy.deepcopy(self.element_data)
         saved_elements = list(data.values())
@@ -3495,13 +3512,14 @@ class ElementSettingTab(QWidget):
                 parent=self
             ).exec()
             return
-        else:
-            print(f"开始生成情景级孪生模型{data}")
-            for key, value in data.items():
-                json_input_str = json.dumps(data[key], ensure_ascii=False)
-                json_to_sysml2_txt(json_input_str,data)
 
-            self.generate_model_show.emit()
+        print(f"开始生成情景级孪生模型{data}")
+
+        for key, value in data.items():
+            json_input_str = json.dumps(data[key], ensure_ascii=False)
+            json_to_sysml2_txt(json_input_str,data)
+
+        self.generate_model_show.emit()
 
 
     def switch_model_display(self, model_type):
