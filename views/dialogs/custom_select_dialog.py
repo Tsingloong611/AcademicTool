@@ -13,7 +13,7 @@ from PySide6.QtWidgets import (
     QPushButton, QListWidget, QListWidgetItem, QMessageBox, QWidget, QStackedLayout, QFileDialog, QDialogButtonBox,
     QComboBox, QCheckBox
 )
-from PySide6.QtGui import QIcon
+from PySide6.QtGui import QIcon, QColor, QPalette
 import os
 from utils import json2sysml
 
@@ -231,7 +231,7 @@ class CustomSelectDialog(QDialog):
         self.setWindowTitle(f"实体管理")
         self.resize(400, 300)
         self.setStyleSheet("""
-            background : white;
+            background : #f0f0f0;
             color: black;
 
             QPushButton {
@@ -242,11 +242,13 @@ class CustomSelectDialog(QDialog):
             QPushButton:focus {
                 border: 2px solid #0078d7; /* 蓝色边框 */
             }
-            QListWidget {
-                border: 1px solid #ccc;
-                border-radius: 5px;
-            }
+QListWidget {
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        background-color: white;
+    }
         """)
+
         # 主布局
         main_layout = QVBoxLayout(self)
         main_layout.setSpacing(10)
@@ -273,13 +275,26 @@ class CustomSelectDialog(QDialog):
 
         # 列表视图
         self.list_widget = QListWidget()
+        # 开启交错行背景
+        self.list_widget.setAlternatingRowColors(True)
         self.populate_list()
         self.stacked_layout.addWidget(self.list_widget)
 
         # 占位符视图
         self.placeholder_label = QLabel("请新建实体")
         self.placeholder_label.setAlignment(Qt.AlignCenter)
+        self.placeholder_label.setObjectName("placeholder")
+        # 字体设置为灰色
+        self.placeholder_label.setStyleSheet("""
+                    color: gray;
+                    font-size: 20pt;
+                    border-radius: 10px;
+                    border: 1px solid #cccccc;
+                    background-color: #ffffff;
+                """)
+
         self.stacked_layout.addWidget(self.placeholder_label)
+
 
         main_layout.addLayout(self.stacked_layout)
 
@@ -287,6 +302,7 @@ class CustomSelectDialog(QDialog):
 
 
         self.update_view()
+
 
     def update_match_entities(self):
 
@@ -301,6 +317,34 @@ class CustomSelectDialog(QDialog):
     def populate_list(self):
         """填充实体列表，仅显示entity_name"""
         self.list_widget.clear()
+        self.list_widget.setObjectName("entitylist")
+
+        self.list_widget.setStyleSheet("""
+            #entitylist {
+                border: 1px solid #ccc;
+                border-radius: 8px;
+                background-color: white;
+            }
+            /* 自定义 QListWidgetItem 的样式 */
+            QListWidget#entitylist::item {
+                border: 1px solid transparent;
+                border-radius: 5px;
+                padding: 5px;
+                margin: 2px;
+            }
+
+            /* 鼠标悬停时的背景色 */
+            QListWidget#entitylist::item:hover {
+                background-color: #cce5ff;
+            }
+
+            /* 选中项的背景色 */
+            QListWidget#entitylist::item:selected {
+                background-color: #5dade2;
+                color: white;
+            }
+        """)
+
         # 获得实体数据
         self.update_match_entities()
 
