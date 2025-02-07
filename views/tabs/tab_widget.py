@@ -4,6 +4,7 @@
 # @Software: PyCharm
 import json
 import os
+import shutil
 
 import rdflib
 from PySide6.QtGui import QFont
@@ -44,6 +45,7 @@ class CustomTabWidget(QWidget):
         self.ElementSettingTab.generate_model_show.connect(self.generate_model)
         self.ModelGenerationTab.generate_request.connect(self.generate_bayes)
         self.ModelTransformationTab.set_inference_request.connect(self.set_inference_conditions)
+        self.ModelTransformationTab.update_bayes_network.connect(self.generate_bayes)
 
 
 
@@ -529,6 +531,48 @@ class CustomTabWidget(QWidget):
 
             # 步骤5：设置先验概率
             update_progress(4, "正在设置先验概率...")
+            # try:
+            #     # 当前脚本所在的目录
+            #     current_dir = os.path.dirname(__file__)
+            #
+            #     # 源文件所在目录
+            #     source_dir = os.path.abspath(os.path.join(current_dir, '../../data/required_information'))
+            #
+            #     # 指定的目标文件夹
+            #     destination_dir = os.path.abspath(os.path.join(current_dir, f'../../data/bn/{scenario_id}/required_information'))
+            #     self.ModelTransformationTab.info_dir = destination_dir
+            #
+            #     # 如果目标文件夹不存在，则创建它
+            #     if not os.path.exists(destination_dir):
+            #         os.makedirs(destination_dir)
+            #
+            #
+            #     # 文件列表
+            #     files = [
+            #         'prior prob test.xlsx',
+            #         'expertInfo.xlsx',
+            #         'expert estimation test.xlsx'
+            #     ]
+            #
+            #     # 循环复制每个文件
+            #     # 如果已经存在，跳过复制
+            #     for file_name in files:
+            #
+            #         src_path = os.path.join(source_dir, file_name)
+            #         dst_path = os.path.join(destination_dir, file_name)
+            #
+            #         # 复制文件，保留元数据（使用 copy2）；
+            #         # 如果不需要保留元数据，可以使用 shutil.copy
+            #
+            #         # 如果已经存在，跳过复制
+            #         if os.path.exists(dst_path):
+            #             continue
+            #         shutil.copy2(src_path, dst_path)
+            #
+            #     print("文件复制成功！")
+            #
+            # except Exception as e:
+            #     raise Exception(f"复制文件失败: {str(e)}")
             try:
                 prior_prob_test_path = os.path.abspath(os.path.join(os.path.dirname(__file__),
                                                                     f'../../data/required_information/prior prob test.xlsx'))
@@ -538,6 +582,8 @@ class CustomTabWidget(QWidget):
                                                                       f'../../data/required_information/expert estimation test.xlsx'))
 
                 analyzer.set_prior_probabilities(prior_prob_test_path)
+                self.ModelTransformationTab.info_dir = os.path.abspath(os.path.join(os.path.dirname(__file__),
+                                                                f'../../data/required_information'))
             except Exception as e:
                 raise Exception(f"设置先验概率失败: {str(e)}")
 

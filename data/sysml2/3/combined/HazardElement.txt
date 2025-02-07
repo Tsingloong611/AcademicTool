@@ -2,54 +2,54 @@ package HazardElement{
 
     part def HazardElement{}
 
-    action def Collide{
-            in CollideCondition = true;
-            out DamageCondition = true;
-            out Casualty = true;
-        }
-
-    action def Explode{
-            out ExplodeCondition = true;
-        }
-
     action def Spill{
             out SpillCondition = true;
             out PullotedCondition = true;
             out DetachedCondition = true;
         }
 
-    action def VehicleBreakdown{
-    }
+    action def VehicleExplosion{
+        }
 
-    action def VehicleCollision{
-    }
+    action def Collide{
+            in CollideCondition = true;
+            out DamageCondition = true;
+            out Casualty = true;
+        }
 
     action def VehicleDeparture{
-    }
-
-    action def VehicleExplosion{
-    }
+        }
 
     action def VehicleLaneChange{
-    }
+        }
 
-    action def VehicleMotion{
-    }
-
-    action def VehicleOverturn{
-    }
-
-    action def VehicleSpeedChange{
-    }
-
-    action def VehicleSpillage{
-    }
-
-    action def VehicleTransport{
-    }
+    action def VehicleBreakdown{
+        }
 
     action def VehicleTurning{
-    }
+        }
+
+    action def VehicleSpillage{
+        }
+
+    action def Explode{
+            out ExplodeCondition = true;
+        }
+
+    action def VehicleSpeedChange{
+        }
+
+    action def VehicleTransport{
+        }
+
+    action def VehicleCollision{
+        }
+
+    action def VehicleOverturn{
+        }
+
+    action def VehicleMotion{
+        }
 
     state def HazardStates{
             entry; then DriveState;
@@ -62,44 +62,70 @@ package HazardElement{
             state SpillState;
         }
 
-    item def VehicleCargo{
-    }
+    item def VehicleLoad{
+        }
 
-    item def VehicleComponents{
-    }
+    item def People{
+        }
 
-    item def VehiclePassengers{
-    }
+    item def VehiclePart{
+        }
 
-    part 3 : HazardElement{
-    attribute VehicleType : String = null;
-    attribute CollisionCondition : Bool = "0";
-    attribute CombustionCondition : Bool = "0";
-    attribute SpillCondition : Bool = "0";
-    attribute BreakdownCondition : Bool = "0";
-    attribute RollOverCondition : Bool = "0";
-    attribute AbnormalSpeedCondition : String = null;
-    attribute IIIegalLaneOccupationCondition : Bool = "0";
-    attribute DrivingDirection : Enum = "正向";
-    attribute VehiclePosition : String = null;
-    attribute VehicleSpeed : Real = null;
+    part 5235 : HazardElement{
+            attribute VehicleType : String = null;
+            attribute CollisionCondition : Bool = "0";
+            attribute CombustionCondition : Bool = "0";
+            attribute SpillCondition : Bool = "0";
+            attribute BreakdownCondition : Bool = "0";
+            attribute RollOverCondition : Bool = "0";
+            attribute AbnormalSpeedCondition : String = null;
+            attribute IIIegalLaneOccupationCondition : Bool = "0";
+            attribute DrivingDirection : Enum = "正向";
+            attribute VehiclePosition : String = null;
+            attribute VehicleSpeed : Real = null;
+            attribute EmergencyPeriod : Enum = "上午";
 
-    item VehicleCargo : VehicleCargo;
-    item VehiclePassengers : VehiclePassengers;
-    item VehicleComponents : VehicleComponents;
 
-    perform action VehicleMotion;
-    perform action VehicleTransport;
-    perform action VehicleDeparture;
-    perform action VehicleExplosion;
-    perform action VehicleSpillage;
-    perform action VehicleOverturn;
-    perform action VehicleBreakdown;
-    perform action VehicleCollision;
-    perform action VehicleTurning;
-    perform action VehicleLaneChange;
-    perform action VehicleSpeedChange;
+            perform action VehicleMotion;
+            perform action VehicleTransport;
+            perform action VehicleDeparture;
+            perform action VehicleExplosion;
+            perform action VehicleSpillage;
+            perform action VehicleOverturn;
+            perform action VehicleBreakdown;
+            perform action VehicleCollision;
+            perform action VehicleTurning;
+            perform action VehicleLaneChange;
+            perform action VehicleSpeedChange;
 
-    }
+        }
+
+    part 车辆 : HazardElement{
+            attribute VehicleType : String = null;
+            attribute CollisionCondition : Bool = "0";
+            attribute CombustionCondition : Bool = "0";
+            attribute SpillCondition : Bool = "0";
+            attribute BreakdownCondition : Bool = "0";
+            attribute RollOverCondition : Bool = "0";
+            attribute AbnormalSpeedCondition : String = null;
+            attribute IIIegalLaneOccupationCondition : Bool = "0";
+            attribute DrivingDirection : Enum = "正向";
+            attribute VehiclePosition : String = null;
+            attribute VehicleSpeed : Real = null;
+
+
+            perform action VehicleMotion;
+            perform action VehicleTransport;
+            perform action VehicleDeparture;
+            perform action VehicleExplosion;
+            perform action VehicleSpillage;
+            perform action VehicleOverturn;
+            perform action VehicleBreakdown;
+            perform action VehicleCollision;
+            perform action VehicleTurning;
+            perform action VehicleLaneChange;
+            perform action VehicleSpeedChange;
+
+        }
 
 }

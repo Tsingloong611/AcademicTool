@@ -704,6 +704,7 @@ class OwlClassAttribute(Base):
     owl_class_attribute_id = Column(Integer, primary_key=True, autoincrement=True)
     owl_class_attribute_name = Column(String(255), nullable=False)
     owl_class_attribute_range = Column(String(255), nullable=False)
+    owl_class_attribute_value = Column(String(255), nullable=False)
     owl_class_id = Column(Integer, ForeignKey('owl_class.owl_class_id',
                                               ondelete='CASCADE', onupdate='RESTRICT'),
                           nullable=False, index=True)
@@ -727,6 +728,7 @@ class OwlClassBehavior(Base):
     owl_class_behavior_id = Column(Integer, primary_key=True, autoincrement=True)
     owl_class_behavior_name = Column(String(255), nullable=False)
     owl_class_behavior_range = Column(String(255), nullable=False)
+    owl_class_behavior_value = Column(String(255), nullable=False)
     owl_class_id = Column(Integer, ForeignKey('owl_class.owl_class_id',
                                               ondelete='CASCADE', onupdate='RESTRICT'),
                           nullable=False, index=True)

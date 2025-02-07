@@ -859,6 +859,7 @@ class ScenarioController(QObject):
     def process_owl_structure(self,session, structure, owl_id):
         # Keep track of class IDs for parent relationships
         class_map = {}
+        print(f"structure: {structure}")
 
         # First pass: Create all classes
         for class_name, class_data in structure.items():
@@ -892,11 +893,19 @@ class ScenarioController(QObject):
 
                 if owl_class:
                     for prop in class_data['Properties']:
+                        # 处理 None 和列表
+                        if prop['property_value'] is None:
+                            value = ""
+                        elif isinstance(prop['property_value'], list):
+                            value = ", ".join(map(str, prop['property_value']))  # 转换为字符串并用逗号分隔
+                        else:
+                            value = str(prop['property_value'])
                         if prop['property_type'].lower() == 'datatypeproperty':
                             # Add attribute
                             attr = OwlClassAttribute(
                                 owl_class_attribute_name=prop['property_name'],
                                 owl_class_attribute_range=prop['property_range'],
+                                owl_class_attribute_value=value,
                                 owl_class_id=owl_class.owl_class_id,
                                 create_time=current_time,
                                 update_time=current_time
@@ -908,6 +917,7 @@ class ScenarioController(QObject):
                             behavior = OwlClassBehavior(
                                 owl_class_behavior_name=prop['property_name'],
                                 owl_class_behavior_range=prop['property_range'],
+                                owl_class_behavior_value=value,
                                 owl_class_id=owl_class.owl_class_id,
                                 create_time=current_time,
                                 update_time=current_time
@@ -1001,7 +1011,7 @@ class ScenarioController(QObject):
 
             if attributes:  # 只添加有属性的类
                 attribute_sample_data[cls.owl_class_name] = [
-                    (attr.owl_class_attribute_name, attr.owl_class_attribute_range)
+                    (attr.owl_class_attribute_name, attr.owl_class_attribute_range, attr.owl_class_attribute_value)
                     for attr in attributes
                 ]
 
@@ -1014,7 +1024,7 @@ class ScenarioController(QObject):
 
             if behaviors:  # 只添加有行为的类
                 behavior_sample_data[cls.owl_class_name] = [
-                    (behavior.owl_class_behavior_name, behavior.owl_class_behavior_range)
+                    (behavior.owl_class_behavior_name, behavior.owl_class_behavior_range, behavior.owl_class_behavior_value)
                     for behavior in behaviors
                 ]
 

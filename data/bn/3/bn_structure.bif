@@ -73,10 +73,10 @@ probability (ScenarioResilience | AbsorptionCapacity, AdaptionCapacity, Recovery
    (1, 1, 1) 0.600143 0.399857;
 }
 probability (AbsorptionCapacity | roadPassibility, roadLoss) {
-   (0, 0) 0.68401 0.31599;
-   (1, 0) 0.72719 0.27281;
-   (0, 1) 0.597055 0.402945;
-   (1, 1) 0.597949 0.402051;
+   (0, 0) 0.570576 0.429424;
+   (1, 0) 0.613096 0.386904;
+   (0, 1) 0.523999 0.476001;
+   (1, 1) 0.552394 0.447606;
 }
 probability (AdaptionCapacity | emergencyType, emergencyPeriod) {
    (0, 0) 0.64449 0.35551;

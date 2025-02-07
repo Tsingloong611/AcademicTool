@@ -50,7 +50,7 @@ class PlanDataCollector:
         JOIN attribute_definition ad ON av.attribute_definition_id = ad.attribute_definition_id
         JOIN attribute_code ac ON ad.attribute_code_id = ac.attribute_code_id
         WHERE e.scenario_id = :scenario_id
-        AND ac.attribute_code_name = 'RoadDamageCondition'
+        AND ac.attribute_code_name = 'DamageCondition'
         """
         return self.session.execute(text(sql), {"scenario_id": self.scenario_id}).all()
 
@@ -67,6 +67,22 @@ class PlanDataCollector:
         WHERE e.scenario_id = :scenario_id
         AND et.entity_type_code = 'People'
         AND ac.attribute_code_name = 'CasualtyCondition'
+        """
+        return self.session.execute(text(sql), {"scenario_id": self.scenario_id}).all()
+
+    def get_emergency_period(self) -> List[Any]:
+        """获取应急时长数据"""
+        sql = """
+        SELECT av.attribute_value_id, av.entity_id, av.attribute_definition_id, 
+               av.attribute_name, av.attribute_value 
+        FROM attribute_value av
+        JOIN entity e ON av.entity_id = e.entity_id
+        JOIN entity_type et ON e.entity_type_id = et.entity_type_id
+        JOIN attribute_definition ad ON av.attribute_definition_id = ad.attribute_definition_id
+        JOIN attribute_code ac ON ad.attribute_code_id = ac.attribute_code_id
+        WHERE e.scenario_id = :scenario_id
+        AND et.entity_type_code = 'Vehicle'
+        AND ac.attribute_code_name = 'EmergencyPeriod'
         """
         return self.session.execute(text(sql), {"scenario_id": self.scenario_id}).all()
 
@@ -195,7 +211,8 @@ class PlanDataCollector:
             'road_passibility': self.get_road_passibility(),
             'road_damage': self.get_road_damage(),
             'casualties': self.get_casualties(),
-            'related_resource': self.get_related_resource(plan_name)
+            'related_resource': self.get_related_resource(plan_name),
+            'emergency_period': self.get_emergency_period(),
         }
         print(f"data: {data}")
 
@@ -203,9 +220,12 @@ class PlanDataCollector:
 
 
 def convert_to_evidence(data):
+    print(f"3525data: {data}")
 
     evidence = dict()
-
+    resource_nodes = ["AidResource", "TowResource", "FirefightingResource", "RescueResource"]
+    for node in resource_nodes:
+        evidence[node] = 0  # 默认未使用
     # 处理 road_passibility
     road_passibility_data = data.get('road_passibility', [])
     if road_passibility_data:
@@ -235,6 +255,20 @@ def convert_to_evidence(data):
             evidence['casualties'] = 1
         else:
             evidence['casualties'] = 0
+
+    # 处理 emergency_period
+    emergency_period_data = data.get('emergency_period', [])
+    if emergency_period_data:
+        # 凌晨 上午 下午 晚上	0/1/2/3
+        emergency_period = emergency_period_data[0][-1]
+        if emergency_period == '凌晨':
+            evidence['emergencyPeriod'] = 0
+        elif emergency_period == '上午':
+            evidence['emergencyPeriod'] = 1
+        elif emergency_period == '下午':
+            evidence['emergencyPeriod'] = 2
+        elif emergency_period == '晚上':
+            evidence['emergencyPeriod'] = 3
 
     # 处理 related_resource
     related_resource = data.get('related_resource', {})
@@ -270,7 +304,8 @@ def convert_to_evidence(data):
 
             if is_active:
                 evidence[resource_key] = 1  # 设置为 1
-            # 如果已经为 1，不需要改变
+            # 如果已经为 1，不需要改变'
+
 
     # 处理 Duration 列表中的每一项并求和
     # 定义 Duration 字符串到数值的映射
@@ -297,27 +332,28 @@ def convert_to_evidence(data):
         disposal_duration = 3
 
     evidence['disposalDuration'] = disposal_duration
+    print(f"3214evidence: {evidence}")
 
 
     return evidence
 
-connection_string = f"mysql+mysqlconnector://Tsing_loong:12345678@localhost:3306/test2?charset=utf8mb4"
-engine = create_engine(connection_string, echo=True)
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-session = SessionLocal()
-# 使用示例:
+# connection_string = f"mysql+mysqlconnector://Tsing_loong:12345678@localhost:3306/test2?charset=utf8mb4"
+# engine = create_engine(connection_string, echo=True)
+# SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+# session = SessionLocal()
+# # 使用示例:
+#
+# # 创建会话和收集器实例
+# collector = PlanDataCollector(session, scenario_id=3)
+#
+# # 收集数据
+# plan_data = collector.collect_all_data(plan_name=None)
+#
+# # 转换为贝叶斯网络证据
+# evidence = convert_to_evidence(plan_data)
 
-# 创建会话和收集器实例
-collector = PlanDataCollector(session, scenario_id=3)
 
-# 收集数据
-plan_data = collector.collect_all_data(plan_name=None)
-
-# 转换为贝叶斯网络证据
-evidence = convert_to_evidence(plan_data)
-
-
-print(evidence)
+# print(evidence)
 
 class PlanData:
     def __init__(self, session, scenario_id, neg_id_gen):
@@ -548,6 +584,7 @@ class PlanData:
         """
 
         # 1) 创建一个“应急预案”实体
+        print(f"[DEBUG] 开始创建应急预案: {plan_input}")
         plan_name_str = plan_input.get("plan_name", "未命名预案")
         plan_entities = self.create_entities_with_negative_ids("应急预案", name=plan_name_str)
         # 假设“应急预案”模板只会返回 1~N 个 entity，通常只有1个
@@ -587,7 +624,10 @@ class PlanData:
 
             # 3.2 设置行为自身的属性: BehaviorType, Duration, ImplementationCondition ...
             # 先举例 BehaviorType
-            self._set_attribute_value(act_json, "BehaviorType", action_obj.get("action_type"))
+            # behavior_type是action_type的 - 后的字符
+            behavior_type = action_obj.get("action_type", "未知行为")
+            behavior_type = behavior_type.split('-')[-1].strip()
+            self._set_attribute_value(act_json, "BehaviorType", behavior_type)
             self._set_attribute_value(act_json, "Duration",       action_obj.get("duration"))
             self._set_attribute_value(act_json, "ImplementationCondition", action_obj.get("implementation_status"))
 
@@ -607,9 +647,11 @@ class PlanData:
                 res_json = resource_entities[res_eid]
 
                 # 设置资源属性: ResourceType, ResourceQuantityOrQuality ...
-                self._set_attribute_value(res_json, "ResourceType", res_obj.get("resource_type"))
+                self._set_attribute_value(res_json, "ResourceType", res_obj.get("resource_category"))
                 self._set_attribute_value(res_json, "ResourceQuantityOrQuality", res_obj.get("quantity"))
                 self._set_attribute_value(res_json, "Location", res_obj.get("location"))
+                # 设置关联属性: AssociatedBehavior
+                self._append_reference(res_json, "AssociatedBehavior", act_eid)
 
 
                 res_json["description"] = f"分类: {res_obj.get('resource_category')} / 位置: {res_obj.get('location')}"
@@ -623,6 +665,7 @@ class PlanData:
             # 把 action_entities 合并进整体字典
             plan_entities.update(action_entities)
 
+        print(f"[DEBUG] 创建完毕，返回所有实体: {plan_entities}")
         # 最终返回包含 预案 + 所有子实体 的一个大 dict
         self.post_process_entities(plan_entities)
         return plan_entities
@@ -710,44 +753,35 @@ class PlanData:
 
         for rid in resource_ids:
             res_ent = plan_entities[rid]
-            # 1) 在资源上写“AssociatedBehavior” => 指向对应的 应急行为ID
-            #    这里可能要知道资源对应的是哪个行为？
-            #    如果你只有一个行为就简单；如果有多个，你可能在构建时就记录是谁 -> 这里演示如果只有一个行为
-            #    或者前面build时你已经把 resource -> AssociatedBehavior 填了?
+            # 1) 在资源上读取“AssociatedBehavior” => 获取对应的 应急行为ID
+            assoc_attr = get_attr(res_ent, "AssociatedBehavior")
+            if assoc_attr and "referenced_entities" in assoc_attr and assoc_attr["referenced_entities"]:
+                # 假设每个资源只关联一个行为
+                action_eid = assoc_attr["referenced_entities"][0]
+                if action_eid in behavior_ids:
+                    # 2) 根据资源类型，将资源ID添加到对应行为的 ImplementingPersonnel / EmergencyVehicles
+                    resource_type = None
+                    rtype_attr = get_attr(res_ent, "ResourceType")
+                    if rtype_attr:
+                        resource_type = rtype_attr.get("attribute_value")
 
-            # 假设你已在 build 过程中存了资源对应的 action_eid => 这里可以再取用
-            # 下面演示: 如果资源 entity 上 attribute "AssociatedBehavior" 存在，就 append 全部行为? (不太合理)
-            # 通常一对一："AssociatedBehavior" => [某个 action_eid]
-            # 这里演示：若你只有一个行为，就强行写上:
-            # (如果实际是一对多，需要自己做区分)
-            if behavior_ids:
-                assoc_attr = get_attr(res_ent, "AssociatedBehavior")
-                if assoc_attr:
-                    # 只关联第一个行为
-                    action_eid = behavior_ids[0]
-                    assoc_attr["referenced_entities"] = [action_eid]
-
-            # 2) 如果资源类型是 "人员"/"车辆"，则把资源ID添加到对应行为的 "ImplementingPersonnel" / "EmergencyVehicles"
-            #    先取该资源的 ResourceType
-            resource_type = None
-            rtype_attr = get_attr(res_ent, "ResourceType")
-            if rtype_attr:
-                resource_type = rtype_attr.get("attribute_value")
-
-            # 简单判断字符串是否包含 "人" => 加进 ImplementingPersonnel
-            # 或者包含 "车" => 加进 EmergencyVehicles
-            if resource_type and isinstance(resource_type, str):
-                # 遍历所有行为(看你是否只想挂到某个特定行为)
-                for bid in behavior_ids:
-                    beh_ent = plan_entities[bid]
-                    if "人" in resource_type:  # 例如 "人员"
-                        imp_attr = get_attr(beh_ent, "ImplementingPersonnel")
-                        if imp_attr:
-                            imp_attr["referenced_entities"].append(rid)
-                    elif "车" in resource_type:  # 例如 "车辆"
-                        eve_attr = get_attr(beh_ent, "EmergencyVehicles")
-                        if eve_attr:
-                            eve_attr["referenced_entities"].append(rid)
+                    if resource_type and isinstance(resource_type, str):
+                        beh_ent = plan_entities[action_eid]
+                        if "人" in resource_type:  # 例如 "人员"
+                            imp_attr = get_attr(beh_ent, "ImplementingPersonnel")
+                            if imp_attr:
+                                if "referenced_entities" not in imp_attr:
+                                    imp_attr["referenced_entities"] = []
+                                imp_attr["referenced_entities"].append(rid)
+                        elif "车" in resource_type:  # 例如 "车辆"
+                            eve_attr = get_attr(beh_ent, "EmergencyVehicles")
+                            if eve_attr:
+                                if "referenced_entities" not in eve_attr:
+                                    eve_attr["referenced_entities"] = []
+                                eve_attr["referenced_entities"].append(rid)
+            else:
+                # 如果资源没有关联行为，您可以选择跳过或进行其他处理
+                print(f"[WARN] 资源ID {rid} 没有关联的行为，跳过关联。")
 
         # 修改就地，无需 return；plan_entities 本身即被改动
 
@@ -819,6 +853,17 @@ class PlanData:
         # 4) 统一提交
         session.commit()
         print("[INFO] posteriori_data 已完成存在即更新、否则插入的操作。")
+        updated_plan_info = self.get_plan_by_name(plan_name)
+        return updated_plan_info
+
+    def get_plan_by_name(self, plan_name: str) -> Dict[str, Any]:
+        """
+        新增方法：
+        返回指定预案的详细信息，与 get_all_plans() 中对单个预案的结构一致。
+        若不存在则返回空字典。
+        """
+        all_plans = self.get_all_plans()
+        return all_plans.get(plan_name, {})
 
 
     def get_all_plans(self) -> Dict[str, Any]:

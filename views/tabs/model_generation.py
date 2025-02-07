@@ -151,7 +151,7 @@ class ModelGenerationTab(QWidget):
         class_group_box = self.create_class_group_box()
         left_side_layout.addWidget(class_group_box, stretch=10)
 
-        lower_layout.addLayout(left_side_layout, 1)
+        lower_layout.addLayout(left_side_layout, 2)
 
         # 右侧布局 - 模型切换区域（圆角矩形）
         right_side_layout = QVBoxLayout()
@@ -527,8 +527,8 @@ QListWidget::item:selected {{
         attribute_layout.setSpacing(0)
 
         self.attribute_table = QTableWidget()
-        self.attribute_table.setColumnCount(2)
-        self.attribute_table.setHorizontalHeaderLabels([self.tr("属性"), self.tr("范围")])
+        self.attribute_table.setColumnCount(3)
+        self.attribute_table.setHorizontalHeaderLabels([self.tr("属性"), self.tr("范围"), self.tr("值")])
         self.apply_table_style(self.attribute_table)
         self.attribute_table.horizontalHeader().setFont(QFont("SimSun", 16, QFont.Bold))
         self.attribute_table.horizontalHeader().setDefaultAlignment(Qt.AlignCenter)
@@ -560,8 +560,8 @@ QListWidget::item:selected {{
         behavior_layout.setSpacing(5)
 
         self.behavior_table = QTableWidget()
-        self.behavior_table.setColumnCount(2)
-        self.behavior_table.setHorizontalHeaderLabels([self.tr("行为"), self.tr("范围")])
+        self.behavior_table.setColumnCount(3)
+        self.behavior_table.setHorizontalHeaderLabels([self.tr("行为"), self.tr("范围"), self.tr("值")])
         self.apply_table_style(self.behavior_table)
 
         self.behavior_table.horizontalHeader().setFont(QFont("SimSun", 16, QFont.Bold))
@@ -641,12 +641,15 @@ QListWidget::item:selected {{
 
     def populate_table(self, table: QTableWidget, data: list):
         """Populate table data."""
+        print(f"Populating table with data: {data}")
         table.setRowCount(len(data))
-        for row_idx, (attr, scope) in enumerate(data):
+        for row_idx, (attr, scope, value) in enumerate(data):
             table.setItem(row_idx, 0, QTableWidgetItem(attr))
             table.setItem(row_idx, 1, QTableWidgetItem(scope))
+            table.setItem(row_idx, 2, QTableWidgetItem(value))
             table.item(row_idx, 0).setTextAlignment(Qt.AlignCenter)
             table.item(row_idx, 1).setTextAlignment(Qt.AlignCenter)
+            table.item(row_idx, 2).setTextAlignment(Qt.AlignCenter)
 
     def show_tab(self, index):
         """Show the corresponding tab based on button index."""

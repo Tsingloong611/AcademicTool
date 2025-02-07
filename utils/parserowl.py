@@ -2,10 +2,7 @@
 # @Time    : 1/20/2025 11:51 AM
 # @FileName: parserowl.py
 # @Software: PyCharm
-# -*- coding: utf-8 -*-
-# @Time    : 1/20/2025 11:46 AM
-# @FileName: test5.py
-# @Software: PyCharm
+
 import os.path
 
 from owlready2 import *
@@ -34,6 +31,9 @@ class ClassInfo:
     disjoint_classes: Set[str] = field(default_factory=set)
     properties: List[str] = field(default_factory=list)
     instances: List[str] = field(default_factory=list)
+    # 新增：存储实例的属性取值信息
+    # 格式: { "instanceName": {"dataPropName": [...], "objPropName": [...]}, ...}
+    instance_values: Dict[str, Dict[str, List[str]]] = field(default_factory=dict)
 
 
 @dataclass
@@ -60,7 +60,6 @@ class RestrictionInfo:
     property: str
     value: Any
     cardinality: Optional[int] = None
-
 
 
 @dataclass
@@ -182,7 +181,7 @@ class OWLParser:
                     if isinstance(c, ThingClass) and c.name is not None
                 }
 
-                # 获取类的属性
+                # 获取类的属性（仅做 domain 检查）
                 class_info.properties = []
                 for prop in self.onto.properties():
                     if prop.domain and any(domain == owl_class for domain in prop.domain):
@@ -198,9 +197,43 @@ class OWLParser:
                 except Exception as e:
                     logger.warning(f"Error getting instances for class {owl_class.name}: {e}")
 
+                # ============== 新增：解析实例的属性值 (data property 和 object property) =============
+                # 以 { instanceName: { propertyName: [values], ... }, ... } 形式存储
+                for instance in owl_class.instances():
+                    if not hasattr(instance, 'name') or instance.name is None:
+                        continue
+                    inst_name = instance.name
+
+                    instance_details = {}
+                    # 通过 get_properties() 可获取“对该实例而言”实际使用到的属性
+                    for prop in instance.get_properties():
+                        values = prop[instance]
+                        # 如果是数据属性
+                        if isinstance(prop, DataPropertyClass):
+                            prop_name = prop.name or "UnnamedDataProperty"
+                            instance_details[prop_name] = [str(v) for v in values]
+
+                        # 如果是对象属性
+                        elif isinstance(prop, ObjectPropertyClass):
+                            prop_name = prop.name or "UnnamedObjectProperty"
+                            # 把关联到的目标个体名存下来
+                            target_names = []
+                            for v in values:
+                                if hasattr(v, 'name') and v.name:
+                                    target_names.append(v.name)
+                                else:
+                                    target_names.append(str(v))
+                            instance_details[prop_name] = target_names
+
+                    class_info.instance_values[inst_name] = instance_details
+
+                # 放到映射中
                 class_map[owl_class.name] = class_info
+
                 logger.debug(
-                    f"Parsed class {owl_class.name} with {len(class_info.properties)} properties and {len(class_info.instances)} instances")
+                    f"Parsed class {owl_class.name} with {len(class_info.properties)} properties "
+                    f"and {len(class_info.instances)} instances"
+                )
 
             logger.info(f"Successfully parsed {len(class_map)} classes")
             return class_map
@@ -293,23 +326,24 @@ class OWLParser:
             range=range_name,
             inverse_of=inverse_name,
             characteristics=characteristics,
-            sub_properties={p.name for p in prop.subproperties() if p.name} if hasattr(prop,
-                                                                                       'subproperties') else set(),
+            sub_properties={p.name for p in prop.subproperties() if p.name} if hasattr(prop, 'subproperties') else set(),
             super_properties={p.name for p in prop.is_a if hasattr(p, 'name')},
             annotations=self.get_annotations(prop)
         )
 
-    def _add_property_to_map(self, property_map: Dict[str, List[PropertyInfo]],
-                             prop_info: PropertyInfo):
+    def _add_property_to_map(self, property_map: Dict[str, List[PropertyInfo]], prop_info: PropertyInfo):
         """将属性信息添加到映射中，避免重复"""
         for domain_class in prop_info.domain:
             if domain_class not in property_map:
                 property_map[domain_class] = []
 
             # 检查是否已存在相同名称和类型的属性
-            existing_prop = next((p for p in property_map[domain_class]
-                                  if p.local_name == prop_info.local_name
-                                  and p.property_type == prop_info.property_type), None)
+            existing_prop = next(
+                (p for p in property_map[domain_class]
+                 if p.local_name == prop_info.local_name
+                 and p.property_type == prop_info.property_type),
+                None
+            )
 
             if existing_prop:
                 # 如果存在，可以选择更新现有属性或跳过
@@ -398,7 +432,7 @@ class OWLParser:
                         parameters=["x", "y"]
                     ))
 
-                # 添加其他属性特性的行为解析...
+                # 这里可以添加其他属性特性的行为解析...
 
             except Exception as e:
                 logger.warning(f"Error parsing property behavior for {prop.name}: {e}")
@@ -574,18 +608,43 @@ class OWLParser:
             for class_name, class_info in class_map.items():
                 class_dict = {
                     "parent_class": list(class_info.super_classes)[0] if class_info.super_classes else "",
-                    "Properties": []
+                    "Properties": [],
+                    # Instances 原有结构
+                    "Instances": {}
                 }
 
-                # 添加属性信息
+                # ---- 对当前类的所有属性, 添加 property_value ----
                 if class_name in property_map:
                     for prop in property_map[class_name]:
+                        prop_name = prop.local_name
+                        # 收集所有实例对这个属性的取值
+                        all_values = []
+                        for inst_name, prop_vals_dict in class_info.instance_values.items():
+                            if prop_name in prop_vals_dict:
+                                for v in prop_vals_dict[prop_name]:
+                                    if v not in all_values:
+                                        all_values.append(v)
+
+                        # 如果没有取值，就写 "None"
+                        if not all_values:
+                            prop_value = "None"
+                        else:
+                            prop_value = all_values
+
                         prop_dict = {
-                            "property_name": prop.local_name,
+                            "property_name": prop_name,
                             "property_type": prop.property_type,
-                            "property_range": prop.range if prop.range else ""
+                            "property_range": prop.range if prop.range else "",
+                            "property_value": prop_value
                         }
                         class_dict["Properties"].append(prop_dict)
+
+                # ---- 实例信息（沿用之前的逻辑）----
+                for inst_name in class_info.instances:
+                    if inst_name in class_info.instance_values:
+                        class_dict["Instances"][inst_name] = class_info.instance_values[inst_name]
+                    else:
+                        class_dict["Instances"][inst_name] = {}
 
                 ontology_dict[class_name] = class_dict
 
@@ -600,71 +659,6 @@ class OWLParser:
 
         except Exception as e:
             logger.error(f"Error exporting JSON: {e}")
-            raise
-        try:
-            with open(output_file, 'w', encoding='utf-8') as f:
-                # 写入文档头部
-                f.write(f"# Ontology Documentation\n\n")
-                f.write(f"Generated on: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n")
-
-                # 写入类信息
-                f.write("## Classes\n\n")
-                class_map = self.parse_classes()
-                for class_name, class_info in sorted(class_map.items()):
-                    f.write(f"### {class_name}\n\n")
-                    if class_info.label:
-                        f.write(f"Label: {class_info.label}\n\n")
-                    if class_info.comment:
-                        f.write(f"Description: {class_info.comment}\n\n")
-                    if class_info.super_classes:
-                        f.write(f"Super classes: {', '.join(sorted(class_info.super_classes))}\n\n")
-                    if class_info.properties:
-                        f.write(f"Properties: {', '.join(sorted(class_info.properties))}\n\n")
-                    f.write("\n")
-
-                # 写入属性信息
-                f.write("## Properties\n\n")
-                property_map = self.parse_properties()
-                for class_name, properties in sorted(property_map.items()):
-                    f.write(f"### Properties of {class_name}\n\n")
-                    for prop in sorted(properties, key=lambda x: x.local_name):
-                        f.write(f"#### {prop.local_name}\n\n")
-                        f.write(f"Type: {prop.property_type}\n\n")
-                        if prop.range:
-                            f.write(f"Range: {prop.range}\n\n")
-                        if prop.characteristics:
-                            f.write(f"Characteristics: {', '.join(sorted(prop.characteristics))}\n\n")
-                        f.write("\n")
-
-                # 写入行为信息
-                f.write("## Behaviors\n\n")
-                behaviors = self.parse_behaviors()
-                for behavior in sorted(behaviors, key=lambda x: (x.type, x.source)):
-                    f.write(f"### {behavior.type} in {behavior.source}\n\n")
-                    f.write(f"Description: {behavior.description}\n\n")
-                    if behavior.condition:
-                        f.write(f"Condition: {behavior.condition}\n\n")
-                    if behavior.effect:
-                        f.write(f"Effect: {behavior.effect}\n\n")
-                    if behavior.parameters:
-                        f.write(f"Parameters: {', '.join(behavior.parameters)}\n\n")
-                    f.write("\n")
-
-                # 写入规则信息
-                f.write("## Rules\n\n")
-                rules = self.parse_rules()
-                for rule in sorted(rules, key=lambda x: x.name):
-                    f.write(f"### {rule.name}\n\n")
-                    f.write(f"Body: {rule.body}\n\n")
-                    f.write(f"Head: {rule.head}\n\n")
-                    if rule.variables:
-                        f.write(f"Variables: {', '.join(sorted(rule.variables))}\n\n")
-                    f.write("\n")
-
-            logger.info(f"Successfully exported documentation to {output_file}")
-
-        except Exception as e:
-            logger.error(f"Error exporting documentation: {e}")
             raise
 
     def export_documentation(self, output_file: str):
@@ -691,13 +685,24 @@ class OWLParser:
                         f.write(f"Super classes: {', '.join(sorted(class_info.super_classes))}\n\n")
                     if class_info.properties:
                         f.write(f"Properties: {', '.join(sorted(class_info.properties))}\n\n")
+
+                    # 展示一下实例及其属性值
+                    if class_info.instances:
+                        f.write(f"Instances:\n\n")
+                        for inst_name in class_info.instances:
+                            f.write(f"- **{inst_name}**\n\n")
+                            if inst_name in class_info.instance_values:
+                                for prop_name, values in class_info.instance_values[inst_name].items():
+                                    f.write(f"  - {prop_name}: {values}\n")
+                            f.write("\n")
+
                     f.write("\n")
 
                 # 写入属性信息
                 f.write("## Properties\n\n")
                 property_map = self.parse_properties()
-                for class_name, properties in sorted(property_map.items()):
-                    f.write(f"### Properties of {class_name}\n\n")
+                for c_name, properties in sorted(property_map.items()):
+                    f.write(f"### Properties of {c_name}\n\n")
                     for prop in sorted(properties, key=lambda x: x.local_name):
                         f.write(f"#### {prop.local_name}\n\n")
                         f.write(f"Type: {prop.property_type}\n\n")
@@ -738,19 +743,21 @@ class OWLParser:
             logger.error(f"Error exporting documentation: {e}")
             raise
 
+
 def parse_owl(owl_file_path: str):
     # 创建解析器实例
     parser = OWLParser(owl_file_path)
 
-
     owl_name = os.path.splitext(os.path.basename(owl_file_path))[0]
     output_path = os.path.dirname(owl_file_path)
-    # 解析并导出JSON
+
+    # 解析并导出JSON（可在 JSON 中查看属性对应的 property_value）
     json_data = parser.export_json(os.path.join(output_path, f"{owl_name}_ontology_structure.json"))
 
     # 打印部分数据作为示例
     print("\n=== JSON Export Sample ===")
     import json
+    # 仅展示前 3 个类的结构
     print(json.dumps(dict(list(json_data.items())[:3]), indent=2, ensure_ascii=False))
 
     # 原有的解析展示代码...
@@ -763,12 +770,20 @@ def parse_owl(owl_file_path: str):
         print(f"Super classes: {class_info.super_classes}")
         if class_info.comment:
             print(f"Comment: {class_info.comment}")
+        # 展示实例及其属性值
+        if class_info.instances:
+            print(f"Instances of {class_name}:")
+            for inst_name in class_info.instances:
+                print(f"  - {inst_name}")
+                if inst_name in class_info.instance_values:
+                    for prop_name, val_list in class_info.instance_values[inst_name].items():
+                        print(f"    {prop_name} => {val_list}")
 
     # 2. 解析属性
     print("\n=== Properties ===")
     property_map = parser.parse_properties()
-    for class_name, properties in property_map.items():
-        print(f"\nProperties of {class_name}:")
+    for c_name, properties in property_map.items():
+        print(f"\nProperties of {c_name}:")
         for prop in properties:
             print(f"  {prop.local_name} ({prop.property_type})")
             if prop.range:
@@ -797,14 +812,14 @@ def parse_owl(owl_file_path: str):
         if rule.variables:
             print(f"Variables: {rule.variables}")
 
-    # 5. 导出文档
+    # 5. 导出文档（Markdown）
     parser.export_documentation(os.path.join(output_path, f"{owl_name}_ontology_documentation.md"))
 
+
 def main():
-    # 本体文件路径
+    # 本体文件路径（自行修改）
     owl_file_path = r"C:\Users\Tsing_loong\Desktop\Work Section\owl\Emergency.owl"
     parse_owl(owl_file_path)
-
 
 
 if __name__ == "__main__":

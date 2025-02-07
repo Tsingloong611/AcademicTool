@@ -276,6 +276,7 @@ QListWidget {
         # 列表视图
         self.list_widget = QListWidget()
         # 开启交错行背景
+        self.list_widget.setFocusPolicy(Qt.NoFocus)
         self.list_widget.setAlternatingRowColors(True)
         self.populate_list()
         self.stacked_layout.addWidget(self.list_widget)

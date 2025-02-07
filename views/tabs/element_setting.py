@@ -14,9 +14,9 @@ from PySide6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QCheckBox, QLineEdit, QLabel, QPushButton, QGroupBox, QGridLayout,
     QSizePolicy, QScrollArea, QMessageBox, QTableWidget, QTableWidgetItem, QHeaderView, QComboBox, QDialog,
     QFileDialog, QFrame, QApplication, QTabWidget, QFormLayout, QTextEdit, QStackedLayout, QButtonGroup, QTextBrowser,
-    QListWidget, QInputDialog
+    QListWidget, QInputDialog, QProxyStyle, QStyle
 )
-from PySide6.QtGui import QFont, QIntValidator, QDoubleValidator, QIcon
+from PySide6.QtGui import QFont, QIntValidator, QDoubleValidator, QIcon, QColor
 from PySide6.QtWidgets import QStyledItemDelegate
 from attr import attributes
 from debugpy.common.timestamp import current
@@ -1006,6 +1006,23 @@ class NegativeIdGenerator:
         self.current -= 1
         return nid
 
+class BorderStyle(QProxyStyle):
+    def drawPrimitive(self, element, option, painter, widget=None):
+        # 针对复选框指示器进行特殊处理
+        if element == QStyle.PE_IndicatorCheckBox:
+            # 调用默认绘制（系统会绘制复选框和对勾）
+            super().drawPrimitive(element, option, painter, widget)
+            # 然后在 indicator 上绘制边框
+            painter.save()
+            painter.setPen(QColor("#AAAAAA"))
+            # option.rect 表示指示器的绘制区域
+            rect = option.rect
+            # 调整矩形（减 1 是为了让边框完整显示在内部）
+            painter.drawRect(rect.adjusted(0, 0, -1, -1))
+            painter.restore()
+        else:
+            # 其他控件使用默认绘制
+            super().drawPrimitive(element, option, painter, widget)
 
 class EditRelatedObjectDialog(QDialog):
     """复合属性编辑窗口"""
@@ -1289,7 +1306,7 @@ class EditRelatedObjectDialog(QDialog):
             # 创建并居中复选框
             checkbox = QCheckBox()
             checkbox.setChecked(entity_id in self.associated_element_id)
-            checkbox.setStyleSheet("background-color:transparent;")
+            checkbox.setStyle(BorderStyle(checkbox.style()))
 
             # 将选中状态同步到 selected_entities
             if checkbox.isChecked():

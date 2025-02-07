@@ -1,78 +1,224 @@
 # Ontology Documentation
 
-Generated on: 2025-01-23 21:06:01
+Generated on: 2025-02-07 14:10:54
 
 ## Classes
 
-### 1
+### 123445
 
-Super classes: AffectedElement
+Super classes: ResponsePlanElement
 
-Properties: ClosureCondition, DesignSpeed, NumberOfLanes, RoadConstrucetionCondition, RoadMaintenanceConditon, RoadName, RoadType, SegmentEndStakeNumber, SegmentStartStakeNumber, SpeedLimit, TrafficCapacity, TrafficVolume, TravelTime
+Properties: associate123445-物资
+
+Instances:
+
+- **123445_inst**
+
+  - associate123445-物资: ['123445-物资_inst']
 
 
-### 2
+### 123445-救助
 
-Super classes: EnvironmentElement
+Super classes: ResponseAction
 
-Properties: Rainfall, SnowfallIntensity, Visibility, WeatherType, WindForce, WindSpeed
+Instances:
+
+- **123445-救助_inst**
 
 
-### 3
+
+### 123445-物资
+
+Super classes: ResponseResource
+
+Properties: Location, ResourceQuantityOrQuality, ResourceType, ResourceUsageCondition, associate123445-救助
+
+Instances:
+
+- **123445-物资_inst**
+
+  - ResourceType: ['类型B']
+  - ResourceUsageCondition: ['False']
+  - ResourceQuantityOrQuality: ['1.0']
+  - associate123445-救助: ['123445-救助_inst']
+  - Location: ['123']
+
+
+### 3256
+
+Super classes: ResponsePlanElement
+
+Properties: PlanName, associate3256-人员, associate3256-救助, associate3256-物资
+
+Instances:
+
+- **3256_inst**
+
+  - associate3256-物资: ['3256-物资_inst']
+  - PlanName: ['3256']
+  - associate3256-人员: ['3256-人员_inst']
+  - associate3256-救助: ['3256-救助_inst']
+
+
+### 3256-人员
+
+Super classes: ResponseResource
+
+Properties: associate3256-牵引
+
+Instances:
+
+- **3256-人员_inst**
+
+  - associate3256-牵引: ['3256-牵引_inst']
+
+
+### 3256-救助
+
+Super classes: ResponseAction
+
+Instances:
+
+- **3256-救助_inst**
+
+
+
+### 3256-物资
+
+Super classes: ResponseResource
+
+Instances:
+
+- **3256-物资_inst**
+
+
+
+### 3256-牵引
+
+Super classes: ResponseAction
+
+Instances:
+
+- **3256-牵引_inst**
+
+
+
+### 5235
 
 Super classes: HazardElement
 
-Properties: AbnormalSpeedCondition, BreakdownCondition, CollisionCondition, CombustionCondition, DrivingDirection, IIIegalLaneOccupationCondition, RollOverCondition, SpillCondition, VehiclePosition, VehicleSpeed, VehicleType, consistVehicleCargo, consistVehicleComponents, consistVehiclePassengers
+Properties: AbnormalSpeedCondition, BreakdownCondition, CollisionCondition, CombustionCondition, DrivingDirection, EmergencyPeriod, IIIegalLaneOccupationCondition, RollOverCondition, SpillCondition, VehiclePosition, VehicleSpeed, VehicleType
+
+Instances:
+
+- **5235_inst**
+
+  - EmergencyPeriod: ['上午']
+  - IIIegalLaneOccupationCondition: ['False']
+  - BreakdownCondition: ['False']
+  - DrivingDirection: ['正向']
+  - RollOverCondition: ['False']
+  - CollisionCondition: ['False']
+  - CombustionCondition: ['False']
+  - SpillCondition: ['False']
 
 
-### 32635536
-
-Super classes: ResponsePlanElement
-
-Properties: PlanName
-
-
-### 32wqrw
-
-Super classes: ResponsePlanElement
-
-
-### 4
-
-Super classes: AffectedElement
-
-Properties: DamageCondition
-
-
-### 44234
+### 674675
 
 Super classes: ResponsePlanElement
 
+Properties: associate674675-人员, associate674675-医生, associate674675-抢修, associate674675-救助, associate674675-牵引, associate674675-类型B
 
-### 5
+Instances:
 
-Super classes: AffectedElement
+- **674675_inst**
 
-Properties: PollutionCondition, RoadDamageCondition, consistIncludedFacilities, consistIncludedLanes
-
-
-### 7
-
-Super classes: ResponsePlanElement
-
-Properties: ResourceQuantityOrQuality, ResourceType, ResourceUsageCondition
+  - associate674675-救助: ['674675-救助_inst']
+  - associate674675-抢修: ['674675-抢修_inst']
+  - associate674675-牵引: ['674675-牵引_inst']
+  - associate674675-人员: ['674675-人员_inst']
+  - associate674675-医生: ['674675-医生_inst']
+  - associate674675-类型B: ['674675-类型B_inst']
 
 
-### 8
+### 674675-人员
 
-Super classes: ResponsePlanElement
+Super classes: ResponseResource
+
+Instances:
+
+- **674675-人员_inst**
+
+
+
+### 674675-医生
+
+Super classes: ResponseResource
+
+Instances:
+
+- **674675-医生_inst**
+
+
+
+### 674675-抢修
+
+Super classes: ResponseAction
 
 Properties: BehaviorType, Duration, ImplementationCondition
+
+Instances:
+
+- **674675-抢修_inst**
+
+  - Duration: ['2.0']
+  - ImplementationCondition: ['False']
+  - BehaviorType: ['抢修']
+
+
+### 674675-救助
+
+Super classes: ResponseAction
+
+Instances:
+
+- **674675-救助_inst**
+
+
+
+### 674675-牵引
+
+Super classes: ResponseAction
+
+Instances:
+
+- **674675-牵引_inst**
+
+
+
+### 674675-类型B
+
+Super classes: ResponseResource
+
+Instances:
+
+- **674675-类型B_inst**
+
 
 
 ### AbsorptionScenario
 
 Super classes: Scenario
+
+
+### Action
+
+Super classes: Thing
+
+Instances:
+
+- **Action_inst**
+
 
 
 ### AdaptionScenario
@@ -84,10 +230,58 @@ Super classes: Scenario
 
 Super classes: ScenarioElement
 
+Instances:
+
+- **AffectedElement_inst**
+
+
+- **Road_inst**
+
+  - ClosureCondition: ['False']
+  - DamageConditon: ['False']
+  - RoadType: ['主路']
+  - PollutionCondition: ['False']
+
+- **HazardVehicle_inst**
+
+  - associateRoad: ['Road_inst']
+  - DamageCondition: ['False']
+  - VehiclePosition: ['ND569']
+  - VehicleType: ['truck']
+  - DrivingDirection: ['forward']
+  - CollisionCondition: ['True']
+  - CombustionCondition: ['False']
+  - consistpassenger: ['People_inst']
+  - SpillCondition: ['True']
+
 
 ### AffectedStates
 
 Super classes: ElementState
+
+Instances:
+
+- **AffectedStates_inst**
+
+
+- **ExplodeState_inst**
+
+
+- **CollidedState_inst**
+
+
+- **DrivingState_inst**
+
+
+
+### Collide
+
+Super classes: Thing
+
+Instances:
+
+- **Collide_inst**
+
 
 
 ### CollideState
@@ -96,12 +290,22 @@ Super classes: HazardStates
 
 Properties: SpillTransform
 
+Instances:
+
+- **CollideState_inst**
+
+
 
 ### CollidedState
 
 Super classes: AffectedStates
 
 Properties: ExplodeTransform
+
+Instances:
+
+- **CollidedState_inst**
+
 
 
 ### DriveState
@@ -110,10 +314,20 @@ Super classes: HazardStates
 
 Properties: CollideTransform
 
+Instances:
+
+- **DriveState_inst**
+
+
 
 ### DrivingState
 
 Super classes: AffectedStates
+
+Instances:
+
+- **DrivingState_inst**
+
 
 
 ### EconomicFactors
@@ -127,10 +341,71 @@ Properties: resourceType, roadLoss
 
 Super classes: Thing
 
+Instances:
+
+- **VehicleLoad_inst**
+
+
+- **People_inst**
+
+
+- **Lane_inst**
+
+
+- **Facility_inst**
+
+
+- **VehiclePart_inst**
+
+
 
 ### ElementState
 
 Super classes: Thing
+
+Instances:
+
+- **AffectedStates_inst**
+
+
+- **HazardStates_inst**
+
+
+- **ExplodeState_inst**
+
+
+- **CollidedState_inst**
+
+
+- **DrivingState_inst**
+
+
+- **SpillState_inst**
+
+
+- **DriveState_inst**
+
+
+- **CollideState_inst**
+
+
+- **rescueStates_inst**
+
+
+- **idleState_inst**
+
+
+- **implementState_inst**
+
+
+- **firefightingStates_inst**
+
+
+- **towStates_inst**
+
+
+- **aidStates_inst**
+
 
 
 ### Emergency
@@ -149,10 +424,55 @@ Super classes: Thing
 
 Super classes: ScenarioElement
 
+Instances:
+
+- **EnvironmentElement_inst**
+
+
+- **气象_inst**
+
+  - WeatherType: ['晴天']
+  - SnowfallIntensity: ['']
+
+
+### Explode
+
+Super classes: Thing
+
+Instances:
+
+- **Explode_inst**
+
+
 
 ### ExplodeState
 
 Super classes: AffectedStates
+
+Instances:
+
+- **ExplodeState_inst**
+
+
+
+### Facility
+
+Super classes: ElementCompositions
+
+Instances:
+
+- **Facility_inst**
+
+
+
+### Firefighting
+
+Super classes: Thing
+
+Instances:
+
+- **Firefighting_inst**
+
 
 
 ### FunctionFactors
@@ -166,20 +486,64 @@ Properties: roadPassibility
 
 Super classes: ScenarioElement
 
+Instances:
+
+- **HazardElement_inst**
+
+
+- **5235_inst**
+
+  - EmergencyPeriod: ['上午']
+  - IIIegalLaneOccupationCondition: ['False']
+  - BreakdownCondition: ['False']
+  - DrivingDirection: ['正向']
+  - RollOverCondition: ['False']
+  - CollisionCondition: ['False']
+  - CombustionCondition: ['False']
+  - SpillCondition: ['False']
+
+- **车辆_inst**
+
+
 
 ### HazardStates
 
 Super classes: ElementState
 
+Instances:
 
-### IncludedFacilities
-
-Super classes: ElementCompositions
+- **HazardStates_inst**
 
 
-### IncludedLanes
+- **SpillState_inst**
 
-Super classes: ElementCompositions
+
+- **DriveState_inst**
+
+
+- **CollideState_inst**
+
+
+
+### HazardVehicle
+
+Super classes: AffectedElement
+
+Properties: DamageCondition, associateRoad, consistpassenger
+
+Instances:
+
+- **HazardVehicle_inst**
+
+  - associateRoad: ['Road_inst']
+  - DamageCondition: ['False']
+  - VehiclePosition: ['ND569']
+  - VehicleType: ['truck']
+  - DrivingDirection: ['forward']
+  - CollisionCondition: ['True']
+  - CombustionCondition: ['False']
+  - consistpassenger: ['People_inst']
+  - SpillCondition: ['True']
 
 
 ### InvolvedScenario
@@ -190,6 +554,36 @@ Super classes: Thing
 ### InvolvedScenarioElement
 
 Super classes: Thing
+
+
+### Lane
+
+Super classes: ElementCompositions
+
+Instances:
+
+- **Lane_inst**
+
+
+
+### People
+
+Super classes: ElementCompositions
+
+Instances:
+
+- **People_inst**
+
+
+
+### PersonnalRescue
+
+Super classes: Thing
+
+Instances:
+
+- **PersonnalRescue_inst**
+
 
 
 ### RecoveryScenario
@@ -206,20 +600,209 @@ Super classes: Thing
 
 Super classes: ResponsePlanElement
 
+Instances:
+
+- **ResponseAction_inst**
+
+
+- **674675-抢修_inst**
+
+  - Duration: ['2.0']
+  - ImplementationCondition: ['False']
+  - BehaviorType: ['抢修']
+
+- **674675-牵引_inst**
+
+
+- **应急行为_inst**
+
+
+- **674675-救助_inst**
+
+
+- **3256-救助_inst**
+
+
+- **123445-救助_inst**
+
+
+- **3256-牵引_inst**
+
+
 
 ### ResponsePlanElement
 
 Super classes: ScenarioElement
+
+Instances:
+
+- **ResponsePlanElement_inst**
+
+
+- **ResponseResource_inst**
+
+
+- **ResponseAction_inst**
+
+
+- **674675-抢修_inst**
+
+  - Duration: ['2.0']
+  - ImplementationCondition: ['False']
+  - BehaviorType: ['抢修']
+
+- **674675-牵引_inst**
+
+
+- **应急行为_inst**
+
+
+- **123445-物资_inst**
+
+  - ResourceType: ['类型B']
+  - ResourceUsageCondition: ['False']
+  - ResourceQuantityOrQuality: ['1.0']
+  - associate123445-救助: ['123445-救助_inst']
+  - Location: ['123']
+
+- **3256-人员_inst**
+
+  - associate3256-牵引: ['3256-牵引_inst']
+
+- **3256_inst**
+
+  - associate3256-物资: ['3256-物资_inst']
+  - PlanName: ['3256']
+  - associate3256-人员: ['3256-人员_inst']
+  - associate3256-救助: ['3256-救助_inst']
+
+- **123445_inst**
+
+  - associate123445-物资: ['123445-物资_inst']
+
+- **674675-救助_inst**
+
+
+- **674675_inst**
+
+  - associate674675-救助: ['674675-救助_inst']
+  - associate674675-抢修: ['674675-抢修_inst']
+  - associate674675-牵引: ['674675-牵引_inst']
+  - associate674675-人员: ['674675-人员_inst']
+  - associate674675-医生: ['674675-医生_inst']
+  - associate674675-类型B: ['674675-类型B_inst']
+
+- **应急资源_inst**
+
+
+- **674675-人员_inst**
+
+
+- **674675-类型B_inst**
+
+
+- **3256-救助_inst**
+
+
+- **3256-物资_inst**
+
+
+- **123445-救助_inst**
+
+
+- **674675-医生_inst**
+
+
+- **3256-牵引_inst**
+
 
 
 ### ResponseResource
 
 Super classes: ResponsePlanElement
 
+Instances:
+
+- **ResponseResource_inst**
+
+
+- **123445-物资_inst**
+
+  - ResourceType: ['类型B']
+  - ResourceUsageCondition: ['False']
+  - ResourceQuantityOrQuality: ['1.0']
+  - associate123445-救助: ['123445-救助_inst']
+  - Location: ['123']
+
+- **3256-人员_inst**
+
+  - associate3256-牵引: ['3256-牵引_inst']
+
+- **应急资源_inst**
+
+
+- **674675-人员_inst**
+
+
+- **674675-类型B_inst**
+
+
+- **3256-物资_inst**
+
+
+- **674675-医生_inst**
+
+
 
 ### ResponseStates
 
 Super classes: ElementState
+
+
+### Road
+
+Super classes: AffectedElement
+
+Properties: ClosureCondition, DamageConditon, DesignSpeed, NumberOfLanes, PollutionCondition, RoadName, RoadType, SegmentEndStakeNumber, SegmentStartStakeNumber, TrafficVolume
+
+Instances:
+
+- **Road_inst**
+
+  - ClosureCondition: ['False']
+  - DamageConditon: ['False']
+  - RoadType: ['主路']
+  - PollutionCondition: ['False']
+
+
+### RoadCleaning
+
+Super classes: Thing
+
+Instances:
+
+- **RoadCleaning_inst**
+
+
+
+### RoadControl
+
+Super classes: Thing
+
+Instances:
+
+- **RoadControl_inst**
+
+
+
+### RoadRepair
+
+Super classes: Thing
+
+Instances:
+
+- **RoadRepair_inst**
+
 
 
 ### SafetyFactors
@@ -240,15 +823,159 @@ Properties: hasResilience, influencedBy, involvesElement
 
 Super classes: Thing
 
+Instances:
+
+- **AffectedElement_inst**
+
+
+- **HazardElement_inst**
+
+
+- **EnvironmentElement_inst**
+
+
+- **ResponsePlanElement_inst**
+
+
+- **ResponseResource_inst**
+
+
+- **ResponseAction_inst**
+
+
+- **Road_inst**
+
+  - ClosureCondition: ['False']
+  - DamageConditon: ['False']
+  - RoadType: ['主路']
+  - PollutionCondition: ['False']
+
+- **HazardVehicle_inst**
+
+  - associateRoad: ['Road_inst']
+  - DamageCondition: ['False']
+  - VehiclePosition: ['ND569']
+  - VehicleType: ['truck']
+  - DrivingDirection: ['forward']
+  - CollisionCondition: ['True']
+  - CombustionCondition: ['False']
+  - consistpassenger: ['People_inst']
+  - SpillCondition: ['True']
+
+- **气象_inst**
+
+  - WeatherType: ['晴天']
+  - SnowfallIntensity: ['']
+
+- **5235_inst**
+
+  - EmergencyPeriod: ['上午']
+  - IIIegalLaneOccupationCondition: ['False']
+  - BreakdownCondition: ['False']
+  - DrivingDirection: ['正向']
+  - RollOverCondition: ['False']
+  - CollisionCondition: ['False']
+  - CombustionCondition: ['False']
+  - SpillCondition: ['False']
+
+- **车辆_inst**
+
+
+- **674675-抢修_inst**
+
+  - Duration: ['2.0']
+  - ImplementationCondition: ['False']
+  - BehaviorType: ['抢修']
+
+- **674675-牵引_inst**
+
+
+- **应急行为_inst**
+
+
+- **123445-物资_inst**
+
+  - ResourceType: ['类型B']
+  - ResourceUsageCondition: ['False']
+  - ResourceQuantityOrQuality: ['1.0']
+  - associate123445-救助: ['123445-救助_inst']
+  - Location: ['123']
+
+- **3256-人员_inst**
+
+  - associate3256-牵引: ['3256-牵引_inst']
+
+- **3256_inst**
+
+  - associate3256-物资: ['3256-物资_inst']
+  - PlanName: ['3256']
+  - associate3256-人员: ['3256-人员_inst']
+  - associate3256-救助: ['3256-救助_inst']
+
+- **123445_inst**
+
+  - associate123445-物资: ['123445-物资_inst']
+
+- **674675-救助_inst**
+
+
+- **674675_inst**
+
+  - associate674675-救助: ['674675-救助_inst']
+  - associate674675-抢修: ['674675-抢修_inst']
+  - associate674675-牵引: ['674675-牵引_inst']
+  - associate674675-人员: ['674675-人员_inst']
+  - associate674675-医生: ['674675-医生_inst']
+  - associate674675-类型B: ['674675-类型B_inst']
+
+- **应急资源_inst**
+
+
+- **674675-人员_inst**
+
+
+- **674675-类型B_inst**
+
+
+- **3256-救助_inst**
+
+
+- **3256-物资_inst**
+
+
+- **123445-救助_inst**
+
+
+- **674675-医生_inst**
+
+
+- **3256-牵引_inst**
+
+
 
 ### ScenarioResilience
 
 Super classes: Thing
 
 
+### Spill
+
+Super classes: Thing
+
+Instances:
+
+- **Spill_inst**
+
+
+
 ### SpillState
 
 Super classes: HazardStates
+
+Instances:
+
+- **SpillState_inst**
+
 
 
 ### TimeFactors
@@ -258,454 +985,496 @@ Super classes: ResilienceInfluentialFactors
 Properties: disposalDuration, emergencyPeriod, responseDuration
 
 
-### VehicleCargo
+### VehicleBreakdown
+
+Super classes: Thing
+
+Instances:
+
+- **VehicleBreakdown_inst**
+
+
+
+### VehicleCollision
+
+Super classes: Thing
+
+Instances:
+
+- **VehicleCollision_inst**
+
+
+
+### VehicleDeparture
+
+Super classes: Thing
+
+Instances:
+
+- **VehicleDeparture_inst**
+
+
+
+### VehicleExplosion
+
+Super classes: Thing
+
+Instances:
+
+- **VehicleExplosion_inst**
+
+
+
+### VehicleLaneChange
+
+Super classes: Thing
+
+Instances:
+
+- **VehicleLaneChange_inst**
+
+
+
+### VehicleLoad
 
 Super classes: ElementCompositions
 
+Instances:
 
-### VehicleComponents
+- **VehicleLoad_inst**
+
+
+
+### VehicleMotion
+
+Super classes: Thing
+
+Instances:
+
+- **VehicleMotion_inst**
+
+
+
+### VehicleOverturn
+
+Super classes: Thing
+
+Instances:
+
+- **VehicleOverturn_inst**
+
+
+
+### VehiclePart
 
 Super classes: ElementCompositions
 
+Instances:
 
-### VehiclePassengers
+- **VehiclePart_inst**
 
-Super classes: ElementCompositions
+
+
+### VehicleSpeedChange
+
+Super classes: Thing
+
+Instances:
+
+- **VehicleSpeedChange_inst**
+
+
+
+### VehicleSpillage
+
+Super classes: Thing
+
+Instances:
+
+- **VehicleSpillage_inst**
+
+
+
+### VehicleTowing
+
+Super classes: Thing
+
+Instances:
+
+- **VehicleTowing_inst**
+
+
+
+### VehicleTransport
+
+Super classes: Thing
+
+Instances:
+
+- **VehicleTransport_inst**
+
+
+
+### VehicleTurning
+
+Super classes: Thing
+
+Instances:
+
+- **VehicleTurning_inst**
+
 
 
 ### aidStates
 
-Super classes: Thing
+Super classes: ElementState
 
+Instances:
 
-### ewa2
+- **aidStates_inst**
 
-Super classes: ResponsePlanElement
 
 
 ### firefightingStates
 
-Super classes: Thing
+Super classes: ElementState
+
+Instances:
+
+- **firefightingStates_inst**
+
 
 
 ### idleState
 
-Super classes: aidStates
+Super classes: rescueStates
 
 Properties: Aid:ActionTransform, FireFighting:ActionTransform, Rescue:ActionTransform, Tow:ActionTransform
+
+Instances:
+
+- **idleState_inst**
+
 
 
 ### implementState
 
-Super classes: aidStates
+Super classes: rescueStates
+
+Instances:
+
+- **implementState_inst**
+
 
 
 ### rescueStates
 
-Super classes: Thing
+Super classes: ElementState
+
+Instances:
+
+- **rescueStates_inst**
+
+
+- **idleState_inst**
+
+
+- **implementState_inst**
+
 
 
 ### towStates
 
-Super classes: Thing
+Super classes: ElementState
+
+Instances:
+
+- **towStates_inst**
 
 
-### 人员
 
-Super classes: ResponsePlanElement
+### 应急行为
 
+Super classes: ResponseAction
 
-### 你好
+Instances:
 
-Super classes: ResponsePlanElement
-
-
-### 抢修
-
-Super classes: ResponsePlanElement
+- **应急行为_inst**
 
 
-### 救助
 
-Super classes: ResponsePlanElement
+### 应急资源
 
+Super classes: ResponseResource
 
-### 消防
+Instances:
 
-Super classes: ResponsePlanElement
-
-
-### 牵引
-
-Super classes: ResponsePlanElement
+- **应急资源_inst**
 
 
-### 那个
 
-Super classes: ResponsePlanElement
+### 气象
 
+Super classes: EnvironmentElement
 
-### 预案1
+Properties: Rainfall, SnowfallIntensity, Visibility, WeatherType, WindForce, WindSpeed
 
-Super classes: ResponsePlanElement
+Instances:
 
+- **气象_inst**
 
-### 预案2
-
-Super classes: ResponsePlanElement
-
-
-### 预案3
-
-Super classes: ResponsePlanElement
+  - WeatherType: ['晴天']
+  - SnowfallIntensity: ['']
 
 
-### 预案4
+### 车辆
 
-Super classes: ResponsePlanElement
+Super classes: HazardElement
 
+Instances:
 
-### 预案5
+- **车辆_inst**
 
-Super classes: ResponsePlanElement
-
-
-### 预案6
-
-Super classes: ResponsePlanElement
 
 
 ## Properties
 
-### Properties of 1
+### Properties of 123445
 
-#### ClosureCondition
-
-Type: DatatypeProperty
-
-Range: <class 'int'>
-
-
-#### DesignSpeed
-
-Type: DatatypeProperty
-
-Range: <class 'int'>
-
-
-#### NumberOfLanes
-
-Type: DatatypeProperty
-
-Range: <class 'int'>
-
-
-#### RoadConstrucetionCondition
-
-Type: DatatypeProperty
-
-Range: <class 'int'>
-
-
-#### RoadMaintenanceConditon
-
-Type: DatatypeProperty
-
-Range: <class 'int'>
-
-
-#### RoadName
-
-Type: DatatypeProperty
-
-Range: <class 'int'>
-
-
-#### RoadType
-
-Type: DatatypeProperty
-
-Range: <class 'int'>
-
-
-#### SegmentEndStakeNumber
-
-Type: DatatypeProperty
-
-Range: <class 'int'>
-
-
-#### SegmentStartStakeNumber
-
-Type: DatatypeProperty
-
-Range: <class 'int'>
-
-
-#### SpeedLimit
-
-Type: DatatypeProperty
-
-Range: <class 'int'>
-
-
-#### TrafficCapacity
-
-Type: DatatypeProperty
-
-Range: <class 'int'>
-
-
-#### TrafficVolume
-
-Type: DatatypeProperty
-
-Range: <class 'int'>
-
-
-#### TravelTime
-
-Type: DatatypeProperty
-
-Range: <class 'int'>
-
-
-### Properties of 2
-
-#### Rainfall
-
-Type: DatatypeProperty
-
-Range: <class 'int'>
-
-
-#### SnowfallIntensity
-
-Type: DatatypeProperty
-
-Range: <class 'int'>
-
-
-#### Visibility
-
-Type: DatatypeProperty
-
-Range: <class 'int'>
-
-
-#### WeatherType
-
-Type: DatatypeProperty
-
-Range: <class 'int'>
-
-
-#### WindForce
-
-Type: DatatypeProperty
-
-Range: <class 'int'>
-
-
-#### WindSpeed
-
-Type: DatatypeProperty
-
-Range: <class 'int'>
-
-
-### Properties of 3
-
-#### AbnormalSpeedCondition
-
-Type: DatatypeProperty
-
-Range: <class 'int'>
-
-
-#### BreakdownCondition
-
-Type: DatatypeProperty
-
-Range: <class 'int'>
-
-
-#### CollisionCondition
-
-Type: DatatypeProperty
-
-Range: <class 'int'>
-
-
-#### CombustionCondition
-
-Type: DatatypeProperty
-
-Range: <class 'int'>
-
-
-#### DrivingDirection
-
-Type: DatatypeProperty
-
-Range: <class 'int'>
-
-
-#### IIIegalLaneOccupationCondition
-
-Type: DatatypeProperty
-
-Range: <class 'int'>
-
-
-#### RollOverCondition
-
-Type: DatatypeProperty
-
-Range: <class 'int'>
-
-
-#### SpillCondition
-
-Type: DatatypeProperty
-
-Range: <class 'int'>
-
-
-#### VehiclePosition
-
-Type: DatatypeProperty
-
-Range: <class 'int'>
-
-
-#### VehicleSpeed
-
-Type: DatatypeProperty
-
-Range: <class 'int'>
-
-
-#### VehicleType
-
-Type: DatatypeProperty
-
-Range: <class 'int'>
-
-
-#### consistVehicleCargo
+#### associate123445-物资
 
 Type: ObjectProperty
 
-Range: VehicleCargo
+Range: 123445-物资
 
 
-#### consistVehicleComponents
+### Properties of 123445-物资
 
-Type: ObjectProperty
-
-Range: VehicleComponents
-
-
-#### consistVehiclePassengers
-
-Type: ObjectProperty
-
-Range: VehiclePassengers
-
-
-### Properties of 32635536
-
-#### PlanName
+#### Location
 
 Type: DatatypeProperty
 
-Range: <class 'int'>
+Range: <class 'str'>
 
-
-### Properties of 4
-
-#### DamageCondition
-
-Type: DatatypeProperty
-
-Range: <class 'int'>
-
-
-### Properties of 5
-
-#### PollutionCondition
-
-Type: DatatypeProperty
-
-Range: <class 'int'>
-
-
-#### RoadDamageCondition
-
-Type: DatatypeProperty
-
-Range: <class 'int'>
-
-
-#### consistIncludedFacilities
-
-Type: ObjectProperty
-
-Range: IncludedFacilities
-
-
-#### consistIncludedLanes
-
-Type: ObjectProperty
-
-Range: IncludedLanes
-
-
-### Properties of 7
 
 #### ResourceQuantityOrQuality
 
 Type: DatatypeProperty
 
-Range: <class 'int'>
+Range: <class 'float'>
 
 
 #### ResourceType
 
 Type: DatatypeProperty
 
-Range: <class 'int'>
+Range: <class 'str'>
 
 
 #### ResourceUsageCondition
 
 Type: DatatypeProperty
 
-Range: <class 'int'>
+Range: <class 'bool'>
 
 
-### Properties of 8
+#### associate123445-救助
+
+Type: ObjectProperty
+
+Range: 123445-救助
+
+
+### Properties of 3256
+
+#### PlanName
+
+Type: DatatypeProperty
+
+Range: <class 'str'>
+
+
+#### associate3256-人员
+
+Type: ObjectProperty
+
+Range: 3256-人员
+
+
+#### associate3256-救助
+
+Type: ObjectProperty
+
+Range: 3256-救助
+
+
+#### associate3256-物资
+
+Type: ObjectProperty
+
+Range: 3256-物资
+
+
+### Properties of 3256-人员
+
+#### associate3256-牵引
+
+Type: ObjectProperty
+
+Range: 3256-牵引
+
+
+### Properties of 5235
+
+#### AbnormalSpeedCondition
+
+Type: DatatypeProperty
+
+Range: <class 'str'>
+
+
+#### BreakdownCondition
+
+Type: DatatypeProperty
+
+Range: <class 'bool'>
+
+
+#### CollisionCondition
+
+Type: DatatypeProperty
+
+Range: <class 'bool'>
+
+
+#### CombustionCondition
+
+Type: DatatypeProperty
+
+Range: <class 'bool'>
+
+
+#### DrivingDirection
+
+Type: DatatypeProperty
+
+Range: <class 'str'>
+
+
+#### EmergencyPeriod
+
+Type: DatatypeProperty
+
+Range: <class 'str'>
+
+
+#### IIIegalLaneOccupationCondition
+
+Type: DatatypeProperty
+
+Range: <class 'bool'>
+
+
+#### RollOverCondition
+
+Type: DatatypeProperty
+
+Range: <class 'bool'>
+
+
+#### SpillCondition
+
+Type: DatatypeProperty
+
+Range: <class 'bool'>
+
+
+#### VehiclePosition
+
+Type: DatatypeProperty
+
+Range: <class 'str'>
+
+
+#### VehicleSpeed
+
+Type: DatatypeProperty
+
+Range: <class 'float'>
+
+
+#### VehicleType
+
+Type: DatatypeProperty
+
+Range: <class 'str'>
+
+
+### Properties of 674675
+
+#### associate674675-人员
+
+Type: ObjectProperty
+
+Range: 674675-人员
+
+
+#### associate674675-医生
+
+Type: ObjectProperty
+
+Range: 674675-医生
+
+
+#### associate674675-抢修
+
+Type: ObjectProperty
+
+Range: 674675-抢修
+
+
+#### associate674675-救助
+
+Type: ObjectProperty
+
+Range: 674675-救助
+
+
+#### associate674675-牵引
+
+Type: ObjectProperty
+
+Range: 674675-牵引
+
+
+#### associate674675-类型B
+
+Type: ObjectProperty
+
+Range: 674675-类型B
+
+
+### Properties of 674675-抢修
 
 #### BehaviorType
 
 Type: DatatypeProperty
 
-Range: <class 'int'>
+Range: <class 'str'>
 
 
 #### Duration
 
 Type: DatatypeProperty
 
-Range: <class 'int'>
+Range: <class 'float'>
 
 
 #### ImplementationCondition
 
 Type: DatatypeProperty
 
-Range: <class 'int'>
+Range: <class 'bool'>
 
 
 ### Properties of CollideState
@@ -774,6 +1543,101 @@ Range: InvolvedScenario
 Type: DatatypeProperty
 
 Range: <class 'bool'>
+
+
+### Properties of HazardVehicle
+
+#### DamageCondition
+
+Type: DatatypeProperty
+
+Range: <class 'bool'>
+
+
+#### associateRoad
+
+Type: ObjectProperty
+
+Range: Road
+
+
+#### consistpassenger
+
+Type: ObjectProperty
+
+Range: People
+
+
+### Properties of Road
+
+#### ClosureCondition
+
+Type: DatatypeProperty
+
+Range: <class 'bool'>
+
+
+#### DamageConditon
+
+Type: DatatypeProperty
+
+Range: <class 'bool'>
+
+
+#### DesignSpeed
+
+Type: DatatypeProperty
+
+Range: <class 'float'>
+
+
+#### NumberOfLanes
+
+Type: DatatypeProperty
+
+Range: <class 'float'>
+
+
+#### PollutionCondition
+
+Type: DatatypeProperty
+
+Range: <class 'bool'>
+
+
+#### RoadName
+
+Type: DatatypeProperty
+
+Range: <class 'str'>
+
+
+#### RoadType
+
+Type: DatatypeProperty
+
+Range: <class 'str'>
+
+
+#### SegmentEndStakeNumber
+
+Type: DatatypeProperty
+
+Range: <class 'str'>
+
+
+#### SegmentStartStakeNumber
+
+Type: DatatypeProperty
+
+Range: <class 'str'>
+
+
+#### TrafficVolume
+
+Type: DatatypeProperty
+
+Range: <class 'float'>
 
 
 ### Properties of SafetyFactors
@@ -866,6 +1730,50 @@ Range: implementState
 Type: ObjectProperty
 
 Range: implementState
+
+
+### Properties of 气象
+
+#### Rainfall
+
+Type: DatatypeProperty
+
+Range: <class 'float'>
+
+
+#### SnowfallIntensity
+
+Type: DatatypeProperty
+
+Range: <class 'str'>
+
+
+#### Visibility
+
+Type: DatatypeProperty
+
+Range: <class 'float'>
+
+
+#### WeatherType
+
+Type: DatatypeProperty
+
+Range: <class 'str'>
+
+
+#### WindForce
+
+Type: DatatypeProperty
+
+Range: <class 'float'>
+
+
+#### WindSpeed
+
+Type: DatatypeProperty
+
+Range: <class 'float'>
 
 
 ## Behaviors

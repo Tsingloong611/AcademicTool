@@ -159,19 +159,19 @@
 <polygon fill="white" stroke="none" points="354,-817 354,-837 445,-837 445,-817 354,-817"/>
 <polygon fill="none" stroke="black" points="354,-817 354,-837 445,-837 445,-817 354,-817"/>
 <polygon fill="#f3f4f6" stroke="none" points="358,-821 358,-833 441,-833 441,-821 358,-821"/>
-<polygon fill="#4ade80" stroke="none" points="360,-823 360,-831 412,-831 412,-823 360,-823"/>
-<polygon fill="#f3f4f6" stroke="none" points="412,-823 412,-831 439,-831 439,-823 412,-823"/>
+<polygon fill="#4ade80" stroke="none" points="360,-823 360,-831 405,-831 405,-823 360,-823"/>
+<polygon fill="#f3f4f6" stroke="none" points="405,-823 405,-831 439,-831 439,-823 405,-823"/>
 <polygon fill="none" stroke="black" points="445,-817 445,-837 484,-837 484,-817 445,-817"/>
-<text text-anchor="start" x="448.75" y="-823.7" font-family="Arial" font-size="9.00">65.55%</text>
+<text text-anchor="start" x="448.75" y="-823.7" font-family="Arial" font-size="9.00">56.67%</text>
 <polygon fill="none" stroke="black" points="294,-797 294,-817 354,-817 354,-797 294,-797"/>
 <text text-anchor="start" x="333.5" y="-803.7" font-family="Arial" font-size="9.00">Bad</text>
 <polygon fill="white" stroke="none" points="354,-797 354,-817 445,-817 445,-797 354,-797"/>
 <polygon fill="none" stroke="black" points="354,-797 354,-817 445,-817 445,-797 354,-797"/>
 <polygon fill="#f3f4f6" stroke="none" points="358,-801 358,-813 441,-813 441,-801 358,-801"/>
-<polygon fill="#4ade80" stroke="none" points="360,-803 360,-811 387,-811 387,-803 360,-803"/>
-<polygon fill="#f3f4f6" stroke="none" points="387,-803 387,-811 439,-811 439,-803 387,-803"/>
+<polygon fill="#4ade80" stroke="none" points="360,-803 360,-811 394,-811 394,-803 360,-803"/>
+<polygon fill="#f3f4f6" stroke="none" points="394,-803 394,-811 439,-811 439,-803 394,-803"/>
 <polygon fill="none" stroke="black" points="445,-797 445,-817 484,-817 484,-797 445,-797"/>
-<text text-anchor="start" x="448.75" y="-803.7" font-family="Arial" font-size="9.00">34.45%</text>
+<text text-anchor="start" x="448.75" y="-803.7" font-family="Arial" font-size="9.00">43.33%</text>
 </g>
 <!-- roadPassibility&#45;&gt;AbsorptionCapacity -->
 <g id="edge4" class="edge">
@@ -484,7 +484,7 @@
 <polygon fill="#4ade80" stroke="none" points="564,-689 564,-697 613,-697 613,-689 564,-689"/>
 <polygon fill="#f3f4f6" stroke="none" points="613,-689 613,-697 643,-697 643,-689 613,-689"/>
 <polygon fill="none" stroke="black" points="649,-683 649,-703 688,-703 688,-683 649,-683"/>
-<text text-anchor="start" x="652.75" y="-689.7" font-family="Arial" font-size="9.00">61.93%</text>
+<text text-anchor="start" x="652.75" y="-689.7" font-family="Arial" font-size="9.00">62.32%</text>
 <polygon fill="none" stroke="black" points="498,-663 498,-683 558,-683 558,-663 498,-663"/>
 <text text-anchor="start" x="537.5" y="-669.7" font-family="Arial" font-size="9.00">Bad</text>
 <polygon fill="white" stroke="none" points="558,-663 558,-683 649,-683 649,-663 558,-663"/>
@@ -493,7 +493,7 @@
 <polygon fill="#4ade80" stroke="none" points="564,-669 564,-677 594,-677 594,-669 564,-669"/>
 <polygon fill="#f3f4f6" stroke="none" points="594,-669 594,-677 643,-677 643,-669 594,-669"/>
 <polygon fill="none" stroke="black" points="649,-663 649,-683 688,-683 688,-663 649,-663"/>
-<text text-anchor="start" x="652.75" y="-669.7" font-family="Arial" font-size="9.00">38.07%</text>
+<text text-anchor="start" x="652.75" y="-669.7" font-family="Arial" font-size="9.00">37.68%</text>
 </g>
 <!-- AbsorptionCapacity&#45;&gt;ScenarioResilience -->
 <g id="edge13" class="edge">

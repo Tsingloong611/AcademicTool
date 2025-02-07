@@ -14,7 +14,9 @@ from PySide6.QtCore import Qt, Signal, QSize
 from PySide6.QtGui import QPixmap, QFont, QIcon, QWheelEvent, QPainter
 
 from views.dialogs.custom_warning_dialog import CustomWarningDialog
+from views.dialogs.update_prior_dialog import *
 from views.tabs.condition_setting import CustomTableWidget
+
 
 # Constants Definition
 ZOOM_IN_ICON = "resources/icons/zoom_in.png"
@@ -76,10 +78,13 @@ class ZoomableLabel(QLabel):
 
 class ModelTransformationTab(QWidget):
     set_inference_request = Signal()
+    update_bayes_network = Signal()
     """推演模型转换选项卡"""
 
     def __init__(self):
         super().__init__()
+
+        self.info_dir = None
         self.node_data = {
             "节点A": [["状态1", 0.3], ["状态2", 0.7]],
             "节点B": [["状态1", 0.5], ["状态2", 0.5]],
@@ -299,13 +304,24 @@ QTableWidget:focus {
         """)
 
         outer_layout = QVBoxLayout(group_box)
-        outer_layout.setContentsMargins(10, 10, 10, 10)
-        outer_layout.setSpacing(15)
+        outer_layout.setContentsMargins(10, 0, 10, 10)
+        outer_layout.setSpacing(5)
 
-        # Create node selection area
+        # 在右上角添加“更新先验”按钮
+        top_layout = QHBoxLayout()
+        top_layout.setContentsMargins(0, 0, 0, 0)
+        top_layout.setSpacing(0)
+        top_layout.addStretch()  # 将按钮推到右侧
+        self.update_prior_button = QPushButton(self.tr("更新先验"))
+        self.update_prior_button.setFixedWidth(110)
+        self.update_prior_button.clicked.connect(self.update_prior)
+        top_layout.addWidget(self.update_prior_button)
+        outer_layout.addLayout(top_layout)
+
+        # 创建节点选择区域
         self.node_group_box = QGroupBox(self.tr("节点选择"))
         self.node_group_box.setMinimumWidth(300)
-        self.node_group_box.setFixedHeight(200)
+        self.node_group_box.setFixedHeight(400)
         self.node_group_box.setStyleSheet("""
             QGroupBox {
                 border: 1px solid #d0d0d0;
@@ -337,15 +353,13 @@ QTableWidget:focus {
             }
         """)
 
-        # Create scroll area
+        # 创建滚动区域及复选框内容
         scroll_area = QScrollArea(self.node_group_box)
         scroll_area.setWidgetResizable(True)
         scroll_area.setFrameShape(QScrollArea.NoFrame)
-        # 横纵向都需要在内容超出时才出现滚动条
         scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarAsNeeded)
         scroll_area.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
 
-        # Create content widget for checkboxes
         content_widget = QWidget()
         content_widget.setSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.Preferred)
         self.grid_layout = QGridLayout(content_widget)
@@ -353,12 +367,9 @@ QTableWidget:focus {
         self.grid_layout.setHorizontalSpacing(20)
         self.grid_layout.setContentsMargins(10, 10, 10, 10)
         self.grid_layout.setAlignment(Qt.AlignTop | Qt.AlignLeft)
-
-        # 设置每列弹性伸缩，保证复选框文本可完整显示
         self.grid_layout.setColumnStretch(0, 1)
         self.grid_layout.setColumnStretch(1, 1)
 
-        # 添加复选框
         self.node_checkboxes = {}
         nodes = list(self.node_data.keys())
         for i, node in enumerate(nodes):
@@ -377,14 +388,12 @@ QTableWidget:focus {
                 }
             """)
             checkbox.setText(node)
-            checkbox.setToolTip(node)  # 鼠标悬浮提示
-            # 使复选框在水平方向可扩展
+            checkbox.setToolTip(node)
             checkbox.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
-
             checkbox.stateChanged.connect(self.on_checkbox_state_changed)
             self.node_checkboxes[node] = checkbox
-            row = i // 2
-            col = i % 2
+            row = i
+            col = 0
             self.grid_layout.addWidget(checkbox, row, col)
 
         scroll_area.setWidget(content_widget)
@@ -399,7 +408,6 @@ QTableWidget:focus {
         self.prior_table.setSelectionMode(QTableWidget.SingleSelection)
         self.prior_table.setEditTriggers(QTableWidget.NoEditTriggers)
         self.prior_table.setAlternatingRowColors(True)
-        # 去除表格边框
         self.prior_table.setShowGrid(False)
 
         self.apply_table_style(self.prior_table)
@@ -430,11 +438,24 @@ QTableWidget:focus {
         outer_layout.addWidget(self.node_group_box)
         outer_layout.addWidget(table_container, 4)
 
-        # Initialize display state
+        # 初始显示状态
         self.prior_table.hide()
         self.placeholder_label.show()
 
         return group_box
+
+    # 新增的“更新先验”槽函数
+    def update_prior(self):
+        main_dialog = MainUpdateDialog(self.info_dir, self)
+        main_dialog.exec()  # 进入主对话框
+
+        # 在对话框关闭后，根据 updated 标记执行动作
+        if main_dialog.updated:
+            self.update_bayes_network.emit()
+            print("先验更新处理完毕")
+        else:
+            print("没有更新先验数据")
+
 
     def apply_table_style(self, table: QTableWidget):
         # 此处保留对表格样式的基础设置，已去除单元格外边框
@@ -554,8 +575,8 @@ QTableWidget:focus {
             checkbox.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
             checkbox.stateChanged.connect(self.on_checkbox_state_changed)
             self.node_checkboxes[node] = checkbox
-            row = i // 2
-            col = i % 2
+            row = i
+            col = 0
             self.grid_layout.addWidget(checkbox, row, col, alignment=Qt.AlignLeft)
 
     def set_node_data(self, new_node_data):

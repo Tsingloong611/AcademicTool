@@ -16,6 +16,9 @@ import pyAgrum as gum
 from owlready2 import *
 from scipy.stats import truncnorm, norm
 
+from views.dialogs.custom_warning_dialog import CustomWarningDialog
+from views.dialogs.missing_data_dialog import get_missing_rows, MissingDataDialog
+
 
 class FuzzyEvaluation:
     """处理模糊评估相关的功能"""
@@ -88,6 +91,24 @@ class ScenarioResilience:
         self.fuzzy_evaluator = FuzzyEvaluation()
         self.current_evidence = {}  # 添加追踪当前证据的属性
 
+        self.state_numb_dict = {
+            'roadPassibility': [0, 1],
+            'emergencyType': [0, 1, 2],
+            'roadLoss': [0, 1],
+            'casualties': [0, 1],
+            'AidResource': [0, 1],
+            'TowResource': [0, 1],
+            'FirefightingResource': [0, 1],
+            'RescueResource': [0, 1],
+            'emergencyPeriod': [0, 1, 2, 3],
+            'responseDuration': [0, 1, 2, 3],
+            'disposalDuration': [0, 1, 2, 3],
+            'AbsorptionCapacity': [0, 1],
+            'AdaptionCapacity': [0, 1],
+            'RecoveryCapacity': [0, 1],
+            'ScenarioResilience': [0, 1]
+        }
+
         # 定义状态映射
         self.state_mapping = {
             'roadPassibility': ['Impassable', 'Passable'],
@@ -124,7 +145,22 @@ class ScenarioResilience:
 
         # 读取并处理专家评估数据
         df = pd.read_excel(expert_estimation_path)
-        df['fuzzy'] = df.iloc[:, -7:].apply(self.fuzzy_evaluator.calculate_fuzzy, axis=1)
+        # 查看有没有那一行具有缺失值
+        # 判断每一行是否存在缺失值
+        missing_df = get_missing_rows(df)
+        if not missing_df.empty:
+            dialog = MissingDataDialog(missing_df)
+            # 以模态方式展示对话框，等待用户确认
+            df = df.dropna()
+            dialog.exec()
+
+
+        # 动态获取专家列
+        expert_columns = [col for col in df.columns if re.match(r'^E\d+$', col)]
+        expert_columns.sort(key=lambda x: int(x[1:]))
+
+        df['fuzzy'] = df[expert_columns].apply(self.fuzzy_evaluator.calculate_fuzzy, axis=1)
+
         df['Condition'] = df['Condition'].tolist()
 
         # 计算条件概率
@@ -134,15 +170,58 @@ class ScenarioResilience:
             condition_probability.append(prob)
 
         df['conditonProbability'] = condition_probability
+        print("\n===== 归一化前 =====")
+        print(df[['Node', 'Condition','State', 'conditonProbability']])
+
+        df = self._fill_missing_binary_states(df)
 
         # 按组归一化
-        normalized_prob = df.groupby(['Node', 'Condition']).apply(
-            lambda group: pd.DataFrame({
-                'conditonProbability': group['conditonProbability'] / group['conditonProbability'].sum()
-            })
-        )['conditonProbability']
+        df['conditonProbability'] = df.groupby(['Node', 'Condition'])['conditonProbability'] \
+            .transform(lambda x: x / x.sum())
 
-        df['conditonProbability'] = normalized_prob.values
+        print("\n===== 归一化后 =====")
+        print(df[['Node', 'Condition','State', 'conditonProbability']])
+        return df
+
+    def _fill_missing_binary_states(self, df: pd.DataFrame) -> pd.DataFrame:
+        """
+        对二元节点的 (Node, Condition) 分组进行检查，如果只出现了一种状态，
+        则自动补齐另一种状态的行，且设概率 = 1 - 已有概率。
+        """
+        new_rows = []
+
+        # 按 (Node, Condition) 分组遍历
+        grouped = df.groupby(['Node', 'Condition'], as_index=False, group_keys=False)
+        for (node, cond), group_data in grouped:
+            # 如果此 node 是二元节点
+            if node in self.state_mapping and len(self.state_mapping[node]) == 2:
+                # print(f"Checking binary node: {node} ({cond}), group data: {group_data}")
+                if len(group_data) == 1:
+                    # 只有一条记录，检查缺失状态
+                    print(f"Only one row for {node} ({cond}), checking for missing state")
+                    existing_state = group_data['State'].iloc[0]
+                    existing_prob = group_data['conditonProbability'].iloc[0]
+
+                    all_states = set(self.state_numb_dict[node])
+                    print(f"All states: {all_states}")
+                    print(f"Existing state: {existing_state}")
+                    missing_states = list(all_states - {existing_state})
+                    print(f"Missing states: {missing_states}")
+
+                    # 如果确实缺少另一种状态，就补齐
+                    if len(missing_states) == 1:
+                        missing_state = missing_states[0]
+                        # 复制group_data那一行的其他列，再改 State, conditonProbability
+                        row_copy = group_data.iloc[0].copy()
+                        row_copy['State'] = missing_state
+                        row_copy['conditonProbability'] = 1 - existing_prob
+                        new_rows.append(row_copy)
+                        print(f"Added missing row for {node} ({cond}): {missing_state}, {1 - existing_prob}")
+
+        if new_rows:
+            # 把补齐的行合并回去
+            df = pd.concat([df, pd.DataFrame(new_rows)], ignore_index=True)
+
         return df
 
     def set_conditional_probabilities(self, df: pd.DataFrame) -> None:

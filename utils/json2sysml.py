@@ -48,6 +48,19 @@ def json_to_sysml2_txt(
     :param custom_state_defs: 用户自定义的 state def 字符串
     :return: 字符串形式的 SysML2 文本表示
     """
+    map_dict = {1:'Vehicle',
+2:'Road',
+3:'Meteorology',
+4:'ResponseResource',
+5:'ResponseAction',
+6:'VehiclePart',
+7:'VehicleLoad',
+8:'Facility',
+11:'Lane',
+12:'People',
+13:'ResponsePlan'}
+    # 1	车辆	Vehicle
+
     try:
         # 解析 JSON 字符串
         parsed_json = json.loads(json_str)
@@ -73,8 +86,12 @@ def json_to_sysml2_txt(
     lines.append("")  # 空行
 
     # 2. 定义基础 Part
-    lines.append(f"{indent}part def {package_name}{{}}")
-    lines.append("")  # 空行
+    if parsed_json['entity_type_id'] in [4,5]:
+        lines.append(f"{indent}part def {map_dict[parsed_json['entity_type_id']]}{{}}")
+    else:
+        lines.append(f"{indent}part def {package_name}{{")
+        lines.append("")  # 空行
+
 
     # 3. 添加自定义的 Action Definitions
     if custom_action_defs:
@@ -94,16 +111,15 @@ def json_to_sysml2_txt(
     items = []
     for attr in attributes:
         if attr.get('attribute_type_code') == 'Item':
-            item_name = attr.get('attribute_code_name')
-            item_type = attr.get('attribute_type_code')
-            if item_name:
-                items.append((item_name, item_type))
+            item_code = attr.get('reference_target_type_id')
+            if item_code:
+                items.append((item_code))
 
     # 去重
-    unique_items = list({item[0]: item for item in items}.values())
+    unique_items = list(set(items))
 
-    for item_name, item_type in unique_items:
-        lines.append(f"{indent}item def {item_name}{{")
+    for item_code in unique_items:
+        lines.append(f"{indent}item def {map_dict[item_code]}{{")
         # 可以根据需要添加属性
         lines.append(f"{indent}}}")
         lines.append("")  # 空行
@@ -136,7 +152,10 @@ def json_to_sysml2_txt(
     # 7. 解析 Attributes 作为 Part 的属性
     # 这里假设 main part 是 'HazardVehicle' 或从 JSON 提取
     entity_name = parsed_json.get('entity_name', 'UnknownEntity')
-    lines.append(f"{indent}part {entity_name} : {package_name}{{")
+    if parsed_json['entity_type_id'] in [4,5]:
+        lines.append(f"{indent}part {entity_name} : {map_dict[parsed_json['entity_type_id']]}{{")
+    else:
+        lines.append(f"{indent}part {entity_name} : {package_name}{{")
 
     # 添加属性，跳过类型为 'Item' 或 'Entity' 的属性
     for attr in attributes:
@@ -146,7 +165,7 @@ def json_to_sysml2_txt(
 
         attr_name = attr.get('attribute_code_name')
         attr_type = attr.get('attribute_type_code', 'String')
-        default_value = attr.get('default_value')
+        default_value = attr.get('attribute_value')
         if default_value is None:
             default_str = "null"
         elif isinstance(default_value, str):
@@ -160,22 +179,25 @@ def json_to_sysml2_txt(
     lines.append("")  # 空行
 
     # 添加 Items
+    print(f"unique_items: {unique_items}")
     for item in unique_items:
-        item_name = item[0]
-        lines.append(f"{indent * 2}item {item_name} : {item_name};")
+        for key, value in element_data.items():
+            if value['entity_type_id'] == item and value['entity_parent_id'] == parsed_json['entity_id']:
+                item_name = value['entity_name']
+                lines.append(f"{indent * 2}item {item_name} : {map_dict[item]};")
 
     # 添加 References (如果有)
     # 使用 element_data 来获取引用实体的名称
     referenced_entities = []
     for attr in attributes:
         refs = attr.get('referenced_entities', [])
-        # print(f"refs: {refs}")
+        print(f"refs: {refs}")
         for ref in refs:
             for key, value in element_data.items():
-                # print(f"key: {key}, value: {value}")
+                print(f"key: {key}, value: {value}")
                 if key == ref:
                     referenced_entities.append(value['entity_name'])
-                    # print(f"referenced_entities: {referenced_entities}")
+                    print(f"referenced_entities: {referenced_entities}")
 
 
     for ref in referenced_entities:

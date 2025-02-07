@@ -12,22 +12,24 @@ from PySide6.QtWidgets import (
     QApplication, QWidget, QLabel, QCheckBox, QHBoxLayout, QVBoxLayout,
     QGroupBox, QPushButton, QSizePolicy, QTableWidget, QTableWidgetItem,
     QDialog, QHeaderView, QStackedLayout, QSpinBox, QComboBox, QLineEdit,
-    QListWidget, QTextBrowser, QStyleOptionViewItem, QStyledItemDelegate, QMessageBox
+    QListWidget, QTextBrowser, QStyleOptionViewItem, QStyledItemDelegate,
+    QMessageBox
 )
 from PySide6.QtCore import Qt, Signal, QEvent, QObject, Slot, QUrl
 from PySide6.QtGui import QFont, QPainter, QPen, QColor, QIcon
 from sqlalchemy.orm import Session
 
+# 假设你的 models / utils / views 路径与本示例一致，这里仅示例。
 from models.models import Template, Category
 from utils.bn_svg_update import update_with_evidence
-from utils.plan import PlanData, evidence, PlanDataCollector, convert_to_evidence
+from utils.plan import PlanData, PlanDataCollector, convert_to_evidence
 from views.dialogs.custom_information_dialog import CustomInformationDialog
 from views.dialogs.custom_input_dialog import CustomInputDialog
 from views.dialogs.custom_question_dialog import CustomQuestionDialog
 from views.dialogs.custom_warning_dialog import CustomWarningDialog
 
 
-# ============== 自定义委托 / 小组件（跟原代码保持一致） ==============
+# ================== 一些通用小组件 ===================
 
 class CenteredItemDelegate(QStyledItemDelegate):
     """自定义委托，使 QComboBox 的下拉项内容居中显示。"""
@@ -72,8 +74,9 @@ def create_centered_combobox(enum_values, initial_value):
 class FullHeaderDelegate(QStyledItemDelegate):
     """
     自定义两行多级表头，保持原先多级表头的结构。
-      - row=0 col=1/4 ("推演前/推演后")去掉下边线
-      - row=1 col=1..6 ("较好/中等/较差")去掉上边线
+    用于 simulation_table 的前两行, 如:
+        - row=0 col=1/4 ("推演前/推演后")去掉下边线
+        - row=1 col=1..6 ("较好/较差")去掉上边线
     """
     def paint(self, painter, option, index):
         r, c = index.row(), index.column()
@@ -118,7 +121,7 @@ class FullHeaderDelegate(QStyledItemDelegate):
                 painter.fillRect(option.rect, QColor("#f0f0f0"))
 
             elif r == 1 and c in [1,2,3,4]:
-                # 第二行“较好/中等/较差”，去掉上边线
+                # 第二行“较好/较差”，去掉上边线
                 pen_bottom = QPen(Qt.black, 1)
                 painter.setPen(pen_bottom)
                 painter.drawLine(option.rect.bottomLeft(), option.rect.bottomRight())
@@ -134,9 +137,7 @@ class FullHeaderDelegate(QStyledItemDelegate):
             super().paint(painter, option, index)
 
 class CustomTableWidget(QTableWidget):
-    """
-    自定义表格Widget，用于控制一些 resizeEvent & 样式
-    """
+    """自定义表格Widget，用于控制一些 resizeEvent & 样式。"""
     def resizeEvent(self, event):
         super().resizeEvent(event)
         content_width = self.horizontalHeader().length()
@@ -145,12 +146,18 @@ class CustomTableWidget(QTableWidget):
         else:
             self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
 
+
 class ClickableLabel(QLabel):
+    """可点击的 QLabel，用于联动 CheckBox 等。"""
     clicked = Signal()
     def mousePressEvent(self, event):
         self.clicked.emit()
 
 class CustomCheckBoxWithLabel(QWidget):
+    """
+    左侧是CheckBox，中间是可点击的Label，右侧有一个时长SpinBox。
+    当CheckBox选中时，文字高亮/变蓝，SpinBox可用；否则置灰。
+    """
     duration_changed = Signal()
 
     def __init__(self, label_text):
@@ -167,10 +174,10 @@ class CustomCheckBoxWithLabel(QWidget):
 
         self.label = ClickableLabel(self.tr(label_text))
         self.label.setStyleSheet("cursor: pointer;color: black;font-weight: normal;")
-        self.label.setAlignment(Qt.AlignLeft|Qt.AlignVCenter)
+        self.label.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
 
         self.duration_spin = QSpinBox()
-        self.duration_spin.setRange(0,10000)
+        self.duration_spin.setRange(0, 10000)
         self.duration_spin.setSuffix(self.tr(" 分钟"))
         self.duration_spin.setEnabled(False)
         self.duration_spin.setStyleSheet("background-color: #eee;")
@@ -186,6 +193,9 @@ class CustomCheckBoxWithLabel(QWidget):
         self.duration_changed.emit()
 
     def set_selected(self, selected):
+        """
+        选中时(复选框打勾)，高亮文字+启用SpinBox；否则灰色。
+        """
         font = self.label.font()
         if selected:
             font.setBold(True)
@@ -204,8 +214,7 @@ class CustomCheckBoxWithLabel(QWidget):
         return self.duration_spin.value()
 
 
-
-# ============== 地图对话框（改为 open() + 信号槽，但保持原布局 & 样式） ==============
+# ================== 地图对话框 (与原逻辑保持) ===================
 
 class LocationBridge(QObject):
     locationSelected = Signal(float, float)
@@ -359,7 +368,7 @@ class MapDialog(QDialog):
             self.webview = None
         super().closeEvent(event)
 
-
+# ----------------- 读取全局 config.json 的函数 ------------------
 def get_config():
     current_dir = os.path.dirname(os.path.abspath(__file__))
     config_path = os.path.join(current_dir, "../../config.json")
@@ -380,9 +389,11 @@ def get_config():
     print(f"Gaode Map enabled: {gaode_map_config.get('enable')}")
     return config
 
+
+# ================== 新增/修改资源的对话框：多一个“行为”下拉框 ===================
+
 class SingleResourceDialog(QDialog):
     """
-    改用 open() 显示，不用 exec()。保留原先布局和样式。
     当点击“确定”时，触发 QDialog.accepted 信号，由父级回调获取资源信息。
     """
     def __init__(self, resource=None, parent=None):
@@ -391,25 +402,33 @@ class SingleResourceDialog(QDialog):
         self.resource = resource
         self.online_map_mode = get_config().get("gaode-map", {}).get("enable", False)
         self.init_ui()
-        self.resize(600, 300)
+        self.resize(600, 360)
 
     def init_ui(self):
         layout = QVBoxLayout(self)
 
+        # “行为” 的选择下拉
+        self.behavior_label = QLabel(self.tr("行为:"))
+        self.behavior_input = create_centered_combobox(["救助", "牵引", "抢修", "消防"], "救助")
+        layout.addWidget(self.behavior_label)
+        layout.addWidget(self.behavior_input)
+
         self.resource_label = QLabel(self.tr("资源:"))
         self.resource_input = create_centered_combobox(["人员", "物资", "车辆"], "人员")
+        self.resource_input.currentTextChanged.connect(self.update_type_options)  # 新增信号连接
         layout.addWidget(self.resource_label)
         layout.addWidget(self.resource_input)
 
         self.type_label = QLabel(self.tr("类型:"))
         self.type_input = create_centered_combobox(["类型A", "类型B", "类型C"], "类型A")
+        self.update_type_options()  # 初始化类型选项
         layout.addWidget(self.type_label)
         layout.addWidget(self.type_input)
 
         self.quantity_label = QLabel(self.tr("数量:"))
         self.quantity_spin = QSpinBox()
         self.quantity_spin.setAlignment(Qt.AlignCenter)
-        self.quantity_spin.setRange(1,1000)
+        self.quantity_spin.setRange(1, 1000)
         layout.addWidget(self.quantity_label)
         layout.addWidget(self.quantity_spin)
 
@@ -420,7 +439,7 @@ class SingleResourceDialog(QDialog):
 
         self.map_button = QPushButton()
         self.map_button.setIcon(QIcon(os.path.join(os.path.dirname(os.path.abspath(__file__)), "../../resources/icons/location.png")))
-        self.map_button.setStyleSheet(""" """)
+        self.map_button.setStyleSheet("")
         if self.online_map_mode:
             self.map_button.setToolTip(self.tr("点击选择位置"))
             self.map_button.clicked.connect(self.open_map_dialog)
@@ -443,9 +462,14 @@ class SingleResourceDialog(QDialog):
         self.ok_btn.clicked.connect(self.accept)
         self.cancel_btn.clicked.connect(self.reject)
 
+        # 如果是修改已有资源，则回填数据
         if self.resource:
+            # 先设置资源类型以触发选项更新
             self.resource_input.setCurrentText(self.resource["资源"])
+            # 然后设置类型（此时选项已更新）
             self.type_input.setCurrentText(self.resource["类型"])
+            # 其他字段设置保持不变...
+            self.behavior_input.setCurrentText(self.resource.get("行为", "救助"))
             self.quantity_spin.setValue(self.resource["数量"])
             self.location_input.setText(self.resource["位置"])
 
@@ -462,6 +486,29 @@ class SingleResourceDialog(QDialog):
                 border: 2px solid #0078d7; /* 蓝色边框 */
             }
         """)
+    def update_type_options(self):
+        """根据资源类型更新类型选项"""
+        current_resource = self.resource_input.currentText()
+        self.type_input.clear()
+
+        # 定义类型映射
+        type_mapping = {
+            "人员": ["医生", "护士", "志愿者"],
+            "车辆": ["救护车", "消防车", "警车"],
+            "物资": ["类型A", "类型B", "类型C"]
+        }
+
+        # 添加新选项并保持居中样式
+        self.type_input.addItems(type_mapping.get(current_resource, []))
+        self.type_input.setCurrentIndex(0)
+
+        # 如果是编辑现有资源，需要确保类型值正确
+        if self.resource:
+            current_type = self.resource.get("类型", "")
+            if current_type in type_mapping.get(current_resource, []):
+                self.type_input.setCurrentText(current_type)
+            else:
+                self.type_input.setCurrentIndex(0)
 
     def open_map_dialog(self):
         map_dlg = MapDialog(self)
@@ -473,14 +520,6 @@ class SingleResourceDialog(QDialog):
         addr = self.reverse_geocode(lat, lng)
         self.location_input.setText(f"{addr} ({lat},{lng})")
 
-    def get_resource(self):
-        return {
-            "资源": self.resource_input.currentText(),
-            "类型": self.type_input.currentText(),
-            "数量": self.quantity_spin.value(),
-            "位置": self.location_input.text() or self.tr("未知")
-        }
-
     def reverse_geocode(self, lat, lng):
         web_service_key = get_config().get("gaode-map", {}).get("web_service_key", "")
         url = f"https://restapi.amap.com/v3/geocode/regeo?location={lng},{lat}&key={web_service_key}&radius=1000&extensions=all"
@@ -491,13 +530,28 @@ class SingleResourceDialog(QDialog):
                 return data["regeocode"]["formatted_address"]
         return self.tr("未知地址")
 
+    def get_resource(self):
+        """
+        返回对话框最终填入的资源信息字典：
+          { "行为", "资源", "类型", "数量", "位置" }
+        """
+        return {
+            "行为": self.behavior_input.currentText(),
+            "资源": self.resource_input.currentText(),
+            "类型": self.type_input.currentText(),
+            "数量": self.quantity_spin.value(),
+            "位置": self.location_input.text() or self.tr("未知")
+        }
+
+
+# ================== 其它辅助对话框 ===================
 
 class DetailsDialog(QDialog):
     def __init__(self, info_html, parent=None):
         super().__init__(parent)
         self.setWindowTitle(self.tr("详细信息"))
         self.setModal(True)
-        self.resize(600,400)
+        self.resize(600, 400)
         layout = QVBoxLayout(self)
         self.browser = QTextBrowser()
         self.browser.setHtml(info_html)
@@ -513,14 +567,17 @@ class DetailsDialog(QDialog):
         self.setLayout(layout)
 
 class SaveResultDialog(QDialog):
+    """
+    “已实施的应急行为” + “查看详情”对话框
+    """
     def __init__(self, saved_categories, info_html, parent=None):
         super().__init__(parent)
         self.setWindowTitle(self.tr("实施结果"))
         self.setModal(True)
-        self.resize(300,250)
+        self.resize(300, 250)
         main_layout = QVBoxLayout(self)
         lab = QLabel(self.tr("已实施的应急行为:"))
-        lab.setFont(QFont("SimSun",14,QFont.Bold))
+        lab.setFont(QFont("SimSun", 14, QFont.Bold))
         main_layout.addWidget(lab)
 
         self.listwidget = QListWidget()
@@ -544,6 +601,7 @@ class SaveResultDialog(QDialog):
         dlg = DetailsDialog(info_html, parent=self)
         dlg.open()
 
+
 class NegativeIdGenerator:
     """全局负数 ID 生成器，从 -1 开始，每次 -1。"""
     def __init__(self, start: int = -1):
@@ -554,25 +612,40 @@ class NegativeIdGenerator:
         self.current -= 1
         return nid
 
+
+# ============== 主体：ConditionSettingTab(含左右布局 & 行为点击高亮 & 资源表) ==============
+
 class ConditionSettingTab(QWidget):
+    """
+    包含：
+     - 左侧：应急行为设置（checkbox + label + 时长）
+     - 右侧：应急资源设置（单个 QTableWidget，首列为“行为”）
+     - 下方：证据更新 / 推演结果 表格
+     - “执行推演”按钮
+    """
     save_requested = Signal()
-    save_plan_to_database_signal = Signal(list,bool)
+    save_plan_to_database_signal = Signal(list, bool)
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.new_plan_generator = None
+        self.new_plan_generator = None  # 外部注入
         self.posterior_probabilities = []
         self.scenario_id = None
         self.session = None
         self.analyzer = None
         self.neg_id_gen = NegativeIdGenerator()
-        self.setWindowTitle(self.tr("应急预案设置"))
-        self.behavior_resources = {b:[] for b in ["救助","牵引","抢修","消防"]}
-        self.current_behavior = None
-        self.plans_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), "emergency_plans.json")
-        self.init_ui()
-        self.init_simulation_table()  # 初始化表格结构
 
+        self.setWindowTitle(self.tr("应急预案设置"))
+
+        # 行为列表+对应UI
+        self.behaviors = ["救助", "牵引", "抢修", "消防"]
+        self.behavior_settings = {}
+
+        # 资源数据统一在一个表格管理
+        self.plans_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), "emergency_plans.json")
+
+        self.init_ui()
+        self.init_simulation_table()
 
     def init_ui(self):
         self.set_stylesheet()
@@ -581,24 +654,17 @@ class ConditionSettingTab(QWidget):
         main_layout.setContentsMargins(20, 0, 20, 10)
         self.setLayout(main_layout)
 
-        # =============== 第一层布局：执行推演按钮 =================
-        #
-
-        # =============== 第二层布局：应急行为设置和应急资源设置 =================
+        # =============== 第一层: 应急行为设置(左) + 应急资源设置(右) ===============
         middle_layout = QHBoxLayout()
         middle_layout.setSpacing(10)
         middle_layout.setContentsMargins(0, 0, 0, 10)
 
-        left_vbox = QVBoxLayout()
-        left_vbox.setSpacing(10)
-
+        # --- 左侧：应急行为设置 ---
         behavior_group = QGroupBox(self.tr("应急行为设置"))
         behavior_group_layout = QVBoxLayout()
         behavior_group_layout.setContentsMargins(10, 10, 10, 10)
         behavior_group.setMinimumWidth(200)
 
-        self.behaviors = ["救助", "牵引", "抢修", "消防"]
-        self.behavior_settings = {}
         for b in self.behaviors:
             cbox_with_label = CustomCheckBoxWithLabel(b)
             cbox_with_label.checkbox.stateChanged.connect(
@@ -612,75 +678,22 @@ class ConditionSettingTab(QWidget):
             self.behavior_settings[b] = cbox_with_label
 
         behavior_group.setLayout(behavior_group_layout)
-        left_vbox.addWidget(behavior_group, stretch=1)
+        middle_layout.addWidget(behavior_group, stretch=1)
 
+        # --- 右侧：应急资源设置 ---
         resource_group = QGroupBox(self.tr("应急资源设置"))
         resource_layout = QVBoxLayout()
         resource_layout.setContentsMargins(10, 10, 10, 10)
-        self.resource_stacked_layout = QStackedLayout()
 
-        self.placeholder_widget = QWidget()
-        ph_layout = QVBoxLayout()
-        ph_label = QLabel(self.tr("请选择应急行为"))
-        ph_label.setAlignment(Qt.AlignCenter)
-        ph_label.setStyleSheet("""
-                color: gray;
-                font-size: 20pt;
-                border-radius: 10px;
-                border: 0px solid #c0c0c0;
-                background-color: #ffffff;
-            """)
-        ph_layout.addWidget(ph_label)
-        self.placeholder_widget.setLayout(ph_layout)
-        self.resource_stacked_layout.addWidget(self.placeholder_widget)
-
-        self.resource_management_widget = QWidget()
-        res_mgmt_layout = QVBoxLayout()
-        res_mgmt_layout.setContentsMargins(0, 0, 0, 0)
-
-        label_btn_layout = QHBoxLayout()
-        label_btn_layout.setContentsMargins(0, 0, 0, 0)
-        self.current_behavior_label = QLabel(self.tr("请选择应急行为"))
-        self.current_behavior_label.setAlignment(Qt.AlignCenter)
-        self.current_behavior_label.setStyleSheet("font-weight:bold;color:gray;")
-
-        btn_hbox = QHBoxLayout()
-        btn_hbox.setContentsMargins(0, 0, 0, 0)
-        self.add_resource_btn = QPushButton(self.tr("添加"))
-        self.edit_resource_btn = QPushButton(self.tr("修改"))
-        self.delete_resource_btn = QPushButton(self.tr("删除"))
-
-        self.execute_btn = QPushButton(self.tr("执行推演"))
-        self.execute_btn.setEnabled(False)
-        self.execute_btn.setToolTip(self.tr("请配置应急行为"))
-        self.execute_btn.setFixedWidth(110)
-        self.execute_btn.clicked.connect(self.handle_save)
-        self.execute_btn.setStyleSheet("""
-            QPushButton:disabled {
-                background-color: #d3d3d3;
-            }
-        """)
-
-        self.add_resource_btn.setIcon(QIcon(os.path.join(os.path.dirname(os.path.abspath(__file__)), "../../resources/icons/add.png")))
-        self.edit_resource_btn.setIcon(QIcon(os.path.join(os.path.dirname(os.path.abspath(__file__)), "../../resources/icons/edit.png")))
-        self.delete_resource_btn.setIcon(QIcon(os.path.join(os.path.dirname(os.path.abspath(__file__)), "../../resources/icons/delete.png")))
-
-        self.add_resource_btn.setFixedWidth(110)
-        self.edit_resource_btn.setFixedWidth(110)
-        self.delete_resource_btn.setFixedWidth(110)
-
-        btn_hbox.addWidget(self.add_resource_btn)
-        btn_hbox.addWidget(self.edit_resource_btn)
-        btn_hbox.addWidget(self.delete_resource_btn)
-        btn_hbox.addWidget(self.execute_btn)
-
-        label_btn_layout.addWidget(self.current_behavior_label)
-        label_btn_layout.addLayout(btn_hbox)
-
-        res_mgmt_layout.addLayout(label_btn_layout)
-
-        self.resource_table = QTableWidget(0, 4)
-        self.resource_table.setHorizontalHeaderLabels([self.tr("资源"), self.tr("类型"), self.tr("数量"), self.tr("位置")])
+        # 表格(5列：行为 / 资源 / 类型 / 数量 / 位置)
+        self.resource_table = QTableWidget(0, 5)
+        self.resource_table.setHorizontalHeaderLabels([
+            self.tr("行为"),
+            self.tr("资源"),
+            self.tr("类型"),
+            self.tr("数量"),
+            self.tr("位置")
+        ])
         self.resource_table.setEditTriggers(QTableWidget.NoEditTriggers)
         self.resource_table.setSelectionBehavior(QTableWidget.SelectRows)
         self.resource_table.setSelectionMode(QTableWidget.SingleSelection)
@@ -691,17 +704,44 @@ class ConditionSettingTab(QWidget):
         self.resource_table.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.apply_table_style(self.resource_table)
 
-        res_mgmt_layout.addWidget(self.resource_table)
-        self.resource_management_widget.setLayout(res_mgmt_layout)
-        self.resource_stacked_layout.addWidget(self.resource_management_widget)
+        # 按钮区
+        btn_hbox = QHBoxLayout()
+        self.add_resource_btn = QPushButton(self.tr("添加"))
+        self.edit_resource_btn = QPushButton(self.tr("修改"))
+        self.delete_resource_btn = QPushButton(self.tr("删除"))
+        self.execute_btn = QPushButton(self.tr("执行推演"))
 
-        resource_layout.addLayout(self.resource_stacked_layout)
+        self.add_resource_btn.setIcon(QIcon(os.path.join(os.path.dirname(os.path.abspath(__file__)), "../../resources/icons/add.png")))
+        self.edit_resource_btn.setIcon(QIcon(os.path.join(os.path.dirname(os.path.abspath(__file__)), "../../resources/icons/edit.png")))
+        self.delete_resource_btn.setIcon(QIcon(os.path.join(os.path.dirname(os.path.abspath(__file__)), "../../resources/icons/delete.png")))
+
+        self.add_resource_btn.setFixedWidth(110)
+        self.edit_resource_btn.setFixedWidth(110)
+        self.delete_resource_btn.setFixedWidth(110)
+        self.execute_btn.setFixedWidth(110)
+
+        self.execute_btn.setEnabled(False)
+        self.execute_btn.setToolTip(self.tr("请配置应急行为"))
+        self.execute_btn.clicked.connect(self.handle_save)
+        self.execute_btn.setStyleSheet("""
+            QPushButton:disabled {
+                background-color: #d3d3d3;
+            }
+        """)
+
+        btn_hbox.addWidget(self.add_resource_btn)
+        btn_hbox.addWidget(self.edit_resource_btn)
+        btn_hbox.addWidget(self.delete_resource_btn)
+        btn_hbox.addWidget(self.execute_btn)
+
+        resource_layout.addLayout(btn_hbox)
+        resource_layout.addWidget(self.resource_table)
         resource_group.setLayout(resource_layout)
 
-        middle_layout.addLayout(left_vbox, stretch=1)
         middle_layout.addWidget(resource_group, stretch=3)
         main_layout.addLayout(middle_layout, stretch=1)
 
+        # =============== 第二层: 下方的“证据更新”和“推演结果” ===============
         lower_layout = QHBoxLayout()
         lower_layout.setSpacing(10)
 
@@ -709,6 +749,7 @@ class ConditionSettingTab(QWidget):
         evidence_group.setMinimumWidth(200)
         evidence_layout = QVBoxLayout()
         evidence_layout.setContentsMargins(10, 20, 10, 10)
+
         self.evidence_table = CustomTableWidget(0, 3)
         self.evidence_table.setHorizontalHeaderLabels([self.tr("要素节点"), self.tr("状态"), self.tr("概率")])
         self.evidence_table.setEditTriggers(QTableWidget.NoEditTriggers)
@@ -726,15 +767,14 @@ class ConditionSettingTab(QWidget):
         simulation_group = QGroupBox(self.tr("推演结果"))
         simulation_layout = QVBoxLayout()
         simulation_layout.setContentsMargins(10, 20, 10, 10)
+
         self.simulation_table = CustomTableWidget(2, 5)
         self.simulation_table.setShowGrid(False)
         self.simulation_table.setSelectionBehavior(QTableWidget.SelectRows)
         self.simulation_table.setSelectionMode(QTableWidget.SingleSelection)
         self.simulation_table.setEditTriggers(QTableWidget.NoEditTriggers)
-
         self.simulation_table.horizontalHeader().setVisible(False)
         self.simulation_table.verticalHeader().setVisible(False)
-
         self.simulation_table.setSpan(0, 0, 2, 1)
         self.simulation_table.setSpan(0, 1, 1, 2)
         self.simulation_table.setSpan(0, 3, 1, 2)
@@ -746,102 +786,112 @@ class ConditionSettingTab(QWidget):
 
         self.apply_table_style(self.simulation_table)
         self.simulation_table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
-
         simulation_layout.addWidget(self.simulation_table)
         simulation_group.setLayout(simulation_layout)
 
         lower_layout.addWidget(evidence_group, stretch=1)
         lower_layout.addWidget(simulation_group, stretch=3)
-
         main_layout.addLayout(lower_layout, stretch=1)
 
+        # 资源按钮事件
         self.add_resource_btn.clicked.connect(self.add_resource)
         self.edit_resource_btn.clicked.connect(self.edit_resource)
         self.delete_resource_btn.clicked.connect(self.delete_resource)
         self.simulation_table.itemDoubleClicked.connect(self.show_plan_details)
+        self.simulation_table.itemClicked.connect(self.on_plan_selected)  # 新增单击事件
 
-    def save_plan_to_file(self, plan_data):
-        """Save plan data to JSON file"""
-        try:
-            # Load existing plans if file exists
-            if os.path.exists(self.plans_file):
-                with open(self.plans_file, 'r', encoding='utf-8') as f:
-                    self.plans_data = json.load(f)
-            else:
-                self.plans_data = {}
-
-            # Add timestamp to plan data
-            plan_data['timestamp'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-
-            # Save plan with its name as key
-            self.plans_data[plan_data['plan_name']] = plan_data
-
-            # Write updated plans to file
-            with open(self.plans_file, 'w', encoding='utf-8') as f:
-                json.dump(self.plans_data, ensure_ascii=False, indent=2, fp=f)
-
-            return True
-        except Exception as e:
-            print(f"Error saving plan: {str(e)}")
-            return False
-
-    def add_plan_to_simulation_table(self, plan_name, plan_data):
-        """Add a single plan to the simulation table"""
-        # Get current row count excluding header rows
-        current_data_rows = self.simulation_table.rowCount() - 2
-        new_row = current_data_rows + 2  # Add after headers
-
-        self.simulation_table.insertRow(new_row)
-
-        # Set plan name
-        self.simulation_table.setItem(new_row, 0, QTableWidgetItem(plan_name))
-        # 居中
-        item = self.simulation_table.item(new_row, 0)
-        item.setTextAlignment(Qt.AlignCenter)
-
-        # Get simulation results from plan data or use defaults
-        simulation_results = plan_data.get('simulation_results', {
-            "推演前-较好": "30%",
-            "推演前-较差": "20%",
-            "推演后-较好": "60%",
-            "推演后-较差": "10%"
-        })
-
-        # Set simulation results
-        columns = [
-            simulation_results["推演前-较好"],
-            simulation_results["推演前-较差"],
-            simulation_results["推演后-较好"],
-            simulation_results["推演后-较差"]
-        ]
-
-        for col, value in enumerate(columns, 1):
-            item = QTableWidgetItem(value)
-            item.setTextAlignment(Qt.AlignCenter)
-            self.simulation_table.setItem(new_row, col, item)
-
-    def show_plan_details(self, item):
-        """Show detailed information for the selected plan"""
+    # 新增方法：处理预案选择事件
+    def on_plan_selected(self, item):
+        """当用户在预案列表单击时触发"""
         row = item.row()
-        plan_name = self.simulation_table.item(row, 0).text()
+        plan_name_item = self.simulation_table.item(row, 0)
+        if not plan_name_item:
+            return
+
+        plan_name = plan_name_item.text()
+        plan_data = self.plans_data.get(plan_name)
+        if not plan_data:
+            return
+
+        # 临时阻断信号防止误触发
+        for b in self.behaviors:
+            self.behavior_settings[b].checkbox.blockSignals(True)
+
+        self.clear_all_inputs()
+        self.load_plan_to_ui(plan_data, plan_name)
+
+        # 恢复信号连接并检查按钮状态
+        for b in self.behaviors:
+            self.behavior_settings[b].checkbox.blockSignals(False)
+        self.check_execute_button()
+
+    def clear_all_inputs(self):
+        """清空所有输入"""
+        # 清空应急行为设置
+        for b in self.behaviors:
+            self.behavior_settings[b].checkbox.setChecked(False)
+            self.behavior_settings[b].duration_spin.setValue(0)
+            self.behavior_settings[b].set_selected(False)
+
+        # 清空资源表格
+        self.resource_table.setRowCount(0)
+        # 清空证据更新表格
+        self.evidence_table.setRowCount(0)
+
+    def load_plan_to_ui(self, plan_data, plan_name):
+        """将预案数据加载到UI"""
+        # 处理应急行为
+        print(f"[DEBUG] load plan to ui : {plan_data}")
+        for action in plan_data.get("emergency_actions", []):
+            action_type = action.get("action_type", "")
+            duration_str = action.get("duration", "0 minutes")
+
+            # 解析行为名称（去掉预案名前缀）
+            if "-" in action_type:
+                behavior_name = action_type.split("-", 1)[1]  # 只分割一次
+            else:
+                behavior_name = action_type
+
+            if behavior_name not in self.behavior_settings:
+                continue
+
+            # 设置行为时长
+            try:
+                duration = int(duration_str.split()[0])
+            except:
+                duration = 0
+
+            if action.get("implementation_status", False) == "True":
+                self.behavior_settings[behavior_name].checkbox.setChecked(True)
+            self.behavior_settings[behavior_name].duration_spin.setValue(duration)
+            self.behavior_settings[behavior_name].duration_spin.setEnabled(True)
+            self.behavior_settings[behavior_name].duration_spin.setStyleSheet("background-color: white;")
+
+            # 处理关联资源
+            for resource in action.get("resources", []):
+                self.add_resource_to_table(
+                    behavior=behavior_name,
+                    resource=resource.get("resource_type", "").split("-", 1)[-1],  # 去掉前缀
+                    res_type=resource.get("resource_category", ""),
+                    quantity=resource.get("quantity", 0),
+                    location=resource.get("location", "")
+                )
 
         collector = PlanDataCollector(self.session, scenario_id=self.scenario_id)
 
-        # 收集数据
         print(f"[DEBUG] Collecting data for plan: {plan_name}")
         plan_data = collector.collect_all_data(plan_name=plan_name)
         print(f"[DEBUG] Plan data: {plan_data}")
 
-        # 转换为贝叶斯网络证据
         evidence = convert_to_evidence(plan_data)
         print(f"[DEBUG] Evidence: {evidence}")
 
-        output_dir = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                                                  f"../../data/bn/{self.scenario_id}/plans/{plan_name}"))
+        output_dir = os.path.abspath(os.path.join(
+            os.path.dirname(os.path.abspath(__file__)), f"../../data/bn/{self.scenario_id}/plans/{plan_name}"
+        ))
         print(f"[DEBUG] Output directory: {output_dir}")
         update_with_evidence(self.analyzer, evidence, output_dir)
 
-        # 打开posteriot_probabilities.json
         posteriors_file = os.path.join(output_dir, "posterior_probabilities.json")
         posterior_probabilities = {}
         if os.path.exists(posteriors_file):
@@ -850,191 +900,95 @@ class ConditionSettingTab(QWidget):
         print(f"[DEBUG] Posterior probabilities: {posterior_probabilities}")
 
         self.new_plan_generator.upsert_posterior_probability(plan_name, posterior_probabilities)
-
         self.posterior_probabilities = self.convert_json_to_posterior_probabilities(posterior_probabilities)
         print(f"[DEBUG] Posterior probabilities: {self.posterior_probabilities}")
 
         self.update_evidence_table()
 
-        if plan_name in self.plans_data:
-            plan_data = self.plans_data[plan_name]
-            print(f"[DEBUG] Plan data: {plan_data}")
 
-            # Generate HTML content for the details dialog
-            info_html = self.generate_plan_details_html(plan_data)
+    def add_resource_to_table(self, behavior, resource, res_type, quantity, location):
+        """向资源表格添加条目"""
+        row_pos = self.resource_table.rowCount()
+        self.resource_table.insertRow(row_pos)
 
-            # Show details dialog
-            details_dialog = DetailsDialog(info_html, self)
-            details_dialog.setWindowTitle(self.tr("预案详情 - ") + plan_name)
-            details_dialog.open()
+        items = [
+            QTableWidgetItem(behavior),
+            QTableWidgetItem(resource),
+            QTableWidgetItem(res_type),
+            QTableWidgetItem(str(quantity)),
+            QTableWidgetItem(location)
+        ]
 
-    def generate_plan_details_html(self, plan_data):
-        """Generate HTML content for plan details"""
-        info_html = """
-        <html><head><style>
-         body{font-family:"Microsoft YaHei";font-size:14px;color:#333}
-         h2{text-align:center;color:#0078d7;margin-bottom:20px}
-         h3{color:#005a9e;margin-top:30px;margin-bottom:10px}
-         .timestamp{color:#666;font-size:12px;text-align:right;margin-bottom:20px}
-         table{width:100%;border-collapse:collapse;margin-bottom:20px}
-         th,td{border:1px solid #ccc;padding:10px;text-align:center}
-         th{background-color:#f0f0f0}
-         .no-resource{color:red;font-style:italic;text-align:center}
-        </style></head><body>
-        """
+        for col, item in enumerate(items):
+            item.setTextAlignment(Qt.AlignCenter)
+            self.resource_table.setItem(row_pos, col, item)
 
-        info_html += f"<h2>{plan_data['plan_name']}</h2>"
-        info_html += f"<div class='timestamp'>{self.tr('创建时间')}: {plan_data['timestamp']}</div>"
-
-        for action in plan_data['emergency_actions']:
-            if action['implementation_status'] == 'True':
-                info_html += f"<h3>{self.tr('应急行为')}: {action['action_type']}</h3>"
-                info_html += f"<p><b>{self.tr('时长')}:</b> {action['duration']}</p>"
-
-                # Resources table
-                info_html += f"<b>{self.tr('资源列表')}:</b>"
-                if action['resources']:
-                    info_html += f"""
-                    <table>
-                    <tr>
-                        <th>{self.tr('资源名称')}</th>
-                        <th>{self.tr('类型')}</th>
-                        <th>{self.tr('数量')}</th>
-                        <th>{self.tr('位置')}</th>
-                    </tr>
-                    """
-                    for resource in action['resources']:
-                        info_html += f"""
-                        <tr>
-                            <td>{resource['resource_type']}</td>
-                            <td>{resource['resource_category']}</td>
-                            <td>{resource['quantity']}</td>
-                            <td>{resource['location']}</td>
-                        </tr>
-                        """
-                    info_html += "</table>"
-                else:
-                    info_html += f"<p class='no-resource'>{self.tr('无资源')}</p>"
-
-        info_html += "</body></html>"
-        return info_html
-
-    def load_saved_plans(self):
-        """Load saved plans from JSON file and update simulation table"""
-        try:
-            # Initialize table structure
-            self.init_simulation_table()
-
-            self.plans_data = self.new_plan_generator.get_all_plans()
-            print(f"[DEBUG] Loaded plans: {self.plans_data}")
-
-            # Add each plan to the simulation table
-            for plan_name, plan_data in self.plans_data.items():
-                self.add_plan_to_simulation_table(plan_name, plan_data)
-            return True
-        except Exception as e:
-            print(f"Error loading plans: {str(e)}")
-            CustomWarningDialog(
-                self.tr("错误"),
-                self.tr("加载预案数据时出现错误：") + str(e),
-                parent=self
-            ).open()
-
+    # ============= 行为勾选/点击：高亮 & 开启时长设置 =============
 
     def handle_label_clicked(self, behavior):
-        self.check_execute_button()
+        """
+        用户点击行为文本时，如果没有勾选就勾选它（以使文字变蓝、时长可设置），否则不取消勾选。
+        """
         cbox = self.behavior_settings[behavior].checkbox
         if not cbox.isChecked():
             cbox.setChecked(True)
-        else:
-            self.switch_behavior(behavior)
-            self.update_label_styles(behavior)
-
-    def handle_checkbox_state_changed(self, state, behavior):
-        self.switch_behavior(behavior)
-        self.update_label_styles(behavior)
-        self.update_resource_dependencies(behavior)
         self.check_execute_button()
 
-    def switch_behavior(self, behavior):
-        self.current_behavior = behavior
-        self.current_behavior_label.setText(self.tr("正在编辑: ") + behavior)
-        self.current_behavior_label.setStyleSheet("font-weight:bold;color:#5dade2;")
-        self.add_resource_btn.setToolTip(self.tr("添加") + behavior + self.tr("的资源"))
-        self.edit_resource_btn.setToolTip(self.tr("修改") + behavior + self.tr("的资源"))
-        self.delete_resource_btn.setToolTip(self.tr("删除") + behavior + self.tr("的资源"))
-        self.resource_stacked_layout.setCurrentWidget(self.resource_management_widget)
-        self.load_resources_for_behavior(behavior)
+    def handle_checkbox_state_changed(self, state, behavior):
+        """
+        当行为复选框改变时，设置高亮、刷新可执行状态。
+        """
+        print(f"行为 {behavior} 的复选框状态改变为 {state}")
+        is_checked = (state == 2)
+        self.behavior_settings[behavior].set_selected(is_checked)
+        self.check_execute_button()
 
-    def update_label_styles(self, selected_behavior):
-        for b, cbl in self.behavior_settings.items():
-            cbl.set_selected(b == selected_behavior)
-
-    def update_resource_dependencies(self, behavior):
-        self.resource_stacked_layout.setCurrentWidget(self.resource_management_widget)
-        self.load_resources_for_behavior(behavior)
-
-    def load_resources_for_behavior(self, behavior):
-        self.resource_table.setRowCount(0)
-        for r in self.behavior_resources[behavior]:
-            self.add_resource_to_table(r, behavior)
-
-    def add_resource_to_table(self, resource, behavior):
-        rowpos = self.resource_table.rowCount()
-        self.resource_table.insertRow(rowpos)
-        self.resource_table.setItem(rowpos,0,QTableWidgetItem(resource["资源"]))
-        self.resource_table.setItem(rowpos,1,QTableWidgetItem(resource["类型"]))
-        self.resource_table.setItem(rowpos,2,QTableWidgetItem(str(resource["数量"])))
-        self.resource_table.setItem(rowpos,3,QTableWidgetItem(resource["位置"]))
-        for col in range(4):
-            self.resource_table.item(rowpos,col).setTextAlignment(Qt.AlignCenter)
+    # ============= 资源表格(统一管理) =============
 
     def add_resource(self):
-        if not self.current_behavior:
-            dlg = CustomWarningDialog(self.tr("提示"), self.tr("请先选择应急行为"))
-            dlg.open()
-            return
         dlg = SingleResourceDialog(parent=self)
         dlg.accepted.connect(lambda: self.on_add_resource_ok(dlg))
         dlg.open()
 
     def on_add_resource_ok(self, dlg):
-        r = dlg.get_resource()
-        self.behavior_resources[self.current_behavior].append(r)
-        self.add_resource_to_table(r, self.current_behavior)
+        r = dlg.get_resource()  # dict: { "行为", "资源", "类型", "数量", "位置" }
+        rowpos = self.resource_table.rowCount()
+        self.resource_table.insertRow(rowpos)
+        self.resource_table.setItem(rowpos, 0, QTableWidgetItem(r["行为"]))
+        self.resource_table.setItem(rowpos, 1, QTableWidgetItem(r["资源"]))
+        self.resource_table.setItem(rowpos, 2, QTableWidgetItem(r["类型"]))
+        self.resource_table.setItem(rowpos, 3, QTableWidgetItem(str(r["数量"])))
+        self.resource_table.setItem(rowpos, 4, QTableWidgetItem(r["位置"]))
+        for col in range(5):
+            self.resource_table.item(rowpos, col).setTextAlignment(Qt.AlignCenter)
         self.check_execute_button()
 
     def edit_resource(self):
         sel = self.resource_table.selectedItems()
         if not sel:
-            wdlg = CustomWarningDialog(self.tr("提示"), self.tr("请选择要修改的资源。"))
-            wdlg.open()
+            CustomWarningDialog(self.tr("提示"), self.tr("请选择要修改的资源。")).open()
             return
         row = sel[0].row()
         resource = {
-            "资源": self.resource_table.item(row,0).text(),
-            "类型": self.resource_table.item(row,1).text(),
-            "数量": int(self.resource_table.item(row,2).text()),
-            "位置": self.resource_table.item(row,3).text()
+            "行为": self.resource_table.item(row, 0).text(),
+            "资源": self.resource_table.item(row, 1).text(),
+            "类型": self.resource_table.item(row, 2).text(),
+            "数量": int(self.resource_table.item(row, 3).text()),
+            "位置": self.resource_table.item(row, 4).text()
         }
         dlg = SingleResourceDialog(resource, parent=self)
-        dlg.accepted.connect(lambda: self.on_edit_resource_ok(dlg, resource, row))
+        dlg.accepted.connect(lambda: self.on_edit_resource_ok(dlg, row))
         dlg.open()
 
-    def on_edit_resource_ok(self, dlg, old_res, row):
+    def on_edit_resource_ok(self, dlg, row):
         updated = dlg.get_resource()
-        try:
-            idx = self.behavior_resources[self.current_behavior].index(old_res)
-            self.behavior_resources[self.current_behavior][idx] = updated
-        except ValueError:
-            CustomWarningDialog(self.tr("提示"), self.tr("未找到要修改的资源。")).open()
-            return
-        self.resource_table.setItem(row,0,QTableWidgetItem(updated["资源"]))
-        self.resource_table.setItem(row,1,QTableWidgetItem(updated["类型"]))
-        self.resource_table.setItem(row,2,QTableWidgetItem(str(updated["数量"])))
-        self.resource_table.setItem(row,3,QTableWidgetItem(updated["位置"]))
-        for col in range(4):
-            self.resource_table.item(row,col).setTextAlignment(Qt.AlignCenter)
+        self.resource_table.setItem(row, 0, QTableWidgetItem(updated["行为"]))
+        self.resource_table.setItem(row, 1, QTableWidgetItem(updated["资源"]))
+        self.resource_table.setItem(row, 2, QTableWidgetItem(updated["类型"]))
+        self.resource_table.setItem(row, 3, QTableWidgetItem(str(updated["数量"])))
+        self.resource_table.setItem(row, 4, QTableWidgetItem(updated["位置"]))
+        for col in range(5):
+            self.resource_table.item(row, col).setTextAlignment(Qt.AlignCenter)
         self.check_execute_button()
 
     def delete_resource(self):
@@ -1043,80 +997,94 @@ class ConditionSettingTab(QWidget):
             CustomWarningDialog(self.tr("提示"), self.tr("请选择要删除的资源。")).open()
             return
         row = sel[0].row()
-        resource = {
-            "资源": self.resource_table.item(row,0).text(),
-            "类型": self.resource_table.item(row,1).text(),
-            "数量": int(self.resource_table.item(row,2).text()),
-            "位置": self.resource_table.item(row,3).text()
-        }
+        resource_behavior = self.resource_table.item(row, 0).text()
+        resource_name = self.resource_table.item(row, 1).text()
 
         qdlg = CustomQuestionDialog(
             self.tr("确认删除"),
-            self.tr("确定要删除应急行为 '") + self.current_behavior + self.tr("' 下的选中资源吗？"),
+            self.tr("确定要删除【") + resource_behavior + self.tr("】行为下的资源：") + resource_name + "？",
             parent=self
         )
-        qdlg.accepted.connect(lambda: self.on_delete_confirmed(True, resource, row))
+        qdlg.accepted.connect(lambda: self.on_delete_confirmed(True, row))
         qdlg.open()
 
-    def on_delete_confirmed(self, is_ok, resource, row):
+    def on_delete_confirmed(self, is_ok, row):
         if is_ok:
-            try:
-                self.behavior_resources[self.current_behavior].remove(resource)
-            except ValueError:
-                CustomWarningDialog(self.tr("提示"), self.tr("未找到要删除的资源。")).open()
-                return
             self.resource_table.removeRow(row)
             self.check_execute_button()
 
-    def check_execute_button(self):
-        selected_b = [b for b in self.behaviors if self.behavior_settings[b].checkbox.isChecked()]
+    # ============= 推演按钮可用性检查 =============
 
-        if not selected_b:
+    def check_execute_button(self):
+        """
+        只有当用户至少勾选了一个行为，且勾选的行为都设置了时长>0，并且每个勾选行为在表格里至少有1条资源，才可执行推演。
+        """
+        selected_behaviors = [
+            b for b in self.behaviors
+            if self.behavior_settings[b].checkbox.isChecked()
+        ]
+        if not selected_behaviors:
             self.execute_btn.setEnabled(False)
             self.execute_btn.setToolTip(self.tr("请配置应急行为"))
             return
 
-        # 检查所有被勾选的应急行为是否有资源
-        all_have_resources = all(len(self.behavior_resources[b]) > 0 for b in selected_b)
-
-        # 检查所有被勾选的应急行为的时长是否大于0
-        all_have_duration = all(self.behavior_settings[b].get_duration() > 0 for b in selected_b)
-
-        # 如果所有被勾选的应急行为都满足上述两个条件，则启用按钮
-        if all_have_resources and all_have_duration:
-            self.execute_btn.setEnabled(True)
-            self.execute_btn.setToolTip("")
-        else:
+        # 检查时长 > 0
+        all_have_duration = all(self.behavior_settings[b].get_duration() > 0 for b in selected_behaviors)
+        if not all_have_duration:
             self.execute_btn.setEnabled(False)
-            self.execute_btn.setToolTip(self.tr("请配置应急行为"))
+            self.execute_btn.setToolTip(self.tr("请给已勾选的行为设置时长"))
+            return
 
-    def create_plan(self,name,plan_data) -> Dict[int, Any]:
+        # 检查表格资源
+        behaviors_in_table = []
+        for row in range(self.resource_table.rowCount()):
+            bh = self.resource_table.item(row, 0).text()
+            if bh not in behaviors_in_table:
+                behaviors_in_table.append(bh)
 
-        new_plan_data = self.new_plan_generator.build_plan_structure(plan_data)
-        print(f"[DEBUG] New plan data: {new_plan_data}")
-        saved_plan = []
-        for entity_id, entity in new_plan_data.items():
-            saved_plan.append(entity)
-        self.save_plan_to_database_signal.emit(saved_plan,False)
-        return new_plan_data
+        # 要求每个选中的行为都在表格里至少有1行
+        all_have_resources = all(b in behaviors_in_table for b in selected_behaviors)
+        if not all_have_resources:
+            self.execute_btn.setEnabled(False)
+            self.execute_btn.setToolTip(self.tr("勾选行为需在表格中添加资源"))
+            return
 
+        # 满足即可
+        self.execute_btn.setEnabled(True)
+        self.execute_btn.setToolTip("")
+
+    # ============= 执行推演：保存 & 弹窗 & 输入预案名 & BN分析 =============
 
     def handle_save(self):
-        saved_categories = []
-        for b in self.behaviors:
-            cbox = self.behavior_settings[b].checkbox
-            if cbox.isChecked():
-                duration = self.behavior_settings[b].get_duration()
-                res_list = self.behavior_resources[b]
-                saved_categories.append({
-                    "category": b,
-                    "attributes": {self.tr("时长"): f"{duration} {self.tr('分钟')}"},
-                    "behaviors": res_list
-                })
-        if not saved_categories:
-            dlg = CustomInformationDialog(self.tr("保存结果"), self.tr("没有要保存的应急行为。"), parent=self)
-            dlg.open()
+        selected_behaviors = [
+            b for b in self.behaviors
+            if self.behavior_settings[b].checkbox.isChecked()
+        ]
+        if not selected_behaviors:
+            CustomInformationDialog(self.tr("保存结果"), self.tr("没有要保存的应急行为。"), parent=self).open()
             return
+
+        # 整理在弹窗中显示的概览信息
+        saved_categories = []
+        for b in selected_behaviors:
+            duration = self.behavior_settings[b].get_duration()
+            b_resources = []
+            # 收集表格里本行为对应的资源
+            for row in range(self.resource_table.rowCount()):
+                if self.resource_table.item(row, 0).text() == b:
+                    r = {
+                        "资源": self.resource_table.item(row, 1).text(),
+                        "类型": self.resource_table.item(row, 2).text(),
+                        "数量": int(self.resource_table.item(row, 3).text()),
+                        "位置": self.resource_table.item(row, 4).text()
+                    }
+                    b_resources.append(r)
+
+            saved_categories.append({
+                "category": b,
+                "attributes": {self.tr("时长"): f"{duration} {self.tr('分钟')}"},
+                "behaviors": b_resources
+            })
 
         info_html = """
         <html><head><style>
@@ -1153,12 +1121,73 @@ class ConditionSettingTab(QWidget):
         dlg.open()
 
     def on_save_result_confirmed(self, info_html):
+        """
+        用户在“实施结果”对话框点确定后，再让他输入预案名称。
+        """
         input_dlg = CustomInputDialog(self.tr("预案名称设置"), self.tr("请输入预案名字:"), parent=self)
         input_dlg.accepted_text.connect(lambda name: self.on_plan_name_input(name))
         input_dlg.open()
 
+    def on_plan_name_input(self, plan_name):
+        plan_name = plan_name.strip()
+        if not plan_name:
+            CustomWarningDialog(self.tr("提示"), self.tr("预案名字不能为空。"), parent=self).open()
+            return
+
+        plan_data = self.format_plan_as_json(plan_name)
+        print(f"[DEBUG] Plan data: {plan_data}")
+        self.create_plan(plan_name, plan_data)
+
+        # 收集并执行 BN 推演
+        collector = PlanDataCollector(self.session, scenario_id=self.scenario_id)
+        print(f"[DEBUG] Collecting data for plan: {plan_name}")
+        collected_data = collector.collect_all_data(plan_name=plan_name)
+        print(f"[DEBUG] Collected plan data: {collected_data}")
+
+        evidence = convert_to_evidence(collected_data)
+        print(f"[DEBUG] Evidence: {evidence}")
+
+        output_dir = os.path.abspath(os.path.join(
+            os.path.dirname(os.path.abspath(__file__)), f"../../data/bn/{self.scenario_id}/plans/{plan_name}"
+        ))
+        print(f"[DEBUG] Output directory: {output_dir}")
+        update_with_evidence(self.analyzer, evidence, output_dir)
+
+        posteriors_file = os.path.join(output_dir, "posterior_probabilities.json")
+        posterior_probabilities = {}
+        if os.path.exists(posteriors_file):
+            with open(posteriors_file, 'r', encoding='utf-8') as f:
+                posterior_probabilities = json.load(f)
+        print(f"[DEBUG] Posterior probabilities: {posterior_probabilities}")
+
+        # 存数据库 (后验概率)
+        self.new_plan_generator.upsert_posterior_probability(plan_name, posterior_probabilities)
+        self.posterior_probabilities = self.convert_json_to_posterior_probabilities(posterior_probabilities)
+        print(f"[DEBUG] Posterior probabilities: {self.posterior_probabilities}")
+        self.update_evidence_table()
+
+        if self.load_saved_plans():
+            CustomInformationDialog(
+                self.tr("成功"),
+                self.tr("预案 '") + plan_name + self.tr("' 已保存并推演。"),
+                parent=self
+            ).open()
+        else:
+            CustomWarningDialog(
+                self.tr("错误"),
+                self.tr("保存预案时出现错误。"),
+                parent=self
+            ).open()
+
     def format_plan_as_json(self, plan_name):
-        """Format the emergency plan details as JSON."""
+        """
+        将当前勾选的行为和表格资源整理成最终 plan_data。
+        在“行为”与“资源”名称前都加上 {plan_name}- 前缀。
+        """
+        selected_behaviors = [
+            b for b in self.behaviors
+            if self.behavior_settings[b].checkbox.isChecked()
+        ]
         plan_data = {
             "plan_name": plan_name,
             "emergency_actions": [],
@@ -1170,180 +1199,246 @@ class ConditionSettingTab(QWidget):
             }
         }
 
-        # Collect data for each checked behavior
-        for behavior in self.behaviors:
-            checkbox = self.behavior_settings[behavior].checkbox
-
-            if checkbox.isChecked():
-                action_data = {
-                    "action_type": behavior,
-                    "duration": f"{self.behavior_settings[behavior].get_duration()} minutes",
-                    "implementation_status": "True",
-                    "resources": []
-                }
-
-                # Add all resources for this behavior
-                for resource in self.behavior_resources[behavior]:
+        for b in self.behaviors:
+            duration = self.behavior_settings[b].get_duration()
+            b_resources = []
+            # 找到表格中属于 b 的资源
+            for row in range(self.resource_table.rowCount()):
+                if self.resource_table.item(row, 0).text() == b:
+                    res_name = self.resource_table.item(row, 1).text()
+                    res_type = self.resource_table.item(row, 2).text()
+                    quantity = int(self.resource_table.item(row, 3).text())
+                    location = self.resource_table.item(row, 4).text()
                     resource_data = {
-                        "resource_type": resource["资源"],
-                        "resource_category": resource["类型"],
-                        "quantity": resource["数量"],
-                        "location": resource["位置"]
+                        "resource_type": f"{plan_name}-{res_name}",
+                        "resource_category": res_type,
+                        "quantity": quantity,
+                        "location": location
                     }
-                    action_data["resources"].append(resource_data)
+                    b_resources.append(resource_data)
 
+            if b_resources:
+                action_data = {
+                    "action_type": f"{plan_name}-{b}",
+                    "duration": f"{duration} minutes",
+                    "implementation_status": "True" if b in selected_behaviors else "False",
+                    "resources": b_resources
+                }
                 plan_data["emergency_actions"].append(action_data)
 
         return plan_data
 
-    def convert_json_to_posterior_probabilities(self,json_data):
+    def create_plan(self, name, plan_data) -> Dict[int, Any]:
         """
-        将给定的 JSON 数据转换为 posterior_probabilities 列表格式。
-
-        参数：
-            json_data (dict): 包含要转换数据的字典。
-
-        返回：
-            list: 转换后的 posterior_probabilities 列表。
+        将 plan_data 发射信号给外部存DB，或由self.new_plan_generator逻辑处理。
         """
-        posterior_probabilities = []
+        new_plan_data = self.new_plan_generator.build_plan_structure(plan_data)
+        print(f"[DEBUG] New plan data: {new_plan_data}")
+        saved_plan = []
+        for entity_id, entity in new_plan_data.items():
+            saved_plan.append(entity)
+        self.save_plan_to_database_signal.emit(saved_plan, False)
+        return new_plan_data
 
-        for element_node, states in json_data.items():
-            # 遍历每个要素节点下的所有状态
-            for state, probability in states.items():
-                # 将概率转换为百分比字符串，保留两位小数
-                probability_percentage = f"{probability * 100:.2f}%"
-
-                # 创建一个字典并添加到列表中
-                entry = {
-                    "要素节点": element_node,
-                    "状态": state,
-                    "概率": probability_percentage
-                }
-                posterior_probabilities.append(entry)
-
-        return posterior_probabilities
-
-    def on_plan_name_input(self, plan_name):
-        """Handle plan name input and save plan data"""
-        plan_name = plan_name.strip()
-        if plan_name:
-            # Format the plan data as JSON
-            plan_data = self.format_plan_as_json(plan_name)
-            print(f"[DEBUG] Plan data: {plan_data}")
-            self.create_plan(plan_name,plan_data)
-            collector = PlanDataCollector(self.session, scenario_id=self.scenario_id)
-
-            # 收集数据
-            print(f"[DEBUG] Collecting data for plan: {plan_name}")
-            plan_data = collector.collect_all_data(plan_name=plan_name)
-            print(f"[DEBUG] Plan data: {plan_data}")
-
-            # 转换为贝叶斯网络证据
-            evidence = convert_to_evidence(plan_data)
-            print(f"[DEBUG] Evidence: {evidence}")
-
-            output_dir = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), f"../../data/bn/{self.scenario_id}/plans/{plan_name}"))
-            print(f"[DEBUG] Output directory: {output_dir}")
-            update_with_evidence(self.analyzer, evidence, output_dir)
-
-            # 打开posteriot_probabilities.json
-            posteriors_file = os.path.join(output_dir, "posterior_probabilities.json")
-            posterior_probabilities = {}
-            if os.path.exists(posteriors_file):
-                with open(posteriors_file, 'r', encoding='utf-8') as f:
-                    posterior_probabilities = json.load(f)
-            print(f"[DEBUG] Posterior probabilities: {posterior_probabilities}")
-
-            self.new_plan_generator.upsert_posterior_probability(plan_name,posterior_probabilities)
-
-            self.posterior_probabilities = self.convert_json_to_posterior_probabilities(posterior_probabilities)
-            print(f"[DEBUG] Posterior probabilities: {self.posterior_probabilities}")
-
-            self.update_evidence_table()
-
-            new_plan_data = self.new_plan_generator.get_all_plans()
-            print(f"[DEBUG] New plan data: {new_plan_data}")
-
-            if self.load_saved_plans():
-                # Show success message
-                CustomInformationDialog(
-                    self.tr("成功"),
-                    self.tr("预案 '") + plan_name + self.tr("' 已保存并推演。"),
-                    parent=self
-                ).open()
-            else:
-                CustomWarningDialog(
-                    self.tr("错误"),
-                    self.tr("保存预案时出现错误。"),
-                    parent=self
-                ).open()
-        else:
-            CustomWarningDialog(
-                self.tr("提示"),
-                self.tr("预案名字不能为空。"),
-                parent=self
-            ).open()
+    # ============= simulation_table 相关 =============
 
     def init_simulation_table(self):
-        """Initialize simulation table with headers and structure"""
+        self.simulation_table_clear_header()
+
+    def simulation_table_clear_header(self):
+        """
+        初始化 simulation_table 的两行多级表头
+        """
         self.simulation_table.clearContents()
-        self.simulation_table.setRowCount(2)  # Initial header rows
+        self.simulation_table.setRowCount(2)
 
-        # Set header structure
-        self.simulation_table.setSpan(0, 0, 2, 1)  # "韧性/预案" cell
-        self.simulation_table.setSpan(0, 1, 1, 2)  # "推演前" cell
-        self.simulation_table.setSpan(0, 3, 1, 2)  # "推演后" cell
+        self.simulation_table.setSpan(0, 0, 2, 1)  # "韧性/预案"
+        self.simulation_table.setSpan(0, 1, 1, 2)  # "推演前"
+        self.simulation_table.setSpan(0, 3, 1, 2)  # "推演后"
 
-        # Initialize header rows with empty items
+        # 创建空item占位
         for col in range(5):
             if self.simulation_table.item(0, col) is None:
                 self.simulation_table.setItem(0, col, QTableWidgetItem(""))
             if self.simulation_table.item(1, col) is None:
                 self.simulation_table.setItem(1, col, QTableWidgetItem(""))
 
-        # Apply header delegate
         header_delegate = FullHeaderDelegate(self.simulation_table)
         for row in range(2):
             for col in range(self.simulation_table.columnCount()):
                 self.simulation_table.setItemDelegateForRow(row, header_delegate)
 
+    def load_saved_plans(self):
+        """
+        读取已保存的所有预案, 并更新 simulation_table
+        """
+        try:
+            self.simulation_table_clear_header()
+            self.plans_data = self.new_plan_generator.get_all_plans()
+            print(f"[DEBUG] Loaded plans: {self.plans_data}")
+
+            for plan_name, plan_data in self.plans_data.items():
+                self.add_plan_to_simulation_table(plan_name, plan_data)
+            return True
+        except Exception as e:
+            print(f"Error loading plans: {str(e)}")
+            CustomWarningDialog(
+                self.tr("错误"),
+                self.tr("加载预案数据时出现错误：") + str(e),
+                parent=self
+            ).open()
+
+    def add_plan_to_simulation_table(self, plan_name, plan_data):
+        """
+        将单个预案显示在 simulation_table(追加到末尾)
+        """
+        current_data_rows = self.simulation_table.rowCount() - 2
+        new_row = current_data_rows + 2
+        self.simulation_table.insertRow(new_row)
+
+        self.simulation_table.setItem(new_row, 0, QTableWidgetItem(plan_name))
+        self.simulation_table.item(new_row, 0).setTextAlignment(Qt.AlignCenter)
+
+        sim_res = plan_data.get("simulation_results", {
+            "推演前-较好": "30%",
+            "推演前-较差": "20%",
+            "推演后-较好": "60%",
+            "推演后-较差": "10%"
+        })
+        columns = [
+            sim_res["推演前-较好"],
+            sim_res["推演前-较差"],
+            sim_res["推演后-较好"],
+            sim_res["推演后-较差"]
+        ]
+        for col, val in enumerate(columns, start=1):
+            item = QTableWidgetItem(val)
+            item.setTextAlignment(Qt.AlignCenter)
+            self.simulation_table.setItem(new_row, col, item)
+
+    def show_plan_details(self, item):
+        """
+        双击 simulation_table 某行 => 显示预案详情对话框 & 计算后验概率
+        """
+        row = item.row()
+        plan_name = self.simulation_table.item(row, 0).text()
+        collector = PlanDataCollector(self.session, scenario_id=self.scenario_id)
+
+        print(f"[DEBUG] Collecting data for plan: {plan_name}")
+        plan_data = collector.collect_all_data(plan_name=plan_name)
+        print(f"[DEBUG] Plan data: {plan_data}")
+
+        evidence = convert_to_evidence(plan_data)
+        print(f"[DEBUG] Evidence: {evidence}")
+
+        output_dir = os.path.abspath(os.path.join(
+            os.path.dirname(os.path.abspath(__file__)), f"../../data/bn/{self.scenario_id}/plans/{plan_name}"
+        ))
+        print(f"[DEBUG] Output directory: {output_dir}")
+        update_with_evidence(self.analyzer, evidence, output_dir)
+
+        posteriors_file = os.path.join(output_dir, "posterior_probabilities.json")
+        posterior_probabilities = {}
+        if os.path.exists(posteriors_file):
+            with open(posteriors_file, 'r', encoding='utf-8') as f:
+                posterior_probabilities = json.load(f)
+        print(f"[DEBUG] Posterior probabilities: {posterior_probabilities}")
+
+        self.new_plan_generator.upsert_posterior_probability(plan_name, posterior_probabilities)
+        self.posterior_probabilities = self.convert_json_to_posterior_probabilities(posterior_probabilities)
+        print(f"[DEBUG] Posterior probabilities: {self.posterior_probabilities}")
+
+        self.update_evidence_table()
+
+        if plan_name in self.plans_data:
+            plan_data = self.plans_data[plan_name]
+            info_html = self.generate_plan_details_html(plan_data)
+            details_dialog = DetailsDialog(info_html, self)
+            details_dialog.setWindowTitle(self.tr("预案详情 - ") + plan_name)
+            details_dialog.open()
+
+    def generate_plan_details_html(self, plan_data):
+        info_html = """
+        <html><head><style>
+         body{font-family:"Microsoft YaHei";font-size:14px;color:#333}
+         h2{text-align:center;color:#0078d7;margin-bottom:20px}
+         h3{color:#005a9e;margin-top:30px;margin-bottom:10px}
+         .timestamp{color:#666;font-size:12px;text-align:right;margin-bottom:20px}
+         table{width:100%;border-collapse:collapse;margin-bottom:20px}
+         th,td{border:1px solid #ccc;padding:10px;text-align:center}
+         th{background-color:#f0f0f0}
+         .no-resource{color:red;font-style:italic;text-align:center}
+        </style></head><body>
+        """
+        info_html += f"<h2>{plan_data.get('plan_name','')}</h2>"
+        info_html += f"<div class='timestamp'>{self.tr('创建时间')}: {plan_data.get('timestamp','')}</div>"
+
+        for action in plan_data.get('emergency_actions', []):
+            if action.get('implementation_status') == 'True':
+                title_str = f"<h3>{self.tr('应急行为')}: {action.get('action_type','')} (已实施)</h3>"
+            else:
+                title_str = f"<h3>{self.tr('应急行为')}: {action.get('action_type', '')} (未实施)</h3>"
+
+            info_html += f"{title_str}"
+            info_html += f"<p><b>{self.tr('时长')}:</b> {action.get('duration','')}</p>"
+
+            info_html += f"<b>{self.tr('资源列表')}:</b>"
+            if action.get('resources'):
+                info_html += """
+                <table>
+                <tr>
+                    <th>""" + self.tr('资源名称') + """</th>
+                    <th>""" + self.tr('类型') + """</th>
+                    <th>""" + self.tr('数量') + """</th>
+                    <th>""" + self.tr('位置') + """</th>
+                </tr>
+                """
+                for resource in action['resources']:
+                    info_html += f"""
+                    <tr>
+                        <td>{resource.get('resource_type','')}</td>
+                        <td>{resource.get('resource_category','')}</td>
+                        <td>{resource.get('quantity','')}</td>
+                        <td>{resource.get('location','')}</td>
+                    </tr>
+                    """
+                info_html += "</table>"
+            else:
+                info_html += f"<p class='no-resource'>{self.tr('无资源')}</p>"
+
+
+        info_html += "</body></html>"
+        return info_html
+
+    def convert_json_to_posterior_probabilities(self, json_data):
+        """
+        将 posterior_probabilities.json 的 dict 转成 [ {要素节点, 状态, 概率}, ... ] 便于表格显示
+        """
+        posterior_probabilities = []
+        for element_node, states in json_data.items():
+            for state, probability in states.items():
+                probability_percentage = f"{probability*100:.2f}%"
+                entry = {
+                    "要素节点": element_node,
+                    "状态": state,
+                    "概率": probability_percentage
+                }
+                posterior_probabilities.append(entry)
+        return posterior_probabilities
+
     def update_evidence_table(self):
         self.evidence_table.clearContents()
         self.evidence_table.setRowCount(0)
         for d in self.posterior_probabilities:
-            rowpos = self.evidence_table.rowCount()
-            self.evidence_table.insertRow(rowpos)
-            self.evidence_table.setItem(rowpos,0,QTableWidgetItem(d[self.tr("要素节点")]))
-            self.evidence_table.setItem(rowpos,1,QTableWidgetItem(d[self.tr("状态")]))
-            self.evidence_table.setItem(rowpos,2,QTableWidgetItem(d[self.tr("概率")]))
-            for col in range(3):
-                item = self.evidence_table.item(rowpos, col)
-                item.setTextAlignment(Qt.AlignCenter)
-                item.setToolTip(item.text())
-        # 设置tooltip,显示浮标所在单元格内容
-
-
-    def update_simulation_table(self, plan_name):
-        data = [
-            {
-                "预案名字": plan_name,
-                "推演前-较好":"30%",
-                "推演前-较差":"20%",
-                "推演后-较好":"60%",
-                "推演后-较差":"10%",
-            }
-        ]
-        for d in data:
-            rowpos = self.simulation_table.rowCount()
-            self.simulation_table.setRowCount(rowpos+1)
-            self.simulation_table.setItem(rowpos,0,QTableWidgetItem(d["预案名字"]))
-            self.simulation_table.setItem(rowpos,1,QTableWidgetItem(d["推演前-较好"]))
-            self.simulation_table.setItem(rowpos,2,QTableWidgetItem(d["推演前-较差"]))
-            self.simulation_table.setItem(rowpos,3,QTableWidgetItem(d["推演后-较好"]))
-            self.simulation_table.setItem(rowpos,4,QTableWidgetItem(d["推演后-较差"]))
-            for col in range(7):
-                self.simulation_table.item(rowpos,col).setTextAlignment(Qt.AlignCenter)
+            if d.get("要素节点") not in ["ScenarioResilience"]:
+                rowpos = self.evidence_table.rowCount()
+                self.evidence_table.insertRow(rowpos)
+                self.evidence_table.setItem(rowpos, 0, QTableWidgetItem(d.get("要素节点","")))
+                self.evidence_table.setItem(rowpos, 1, QTableWidgetItem(d.get("状态","")))
+                self.evidence_table.setItem(rowpos, 2, QTableWidgetItem(d.get("概率","")))
+                for col in range(3):
+                    self.evidence_table.item(rowpos, col).setTextAlignment(Qt.AlignCenter)
+                    self.evidence_table.item(rowpos, col).setToolTip(self.evidence_table.item(rowpos, col).text())
 
     def set_stylesheet(self):
         self.setStyleSheet(self.tr("""
@@ -1429,6 +1524,7 @@ class ConditionSettingTab(QWidget):
         pass
 
 
+# ===== 测试入口，仅供本地运行时参考 =====
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     window = ConditionSettingTab()
