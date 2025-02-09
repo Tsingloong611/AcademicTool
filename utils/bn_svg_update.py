@@ -137,7 +137,7 @@ class ScenarioResilience:
         }
 
     def process_expert_evaluation(self, expert_info_path: str, expert_estimation_path: str) -> pd.DataFrame:
-        """处理专家评估数据"""
+        """处理专家评估数据（改进版，允许部分缺失专家数据）"""
         # 读取专家信息和计算权重
         df_expert = pd.read_excel(expert_info_path)
         scores = df_expert.iloc[:, 1:].sum(axis=1)
@@ -145,33 +145,61 @@ class ScenarioResilience:
 
         # 读取并处理专家评估数据
         df = pd.read_excel(expert_estimation_path)
-        # 查看有没有那一行具有缺失值
-        # 判断每一行是否存在缺失值
-        missing_df = get_missing_rows(df)
-        if not missing_df.empty:
-            dialog = MissingDataDialog(missing_df)
-            # 以模态方式展示对话框，等待用户确认
-            df = df.dropna()
+
+        # 注：这里不再直接对整行 dropna，而是只对其他必填项做检查，
+        # 如果仅专家列缺失则允许继续处理（只使用可用的专家数据）
+        # 例如：检查除专家列之外的列是否存在缺失值
+        non_expert_columns = [col for col in df.columns if not re.match(r'^E\d+$', col)]
+        missing_non_expert = df[non_expert_columns].isna().any(axis=1)
+        if missing_non_expert.any():
+            # 这里可以弹出对话框提示用户
+            dialog = MissingDataDialog(df.loc[missing_non_expert, non_expert_columns])
             dialog.exec()
+            # 根据需求决定是否舍弃这些行
+            df = df.loc[~missing_non_expert].copy()
 
-
-        # 动态获取专家列
+        # 动态获取专家列（假定列名格式为 E1, E2, ...）
         expert_columns = [col for col in df.columns if re.match(r'^E\d+$', col)]
         expert_columns.sort(key=lambda x: int(x[1:]))
 
-        df['fuzzy'] = df[expert_columns].apply(self.fuzzy_evaluator.calculate_fuzzy, axis=1)
+        # 对每一行，只提取非空的专家数据及对应权重
+        def extract_fuzzy_and_weights(row: pd.Series) -> pd.Series:
+            fuzzy_values = []
+            used_weights = []
+            for col in expert_columns:
+                val = row[col]
+                if pd.notna(val):
+                    key = str(val).strip()
+                    if key in self.fuzzy_evaluator.mapping_evaluation_fuzzy:
+                        fuzzy_values.append(self.fuzzy_evaluator.mapping_evaluation_fuzzy[key])
+                        # 根据专家列在 expert_columns 中的位置获取对应的权重
+                        expert_index = expert_columns.index(col)
+                        used_weights.append(expert_weights[expert_index])
+                    else:
+                        # 若评估值不在映射中，可选择记录警告或跳过
+                        print(f"Warning: 未识别的评估值 '{key}' 在列 {col}")
+            return pd.Series({'fuzzy': fuzzy_values, 'used_weights': used_weights})
 
-        df['Condition'] = df['Condition'].tolist()
+        # 使用新函数生成两个新列：fuzzy 和 used_weights
+        df[['fuzzy', 'used_weights']] = df[expert_columns].apply(extract_fuzzy_and_weights, axis=1)
 
-        # 计算条件概率
+        # 计算条件概率：对每一行，使用仅有的专家数据及对应权重进行聚合
         condition_probability = []
-        for row in df['fuzzy']:
-            prob = self.fuzzy_evaluator.calculate_aggregated_fuzzy(row, expert_weights)
+        for idx, row in df.iterrows():
+            fuzzy_list = row['fuzzy']
+            weights_list = row['used_weights']
+            if len(fuzzy_list) > 0:
+                prob = self.fuzzy_evaluator.calculate_aggregated_fuzzy(fuzzy_list, weights_list)
+            else:
+                # 若某行完全没有专家数据，可设置默认值或抛出错误
+                prob = 0.0
+                print(f"Warning: 节点 {row['Node']} 的行 {idx} 没有任何专家评估数据")
             condition_probability.append(prob)
 
         df['conditonProbability'] = condition_probability
+
         print("\n===== 归一化前 =====")
-        print(df[['Node', 'Condition','State', 'conditonProbability']])
+        print(df[['Node', 'Condition', 'State', 'conditonProbability']])
 
         df = self._fill_missing_binary_states(df)
 
@@ -180,7 +208,7 @@ class ScenarioResilience:
             .transform(lambda x: x / x.sum())
 
         print("\n===== 归一化后 =====")
-        print(df[['Node', 'Condition','State', 'conditonProbability']])
+        print(df[['Node', 'Condition', 'State', 'conditonProbability']])
         return df
 
     def _fill_missing_binary_states(self, df: pd.DataFrame) -> pd.DataFrame:

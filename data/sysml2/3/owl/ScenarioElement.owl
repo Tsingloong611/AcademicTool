@@ -36,32 +36,7 @@
   <rdfs:range rdf:resource="#ExplodeState"/>
 </owl:ObjectProperty>
 
-<owl:ObjectProperty rdf:about="#hasVehicleExplosionEffectOn">
-  <rdfs:subPropertyOf rdf:resource="#hasEffectOn"/>
-</owl:ObjectProperty>
-
-<owl:ObjectProperty rdf:about="#hasVehicleDepartureEffectOn">
-  <rdfs:subPropertyOf rdf:resource="#hasEffectOn"/>
-</owl:ObjectProperty>
-
-<owl:ObjectProperty rdf:about="#hasExplodeEffectOn">
-  <rdfs:subPropertyOf rdf:resource="#hasEffectOn"/>
-</owl:ObjectProperty>
-
-<owl:ObjectProperty rdf:about="#hasSpillEffectOn">
-  <rdfs:subPropertyOf rdf:resource="#hasEffectOn"/>
-  <rdfs:range rdf:resource="#5235"/>
-</owl:ObjectProperty>
-
 <owl:ObjectProperty rdf:about="#hasVehicleSpillageEffectOn">
-  <rdfs:subPropertyOf rdf:resource="#hasEffectOn"/>
-</owl:ObjectProperty>
-
-<owl:ObjectProperty rdf:about="#hasVehicleSpeedChangeEffectOn">
-  <rdfs:subPropertyOf rdf:resource="#hasEffectOn"/>
-</owl:ObjectProperty>
-
-<owl:ObjectProperty rdf:about="#hasVehicleTransportEffectOn">
   <rdfs:subPropertyOf rdf:resource="#hasEffectOn"/>
 </owl:ObjectProperty>
 
@@ -70,7 +45,32 @@
   <rdfs:range rdf:resource="#HazardVehicle"/>
 </owl:ObjectProperty>
 
+<owl:ObjectProperty rdf:about="#hasVehicleTransportEffectOn">
+  <rdfs:subPropertyOf rdf:resource="#hasEffectOn"/>
+</owl:ObjectProperty>
+
+<owl:ObjectProperty rdf:about="#hasSpillEffectOn">
+  <rdfs:subPropertyOf rdf:resource="#hasEffectOn"/>
+  <rdfs:range rdf:resource="#车辆"/>
+</owl:ObjectProperty>
+
+<owl:ObjectProperty rdf:about="#hasVehicleSpeedChangeEffectOn">
+  <rdfs:subPropertyOf rdf:resource="#hasEffectOn"/>
+</owl:ObjectProperty>
+
+<owl:ObjectProperty rdf:about="#hasExplodeEffectOn">
+  <rdfs:subPropertyOf rdf:resource="#hasEffectOn"/>
+</owl:ObjectProperty>
+
+<owl:ObjectProperty rdf:about="#hasVehicleDepartureEffectOn">
+  <rdfs:subPropertyOf rdf:resource="#hasEffectOn"/>
+</owl:ObjectProperty>
+
 <owl:ObjectProperty rdf:about="#hasVehicleMotionEffectOn">
+  <rdfs:subPropertyOf rdf:resource="#hasEffectOn"/>
+</owl:ObjectProperty>
+
+<owl:ObjectProperty rdf:about="#hasVehicleExplosionEffectOn">
   <rdfs:subPropertyOf rdf:resource="#hasEffectOn"/>
 </owl:ObjectProperty>
 
@@ -86,7 +86,7 @@
   <rdfs:range rdf:resource="#SpillState"/>
 </owl:ObjectProperty>
 
-<owl:ObjectProperty rdf:about="#hasVehicleLaneChangeEffectOn">
+<owl:ObjectProperty rdf:about="#hasVehicleTurningEffectOn">
   <rdfs:subPropertyOf rdf:resource="#hasEffectOn"/>
 </owl:ObjectProperty>
 
@@ -94,7 +94,11 @@
   <rdfs:subPropertyOf rdf:resource="#hasEffectOn"/>
 </owl:ObjectProperty>
 
-<owl:ObjectProperty rdf:about="#hasVehicleTurningEffectOn">
+<owl:ObjectProperty rdf:about="#hasVehicleLaneChangeEffectOn">
+  <rdfs:subPropertyOf rdf:resource="#hasEffectOn"/>
+</owl:ObjectProperty>
+
+<owl:ObjectProperty rdf:about="#hasVehicleOverturnEffectOn">
   <rdfs:subPropertyOf rdf:resource="#hasEffectOn"/>
 </owl:ObjectProperty>
 
@@ -102,8 +106,22 @@
   <rdfs:subPropertyOf rdf:resource="#hasEffectOn"/>
 </owl:ObjectProperty>
 
-<owl:ObjectProperty rdf:about="#hasVehicleOverturnEffectOn">
-  <rdfs:subPropertyOf rdf:resource="#hasEffectOn"/>
+<owl:ObjectProperty rdf:about="#associate674675-救助">
+  <rdfs:subPropertyOf rdf:resource="#associateWith"/>
+  <rdfs:domain rdf:resource="#674675-类型B"/>
+  <rdfs:range rdf:resource="#674675-救助"/>
+</owl:ObjectProperty>
+
+<owl:ObjectProperty rdf:about="#associate674675-抢修">
+  <rdfs:subPropertyOf rdf:resource="#associateWith"/>
+  <rdfs:domain rdf:resource="#674675-人员"/>
+  <rdfs:range rdf:resource="#674675-抢修"/>
+</owl:ObjectProperty>
+
+<owl:ObjectProperty rdf:about="#associate3256-牵引">
+  <rdfs:subPropertyOf rdf:resource="#associateWith"/>
+  <rdfs:domain rdf:resource="#3256-人员"/>
+  <rdfs:range rdf:resource="#3256-牵引"/>
 </owl:ObjectProperty>
 
 <owl:ObjectProperty rdf:about="#associate123445-救助">
@@ -112,10 +130,16 @@
   <rdfs:range rdf:resource="#123445-救助"/>
 </owl:ObjectProperty>
 
-<owl:ObjectProperty rdf:about="#associate3256-牵引">
+<owl:ObjectProperty rdf:about="#associate3256-救助">
   <rdfs:subPropertyOf rdf:resource="#associateWith"/>
-  <rdfs:domain rdf:resource="#3256-人员"/>
-  <rdfs:range rdf:resource="#3256-牵引"/>
+  <rdfs:domain rdf:resource="#3256-物资"/>
+  <rdfs:range rdf:resource="#3256-救助"/>
+</owl:ObjectProperty>
+
+<owl:ObjectProperty rdf:about="#associate123445-物资">
+  <rdfs:subPropertyOf rdf:resource="#associateWith"/>
+  <rdfs:domain rdf:resource="#123445"/>
+  <rdfs:range rdf:resource="#123445-物资"/>
 </owl:ObjectProperty>
 
 <owl:ObjectProperty rdf:about="#associate3256-物资">
@@ -128,18 +152,6 @@
   <rdfs:subPropertyOf rdf:resource="#associateWith"/>
   <rdfs:domain rdf:resource="#3256"/>
   <rdfs:range rdf:resource="#3256-人员"/>
-</owl:ObjectProperty>
-
-<owl:ObjectProperty rdf:about="#associate3256-救助">
-  <rdfs:subPropertyOf rdf:resource="#associateWith"/>
-  <rdfs:domain rdf:resource="#3256"/>
-  <rdfs:range rdf:resource="#3256-救助"/>
-</owl:ObjectProperty>
-
-<owl:ObjectProperty rdf:about="#associate123445-物资">
-  <rdfs:subPropertyOf rdf:resource="#associateWith"/>
-  <rdfs:domain rdf:resource="#123445"/>
-  <rdfs:range rdf:resource="#123445-物资"/>
 </owl:ObjectProperty>
 
 <owl:ObjectProperty rdf:about="#associate674675-类型B">
@@ -160,22 +172,10 @@
   <rdfs:range rdf:resource="#674675-人员"/>
 </owl:ObjectProperty>
 
-<owl:ObjectProperty rdf:about="#associate674675-救助">
-  <rdfs:subPropertyOf rdf:resource="#associateWith"/>
-  <rdfs:domain rdf:resource="#674675"/>
-  <rdfs:range rdf:resource="#674675-救助"/>
-</owl:ObjectProperty>
-
 <owl:ObjectProperty rdf:about="#associate674675-牵引">
   <rdfs:subPropertyOf rdf:resource="#associateWith"/>
   <rdfs:domain rdf:resource="#674675"/>
   <rdfs:range rdf:resource="#674675-牵引"/>
-</owl:ObjectProperty>
-
-<owl:ObjectProperty rdf:about="#associate674675-抢修">
-  <rdfs:subPropertyOf rdf:resource="#associateWith"/>
-  <rdfs:domain rdf:resource="#674675"/>
-  <rdfs:range rdf:resource="#674675-抢修"/>
 </owl:ObjectProperty>
 
 <owl:ObjectProperty rdf:about="#Rescue:ActionTransform">
@@ -184,13 +184,13 @@
   <rdfs:range rdf:resource="#implementState"/>
 </owl:ObjectProperty>
 
-<owl:ObjectProperty rdf:about="#FireFighting:ActionTransform">
+<owl:ObjectProperty rdf:about="#Tow:ActionTransform">
   <rdfs:subPropertyOf rdf:resource="#stateTransform"/>
   <rdfs:domain rdf:resource="#idleState"/>
   <rdfs:range rdf:resource="#implementState"/>
 </owl:ObjectProperty>
 
-<owl:ObjectProperty rdf:about="#Tow:ActionTransform">
+<owl:ObjectProperty rdf:about="#FireFighting:ActionTransform">
   <rdfs:subPropertyOf rdf:resource="#stateTransform"/>
   <rdfs:domain rdf:resource="#idleState"/>
   <rdfs:range rdf:resource="#implementState"/>
@@ -206,10 +206,6 @@
   <rdfs:subPropertyOf rdf:resource="#hasEffectOn"/>
 </owl:ObjectProperty>
 
-<owl:ObjectProperty rdf:about="#hasRoadControlEffectOn">
-  <rdfs:subPropertyOf rdf:resource="#hasEffectOn"/>
-</owl:ObjectProperty>
-
 <owl:ObjectProperty rdf:about="#hasFirefightingEffectOn">
   <rdfs:subPropertyOf rdf:resource="#hasEffectOn"/>
 </owl:ObjectProperty>
@@ -219,6 +215,10 @@
 </owl:ObjectProperty>
 
 <owl:ObjectProperty rdf:about="#hasActionEffectOn">
+  <rdfs:subPropertyOf rdf:resource="#hasEffectOn"/>
+</owl:ObjectProperty>
+
+<owl:ObjectProperty rdf:about="#hasRoadControlEffectOn">
   <rdfs:subPropertyOf rdf:resource="#hasEffectOn"/>
 </owl:ObjectProperty>
 
@@ -282,32 +282,32 @@
 
 <owl:DatatypeProperty rdf:about="#VehicleType">
   <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
-  <rdfs:domain rdf:resource="#5235"/>
+  <rdfs:domain rdf:resource="#车辆"/>
 </owl:DatatypeProperty>
 
 <owl:DatatypeProperty rdf:about="#CombustionCondition">
   <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#boolean"/>
-  <rdfs:domain rdf:resource="#5235"/>
+  <rdfs:domain rdf:resource="#车辆"/>
 </owl:DatatypeProperty>
 
 <owl:DatatypeProperty rdf:about="#SpillCondition">
   <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#boolean"/>
-  <rdfs:domain rdf:resource="#5235"/>
+  <rdfs:domain rdf:resource="#车辆"/>
 </owl:DatatypeProperty>
 
 <owl:DatatypeProperty rdf:about="#DrivingDirection">
   <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
-  <rdfs:domain rdf:resource="#5235"/>
+  <rdfs:domain rdf:resource="#车辆"/>
 </owl:DatatypeProperty>
 
 <owl:DatatypeProperty rdf:about="#VehiclePosition">
   <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
-  <rdfs:domain rdf:resource="#5235"/>
+  <rdfs:domain rdf:resource="#车辆"/>
 </owl:DatatypeProperty>
 
 <owl:DatatypeProperty rdf:about="#VehicleSpeed">
   <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#decimal"/>
-  <rdfs:domain rdf:resource="#5235"/>
+  <rdfs:domain rdf:resource="#车辆"/>
 </owl:DatatypeProperty>
 
 <owl:DatatypeProperty rdf:about="#DamageCondition">
@@ -317,7 +317,7 @@
 
 <owl:DatatypeProperty rdf:about="#CollisionCondition">
   <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#boolean"/>
-  <rdfs:domain rdf:resource="#5235"/>
+  <rdfs:domain rdf:resource="#车辆"/>
 </owl:DatatypeProperty>
 
 <owl:DatatypeProperty rdf:about="#WeatherType">
@@ -351,22 +351,22 @@
 </owl:DatatypeProperty>
 
 <owl:DatatypeProperty rdf:about="#BreakdownCondition">
-  <rdfs:domain rdf:resource="#5235"/>
+  <rdfs:domain rdf:resource="#车辆"/>
   <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#boolean"/>
 </owl:DatatypeProperty>
 
 <owl:DatatypeProperty rdf:about="#RollOverCondition">
-  <rdfs:domain rdf:resource="#5235"/>
+  <rdfs:domain rdf:resource="#车辆"/>
   <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#boolean"/>
 </owl:DatatypeProperty>
 
 <owl:DatatypeProperty rdf:about="#AbnormalSpeedCondition">
-  <rdfs:domain rdf:resource="#5235"/>
+  <rdfs:domain rdf:resource="#车辆"/>
   <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
 </owl:DatatypeProperty>
 
 <owl:DatatypeProperty rdf:about="#IIIegalLaneOccupationCondition">
-  <rdfs:domain rdf:resource="#5235"/>
+  <rdfs:domain rdf:resource="#车辆"/>
   <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#boolean"/>
 </owl:DatatypeProperty>
 
@@ -375,43 +375,43 @@
   <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
 </owl:DatatypeProperty>
 
-<owl:DatatypeProperty rdf:about="#BehaviorType">
-  <rdfs:domain rdf:resource="#674675-抢修"/>
-  <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
-</owl:DatatypeProperty>
-
-<owl:DatatypeProperty rdf:about="#ImplementationCondition">
-  <rdfs:domain rdf:resource="#674675-抢修"/>
-  <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#boolean"/>
-</owl:DatatypeProperty>
-
-<owl:DatatypeProperty rdf:about="#Duration">
-  <rdfs:domain rdf:resource="#674675-抢修"/>
-  <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#decimal"/>
-</owl:DatatypeProperty>
-
 <owl:DatatypeProperty rdf:about="#ResourceType">
-  <rdfs:domain rdf:resource="#123445-物资"/>
+  <rdfs:domain rdf:resource="#674675-类型B"/>
   <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
 </owl:DatatypeProperty>
 
 <owl:DatatypeProperty rdf:about="#ResourceUsageCondition">
-  <rdfs:domain rdf:resource="#123445-物资"/>
+  <rdfs:domain rdf:resource="#674675-类型B"/>
   <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#boolean"/>
 </owl:DatatypeProperty>
 
 <owl:DatatypeProperty rdf:about="#ResourceQuantityOrQuality">
-  <rdfs:domain rdf:resource="#123445-物资"/>
+  <rdfs:domain rdf:resource="#674675-类型B"/>
   <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#decimal"/>
 </owl:DatatypeProperty>
 
 <owl:DatatypeProperty rdf:about="#Location">
-  <rdfs:domain rdf:resource="#123445-物资"/>
+  <rdfs:domain rdf:resource="#674675-类型B"/>
   <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
 </owl:DatatypeProperty>
 
+<owl:DatatypeProperty rdf:about="#BehaviorType">
+  <rdfs:domain rdf:resource="#674675-救助"/>
+  <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+</owl:DatatypeProperty>
+
+<owl:DatatypeProperty rdf:about="#ImplementationCondition">
+  <rdfs:domain rdf:resource="#674675-救助"/>
+  <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#boolean"/>
+</owl:DatatypeProperty>
+
+<owl:DatatypeProperty rdf:about="#Duration">
+  <rdfs:domain rdf:resource="#674675-救助"/>
+  <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#decimal"/>
+</owl:DatatypeProperty>
+
 <owl:DatatypeProperty rdf:about="#PlanName">
-  <rdfs:domain rdf:resource="#3256"/>
+  <rdfs:domain rdf:resource="#123445"/>
   <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
 </owl:DatatypeProperty>
 
@@ -475,15 +475,7 @@
   <rdfs:subClassOf rdf:resource="#ElementCompositions"/>
 </owl:Class>
 
-<owl:Class rdf:about="#People">
-  <rdfs:subClassOf rdf:resource="#ElementCompositions"/>
-</owl:Class>
-
 <owl:Class rdf:about="#Lane">
-  <rdfs:subClassOf rdf:resource="#ElementCompositions"/>
-</owl:Class>
-
-<owl:Class rdf:about="#Facility">
   <rdfs:subClassOf rdf:resource="#ElementCompositions"/>
 </owl:Class>
 
@@ -491,11 +483,15 @@
   <rdfs:subClassOf rdf:resource="#ElementCompositions"/>
 </owl:Class>
 
-<owl:Class rdf:about="#ExplodeState">
-  <rdfs:subClassOf rdf:resource="#AffectedStates"/>
+<owl:Class rdf:about="#People">
+  <rdfs:subClassOf rdf:resource="#ElementCompositions"/>
 </owl:Class>
 
-<owl:Class rdf:about="#CollidedState">
+<owl:Class rdf:about="#Facility">
+  <rdfs:subClassOf rdf:resource="#ElementCompositions"/>
+</owl:Class>
+
+<owl:Class rdf:about="#ExplodeState">
   <rdfs:subClassOf rdf:resource="#AffectedStates"/>
 </owl:Class>
 
@@ -503,31 +499,11 @@
   <rdfs:subClassOf rdf:resource="#AffectedStates"/>
 </owl:Class>
 
-<owl:Class rdf:about="#VehicleExplosion">
-  <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
-</owl:Class>
-
-<owl:Class rdf:about="#VehicleDeparture">
-  <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
-</owl:Class>
-
-<owl:Class rdf:about="#Explode">
-  <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
-</owl:Class>
-
-<owl:Class rdf:about="#Spill">
-  <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+<owl:Class rdf:about="#CollidedState">
+  <rdfs:subClassOf rdf:resource="#AffectedStates"/>
 </owl:Class>
 
 <owl:Class rdf:about="#VehicleSpillage">
-  <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
-</owl:Class>
-
-<owl:Class rdf:about="#VehicleSpeedChange">
-  <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
-</owl:Class>
-
-<owl:Class rdf:about="#VehicleTransport">
   <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
 </owl:Class>
 
@@ -535,7 +511,31 @@
   <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
 </owl:Class>
 
+<owl:Class rdf:about="#VehicleTransport">
+  <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+</owl:Class>
+
+<owl:Class rdf:about="#Spill">
+  <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+</owl:Class>
+
+<owl:Class rdf:about="#VehicleSpeedChange">
+  <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+</owl:Class>
+
+<owl:Class rdf:about="#Explode">
+  <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+</owl:Class>
+
+<owl:Class rdf:about="#VehicleDeparture">
+  <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+</owl:Class>
+
 <owl:Class rdf:about="#VehicleMotion">
+  <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+</owl:Class>
+
+<owl:Class rdf:about="#VehicleExplosion">
   <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
 </owl:Class>
 
@@ -543,16 +543,12 @@
   <rdfs:subClassOf rdf:resource="#EnvironmentElement"/>
 </owl:Class>
 
-<owl:Class rdf:about="#5235">
-  <rdfs:subClassOf rdf:resource="#HazardElement"/>
-</owl:Class>
-
 <owl:Class rdf:about="#车辆">
   <rdfs:subClassOf rdf:resource="#HazardElement"/>
 </owl:Class>
 
-<owl:Class rdf:about="#SpillState">
-  <rdfs:subClassOf rdf:resource="#HazardStates"/>
+<owl:Class rdf:about="#5235">
+  <rdfs:subClassOf rdf:resource="#HazardElement"/>
 </owl:Class>
 
 <owl:Class rdf:about="#DriveState">
@@ -563,7 +559,11 @@
   <rdfs:subClassOf rdf:resource="#HazardStates"/>
 </owl:Class>
 
-<owl:Class rdf:about="#VehicleLaneChange">
+<owl:Class rdf:about="#SpillState">
+  <rdfs:subClassOf rdf:resource="#HazardStates"/>
+</owl:Class>
+
+<owl:Class rdf:about="#VehicleTurning">
   <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
 </owl:Class>
 
@@ -571,11 +571,7 @@
   <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
 </owl:Class>
 
-<owl:Class rdf:about="#VehicleTurning">
-  <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
-</owl:Class>
-
-<owl:Class rdf:about="#VehicleCollision">
+<owl:Class rdf:about="#VehicleLaneChange">
   <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
 </owl:Class>
 
@@ -583,55 +579,35 @@
   <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
 </owl:Class>
 
-<owl:Class rdf:about="#674675-抢修">
-  <rdfs:subClassOf rdf:resource="#ResponseAction"/>
-</owl:Class>
-
-<owl:Class rdf:about="#674675-牵引">
-  <rdfs:subClassOf rdf:resource="#ResponseAction"/>
-</owl:Class>
-
-<owl:Class rdf:about="#应急行为">
-  <rdfs:subClassOf rdf:resource="#ResponseAction"/>
-</owl:Class>
-
-<owl:Class rdf:about="#123445-物资">
-  <rdfs:subClassOf rdf:resource="#ResponseResource"/>
-</owl:Class>
-
-<owl:Class rdf:about="#3256-人员">
-  <rdfs:subClassOf rdf:resource="#ResponseResource"/>
-</owl:Class>
-
-<owl:Class rdf:about="#3256">
-  <rdfs:subClassOf rdf:resource="#ResponsePlanElement"/>
-</owl:Class>
-
-<owl:Class rdf:about="#123445">
-  <rdfs:subClassOf rdf:resource="#ResponsePlanElement"/>
-</owl:Class>
-
-<owl:Class rdf:about="#674675-救助">
-  <rdfs:subClassOf rdf:resource="#ResponseAction"/>
-</owl:Class>
-
-<owl:Class rdf:about="#674675">
-  <rdfs:subClassOf rdf:resource="#ResponsePlanElement"/>
-</owl:Class>
-
-<owl:Class rdf:about="#应急资源">
-  <rdfs:subClassOf rdf:resource="#ResponseResource"/>
-</owl:Class>
-
-<owl:Class rdf:about="#674675-人员">
-  <rdfs:subClassOf rdf:resource="#ResponseResource"/>
+<owl:Class rdf:about="#VehicleCollision">
+  <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
 </owl:Class>
 
 <owl:Class rdf:about="#674675-类型B">
   <rdfs:subClassOf rdf:resource="#ResponseResource"/>
 </owl:Class>
 
-<owl:Class rdf:about="#3256-救助">
+<owl:Class rdf:about="#674675-救助">
+  <rdfs:subClassOf rdf:resource="#ResponseAction"/>
+</owl:Class>
+
+<owl:Class rdf:about="#674675-人员">
+  <rdfs:subClassOf rdf:resource="#ResponseResource"/>
+</owl:Class>
+
+<owl:Class rdf:about="#674675-抢修">
+  <rdfs:subClassOf rdf:resource="#ResponseAction"/>
+</owl:Class>
+
+<owl:Class rdf:about="#3256-人员">
+  <rdfs:subClassOf rdf:resource="#ResponseResource"/>
+</owl:Class>
+
+<owl:Class rdf:about="#123445-物资">
+  <rdfs:subClassOf rdf:resource="#ResponseResource"/>
+</owl:Class>
+
+<owl:Class rdf:about="#674675-牵引">
   <rdfs:subClassOf rdf:resource="#ResponseAction"/>
 </owl:Class>
 
@@ -639,16 +615,40 @@
   <rdfs:subClassOf rdf:resource="#ResponseResource"/>
 </owl:Class>
 
+<owl:Class rdf:about="#123445">
+  <rdfs:subClassOf rdf:resource="#ResponsePlanElement"/>
+</owl:Class>
+
+<owl:Class rdf:about="#3256">
+  <rdfs:subClassOf rdf:resource="#ResponsePlanElement"/>
+</owl:Class>
+
+<owl:Class rdf:about="#3256-牵引">
+  <rdfs:subClassOf rdf:resource="#ResponseAction"/>
+</owl:Class>
+
+<owl:Class rdf:about="#应急行为">
+  <rdfs:subClassOf rdf:resource="#ResponseAction"/>
+</owl:Class>
+
 <owl:Class rdf:about="#123445-救助">
   <rdfs:subClassOf rdf:resource="#ResponseAction"/>
+</owl:Class>
+
+<owl:Class rdf:about="#3256-救助">
+  <rdfs:subClassOf rdf:resource="#ResponseAction"/>
+</owl:Class>
+
+<owl:Class rdf:about="#674675">
+  <rdfs:subClassOf rdf:resource="#ResponsePlanElement"/>
 </owl:Class>
 
 <owl:Class rdf:about="#674675-医生">
   <rdfs:subClassOf rdf:resource="#ResponseResource"/>
 </owl:Class>
 
-<owl:Class rdf:about="#3256-牵引">
-  <rdfs:subClassOf rdf:resource="#ResponseAction"/>
+<owl:Class rdf:about="#应急资源">
+  <rdfs:subClassOf rdf:resource="#ResponseResource"/>
 </owl:Class>
 
 <owl:Class rdf:about="#rescueStates">
@@ -663,11 +663,11 @@
   <rdfs:subClassOf rdf:resource="#rescueStates"/>
 </owl:Class>
 
-<owl:Class rdf:about="#firefightingStates">
+<owl:Class rdf:about="#towStates">
   <rdfs:subClassOf rdf:resource="#ElementState"/>
 </owl:Class>
 
-<owl:Class rdf:about="#towStates">
+<owl:Class rdf:about="#firefightingStates">
   <rdfs:subClassOf rdf:resource="#ElementState"/>
 </owl:Class>
 
@@ -676,10 +676,6 @@
 </owl:Class>
 
 <owl:Class rdf:about="#RoadRepair">
-  <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
-</owl:Class>
-
-<owl:Class rdf:about="#RoadControl">
   <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
 </owl:Class>
 
@@ -692,6 +688,10 @@
 </owl:Class>
 
 <owl:Class rdf:about="#Action">
+  <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+</owl:Class>
+
+<owl:Class rdf:about="#RoadControl">
   <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
 </owl:Class>
 
@@ -732,20 +732,20 @@
   <rdf:type rdf:resource="#VehicleLoad"/>
 </owl:NamedIndividual>
 
-<owl:NamedIndividual rdf:about="#People_inst">
-  <rdf:type rdf:resource="#People"/>
-</owl:NamedIndividual>
-
 <owl:NamedIndividual rdf:about="#Lane_inst">
   <rdf:type rdf:resource="#Lane"/>
 </owl:NamedIndividual>
 
-<owl:NamedIndividual rdf:about="#Facility_inst">
-  <rdf:type rdf:resource="#Facility"/>
-</owl:NamedIndividual>
-
 <owl:NamedIndividual rdf:about="#VehiclePart_inst">
   <rdf:type rdf:resource="#VehiclePart"/>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#People_inst">
+  <rdf:type rdf:resource="#People"/>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#Facility_inst">
+  <rdf:type rdf:resource="#Facility"/>
 </owl:NamedIndividual>
 
 <owl:NamedIndividual rdf:about="#AffectedStates_inst">
@@ -756,48 +756,48 @@
   <rdf:type rdf:resource="#ExplodeState"/>
 </owl:NamedIndividual>
 
-<owl:NamedIndividual rdf:about="#CollidedState_inst">
-  <rdf:type rdf:resource="#CollidedState"/>
-</owl:NamedIndividual>
-
 <owl:NamedIndividual rdf:about="#DrivingState_inst">
   <rdf:type rdf:resource="#DrivingState"/>
 </owl:NamedIndividual>
 
-<owl:NamedIndividual rdf:about="#VehicleExplosion_inst">
-  <rdf:type rdf:resource="#VehicleExplosion"/>
-</owl:NamedIndividual>
-
-<owl:NamedIndividual rdf:about="#VehicleDeparture_inst">
-  <rdf:type rdf:resource="#VehicleDeparture"/>
-</owl:NamedIndividual>
-
-<owl:NamedIndividual rdf:about="#Explode_inst">
-  <rdf:type rdf:resource="#Explode"/>
-</owl:NamedIndividual>
-
-<owl:NamedIndividual rdf:about="#Spill_inst">
-  <rdf:type rdf:resource="#Spill"/>
+<owl:NamedIndividual rdf:about="#CollidedState_inst">
+  <rdf:type rdf:resource="#CollidedState"/>
 </owl:NamedIndividual>
 
 <owl:NamedIndividual rdf:about="#VehicleSpillage_inst">
   <rdf:type rdf:resource="#VehicleSpillage"/>
 </owl:NamedIndividual>
 
-<owl:NamedIndividual rdf:about="#VehicleSpeedChange_inst">
-  <rdf:type rdf:resource="#VehicleSpeedChange"/>
+<owl:NamedIndividual rdf:about="#Collide_inst">
+  <rdf:type rdf:resource="#Collide"/>
 </owl:NamedIndividual>
 
 <owl:NamedIndividual rdf:about="#VehicleTransport_inst">
   <rdf:type rdf:resource="#VehicleTransport"/>
 </owl:NamedIndividual>
 
-<owl:NamedIndividual rdf:about="#Collide_inst">
-  <rdf:type rdf:resource="#Collide"/>
+<owl:NamedIndividual rdf:about="#Spill_inst">
+  <rdf:type rdf:resource="#Spill"/>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#VehicleSpeedChange_inst">
+  <rdf:type rdf:resource="#VehicleSpeedChange"/>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#Explode_inst">
+  <rdf:type rdf:resource="#Explode"/>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#VehicleDeparture_inst">
+  <rdf:type rdf:resource="#VehicleDeparture"/>
 </owl:NamedIndividual>
 
 <owl:NamedIndividual rdf:about="#VehicleMotion_inst">
   <rdf:type rdf:resource="#VehicleMotion"/>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#VehicleExplosion_inst">
+  <rdf:type rdf:resource="#VehicleExplosion"/>
 </owl:NamedIndividual>
 
 <owl:NamedIndividual rdf:about="#EnvironmentElement_inst">
@@ -814,8 +814,8 @@
   <rdf:type rdf:resource="#HazardElement"/>
 </owl:NamedIndividual>
 
-<owl:NamedIndividual rdf:about="#5235_inst">
-  <rdf:type rdf:resource="#5235"/>
+<owl:NamedIndividual rdf:about="#车辆_inst">
+  <rdf:type rdf:resource="#车辆"/>
   <CollisionCondition rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</CollisionCondition>
   <CombustionCondition rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</CombustionCondition>
   <SpillCondition rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</SpillCondition>
@@ -823,19 +823,15 @@
   <RollOverCondition rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</RollOverCondition>
   <IIIegalLaneOccupationCondition rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</IIIegalLaneOccupationCondition>
   <DrivingDirection rdf:datatype="http://www.w3.org/2001/XMLSchema#string">正向</DrivingDirection>
-  <EmergencyPeriod rdf:datatype="http://www.w3.org/2001/XMLSchema#string">上午</EmergencyPeriod>
 </owl:NamedIndividual>
 
-<owl:NamedIndividual rdf:about="#车辆_inst">
-  <rdf:type rdf:resource="#车辆"/>
+<owl:NamedIndividual rdf:about="#5235_inst">
+  <rdf:type rdf:resource="#5235"/>
+  <EmergencyPeriod rdf:datatype="http://www.w3.org/2001/XMLSchema#string">上午</EmergencyPeriod>
 </owl:NamedIndividual>
 
 <owl:NamedIndividual rdf:about="#HazardStates_inst">
   <rdf:type rdf:resource="#HazardStates"/>
-</owl:NamedIndividual>
-
-<owl:NamedIndividual rdf:about="#SpillState_inst">
-  <rdf:type rdf:resource="#SpillState"/>
 </owl:NamedIndividual>
 
 <owl:NamedIndividual rdf:about="#DriveState_inst">
@@ -846,24 +842,28 @@
   <rdf:type rdf:resource="#CollideState"/>
 </owl:NamedIndividual>
 
-<owl:NamedIndividual rdf:about="#VehicleLaneChange_inst">
-  <rdf:type rdf:resource="#VehicleLaneChange"/>
-</owl:NamedIndividual>
-
-<owl:NamedIndividual rdf:about="#VehicleBreakdown_inst">
-  <rdf:type rdf:resource="#VehicleBreakdown"/>
+<owl:NamedIndividual rdf:about="#SpillState_inst">
+  <rdf:type rdf:resource="#SpillState"/>
 </owl:NamedIndividual>
 
 <owl:NamedIndividual rdf:about="#VehicleTurning_inst">
   <rdf:type rdf:resource="#VehicleTurning"/>
 </owl:NamedIndividual>
 
-<owl:NamedIndividual rdf:about="#VehicleCollision_inst">
-  <rdf:type rdf:resource="#VehicleCollision"/>
+<owl:NamedIndividual rdf:about="#VehicleBreakdown_inst">
+  <rdf:type rdf:resource="#VehicleBreakdown"/>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#VehicleLaneChange_inst">
+  <rdf:type rdf:resource="#VehicleLaneChange"/>
 </owl:NamedIndividual>
 
 <owl:NamedIndividual rdf:about="#VehicleOverturn_inst">
   <rdf:type rdf:resource="#VehicleOverturn"/>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#VehicleCollision_inst">
+  <rdf:type rdf:resource="#VehicleCollision"/>
 </owl:NamedIndividual>
 
 <owl:NamedIndividual rdf:about="#ResponsePlanElement_inst">
@@ -878,28 +878,29 @@
   <rdf:type rdf:resource="#ResponseAction"/>
 </owl:NamedIndividual>
 
-<owl:NamedIndividual rdf:about="#674675-抢修_inst">
-  <rdf:type rdf:resource="#674675-抢修"/>
-  <BehaviorType rdf:datatype="http://www.w3.org/2001/XMLSchema#string">抢修</BehaviorType>
-  <ImplementationCondition rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</ImplementationCondition>
-  <Duration rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">2.0</Duration>
-</owl:NamedIndividual>
-
-<owl:NamedIndividual rdf:about="#674675-牵引_inst">
-  <rdf:type rdf:resource="#674675-牵引"/>
-</owl:NamedIndividual>
-
-<owl:NamedIndividual rdf:about="#应急行为_inst">
-  <rdf:type rdf:resource="#应急行为"/>
-</owl:NamedIndividual>
-
-<owl:NamedIndividual rdf:about="#123445-物资_inst">
-  <rdf:type rdf:resource="#123445-物资"/>
-  <associate123445-救助 rdf:resource="#123445-救助_inst"/>
-  <ResourceType rdf:datatype="http://www.w3.org/2001/XMLSchema#string">类型B</ResourceType>
+<owl:NamedIndividual rdf:about="#674675-类型B_inst">
+  <rdf:type rdf:resource="#674675-类型B"/>
+  <associate674675-救助 rdf:resource="#674675-救助_inst"/>
+  <ResourceType rdf:datatype="http://www.w3.org/2001/XMLSchema#string">类型A</ResourceType>
   <ResourceUsageCondition rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</ResourceUsageCondition>
   <ResourceQuantityOrQuality rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">1.0</ResourceQuantityOrQuality>
   <Location rdf:datatype="http://www.w3.org/2001/XMLSchema#string">123</Location>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#674675-救助_inst">
+  <rdf:type rdf:resource="#674675-救助"/>
+  <BehaviorType rdf:datatype="http://www.w3.org/2001/XMLSchema#string">救助</BehaviorType>
+  <ImplementationCondition rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</ImplementationCondition>
+  <Duration rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">3.0</Duration>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#674675-人员_inst">
+  <rdf:type rdf:resource="#674675-人员"/>
+  <associate674675-抢修 rdf:resource="#674675-抢修_inst"/>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#674675-抢修_inst">
+  <rdf:type rdf:resource="#674675-抢修"/>
 </owl:NamedIndividual>
 
 <owl:NamedIndividual rdf:about="#3256-人员_inst">
@@ -907,21 +908,46 @@
   <associate3256-牵引 rdf:resource="#3256-牵引_inst"/>
 </owl:NamedIndividual>
 
-<owl:NamedIndividual rdf:about="#3256_inst">
-  <rdf:type rdf:resource="#3256"/>
-  <associate3256-物资 rdf:resource="#3256-物资_inst"/>
-  <associate3256-人员 rdf:resource="#3256-人员_inst"/>
+<owl:NamedIndividual rdf:about="#123445-物资_inst">
+  <rdf:type rdf:resource="#123445-物资"/>
+  <associate123445-救助 rdf:resource="#123445-救助_inst"/>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#674675-牵引_inst">
+  <rdf:type rdf:resource="#674675-牵引"/>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#3256-物资_inst">
+  <rdf:type rdf:resource="#3256-物资"/>
   <associate3256-救助 rdf:resource="#3256-救助_inst"/>
-  <PlanName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">3256</PlanName>
 </owl:NamedIndividual>
 
 <owl:NamedIndividual rdf:about="#123445_inst">
   <rdf:type rdf:resource="#123445"/>
   <associate123445-物资 rdf:resource="#123445-物资_inst"/>
+  <PlanName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">123445</PlanName>
 </owl:NamedIndividual>
 
-<owl:NamedIndividual rdf:about="#674675-救助_inst">
-  <rdf:type rdf:resource="#674675-救助"/>
+<owl:NamedIndividual rdf:about="#3256_inst">
+  <rdf:type rdf:resource="#3256"/>
+  <associate3256-物资 rdf:resource="#3256-物资_inst"/>
+  <associate3256-人员 rdf:resource="#3256-人员_inst"/>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#3256-牵引_inst">
+  <rdf:type rdf:resource="#3256-牵引"/>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#应急行为_inst">
+  <rdf:type rdf:resource="#应急行为"/>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#123445-救助_inst">
+  <rdf:type rdf:resource="#123445-救助"/>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#3256-救助_inst">
+  <rdf:type rdf:resource="#3256-救助"/>
 </owl:NamedIndividual>
 
 <owl:NamedIndividual rdf:about="#674675_inst">
@@ -929,41 +955,15 @@
   <associate674675-类型B rdf:resource="#674675-类型B_inst"/>
   <associate674675-医生 rdf:resource="#674675-医生_inst"/>
   <associate674675-人员 rdf:resource="#674675-人员_inst"/>
-  <associate674675-救助 rdf:resource="#674675-救助_inst"/>
   <associate674675-牵引 rdf:resource="#674675-牵引_inst"/>
-  <associate674675-抢修 rdf:resource="#674675-抢修_inst"/>
-</owl:NamedIndividual>
-
-<owl:NamedIndividual rdf:about="#应急资源_inst">
-  <rdf:type rdf:resource="#应急资源"/>
-</owl:NamedIndividual>
-
-<owl:NamedIndividual rdf:about="#674675-人员_inst">
-  <rdf:type rdf:resource="#674675-人员"/>
-</owl:NamedIndividual>
-
-<owl:NamedIndividual rdf:about="#674675-类型B_inst">
-  <rdf:type rdf:resource="#674675-类型B"/>
-</owl:NamedIndividual>
-
-<owl:NamedIndividual rdf:about="#3256-救助_inst">
-  <rdf:type rdf:resource="#3256-救助"/>
-</owl:NamedIndividual>
-
-<owl:NamedIndividual rdf:about="#3256-物资_inst">
-  <rdf:type rdf:resource="#3256-物资"/>
-</owl:NamedIndividual>
-
-<owl:NamedIndividual rdf:about="#123445-救助_inst">
-  <rdf:type rdf:resource="#123445-救助"/>
 </owl:NamedIndividual>
 
 <owl:NamedIndividual rdf:about="#674675-医生_inst">
   <rdf:type rdf:resource="#674675-医生"/>
 </owl:NamedIndividual>
 
-<owl:NamedIndividual rdf:about="#3256-牵引_inst">
-  <rdf:type rdf:resource="#3256-牵引"/>
+<owl:NamedIndividual rdf:about="#应急资源_inst">
+  <rdf:type rdf:resource="#应急资源"/>
 </owl:NamedIndividual>
 
 <owl:NamedIndividual rdf:about="#rescueStates_inst">
@@ -978,12 +978,12 @@
   <rdf:type rdf:resource="#implementState"/>
 </owl:NamedIndividual>
 
-<owl:NamedIndividual rdf:about="#firefightingStates_inst">
-  <rdf:type rdf:resource="#firefightingStates"/>
-</owl:NamedIndividual>
-
 <owl:NamedIndividual rdf:about="#towStates_inst">
   <rdf:type rdf:resource="#towStates"/>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#firefightingStates_inst">
+  <rdf:type rdf:resource="#firefightingStates"/>
 </owl:NamedIndividual>
 
 <owl:NamedIndividual rdf:about="#aidStates_inst">
@@ -992,10 +992,6 @@
 
 <owl:NamedIndividual rdf:about="#RoadRepair_inst">
   <rdf:type rdf:resource="#RoadRepair"/>
-</owl:NamedIndividual>
-
-<owl:NamedIndividual rdf:about="#RoadControl_inst">
-  <rdf:type rdf:resource="#RoadControl"/>
 </owl:NamedIndividual>
 
 <owl:NamedIndividual rdf:about="#Firefighting_inst">
@@ -1008,6 +1004,10 @@
 
 <owl:NamedIndividual rdf:about="#Action_inst">
   <rdf:type rdf:resource="#Action"/>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#RoadControl_inst">
+  <rdf:type rdf:resource="#RoadControl"/>
 </owl:NamedIndividual>
 
 <owl:NamedIndividual rdf:about="#PersonnalRescue_inst">

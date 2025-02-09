@@ -1,6 +1,6 @@
 # Ontology Documentation
 
-Generated on: 2025-02-07 14:10:54
+Generated on: 2025-02-07 15:37:29
 
 ## Classes
 
@@ -8,12 +8,13 @@ Generated on: 2025-02-07 14:10:54
 
 Super classes: ResponsePlanElement
 
-Properties: associate123445-物资
+Properties: PlanName, associate123445-物资
 
 Instances:
 
 - **123445_inst**
 
+  - PlanName: ['123445']
   - associate123445-物资: ['123445-物资_inst']
 
 
@@ -31,33 +32,27 @@ Instances:
 
 Super classes: ResponseResource
 
-Properties: Location, ResourceQuantityOrQuality, ResourceType, ResourceUsageCondition, associate123445-救助
+Properties: associate123445-救助
 
 Instances:
 
 - **123445-物资_inst**
 
-  - ResourceType: ['类型B']
-  - ResourceUsageCondition: ['False']
-  - ResourceQuantityOrQuality: ['1.0']
   - associate123445-救助: ['123445-救助_inst']
-  - Location: ['123']
 
 
 ### 3256
 
 Super classes: ResponsePlanElement
 
-Properties: PlanName, associate3256-人员, associate3256-救助, associate3256-物资
+Properties: associate3256-人员, associate3256-物资
 
 Instances:
 
 - **3256_inst**
 
-  - associate3256-物资: ['3256-物资_inst']
-  - PlanName: ['3256']
   - associate3256-人员: ['3256-人员_inst']
-  - associate3256-救助: ['3256-救助_inst']
+  - associate3256-物资: ['3256-物资_inst']
 
 
 ### 3256-人员
@@ -87,10 +82,13 @@ Instances:
 
 Super classes: ResponseResource
 
+Properties: associate3256-救助
+
 Instances:
 
 - **3256-物资_inst**
 
+  - associate3256-救助: ['3256-救助_inst']
 
 
 ### 3256-牵引
@@ -107,48 +105,42 @@ Instances:
 
 Super classes: HazardElement
 
-Properties: AbnormalSpeedCondition, BreakdownCondition, CollisionCondition, CombustionCondition, DrivingDirection, EmergencyPeriod, IIIegalLaneOccupationCondition, RollOverCondition, SpillCondition, VehiclePosition, VehicleSpeed, VehicleType
+Properties: EmergencyPeriod
 
 Instances:
 
 - **5235_inst**
 
   - EmergencyPeriod: ['上午']
-  - IIIegalLaneOccupationCondition: ['False']
-  - BreakdownCondition: ['False']
-  - DrivingDirection: ['正向']
-  - RollOverCondition: ['False']
-  - CollisionCondition: ['False']
-  - CombustionCondition: ['False']
-  - SpillCondition: ['False']
 
 
 ### 674675
 
 Super classes: ResponsePlanElement
 
-Properties: associate674675-人员, associate674675-医生, associate674675-抢修, associate674675-救助, associate674675-牵引, associate674675-类型B
+Properties: associate674675-人员, associate674675-医生, associate674675-牵引, associate674675-类型B
 
 Instances:
 
 - **674675_inst**
 
-  - associate674675-救助: ['674675-救助_inst']
-  - associate674675-抢修: ['674675-抢修_inst']
-  - associate674675-牵引: ['674675-牵引_inst']
-  - associate674675-人员: ['674675-人员_inst']
-  - associate674675-医生: ['674675-医生_inst']
   - associate674675-类型B: ['674675-类型B_inst']
+  - associate674675-牵引: ['674675-牵引_inst']
+  - associate674675-医生: ['674675-医生_inst']
+  - associate674675-人员: ['674675-人员_inst']
 
 
 ### 674675-人员
 
 Super classes: ResponseResource
 
+Properties: associate674675-抢修
+
 Instances:
 
 - **674675-人员_inst**
 
+  - associate674675-抢修: ['674675-抢修_inst']
 
 
 ### 674675-医生
@@ -165,25 +157,25 @@ Instances:
 
 Super classes: ResponseAction
 
-Properties: BehaviorType, Duration, ImplementationCondition
-
 Instances:
 
 - **674675-抢修_inst**
 
-  - Duration: ['2.0']
-  - ImplementationCondition: ['False']
-  - BehaviorType: ['抢修']
 
 
 ### 674675-救助
 
 Super classes: ResponseAction
 
+Properties: BehaviorType, Duration, ImplementationCondition
+
 Instances:
 
 - **674675-救助_inst**
 
+  - Duration: ['3.0']
+  - ImplementationCondition: ['True']
+  - BehaviorType: ['救助']
 
 
 ### 674675-牵引
@@ -200,10 +192,17 @@ Instances:
 
 Super classes: ResponseResource
 
+Properties: Location, ResourceQuantityOrQuality, ResourceType, ResourceUsageCondition, associate674675-救助
+
 Instances:
 
 - **674675-类型B_inst**
 
+  - ResourceType: ['类型A']
+  - ResourceQuantityOrQuality: ['1.0']
+  - Location: ['123']
+  - ResourceUsageCondition: ['False']
+  - associate674675-救助: ['674675-救助_inst']
 
 
 ### AbsorptionScenario
@@ -237,22 +236,22 @@ Instances:
 
 - **Road_inst**
 
-  - ClosureCondition: ['False']
   - DamageConditon: ['False']
   - RoadType: ['主路']
   - PollutionCondition: ['False']
+  - ClosureCondition: ['False']
 
 - **HazardVehicle_inst**
 
-  - associateRoad: ['Road_inst']
   - DamageCondition: ['False']
-  - VehiclePosition: ['ND569']
-  - VehicleType: ['truck']
-  - DrivingDirection: ['forward']
-  - CollisionCondition: ['True']
-  - CombustionCondition: ['False']
   - consistpassenger: ['People_inst']
+  - VehiclePosition: ['ND569']
   - SpillCondition: ['True']
+  - CollisionCondition: ['True']
+  - associateRoad: ['Road_inst']
+  - DrivingDirection: ['forward']
+  - CombustionCondition: ['False']
+  - VehicleType: ['truck']
 
 
 ### AffectedStates
@@ -267,10 +266,10 @@ Instances:
 - **ExplodeState_inst**
 
 
-- **CollidedState_inst**
-
-
 - **DrivingState_inst**
+
+
+- **CollidedState_inst**
 
 
 
@@ -346,16 +345,16 @@ Instances:
 - **VehicleLoad_inst**
 
 
-- **People_inst**
-
-
 - **Lane_inst**
 
 
-- **Facility_inst**
-
-
 - **VehiclePart_inst**
+
+
+- **People_inst**
+
+
+- **Facility_inst**
 
 
 
@@ -374,19 +373,19 @@ Instances:
 - **ExplodeState_inst**
 
 
-- **CollidedState_inst**
-
-
 - **DrivingState_inst**
 
 
-- **SpillState_inst**
+- **CollidedState_inst**
 
 
 - **DriveState_inst**
 
 
 - **CollideState_inst**
+
+
+- **SpillState_inst**
 
 
 - **rescueStates_inst**
@@ -398,10 +397,10 @@ Instances:
 - **implementState_inst**
 
 
-- **firefightingStates_inst**
-
-
 - **towStates_inst**
+
+
+- **firefightingStates_inst**
 
 
 - **aidStates_inst**
@@ -431,8 +430,8 @@ Instances:
 
 - **气象_inst**
 
-  - WeatherType: ['晴天']
   - SnowfallIntensity: ['']
+  - WeatherType: ['晴天']
 
 
 ### Explode
@@ -491,19 +490,19 @@ Instances:
 - **HazardElement_inst**
 
 
+- **车辆_inst**
+
+  - BreakdownCondition: ['False']
+  - SpillCondition: ['False']
+  - CollisionCondition: ['False']
+  - IIIegalLaneOccupationCondition: ['False']
+  - DrivingDirection: ['正向']
+  - CombustionCondition: ['False']
+  - RollOverCondition: ['False']
+
 - **5235_inst**
 
   - EmergencyPeriod: ['上午']
-  - IIIegalLaneOccupationCondition: ['False']
-  - BreakdownCondition: ['False']
-  - DrivingDirection: ['正向']
-  - RollOverCondition: ['False']
-  - CollisionCondition: ['False']
-  - CombustionCondition: ['False']
-  - SpillCondition: ['False']
-
-- **车辆_inst**
-
 
 
 ### HazardStates
@@ -515,13 +514,13 @@ Instances:
 - **HazardStates_inst**
 
 
-- **SpillState_inst**
-
-
 - **DriveState_inst**
 
 
 - **CollideState_inst**
+
+
+- **SpillState_inst**
 
 
 
@@ -535,15 +534,15 @@ Instances:
 
 - **HazardVehicle_inst**
 
-  - associateRoad: ['Road_inst']
   - DamageCondition: ['False']
-  - VehiclePosition: ['ND569']
-  - VehicleType: ['truck']
-  - DrivingDirection: ['forward']
-  - CollisionCondition: ['True']
-  - CombustionCondition: ['False']
   - consistpassenger: ['People_inst']
+  - VehiclePosition: ['ND569']
   - SpillCondition: ['True']
+  - CollisionCondition: ['True']
+  - associateRoad: ['Road_inst']
+  - DrivingDirection: ['forward']
+  - CombustionCondition: ['False']
+  - VehicleType: ['truck']
 
 
 ### InvolvedScenario
@@ -605,28 +604,28 @@ Instances:
 - **ResponseAction_inst**
 
 
+- **674675-救助_inst**
+
+  - Duration: ['3.0']
+  - ImplementationCondition: ['True']
+  - BehaviorType: ['救助']
+
 - **674675-抢修_inst**
 
-  - Duration: ['2.0']
-  - ImplementationCondition: ['False']
-  - BehaviorType: ['抢修']
 
 - **674675-牵引_inst**
+
+
+- **3256-牵引_inst**
 
 
 - **应急行为_inst**
 
 
-- **674675-救助_inst**
-
-
-- **3256-救助_inst**
-
-
 - **123445-救助_inst**
 
 
-- **3256-牵引_inst**
+- **3256-救助_inst**
 
 
 
@@ -645,75 +644,75 @@ Instances:
 - **ResponseAction_inst**
 
 
+- **674675-类型B_inst**
+
+  - ResourceType: ['类型A']
+  - ResourceQuantityOrQuality: ['1.0']
+  - Location: ['123']
+  - ResourceUsageCondition: ['False']
+  - associate674675-救助: ['674675-救助_inst']
+
+- **674675-救助_inst**
+
+  - Duration: ['3.0']
+  - ImplementationCondition: ['True']
+  - BehaviorType: ['救助']
+
+- **674675-人员_inst**
+
+  - associate674675-抢修: ['674675-抢修_inst']
+
 - **674675-抢修_inst**
 
-  - Duration: ['2.0']
-  - ImplementationCondition: ['False']
-  - BehaviorType: ['抢修']
-
-- **674675-牵引_inst**
-
-
-- **应急行为_inst**
-
-
-- **123445-物资_inst**
-
-  - ResourceType: ['类型B']
-  - ResourceUsageCondition: ['False']
-  - ResourceQuantityOrQuality: ['1.0']
-  - associate123445-救助: ['123445-救助_inst']
-  - Location: ['123']
 
 - **3256-人员_inst**
 
   - associate3256-牵引: ['3256-牵引_inst']
 
-- **3256_inst**
+- **123445-物资_inst**
 
-  - associate3256-物资: ['3256-物资_inst']
-  - PlanName: ['3256']
-  - associate3256-人员: ['3256-人员_inst']
+  - associate123445-救助: ['123445-救助_inst']
+
+- **674675-牵引_inst**
+
+
+- **3256-物资_inst**
+
   - associate3256-救助: ['3256-救助_inst']
 
 - **123445_inst**
 
+  - PlanName: ['123445']
   - associate123445-物资: ['123445-物资_inst']
 
-- **674675-救助_inst**
+- **3256_inst**
+
+  - associate3256-人员: ['3256-人员_inst']
+  - associate3256-物资: ['3256-物资_inst']
+
+- **3256-牵引_inst**
 
 
-- **674675_inst**
-
-  - associate674675-救助: ['674675-救助_inst']
-  - associate674675-抢修: ['674675-抢修_inst']
-  - associate674675-牵引: ['674675-牵引_inst']
-  - associate674675-人员: ['674675-人员_inst']
-  - associate674675-医生: ['674675-医生_inst']
-  - associate674675-类型B: ['674675-类型B_inst']
-
-- **应急资源_inst**
-
-
-- **674675-人员_inst**
-
-
-- **674675-类型B_inst**
-
-
-- **3256-救助_inst**
-
-
-- **3256-物资_inst**
+- **应急行为_inst**
 
 
 - **123445-救助_inst**
 
 
+- **3256-救助_inst**
+
+
+- **674675_inst**
+
+  - associate674675-类型B: ['674675-类型B_inst']
+  - associate674675-牵引: ['674675-牵引_inst']
+  - associate674675-医生: ['674675-医生_inst']
+  - associate674675-人员: ['674675-人员_inst']
+
 - **674675-医生_inst**
 
 
-- **3256-牵引_inst**
+- **应急资源_inst**
 
 
 
@@ -726,31 +725,34 @@ Instances:
 - **ResponseResource_inst**
 
 
-- **123445-物资_inst**
+- **674675-类型B_inst**
 
-  - ResourceType: ['类型B']
-  - ResourceUsageCondition: ['False']
+  - ResourceType: ['类型A']
   - ResourceQuantityOrQuality: ['1.0']
-  - associate123445-救助: ['123445-救助_inst']
   - Location: ['123']
+  - ResourceUsageCondition: ['False']
+  - associate674675-救助: ['674675-救助_inst']
+
+- **674675-人员_inst**
+
+  - associate674675-抢修: ['674675-抢修_inst']
 
 - **3256-人员_inst**
 
   - associate3256-牵引: ['3256-牵引_inst']
 
-- **应急资源_inst**
+- **123445-物资_inst**
 
-
-- **674675-人员_inst**
-
-
-- **674675-类型B_inst**
-
+  - associate123445-救助: ['123445-救助_inst']
 
 - **3256-物资_inst**
 
+  - associate3256-救助: ['3256-救助_inst']
 
 - **674675-医生_inst**
+
+
+- **应急资源_inst**
 
 
 
@@ -769,10 +771,10 @@ Instances:
 
 - **Road_inst**
 
-  - ClosureCondition: ['False']
   - DamageConditon: ['False']
   - RoadType: ['主路']
   - PollutionCondition: ['False']
+  - ClosureCondition: ['False']
 
 
 ### RoadCleaning
@@ -845,111 +847,111 @@ Instances:
 
 - **Road_inst**
 
-  - ClosureCondition: ['False']
   - DamageConditon: ['False']
   - RoadType: ['主路']
   - PollutionCondition: ['False']
+  - ClosureCondition: ['False']
 
 - **HazardVehicle_inst**
 
-  - associateRoad: ['Road_inst']
   - DamageCondition: ['False']
-  - VehiclePosition: ['ND569']
-  - VehicleType: ['truck']
-  - DrivingDirection: ['forward']
-  - CollisionCondition: ['True']
-  - CombustionCondition: ['False']
   - consistpassenger: ['People_inst']
+  - VehiclePosition: ['ND569']
   - SpillCondition: ['True']
+  - CollisionCondition: ['True']
+  - associateRoad: ['Road_inst']
+  - DrivingDirection: ['forward']
+  - CombustionCondition: ['False']
+  - VehicleType: ['truck']
 
 - **气象_inst**
 
-  - WeatherType: ['晴天']
   - SnowfallIntensity: ['']
+  - WeatherType: ['晴天']
+
+- **车辆_inst**
+
+  - BreakdownCondition: ['False']
+  - SpillCondition: ['False']
+  - CollisionCondition: ['False']
+  - IIIegalLaneOccupationCondition: ['False']
+  - DrivingDirection: ['正向']
+  - CombustionCondition: ['False']
+  - RollOverCondition: ['False']
 
 - **5235_inst**
 
   - EmergencyPeriod: ['上午']
-  - IIIegalLaneOccupationCondition: ['False']
-  - BreakdownCondition: ['False']
-  - DrivingDirection: ['正向']
-  - RollOverCondition: ['False']
-  - CollisionCondition: ['False']
-  - CombustionCondition: ['False']
-  - SpillCondition: ['False']
 
-- **车辆_inst**
+- **674675-类型B_inst**
 
+  - ResourceType: ['类型A']
+  - ResourceQuantityOrQuality: ['1.0']
+  - Location: ['123']
+  - ResourceUsageCondition: ['False']
+  - associate674675-救助: ['674675-救助_inst']
+
+- **674675-救助_inst**
+
+  - Duration: ['3.0']
+  - ImplementationCondition: ['True']
+  - BehaviorType: ['救助']
+
+- **674675-人员_inst**
+
+  - associate674675-抢修: ['674675-抢修_inst']
 
 - **674675-抢修_inst**
 
-  - Duration: ['2.0']
-  - ImplementationCondition: ['False']
-  - BehaviorType: ['抢修']
-
-- **674675-牵引_inst**
-
-
-- **应急行为_inst**
-
-
-- **123445-物资_inst**
-
-  - ResourceType: ['类型B']
-  - ResourceUsageCondition: ['False']
-  - ResourceQuantityOrQuality: ['1.0']
-  - associate123445-救助: ['123445-救助_inst']
-  - Location: ['123']
 
 - **3256-人员_inst**
 
   - associate3256-牵引: ['3256-牵引_inst']
 
-- **3256_inst**
+- **123445-物资_inst**
 
-  - associate3256-物资: ['3256-物资_inst']
-  - PlanName: ['3256']
-  - associate3256-人员: ['3256-人员_inst']
+  - associate123445-救助: ['123445-救助_inst']
+
+- **674675-牵引_inst**
+
+
+- **3256-物资_inst**
+
   - associate3256-救助: ['3256-救助_inst']
 
 - **123445_inst**
 
+  - PlanName: ['123445']
   - associate123445-物资: ['123445-物资_inst']
 
-- **674675-救助_inst**
+- **3256_inst**
+
+  - associate3256-人员: ['3256-人员_inst']
+  - associate3256-物资: ['3256-物资_inst']
+
+- **3256-牵引_inst**
 
 
-- **674675_inst**
-
-  - associate674675-救助: ['674675-救助_inst']
-  - associate674675-抢修: ['674675-抢修_inst']
-  - associate674675-牵引: ['674675-牵引_inst']
-  - associate674675-人员: ['674675-人员_inst']
-  - associate674675-医生: ['674675-医生_inst']
-  - associate674675-类型B: ['674675-类型B_inst']
-
-- **应急资源_inst**
-
-
-- **674675-人员_inst**
-
-
-- **674675-类型B_inst**
-
-
-- **3256-救助_inst**
-
-
-- **3256-物资_inst**
+- **应急行为_inst**
 
 
 - **123445-救助_inst**
 
 
+- **3256-救助_inst**
+
+
+- **674675_inst**
+
+  - associate674675-类型B: ['674675-类型B_inst']
+  - associate674675-牵引: ['674675-牵引_inst']
+  - associate674675-医生: ['674675-医生_inst']
+  - associate674675-人员: ['674675-人员_inst']
+
 - **674675-医生_inst**
 
 
-- **3256-牵引_inst**
+- **应急资源_inst**
 
 
 
@@ -1223,23 +1225,39 @@ Instances:
 
 - **气象_inst**
 
-  - WeatherType: ['晴天']
   - SnowfallIntensity: ['']
+  - WeatherType: ['晴天']
 
 
 ### 车辆
 
 Super classes: HazardElement
 
+Properties: AbnormalSpeedCondition, BreakdownCondition, CollisionCondition, CombustionCondition, DrivingDirection, IIIegalLaneOccupationCondition, RollOverCondition, SpillCondition, VehiclePosition, VehicleSpeed, VehicleType
+
 Instances:
 
 - **车辆_inst**
 
+  - BreakdownCondition: ['False']
+  - SpillCondition: ['False']
+  - CollisionCondition: ['False']
+  - IIIegalLaneOccupationCondition: ['False']
+  - DrivingDirection: ['正向']
+  - CombustionCondition: ['False']
+  - RollOverCondition: ['False']
 
 
 ## Properties
 
 ### Properties of 123445
+
+#### PlanName
+
+Type: DatatypeProperty
+
+Range: <class 'str'>
+
 
 #### associate123445-物资
 
@@ -1249,6 +1267,120 @@ Range: 123445-物资
 
 
 ### Properties of 123445-物资
+
+#### associate123445-救助
+
+Type: ObjectProperty
+
+Range: 123445-救助
+
+
+### Properties of 3256
+
+#### associate3256-人员
+
+Type: ObjectProperty
+
+Range: 3256-人员
+
+
+#### associate3256-物资
+
+Type: ObjectProperty
+
+Range: 3256-物资
+
+
+### Properties of 3256-人员
+
+#### associate3256-牵引
+
+Type: ObjectProperty
+
+Range: 3256-牵引
+
+
+### Properties of 3256-物资
+
+#### associate3256-救助
+
+Type: ObjectProperty
+
+Range: 3256-救助
+
+
+### Properties of 5235
+
+#### EmergencyPeriod
+
+Type: DatatypeProperty
+
+Range: <class 'str'>
+
+
+### Properties of 674675
+
+#### associate674675-人员
+
+Type: ObjectProperty
+
+Range: 674675-人员
+
+
+#### associate674675-医生
+
+Type: ObjectProperty
+
+Range: 674675-医生
+
+
+#### associate674675-牵引
+
+Type: ObjectProperty
+
+Range: 674675-牵引
+
+
+#### associate674675-类型B
+
+Type: ObjectProperty
+
+Range: 674675-类型B
+
+
+### Properties of 674675-人员
+
+#### associate674675-抢修
+
+Type: ObjectProperty
+
+Range: 674675-抢修
+
+
+### Properties of 674675-救助
+
+#### BehaviorType
+
+Type: DatatypeProperty
+
+Range: <class 'str'>
+
+
+#### Duration
+
+Type: DatatypeProperty
+
+Range: <class 'float'>
+
+
+#### ImplementationCondition
+
+Type: DatatypeProperty
+
+Range: <class 'bool'>
+
+
+### Properties of 674675-类型B
 
 #### Location
 
@@ -1278,203 +1410,11 @@ Type: DatatypeProperty
 Range: <class 'bool'>
 
 
-#### associate123445-救助
-
-Type: ObjectProperty
-
-Range: 123445-救助
-
-
-### Properties of 3256
-
-#### PlanName
-
-Type: DatatypeProperty
-
-Range: <class 'str'>
-
-
-#### associate3256-人员
-
-Type: ObjectProperty
-
-Range: 3256-人员
-
-
-#### associate3256-救助
-
-Type: ObjectProperty
-
-Range: 3256-救助
-
-
-#### associate3256-物资
-
-Type: ObjectProperty
-
-Range: 3256-物资
-
-
-### Properties of 3256-人员
-
-#### associate3256-牵引
-
-Type: ObjectProperty
-
-Range: 3256-牵引
-
-
-### Properties of 5235
-
-#### AbnormalSpeedCondition
-
-Type: DatatypeProperty
-
-Range: <class 'str'>
-
-
-#### BreakdownCondition
-
-Type: DatatypeProperty
-
-Range: <class 'bool'>
-
-
-#### CollisionCondition
-
-Type: DatatypeProperty
-
-Range: <class 'bool'>
-
-
-#### CombustionCondition
-
-Type: DatatypeProperty
-
-Range: <class 'bool'>
-
-
-#### DrivingDirection
-
-Type: DatatypeProperty
-
-Range: <class 'str'>
-
-
-#### EmergencyPeriod
-
-Type: DatatypeProperty
-
-Range: <class 'str'>
-
-
-#### IIIegalLaneOccupationCondition
-
-Type: DatatypeProperty
-
-Range: <class 'bool'>
-
-
-#### RollOverCondition
-
-Type: DatatypeProperty
-
-Range: <class 'bool'>
-
-
-#### SpillCondition
-
-Type: DatatypeProperty
-
-Range: <class 'bool'>
-
-
-#### VehiclePosition
-
-Type: DatatypeProperty
-
-Range: <class 'str'>
-
-
-#### VehicleSpeed
-
-Type: DatatypeProperty
-
-Range: <class 'float'>
-
-
-#### VehicleType
-
-Type: DatatypeProperty
-
-Range: <class 'str'>
-
-
-### Properties of 674675
-
-#### associate674675-人员
-
-Type: ObjectProperty
-
-Range: 674675-人员
-
-
-#### associate674675-医生
-
-Type: ObjectProperty
-
-Range: 674675-医生
-
-
-#### associate674675-抢修
-
-Type: ObjectProperty
-
-Range: 674675-抢修
-
-
 #### associate674675-救助
 
 Type: ObjectProperty
 
 Range: 674675-救助
-
-
-#### associate674675-牵引
-
-Type: ObjectProperty
-
-Range: 674675-牵引
-
-
-#### associate674675-类型B
-
-Type: ObjectProperty
-
-Range: 674675-类型B
-
-
-### Properties of 674675-抢修
-
-#### BehaviorType
-
-Type: DatatypeProperty
-
-Range: <class 'str'>
-
-
-#### Duration
-
-Type: DatatypeProperty
-
-Range: <class 'float'>
-
-
-#### ImplementationCondition
-
-Type: DatatypeProperty
-
-Range: <class 'bool'>
 
 
 ### Properties of CollideState
@@ -1774,6 +1714,85 @@ Range: <class 'float'>
 Type: DatatypeProperty
 
 Range: <class 'float'>
+
+
+### Properties of 车辆
+
+#### AbnormalSpeedCondition
+
+Type: DatatypeProperty
+
+Range: <class 'str'>
+
+
+#### BreakdownCondition
+
+Type: DatatypeProperty
+
+Range: <class 'bool'>
+
+
+#### CollisionCondition
+
+Type: DatatypeProperty
+
+Range: <class 'bool'>
+
+
+#### CombustionCondition
+
+Type: DatatypeProperty
+
+Range: <class 'bool'>
+
+
+#### DrivingDirection
+
+Type: DatatypeProperty
+
+Range: <class 'str'>
+
+
+#### IIIegalLaneOccupationCondition
+
+Type: DatatypeProperty
+
+Range: <class 'bool'>
+
+
+#### RollOverCondition
+
+Type: DatatypeProperty
+
+Range: <class 'bool'>
+
+
+#### SpillCondition
+
+Type: DatatypeProperty
+
+Range: <class 'bool'>
+
+
+#### VehiclePosition
+
+Type: DatatypeProperty
+
+Range: <class 'str'>
+
+
+#### VehicleSpeed
+
+Type: DatatypeProperty
+
+Range: <class 'float'>
+
+
+#### VehicleType
+
+Type: DatatypeProperty
+
+Range: <class 'str'>
 
 
 ## Behaviors

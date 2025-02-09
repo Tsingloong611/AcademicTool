@@ -2,29 +2,7 @@ package AffectedElement{
 
     part def AffectedElement{}
 
-    action def VehicleExplosion{
-        }
-
-    action def VehicleDeparture{
-        }
-
-    action def Explode {
-            out ExplodeCondition = true;
-        }
-
-    action def Spill {
-            out SpillCondition = true;
-            out PullotedCondition = true;
-            out DetachedCondition = true;
-        }
-
     action def VehicleSpillage{
-        }
-
-    action def VehicleSpeedChange{
-        }
-
-    action def VehicleTransport{
         }
 
     action def Collide {
@@ -33,7 +11,29 @@ package AffectedElement{
             out Casualty = true;
         }
 
+    action def VehicleTransport{
+        }
+
+    action def Spill {
+            out SpillCondition = true;
+            out PullotedCondition = true;
+            out DetachedCondition = true;
+        }
+
+    action def VehicleSpeedChange{
+        }
+
+    action def Explode {
+            out ExplodeCondition = true;
+        }
+
+    action def VehicleDeparture{
+        }
+
     action def VehicleMotion{
+        }
+
+    action def VehicleExplosion{
         }
 
     state def AffectedStates{
@@ -50,16 +50,16 @@ package AffectedElement{
     item def VehicleLoad{
         }
 
-    item def People{
-        }
-
     item def Lane{
         }
 
-    item def Facility{
+    item def VehiclePart{
         }
 
-    item def VehiclePart{
+    item def People{
+        }
+
+    item def Facility{
         }
 
     part Road : AffectedElement{

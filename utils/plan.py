@@ -3,9 +3,14 @@
 # @FileName: plan.py
 # @Software: PyCharm
 import json
+import os
+import re
 from collections import defaultdict
 from datetime import datetime
 
+import requests
+from jedi.inference.gradual.typing import Tuple
+from semantictools import config_path
 from sqlalchemy import select, and_, create_engine, text, bindparam
 from sqlalchemy.orm import Session, sessionmaker
 from typing import Dict, List, Optional, Any
@@ -50,9 +55,83 @@ class PlanDataCollector:
         JOIN attribute_definition ad ON av.attribute_definition_id = ad.attribute_definition_id
         JOIN attribute_code ac ON ad.attribute_code_id = ac.attribute_code_id
         WHERE e.scenario_id = :scenario_id
-        AND ac.attribute_code_name = 'DamageCondition'
+        AND ac.attribute_code_name = 'RoadDamageCondition'
         """
         return self.session.execute(text(sql), {"scenario_id": self.scenario_id}).all()
+
+    def get_road_position(self) -> Tuple:
+        # 查询满足条件的第一个实体
+        first_entity = self.session.query(Entity) \
+            .join(EntityType, Entity.entity_type_id == EntityType.entity_type_id) \
+            .filter(
+            Entity.scenario_id == self.scenario_id,
+            EntityType.entity_type_code == 'Road'
+        ) \
+            .order_by(Entity.entity_id) \
+            .first()
+
+        if first_entity is None:
+            # 如果没有满足条件的实体，返回空元组
+            return tuple()
+
+        # 查询第一个实体的属性值
+        results = self.session.query(AttributeValue.attribute_value) \
+            .join(AttributeDefinition,
+                  AttributeValue.attribute_definition_id == AttributeDefinition.attribute_definition_id) \
+            .join(AttributeCode, AttributeDefinition.attribute_code_id == AttributeCode.attribute_code_id) \
+            .filter(
+            AttributeValue.entity_id == first_entity.entity_id,
+            AttributeCode.attribute_code_name.in_(['RoadName','SegmentStartStakeNumber', 'SegmentEndStakeNumber'])
+        ).all()
+
+        # 把查询结果打包成一个扁平的元组
+        result_tuple = tuple(item[0] for item in results)
+        return result_tuple
+
+    def get_resource_positions(self,plan_name) -> List:
+        # 查询所有满足条件的实体,父实体为None
+        if not plan_name:
+            entities = self.session.query(Entity) \
+                .join(EntityType, Entity.entity_type_id == EntityType.entity_type_id) \
+                .filter(
+                Entity.scenario_id == self.scenario_id,
+                EntityType.entity_type_code == 'ResponseResource',
+                Entity.entity_parent_id.is_(None)
+            ) \
+                .all()
+        else:
+            # 根据plan_name找到plan的entity_id
+            plan_id = self.session.query(Entity.entity_id) \
+                .filter(
+                Entity.entity_name == plan_name,
+                Entity.scenario_id == self.scenario_id
+            ).scalar()
+            entities = self.session.query(Entity) \
+                .join(EntityType, Entity.entity_type_id == EntityType.entity_type_id) \
+                .filter(
+                Entity.scenario_id == self.scenario_id,
+                EntityType.entity_type_code == 'ResponseResource',
+                Entity.entity_parent_id == plan_id
+            ) \
+                .all()
+
+        # 逐个查询实体的属性值
+        results = []
+        for entity in entities:
+            result = self.session.query(AttributeValue.attribute_value) \
+                .join(AttributeDefinition,
+                      AttributeValue.attribute_definition_id == AttributeDefinition.attribute_definition_id) \
+                .join(AttributeCode, AttributeDefinition.attribute_code_id == AttributeCode.attribute_code_id) \
+                .filter(
+                AttributeValue.entity_id == entity.entity_id,
+                AttributeCode.attribute_code_name == 'Location'
+            ).all()
+
+            # 把查询结果打包成一个扁平的元组
+            result = [item[0] for item in result][0]
+            results.append(result)
+
+        return results
 
     def get_casualties(self) -> List[Any]:
         """获取人员伤亡数据"""
@@ -187,6 +266,42 @@ class PlanDataCollector:
 
         return dict(result_dict)
 
+    def get_emergency_type(self) -> int:
+        """获取应急类型数据"""
+        # 查看有没有vehicle且属于承灾体的entity
+        sql = """
+        SELECT * FROM entity e
+        JOIN entity_category ec ON e.entity_id = ec.entity_id
+        WHERE e.scenario_id = :scenario_id
+        AND e.entity_type_id = (SELECT entity_type_id FROM entity_type WHERE entity_type_code = 'Vehicle')
+        AND ec.category_id = (SELECT category_id FROM category WHERE category_name = 'AffectedElement')
+        """
+        # 执行查询，看是不是空，如果不是，返回Collision_Acident
+        if self.session.execute(text(sql), {"scenario_id": self.scenario_id}).all():
+            return 2
+
+        # 查看抛洒与侧翻情况
+        results = self.session.query(AttributeValue.attribute_value) \
+            .join(Entity, AttributeValue.entity_id == Entity.entity_id) \
+            .join(EntityType, Entity.entity_type_id == EntityType.entity_type_id) \
+            .join(AttributeDefinition,
+                  AttributeValue.attribute_definition_id == AttributeDefinition.attribute_definition_id) \
+            .join(AttributeCode, AttributeDefinition.attribute_code_id == AttributeCode.attribute_code_id) \
+            .filter(
+            Entity.scenario_id == self.scenario_id,
+            EntityType.entity_type_code == 'Vehicle',
+            AttributeCode.attribute_code_name.in_(['SpillCondition', 'RollOverCondition'])
+        ).all()
+
+        # 检查返回的每个 attribute_value
+        for (value,) in results:
+            # 根据数据类型做判断，可根据实际情况调整
+            if value in (1, True) or str(value).lower() in ('1', 'true'):
+                return 0
+
+        return 1
+
+
     def get_all_plan_ids(self) -> List[str]:
         """获取所有计划名称"""
         sql = """
@@ -213,11 +328,78 @@ class PlanDataCollector:
             'casualties': self.get_casualties(),
             'related_resource': self.get_related_resource(plan_name),
             'emergency_period': self.get_emergency_period(),
+            'emergency_type': self.get_emergency_type(),
+            'road_position':self.get_road_position(),
+            'resource_positions': self.get_resource_positions(plan_name)
         }
         print(f"data: {data}")
 
         return data
 
+
+def get_coordinates_from_stake(road_name, stake_number, api_key):
+    """
+    根据道路名称和桩号查询经纬度。
+
+    :param road_name: 道路名称，如 "山西省朔州市某高速公路"
+    :param stake_number: 桩号，例如 "1"
+    :param api_key: 你的高德地图 API Key
+    :return: 如果查询成功返回 (经度, 纬度) 的元组，否则返回 None
+    """
+    # 构造查询地址，例如 "山西省朔州市某高速公路 桩号 1"
+    address = f"{road_name} 桩号 {stake_number}"
+    url = "https://restapi.amap.com/v3/geocode/geo"
+    params = {
+        'address': address,
+        'key': api_key
+    }
+
+    try:
+        response = requests.get(url, params=params)
+        response.raise_for_status()  # 检查请求是否成功
+        data = response.json()
+        if data.get('status') == '1' and data.get('geocodes'):
+            # 取第一个匹配结果
+            location = data['geocodes'][0]['location']  # 格式 "经度,纬度"
+            lon, lat = location.split(',')
+            return lon, lat
+        else:
+            print("查询失败，返回数据:", data)
+            return None
+    except Exception as e:
+        print("请求异常:", e)
+        return None
+
+
+def get_driving_distance(origin, destination, api_key):
+    """
+    根据起点和终点坐标调用高德驾车路径规划 API 获取行驶距离。
+
+    :param origin: 起点坐标元组 (经度, 纬度)，例如 (112.4328, 39.338005)
+    :param destination: 终点坐标元组 (经度, 纬度)
+    :param api_key: 高德地图 API Key
+    :return: 行驶距离（单位：米），如果查询失败返回 None
+    """
+    url = "https://restapi.amap.com/v3/direction/driving"
+    origin_str = f"{origin[0]},{origin[1]}"
+    destination_str = f"{destination[0]},{destination[1]}"
+    params = {
+        "origin": origin_str,
+        "destination": destination_str,
+        "key": api_key,
+        # 可以设置 extensions 参数为 "all" 以获得更详细的路径信息
+        "extensions": "base"
+    }
+
+    response = requests.get(url, params=params)
+    data = response.json()
+    if data.get("status") == "1" and data.get("route"):
+        paths = data["route"].get("paths", [])
+        if paths:
+            first_path = paths[0]
+            distance = first_path.get("distance")  # 单位为米，返回的是字符串
+            return int(distance) if distance else None
+    return None
 
 def convert_to_evidence(data):
     print(f"3525data: {data}")
@@ -269,6 +451,77 @@ def convert_to_evidence(data):
             evidence['emergencyPeriod'] = 2
         elif emergency_period == '晚上':
             evidence['emergencyPeriod'] = 3
+
+    # 处理 emergency_type
+    evidence['emergencyType'] = data.get('emergency_type', 0)
+
+    # 处理 road_position和resource_positions
+    road_position = data.get('road_position', [])
+    resource_positions = data.get('resource_positions', [])
+    if road_position and resource_positions:
+        road_name, start_stake, end_stake = road_position
+        print("道路名称:", road_name)
+        print("起点桩号:", start_stake)
+        print("终点桩号:", end_stake)
+
+        config_path = os.path.join(os.path.dirname(__file__), '../config.json')
+        with open(config_path, 'r', encoding='utf-8') as f:
+            config = json.load(f)
+
+        api_key = config.get('gaode-map')['web_service_key']
+        emergency_speed = config.get('emergency_speed', 60)
+        # 分别获取起点和终点桩号的经纬度
+        start_coordinates = get_coordinates_from_stake(road_name, start_stake, api_key)
+        end_coordinates = get_coordinates_from_stake(road_name, end_stake, api_key)
+
+        if start_coordinates and end_coordinates:
+            # 转换成 float 类型进行计算
+            start_lon, start_lat = map(float, start_coordinates)
+            end_lon, end_lat = map(float, end_coordinates)
+
+            # 计算平均经纬度
+            avg_lon = (start_lon + end_lon) / 2
+            avg_lat = (start_lat + end_lat) / 2
+
+            print("起点坐标:", start_coordinates)
+            print("终点坐标:", end_coordinates)
+            print("平均坐标:", (avg_lon, avg_lat))
+        else:
+            print("无法获取桩号对应的坐标")
+
+        pattern = r'(.+?)\s*\(\s*([-+]?\d+\.\d+)\s*,\s*([-+]?\d+\.\d+)\s*\)'
+
+        # 遍历 resource_positions 列表，使用正则表达式提取地址和经纬度
+        distance = 0
+        for resource in resource_positions:
+            match = re.search(pattern, resource)
+            if match:
+                # 提取捕获的各组内容，并去除两端空白字符
+                address = match.group(1).strip()
+                latitude = match.group(2)
+                longitude = match.group(3)
+                print("地址:", address)
+                print("纬度:", latitude)
+                print("经度:", longitude)
+                # 计算距离
+                distance += get_driving_distance((avg_lon, avg_lat), (float(longitude), float(latitude)), api_key)
+
+        if distance != 0:
+            print("总行驶距离:", distance)
+            time = distance / (emergency_speed * 1000 / 60)
+            print("预计行驶时间:", time)
+            # 根据距离判断
+            if time <= 15:
+                evidence['responseDuration'] = 0
+            elif time <= 30:
+                evidence['responseDuration'] = 1
+            elif time <= 60:
+                evidence['responseDuration'] = 2
+            else:
+                evidence['responseDuration'] = 3
+
+
+
 
     # 处理 related_resource
     related_resource = data.get('related_resource', {})

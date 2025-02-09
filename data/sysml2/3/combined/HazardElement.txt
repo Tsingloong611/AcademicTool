@@ -2,28 +2,10 @@ package HazardElement{
 
     part def HazardElement{}
 
-    action def Spill{
-            out SpillCondition = true;
-            out PullotedCondition = true;
-            out DetachedCondition = true;
-        }
-
-    action def VehicleExplosion{
-        }
-
     action def Collide{
             in CollideCondition = true;
             out DamageCondition = true;
             out Casualty = true;
-        }
-
-    action def VehicleDeparture{
-        }
-
-    action def VehicleLaneChange{
-        }
-
-    action def VehicleBreakdown{
         }
 
     action def VehicleTurning{
@@ -36,19 +18,37 @@ package HazardElement{
             out ExplodeCondition = true;
         }
 
-    action def VehicleSpeedChange{
-        }
-
     action def VehicleTransport{
         }
 
-    action def VehicleCollision{
+    action def VehicleBreakdown{
+        }
+
+    action def VehicleSpeedChange{
+        }
+
+    action def VehicleLaneChange{
+        }
+
+    action def VehicleDeparture{
+        }
+
+    action def VehicleMotion{
         }
 
     action def VehicleOverturn{
         }
 
-    action def VehicleMotion{
+    action def VehicleExplosion{
+        }
+
+    action def VehicleCollision{
+        }
+
+    action def Spill{
+            out SpillCondition = true;
+            out PullotedCondition = true;
+            out DetachedCondition = true;
         }
 
     state def HazardStates{
@@ -65,13 +65,13 @@ package HazardElement{
     item def VehicleLoad{
         }
 
-    item def People{
-        }
-
     item def VehiclePart{
         }
 
-    part 5235 : HazardElement{
+    item def People{
+        }
+
+    part 车辆 : HazardElement{
             attribute VehicleType : String = null;
             attribute CollisionCondition : Bool = "0";
             attribute CombustionCondition : Bool = "0";
@@ -83,7 +83,6 @@ package HazardElement{
             attribute DrivingDirection : Enum = "正向";
             attribute VehiclePosition : String = null;
             attribute VehicleSpeed : Real = null;
-            attribute EmergencyPeriod : Enum = "上午";
 
 
             perform action VehicleMotion;
@@ -100,7 +99,7 @@ package HazardElement{
 
         }
 
-    part 车辆 : HazardElement{
+    part 5235 : HazardElement{
             attribute VehicleType : String = null;
             attribute CollisionCondition : Bool = "0";
             attribute CombustionCondition : Bool = "0";
@@ -112,6 +111,7 @@ package HazardElement{
             attribute DrivingDirection : Enum = "正向";
             attribute VehiclePosition : String = null;
             attribute VehicleSpeed : Real = null;
+            attribute EmergencyPeriod : Enum = "上午";
 
 
             perform action VehicleMotion;

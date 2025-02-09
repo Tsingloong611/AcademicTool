@@ -31,7 +31,8 @@ DEFAULT_CONFIG = {
         "enable": False,
         "javascript_api_key": "",
         "web_service_key": ""
-    }
+    },
+    "emergency_speed": 60
 }
 
 

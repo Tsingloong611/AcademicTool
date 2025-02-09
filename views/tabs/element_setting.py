@@ -1942,6 +1942,80 @@ class EditRelatedObjectDialog(QDialog):
                     behavior["object_entities"] = list(self.selected_entities)
                     break
 
+
+class CustomSelectionDialog(QDialog):
+    accepted_option = Signal(str)
+
+    def __init__(self, title, message, options, parent=None):
+        """
+        初始化自定义选择对话框。
+
+        :param title: 对话框标题。
+        :param message: 提示信息文本。
+        :param options: 可供选择的选项列表（字符串列表）。
+        :param parent: 父窗口（可选）。
+        """
+        super().__init__(parent)
+        self.setWindowTitle(title)
+        self.resize(300, 150)
+        self.setStyleSheet("""
+        background: white;
+        color: black;
+
+        QLineEdit, QComboBox {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 5px;
+        }
+        QLineEdit:focus, QComboBox:focus {
+            border: 2px solid #0078d7; /* 蓝色边框 */
+        }
+        """)
+
+        layout = QVBoxLayout(self)
+        layout.setSpacing(20)
+
+        # 消息标签
+        label = QLabel(message)
+        label.setWordWrap(True)
+        layout.addWidget(label)
+
+        # 下拉选择框，添加选项
+        self.combo_box = QComboBox(self)
+        self.combo_box.addItems(options)
+        layout.addWidget(self.combo_box)
+
+        # 按钮布局
+        button_layout = QHBoxLayout()
+
+        ok_button = QPushButton(self.tr("确认"))
+        ok_button.clicked.connect(self._accept_selection)
+        button_layout.addWidget(ok_button)
+
+        cancel_button = QPushButton(self.tr("取消"))
+        cancel_button.clicked.connect(self.reject)
+        button_layout.addWidget(cancel_button)
+
+        layout.addLayout(button_layout)
+        # 设置固定的按钮宽度
+        for i in range(button_layout.count()):
+            button_layout.itemAt(i).widget().setFixedWidth(110)
+
+    def _accept_selection(self):
+        """
+        当用户点击确认按钮时，记录当前选中的选项，
+        通过信号发送该选项并关闭对话框。
+        """
+        selected = self.combo_box.currentText()
+        self.accepted_option.emit(selected)
+        self.accept()
+
+    def get_selected_option(self):
+        """
+        返回当前选中的选项字符串。
+        """
+        return self.combo_box.currentText()
+
 class ElementSettingTab(QWidget):
     """情景要素设置标签页"""
 
@@ -1959,6 +2033,7 @@ class ElementSettingTab(QWidget):
 
 
         self.current_selected_element = None
+        self.current_selected_entity = None
         self.uploaded_files = {}       # 初始化上传文件路径的字典
 
         self.query_ready = False
@@ -3243,19 +3318,43 @@ class ElementSettingTab(QWidget):
                 has_template.append(self.get_result_by_sql(f"SELECT template_name FROM template WHERE entity_type_id = {item['id']} AND category_id = {item['categories']};")[0][0])
             print(f"has_template: {has_template}")
             # 规定的8类要素
-            elements = ['道路环境要素', '气象环境要素', '车辆致灾要素', '车辆承灾要素', '道路承灾要素', '人类承灾要素', '应急资源要素', '应急行为要素']
-            # 缺失的要素
+            # 1. 必须有的要素
+            required_must_have = ['道路环境要素', '气象环境要素', '车辆致灾要素']
+            # 2. 至少有一个的要素（承灾要素）
+            group2_options = ['人类承灾要素', '车辆承灾要素', '道路承灾要素']
+            # 3. 可有可无的要素（无需验证）：['应急资源要素', '应急行为要素']            # 缺失的要素
             missing_elements = []
-            for element in elements:
+            # 检查必须有的要素
+            for element in required_must_have:
                 if element not in has_template:
                     missing_elements.append(element)
-            print(f"Missing elements: {missing_elements}")
-            # 补充缺失的要素
+            # 检查承灾要素：只需有其中一个
+            if not any(elem in has_template for elem in group2_options):
+                # 改为选择对话框，让用户从预设选项中选择一个承灾要素
+                selection_dialog = CustomSelectionDialog(
+                    self.tr("缺失承灾要素"),
+                    self.tr("请选择补充要素的类别："),
+                    options=group2_options,
+                    parent=self
+                )
+                selection_dialog.exec()
+                chosen_element = selection_dialog.get_selected_option()
+                if not chosen_element:
+                    CustomWarningDialog(
+                        self.tr("保存失败"),
+                        self.tr("未选择任何承灾要素类别，保存失败。"),
+                        parent=self
+                    ).exec()
+                    return
+                missing_elements.append(chosen_element)
+
+            print(f"Missing required elements: {missing_elements}")
+
+            # 对缺失的要素逐个提示用户补充
             for element in missing_elements:
-                # 询问用户名字
                 ask_name = CustomInputDialog(
-                    self.tr(f"缺失{element},尝试从模板补充"),
-                    self.tr(f"请输入补充要素的名称"),
+                    self.tr(f"缺失 {element}，尝试从模板补充"),
+                    self.tr("请输入补充要素的名称"),
                     parent=self
                 )
                 ask_name.exec()
@@ -3263,17 +3362,15 @@ class ElementSettingTab(QWidget):
                     # 保存失败
                     CustomWarningDialog(
                         self.tr("保存失败"),
-                        self.tr(f"缺少{element}，保存失败。"),
+                        self.tr(f"缺少 {element}，保存失败。"),
                         parent=self
                     ).exec()
                     return
                 entity = self.create_entities_with_negative_ids(element, ask_name.get_input())
                 print(f"新建的实体：{entity}")
-                for entity_id, entity in entity.items():
-                    saved_elements.append(entity)
-                self.element_data[entity_id] = entity
-                print(f"92340{self.element_data}")
-                print(f"92341{saved_elements}")
+                for entity_id, entity_obj in entity.items():
+                    saved_elements.append(entity_obj)
+                    self.element_data[entity_id] = entity_obj
                 # 如果没有输入名字，直接退出
 
 
@@ -3514,13 +3611,20 @@ class ElementSettingTab(QWidget):
 
         print(f"has_template: {has_template}")
 
-        # 规定的8类要素
-        required_elements = ['道路环境要素', '气象环境要素', '车辆致灾要素', '车辆承灾要素',
-                             '道路承灾要素', '人类承灾要素', '应急资源要素', '应急行为要素']
+        # 1. 必须有的要素
+        required_must_have = ['道路环境要素', '气象环境要素', '车辆致灾要素']
+        # 2. 至少有一个的要素（承灾要素）
+        group2_options = ['人类承灾要素', '车辆承灾要素', '道路承灾要素']
+        # 3. 可有可无的要素（无需验证）：['应急资源要素', '应急行为要素']            # 缺失的要素
+        missing_elements = []
+        # 检查必须有的要素
+        for element in required_must_have:
+            if element not in has_template:
+                missing_elements.append(element)
+        # 检查承灾要素：只需有其中一个
+        if not any(elem in has_template for elem in group2_options):
+                missing_elements.append(group2_options)
 
-        # 找出缺失的要素
-        missing_elements = [element for element in required_elements if element not in has_template]
-        print(f"Missing elements: {missing_elements}")
         # 如果有缺失的要素，提示用户
         if missing_elements:
             CustomWarningDialog(
