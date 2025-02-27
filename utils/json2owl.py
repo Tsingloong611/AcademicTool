@@ -121,14 +121,22 @@ def create_ontology(input_path, output_path):
                 instances[ename] = cls(f"{ename}_inst")
 
             # --------- partSub: 创建一个子类 -------------
-            elif etype == 'partSub':
+            # 在创建类时规范化名称
+            def normalize_class_name(name):
+                # 如果是纯数字，加上前缀
+                if name.isdigit():
+                    return f"Element_{name}"
+                return name
+
+            # 然后在创建类时使用：
+            if etype == 'partSub':
                 parent_name = element.get('parent', '').strip()
                 parent_cls = classes.get(parent_name)
                 if parent_cls:
-                    sub_cls = types.new_class(ename, (parent_cls,))
-                    classes[ename] = sub_cls
-                    # 同时创建一个个体
-                    instances[ename] = sub_cls(f"{ename}_inst")
+                    normalized_name = normalize_class_name(ename)
+                    sub_cls = types.new_class(normalized_name, (parent_cls,))
+                    classes[ename] = sub_cls  # 注意：仍用原始名称作为键
+                    instances[ename] = sub_cls(f"{normalized_name}_inst")
 
             # --------- partAssociate: 创建一个新的类 + 一个对象属性 -------------
             elif etype == 'partAssociate':
@@ -164,75 +172,75 @@ def create_ontology(input_path, output_path):
                 instances[ename] = cls(f"{ename}_inst")
 
             # --------- state: 创建一个顶级状态类 + transitions -------------
-            elif etype == 'state':
-                state_cls = types.new_class(ename, (ElementState,))
-                classes[ename] = state_cls
-                instances[ename] = state_cls(f"{ename}_inst")
-
-                # 处理 transitions
-                transitions = element.get('transitions', [])
-                # 收集 source、target 中出现的子状态名
-                transition_class_names = set()
-                for tr in transitions:
-                    transition_class_names.add(tr['source'])
-                    transition_class_names.add(tr['target'])
-
-                for tcn in transition_class_names:
-                    if tcn not in classes:
-                        # 创建子类
-                        sub_state_cls = types.new_class(tcn, (state_cls,))
-                        classes[tcn] = sub_state_cls
-                        instances[tcn] = sub_state_cls(f"{tcn}_inst")
-
-                # 再创建 stateTransform 属性
-                for tr in transitions:
-                    source_name = tr['source'].strip()
-                    transit_name = tr['transit'].strip()
-                    target_name = tr['target'].strip()
-
-                    sT_name = transit_name + 'Transform'
-                    prop = types.new_class(sT_name, (sT_prop,))
-                    obj_props[sT_name] = prop
-
-                    source_cls = classes.get(source_name)
-                    target_cls = classes.get(target_name)
-                    if source_cls and target_cls:
-                        prop.domain = [source_cls]
-                        prop.range = [target_cls]
+            # elif etype == 'state':
+            #     state_cls = types.new_class(ename, (ElementState,))
+            #     classes[ename] = state_cls
+            #     instances[ename] = state_cls(f"{ename}_inst")
+            #
+            #     # 处理 transitions
+            #     transitions = element.get('transitions', [])
+            #     # 收集 source、target 中出现的子状态名
+            #     transition_class_names = set()
+            #     for tr in transitions:
+            #         transition_class_names.add(tr['source'])
+            #         transition_class_names.add(tr['target'])
+            #
+            #     for tcn in transition_class_names:
+            #         if tcn not in classes:
+            #             # 创建子类
+            #             sub_state_cls = types.new_class(tcn, (state_cls,))
+            #             classes[tcn] = sub_state_cls
+            #             instances[tcn] = sub_state_cls(f"{tcn}_inst")
+            #
+            #     # 再创建 stateTransform 属性
+            #     for tr in transitions:
+            #         source_name = tr['source'].strip()
+            #         transit_name = tr['transit'].strip()
+            #         target_name = tr['target'].strip()
+            #
+            #         sT_name = transit_name + 'Transform'
+            #         prop = types.new_class(sT_name, (sT_prop,))
+            #         obj_props[sT_name] = prop
+            #
+            #         source_cls = classes.get(source_name)
+            #         target_cls = classes.get(target_name)
+            #         if source_cls and target_cls:
+            #             prop.domain = [source_cls]
+            #             prop.range = [target_cls]
 
             # --------- action: 创建动作类 + 处理 inparams/outparams (若需要) -------------
-            elif etype == 'action':
-                cls = types.new_class(ename, (Thing,))
-                classes[ename] = cls
-                instances[ename] = cls(f"{ename}_inst")
-
-                # 下面的逻辑是原始代码，用于创建对象属性 hasXXXEffectOn
-                aC_name = 'has' + ename + 'EffectOn'
-                prop = types.new_class(aC_name, (hE_prop,))
-                obj_props[aC_name] = prop
-
-                # inparams
-                for ip in element.get('inparams', []):
-                    for j in sorted_data:
-                        if j['@type'] == 'attribute' and j['@name'] == ip:
-                            owner_j = j.get('owner', '').strip()
-                            if owner_j not in ['', 'none'] and owner_j in classes:
-                                prop.domain = [classes[owner_j]]
-
-                # outparams
-                for op in element.get('outparams', []):
-                    for j in sorted_data:
-                        if j['@type'] == 'attribute' and j['@name'] == op:
-                            owner_j = j.get('owner', '').strip()
-                            if owner_j not in ['', 'none'] and owner_j in classes:
-                                prop.range = [classes[owner_j]]
-
-                # actionSub 的处理(参考原始逻辑)
-                for i in sorted_data:
-                    if i['@type'] == 'actionSub' and i.get('parent') == ename:
-                        if 'owner' in i and i['owner'] not in ['', 'none']:
-                            if i['owner'].strip() in classes:
-                                prop.domain = [classes[i['owner'].strip()]]
+            # elif etype == 'action':
+            #     cls = types.new_class(ename, (Thing,))
+            #     classes[ename] = cls
+            #     instances[ename] = cls(f"{ename}_inst")
+            #
+            #     # 下面的逻辑是原始代码，用于创建对象属性 hasXXXEffectOn
+            #     aC_name = 'has' + ename + 'EffectOn'
+            #     prop = types.new_class(aC_name, (hE_prop,))
+            #     obj_props[aC_name] = prop
+            #
+            #     # inparams
+            #     for ip in element.get('inparams', []):
+            #         for j in sorted_data:
+            #             if j['@type'] == 'attribute' and j['@name'] == ip:
+            #                 owner_j = j.get('owner', '').strip()
+            #                 if owner_j not in ['', 'none'] and owner_j in classes:
+            #                     prop.domain = [classes[owner_j]]
+            #
+            #     # outparams
+            #     for op in element.get('outparams', []):
+            #         for j in sorted_data:
+            #             if j['@type'] == 'attribute' and j['@name'] == op:
+            #                 owner_j = j.get('owner', '').strip()
+            #                 if owner_j not in ['', 'none'] and owner_j in classes:
+            #                     prop.range = [classes[owner_j]]
+            #
+            #     # actionSub 的处理(参考原始逻辑)
+            #     for i in sorted_data:
+            #         if i['@type'] == 'actionSub' and i.get('parent') == ename:
+            #             if 'owner' in i and i['owner'] not in ['', 'none']:
+            #                 if i['owner'].strip() in classes:
+            #                     prop.domain = [classes[i['owner'].strip()]]
 
             # --------- attribute: 创建数据属性 + 给对应个体赋值 -------------
             elif etype == 'attribute':
@@ -347,8 +355,6 @@ def create_ontology(input_path, output_path):
 
     onto.save(file=output_path, format="rdfxml")
     print(f"本体已保存到: {output_path}")
-
-
 
 def Scenario_owl_creator(output_path):
     """

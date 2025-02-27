@@ -214,7 +214,7 @@ def json_to_sysml2_txt(
             if action_code_name:
                 lines.append(f"{indent * 2}perform action {action_code_name};")
 
-        # 如果有 States（此处暂不处理，可按需要扩展）
+        # 如果有 States
         lines.append("")  # 空行
 
         # 关闭主 Part

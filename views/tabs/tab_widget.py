@@ -12,12 +12,13 @@ from PySide6.QtWidgets import (
     QWidget, QHBoxLayout, QVBoxLayout,
     QPushButton, QLabel, QStackedWidget, QSizePolicy, QProgressDialog, QApplication
 )
-from PySide6.QtCore import Qt, Signal, Slot
+from PySide6.QtCore import Qt, Signal
 from owlready2 import get_ontology, destroy_entity
 
 from test6 import convert_owl_to_svg
 from utils.bn_svg_update import NetworkVisualizer, ScenarioResilience, bn_svg_update, update_with_evidence
 from utils.combinesysml2 import combine_sysml2
+from utils.createowlfromoriginjson import ScenarioOntologyGenerator
 from utils.json2owl import create_ontology, owl_excel_creator, Scenario_owl_creator, Emergency_owl_creator
 from utils.parserowl import parse_owl
 from utils.plan import PlanDataCollector, convert_to_evidence, PlanData
@@ -397,9 +398,15 @@ class CustomTabWidget(QWidget):
                 json_files = [f for f in os.listdir(input_dir) if f.endswith('.json')]
                 scenario_element_owl = os.path.join(output_dir, "ScenarioElement.owl")
 
-                for input_file in json_files:
-                    input_path = os.path.join(input_dir, input_file)
-                    create_ontology(input_path, scenario_element_owl)
+                # for input_file in json_files:
+                #     input_path = os.path.join(input_dir, input_file)
+                #     create_ontology(input_path, scenario_element_owl)
+                generator = ScenarioOntologyGenerator()
+                element_list = list(self.ElementSettingTab.element_data.items())
+                converted_data = [item[1] for item in element_list]  # 直接提取值部分
+                json_data = converted_data
+                # print(f"23123{json_data}")
+                generator.generate(converted_data, scenario_element_owl)
 
                 onto = get_ontology(scenario_element_owl).load()
                 with onto:
@@ -454,7 +461,10 @@ class CustomTabWidget(QWidget):
                 convert_owl_to_svg(input_owl_files, output_dir)
 
                 for input_owl in input_owl_files:
-                    parse_owl(input_owl)
+                    element_list = list(self.ElementSettingTab.element_data.items())
+                    converted_data = [item[1] for item in element_list]  # 直接提取值部分
+                    json_data = converted_data
+                    parse_owl(input_owl, json_data)
             except Exception as e:
                 raise Exception(f"创建OWL图片或解析模型失败: {str(e)}")
 
@@ -575,11 +585,11 @@ class CustomTabWidget(QWidget):
             #     raise Exception(f"复制文件失败: {str(e)}")
             try:
                 prior_prob_test_path = os.path.abspath(os.path.join(os.path.dirname(__file__),
-                                                                    f'../../data/required_information/prior prob test.xlsx'))
+                                                                    f'../../data/required_information/root_prior_data.xlsx'))
                 expert_info_path = os.path.abspath(os.path.join(os.path.dirname(__file__),
-                                                                f'../../data/required_information/expertInfo.xlsx'))
+                                                                f'../../data/required_information/expert_info_data.xlsx'))
                 expert_estimation_path = os.path.abspath(os.path.join(os.path.dirname(__file__),
-                                                                      f'../../data/required_information/expert estimation test.xlsx'))
+                                                                      f'../../data/required_information/expert_estimation_data.xlsx'))
 
                 analyzer.set_prior_probabilities(prior_prob_test_path)
                 self.ModelTransformationTab.info_dir = os.path.abspath(os.path.join(os.path.dirname(__file__),
@@ -628,6 +638,12 @@ class CustomTabWidget(QWidget):
 
                 # 转换为贝叶斯网络证据
                 evidence = convert_to_evidence(plan_data)
+                evidence.pop('responseDuration', None)
+                evidence.pop('disposalDuration', None)
+                evidence['AidResource'] = 0
+                evidence['TowResource'] = 0
+                evidence['FirefightingResource'] = 0
+                evidence['RescueResource'] = 0
                 update_with_evidence(analyzer, evidence,output_dir)
 
                 self.ModelTransformationTab.set_node_data(json.load(open(node_data_path, 'r')))

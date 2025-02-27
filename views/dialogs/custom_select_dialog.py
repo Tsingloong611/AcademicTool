@@ -15,6 +15,9 @@ from PySide6.QtWidgets import (
 )
 from PySide6.QtGui import QIcon, QColor, QPalette
 import os
+
+from openpyxl.styles.builtins import title
+
 from utils import json2sysml
 
 from sqlalchemy import text
@@ -156,20 +159,26 @@ def ask_user_create_definition_for_code(self, code_id: int, file_attr_name: str)
     else:
         return None
 class SelectCodeDialog(QDialog):
-    def __init__(self, parent, codes, file_attr_name):
+    def __init__(self, parent, codes, file_attr_name, type='attribute'):
         """
         codes: List of tuple (code_id, code_name)
         file_attr_name: 当前文件属性名称，用于在对话框中提示用户
         """
         super().__init__(parent)
-        self.setWindowTitle("选择 attribute_code")
+        if type == 'attribute':
+            title_name = "选择 attribute_code"
+            label_str = f"文件中出现属性名: '{file_attr_name}'\n请选择对应的 attribute_code:"
+        else:
+            title_name = "选择 behavior_code"
+            label_str = f"文件中出现行为名: '{file_attr_name}'\n请选择对应的 behavior_code:"
+        self.setWindowTitle(title_name)
 
         self.selected_code_id = None
         self.codes = codes
 
         layout = QVBoxLayout(self)
 
-        label = QLabel(f"文件中出现属性名: '{file_attr_name}'\n请选择对应的 attribute_code:", self)
+        label = QLabel(label_str, self)
         layout.addWidget(label)
 
         self.combo = QComboBox(self)
@@ -644,6 +653,8 @@ QListWidget {
             # （3）看看当前 entity 的 attributes 是否已存在 code
             match_attr = None
             for a in entity_dict["attributes"]:
+                print(f"{a}")
+                print(attribute_code_name)
                 if a.get("attribute_code_name") == attribute_code_name:
                     match_attr = a
                     break
@@ -674,11 +685,12 @@ QListWidget {
                 entity_dict["attributes"].append(new_attr)
 
         # 3) 处理 items
+        map_dict = {'People': '人类', 'Road': '道路承灾要素'}
         part_items = part_data.get("items", [])
         for item_obj in part_items:
             item_name = item_obj.get("item_name")
             item_type_str = item_obj.get("type")
-            map_dict = {'People':'人类','Road':'道路承灾要素'}
+
 
 
             # 查 entity_type
@@ -995,7 +1007,7 @@ QListWidget {
             QMessageBox.warning(self, "无可用Code", "数据库中无任何 behavior_code 记录。")
             return None
 
-        dlg = SelectCodeDialog(parent=self, codes=codes, file_attr_name=perform_name)
+        dlg = SelectCodeDialog(parent=self, codes=codes, file_attr_name=perform_name,type='behavior')
         if dlg.exec_() == QDialog.Accepted:
             return dlg.get_selected_code_id()
         else:
@@ -1003,6 +1015,7 @@ QListWidget {
 
     def get_type_code_by_id(self, type_id):
         session = self.get_session()
+        print(f"443{type_id}")
         type_sql = text("""
             SELECT entity_type_code
             FROM entity_type

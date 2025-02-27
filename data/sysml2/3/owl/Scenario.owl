@@ -8,6 +8,8 @@
 
 <owl:Ontology rdf:about="http://example.org/scenario.owl"/>
 
+<owl:Ontology rdf:about="D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/3/owl\Scenario.owl"/>
+
 <owl:ObjectProperty rdf:about="#hasResilience">
   <rdfs:domain rdf:resource="#Scenario"/>
   <rdfs:range rdf:resource="#ScenarioResilience"/>

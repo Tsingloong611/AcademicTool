@@ -22,10 +22,10 @@ from views.dialogs.custom_warning_dialog import CustomWarningDialog
 
 NONROOT_PARENTS = {
     "AbsorptionCapacity": ["roadPassibility", "roadLoss"],
-    "AdaptionCapacity": ["emergencyPeriod", "emergencyType"],
-    "RecoveryCapacity": ["disposalDuration", "responseDuration", "casualties",
+    "AdaptionCapacity": ["emergencyPeriod", "emergencyType", "casualties"],
+    "RecoveryCapacity": ["disposalDuration", "responseDuration",
                          "RescueResource", "FirefightingResource", "TowResource", "AidResource"],
-    #"ScenarioResilience": ["RecoveryCapacity", "AdaptionCapacity", "AbsorptionCapacity"]
+    "ScenarioResilience": ["RecoveryCapacity", "AdaptionCapacity", "AbsorptionCapacity"]
 }
 
 STATE_OPTIONS = {
@@ -39,7 +39,10 @@ STATE_OPTIONS = {
     "AidResource": ["Not_Used", "Used"],
     "emergencyPeriod": ["Early_Morning", "Morning", "Afternoon", "Evening"],
     "responseDuration": ["0-15min", "15-30min", "30-60min", "60min+"],
-    "disposalDuration": ["0-15min", "15-30min", "30-60min", "60min+"]
+    "disposalDuration": ["0-15min", "15-30min", "30-60min", "60min+"],
+    "RecoveryCapacity": ["Good", "Bad"],
+    "AdaptionCapacity": ["Good", "Bad"],
+    "AbsorptionCapacity": ["Good", "Bad"],
 }
 
 # 原来的模糊选项 + “未评估”
@@ -59,22 +62,33 @@ QUESTION_TEXT[("AbsorptionCapacity", 0)] = {
 
 # 2. AdaptionCapacity
 QUESTION_TEXT[("AdaptionCapacity", 0)] = {
-    (0, 0): "突发事件发生于当天00:00至06:00，突发事件类型为车辆自身事故（侧翻、抛锚），请评估具有较好适应扰动的能力的可能性：",
-    (0, 1): "突发事件发生于当天00:00至06:00，突发事件类型为车辆对固定物事故（撞到护栏、路墩等），请评估具有较好适应扰动的能力的可能性：",
-    (0, 2): "突发事件发生于当天00:00至06:00，突发事件类型为车辆擦碰事故（指两辆或两辆以上的车辆发生意外碰撞），请评估具有较好适应扰动的能力的可能性：",
-    (1, 0): "突发事件发生于当天06:00至12:00，突发事件类型为车辆自身事故（侧翻、抛锚），请评估具有较好适应扰动的能力的可能性：",
-    (1, 1): "突发事件发生于当天06:00至12:00，突发事件类型为车辆对固定物事故（撞到护栏、路墩等），请评估具有较好适应扰动的能力的可能性：",
-    (1, 2): "突发事件发生于当天06:00至12:00，突发事件类型为车辆擦碰事故（指两辆或两辆以上的车辆发生意外碰撞），请评估具有较好适应扰动的能力的可能性：",
-    (2, 0): "突发事件发生于当天12:00至18:00，突发事件类型为车辆自身事故（侧翻、抛锚），请评估具有较好适应扰动的能力的可能性：",
-    (2, 1): "突发事件发生于当天12:00至18:00，突发事件类型为车辆对固定物事故（撞到护栏、路墩等），请评估具有较好适应扰动的能力的可能性：",
-    (2, 2): "突发事件发生于当天12:00至18:00，突发事件类型为车辆擦碰事故（指两辆或两辆以上的车辆发生意外碰撞），请评估具有较好适应扰动的能力的可能性：",
-    (3, 0): "突发事件发生于当天18:00至24:00，突发事件类型为车辆自身事故（侧翻、抛锚），请评估具有较好适应扰动的能力的可能性：",
-    (3, 1): "突发事件发生于当天18:00至24:00，突发事件类型为车辆对固定物事故（撞到护栏、路墩等），请评估具有较好适应扰动的能力的可能性：",
-    (3, 2): "突发事件发生于当天18:00至24:00，突发事件类型为车辆擦碰事故（指两辆或两辆以上的车辆发生意外碰撞），请评估具有较好适应扰动的能力的可能性：",
+    (0, 0,0): "突发事件发生于当天00:00至06:00，事件类型为车辆自身事故（侧翻、抛锚），没有造成人员伤亡，请评估具有较好适应扰动的能力的可能性：",
+    (0, 0, 1): "突发事件发生于当天00:00至06:00，事件类型为车辆自身事故（侧翻、抛锚），发生人员伤亡，请评估具有较好适应扰动的能力的可能性：",
+    (0, 1,0): "突发事件发生于当天00:00至06:00，事件类型为车辆对固定物事故（撞到护栏、路墩等），没有造成人员伤亡，请评估具有较好适应扰动的能力的可能性：",
+    (0, 1, 1): "突发事件发生于当天00:00至06:00，事件类型为车辆对固定物事故（撞到护栏、路墩等），发生人员伤亡，请评估具有较好适应扰动的能力的可能性：",
+    (0, 2,0): "突发事件发生于当天00:00至06:00，事件类型为车辆擦碰事故（指两辆或两辆以上的车辆发生意外碰撞），没有造成人员伤亡，请评估具有较好适应扰动的能力的可能性：",
+    (0, 2,1): "突发事件发生于当天00:00至06:00，事件类型为车辆擦碰事故（指两辆或两辆以上的车辆发生意外碰撞），发生人员伤亡，请评估具有较好适应扰动的能力的可能性：",
+    (1, 0,0): "突发事件发生于当天06:00至12:00，事件类型为车辆自身事故（侧翻、抛锚），没有造成人员伤亡，请评估具有较好适应扰动的能力的可能性：",
+    (1, 0,1): "突发事件发生于当天06:00至12:00，事件类型为车辆自身事故（侧翻、抛锚），发生人员伤亡，请评估具有较好适应扰动的能力的可能性：",
+    (1, 1,0): "突发事件发生于当天06:00至12:00，事件类型为车辆对固定物事故（撞到护栏、路墩等），没有造成人员伤亡，请评估具有较好适应扰动的能力的可能性：",
+    (1, 1,1): "突发事件发生于当天06:00至12:00，事件类型为车辆对固定物事故（撞到护栏、路墩等），发生人员伤亡，请评估具有较好适应扰动的能力的可能性：",
+    (1, 2,0): "突发事件发生于当天06:00至12:00，事件类型为车辆擦碰事故（指两辆或两辆以上的车辆发生意外碰撞），没有造成人员伤亡，请评估具有较好适应扰动的能力的可能性：",
+    (1, 2,1): "突发事件发生于当天06:00至12:00，事件类型为车辆擦碰事故（指两辆或两辆以上的车辆发生意外碰撞），发生人员伤亡，请评估具有较好适应扰动的能力的可能性：",
+    (2, 0,0): "突发事件发生于当天12:00至18:00，事件类型为车辆自身事故（侧翻、抛锚），没有造成人员伤亡，请评估具有较好适应扰动的能力的可能性：",
+    (2, 0,1): "突发事件发生于当天12:00至18:00，事件类型为车辆自身事故（侧翻、抛锚），发生人员伤亡，请评估具有较好适应扰动的能力的可能性：",
+    (2, 1,0): "突发事件发生于当天12:00至18:00，事件类型为车辆对固定物事故（撞到护栏、路墩等），没有造成人员伤亡，请评估具有较好适应扰动的能力的可能性：",
+    (2, 1,1): "突发事件发生于当天12:00至18:00，事件类型为车辆对固定物事故（撞到护栏、路墩等），发生人员伤亡，请评估具有较好适应扰动的能力的可能性：",
+    (2, 2,0): "突发事件发生于当天12:00至18:00，事件类型为车辆擦碰事故（指两辆或两辆以上的车辆发生意外碰撞），没有造成人员伤亡，请评估具有较好适应扰动的能力的可能性：",
+    (2, 2,1): "突发事件发生于当天12:00至18:00，事件类型为车辆擦碰事故（指两辆或两辆以上的车辆发生意外碰撞），发生人员伤亡，请评估具有较好适应扰动的能力的可能性：",
+    (3, 0,0): "突发事件发生于当天18:00至24:00，事件类型为车辆自身事故（侧翻、抛锚），没有造成人员伤亡，请评估具有较好适应扰动的能力的可能性：",
+    (3, 0,1): "突发事件发生于当天18:00至24:00，事件类型为车辆自身事故（侧翻、抛锚），发生人员伤亡，请评估具有较好适应扰动的能力的可能性：",
+    (3, 1,0): "突发事件发生于当天18:00至24:00，事件类型为车辆对固定物事故（撞到护栏、路墩等），没有造成人员伤亡，请评估具有较好适应扰动的能力的可能性：",
+    (3, 1,1): "突发事件发生于当天18:00至24:00，事件类型为车辆对固定物事故（撞到护栏、路墩等），发生人员伤亡，请评估具有较好适应扰动的能力的可能性：",
+    (3, 2,0): "突发事件发生于当天18:00至24:00，事件类型为车辆擦碰事故（指两辆或两辆以上的车辆发生意外碰撞），没有造成人员伤亡，请评估具有较好适应扰动的能力的可能性：",
+    (3, 2, 1): "突发事件发生于当天18:00至24:00，事件类型为车辆擦碰事故（指两辆或两辆以上的车辆发生意外碰撞），发生人员伤亡，请评估具有较好适应扰动的能力的可能性："
 }
 
 # 3. RecoveryCapacity
-# 我们需要根据 7 个属性生成 512 种组合的文本。
 # 定义响应与处置时长的描述文本：
 response_time_text = ["响应时长在15分钟以内", "响应时长在15-30分钟", "响应时长在30-60分钟", "响应时长在60分钟以上"]
 disposal_time_text = ["处置时长在15分钟以内", "处置时长在15-30分钟", "处置时长在30-60分钟", "处置时长在60分钟以上"]
@@ -114,36 +128,43 @@ resource_combinations = sorted(list(itertools.product(range(2), repeat=4)), key=
 for rr, ff, tw, aid in resource_combinations:
     for r in range(4):  # responseDuration: 0~3
         for d in range(4):  # disposalDuration: 0~3
-            for c in range(2):  # casualties: 0~1
-                key = (d, r, c, rr, ff, tw, aid)
-                resource_phrase = resources_used(rr, ff, tw, aid)
-                question = (
-                    f"在应急响应过程中{resource_phrase}，"
-                    f"{response_time_text[r]}，"
-                    f"{disposal_time_text[d]}，"
-                    f"{casualties_text[c]}，"
-                    "请评估道路具有较好从扰动中恢复的能力的可能性："
-                )
-                QUESTION_TEXT[("RecoveryCapacity", 0)][key] = question
-data = []
-for key, q in QUESTION_TEXT[("RecoveryCapacity", 0)].items():
-    d, r, c, rr, ff, tw, aid = key
-    data.append({
-         "处置时长": disposal_time_text[d],
-         "响应时长": response_time_text[r],
-         "人员伤亡": casualties_text[c],
-         "救助资源": rr,
-         "消防资源": ff,
-         "牵引资源": tw,
-         "抢修资源": aid,
-         "问题": q
-    })
+            key = (d, r, rr, ff, tw, aid)
+            resource_phrase = resources_used(rr, ff, tw, aid)
+            question = (
+                f"在应急响应过程中{resource_phrase}，"
+                f"{response_time_text[r]}，"
+                f"{disposal_time_text[d]}，"
+                "请评估道路具有较好从扰动中恢复的能力的可能性："
+            )
+            QUESTION_TEXT[("RecoveryCapacity", 0)][key] = question
+# data = []
+# for key, q in QUESTION_TEXT[("RecoveryCapacity", 0)].items():
+#     d, r, rr, ff, tw, aid = key
+#     data.append({
+#          "处置时长": disposal_time_text[d],
+#          "响应时长": response_time_text[r],
+#          "救助资源": rr,
+#          "消防资源": ff,
+#          "牵引资源": tw,
+#          "抢修资源": aid,
+#          "问题": q
+#     })
+#
+# # 转换为 DataFrame 并保存到 Excel 文件中
+# df = pd.DataFrame(data)
+# df.to_excel("RecoveryCapacity_questions.xlsx", index=False)
+# print("问题文本已保存到 RecoveryCapacity_questions.xlsx 文件中。")
 
-# 转换为 DataFrame 并保存到 Excel 文件中
-df = pd.DataFrame(data)
-df.to_excel("RecoveryCapacity_questions.xlsx", index=False)
-print("问题文本已保存到 RecoveryCapacity_questions.xlsx 文件中。")
-
+QUESTION_TEXT[(("ScenarioResilience", 0))] = {
+    (0, 0, 0): "在突发事件发生前城市道路系统能够自动吸收潜在的扰动并维持正常运行，在突发事件发生时城市道路系统能够在很少或完全不涉及外部快速恢复操作的情况下快速恢复损失的性能，在实施应急预案后城市道路系统能够快速恢复至正常运行状态，请评估道路具有较好韧性的可能性：",
+    (0, 0, 1): "在突发事件发生前城市道路系统能够自动吸收潜在的扰动并维持正常运行，在突发事件发生时城市道路系统能够在很少或完全不涉及外部恢复操作的情况下难以快速恢复损失的性能，在实施应急预案后城市道路系统能够快速恢复至正常运行状态，请评估道路具有较好韧性的可能性：",
+    (0, 1, 0): "在突发事件发生前城市道路系统能够自动吸收潜在的扰动并维持正常运行，在突发事件发生时城市道路系统能够在很少或完全不涉及外部快速恢复操作的情况下快速恢复损失的性能，在实施应急预案后城市道路系统难以快速恢复至正常运行状态，请评估道路具有较好韧性的可能性：",
+    (0, 1, 1): "在突发事件发生前城市道路系统能够自动吸收潜在的扰动并维持正常运行，在突发事件发生时城市道路系统能够在很少或完全不涉及外部恢复操作的情况下难以快速恢复损失的性能，在实施应急预案后城市道路系统难以快速恢复至正常运行状态，请评估道路具有较好韧性的可能性：",
+    (1, 0, 0): "在突发事件发生前城市道路系统难以自动吸收潜在的扰动并维持正常运行，在突发事件发生时城市道路系统能够在很少或完全不涉及外部快速恢复操作的情况下快速恢复损失的性能，在实施应急预案后城市道路系统能够快速恢复至正常运行状态，请评估道路具有较好韧性的可能性：",
+    (1, 0, 1): "在突发事件发生前城市道路系统难以自动吸收潜在的扰动并维持正常运行，在突发事件发生时城市道路系统能够在很少或完全不涉及外部恢复操作的情况下难以快速恢复损失的性能，在实施应急预案后城市道路系统能够快速恢复至正常运行状态，请评估道路具有较好韧性的可能性：",
+    (1, 1, 0): "在突发事件发生前城市道路系统难以自动吸收潜在的扰动并维持正常运行，在突发事件发生时城市道路系统能够在很少或完全不涉及外部快速恢复操作的情况下快速恢复损失的性能，在实施应急预案后城市道路系统难以快速恢复至正常运行状态，请评估道路具有较好韧性的可能性：",
+    (1, 1, 1): "在突发事件发生前城市道路系统难以自动吸收潜在的扰动并维持正常运行，在突发事件发生时城市道路系统能够在很少或完全不涉及外部恢复操作的情况下难以快速恢复损失的性能，在实施应急预案后城市道路系统难以快速恢复至正常运行状态，请评估道路具有较好韧性的可能性："
+}
 
 
 AGE_OPTIONS = ["请选择您的年龄","A.30岁及以下", "B.31-40岁", "C.41-50岁", "D.50岁以上"]
@@ -477,12 +498,12 @@ class AddExpertDialog(QDialog):
         print(expert_rating)
 
         #   1) expert_rating -> 写到 ExpertRating sheet
-        expert_estimation_path = os.path.join(self.info_dir, "expert estimation test.xlsx")
+        expert_estimation_path = os.path.join(self.info_dir, "expert_estimation_data.xlsx")
         df_rating = pd.DataFrame(expert_rating)
 
 
         #   2) personal_info -> 写到 ExpertInfo sheet
-        expert_info_path = os.path.join(self.info_dir, "expertInfo.xlsx")
+        expert_info_path = os.path.join(self.info_dir, "expert_info_data.xlsx")
 
         try:
             with open(expert_info_path, "rb") as f:
@@ -560,7 +581,7 @@ class NonRootTableUpdateDialog(QDialog):
         self.resize(850, 700)
 
         self.info_dir = info_dir
-        self.expert_excel_path = os.path.join(self.info_dir, "expert estimation test.xlsx")
+        self.expert_excel_path = os.path.join(self.info_dir, "expert_estimation_data.xlsx")
         self.parent = parent
 
         # 1) 从Excel中探测已有专家数量，以及加载已有数据
@@ -1196,7 +1217,7 @@ class UploadExpertDialog(QDialog):
             print(expert_rating)
 
             #   1) expert_rating -> 写到 ExpertRating sheet
-            expert_estimation_path = os.path.join(self.info_dir, "expert estimation test.xlsx")
+            expert_estimation_path = os.path.join(self.info_dir, "expert_estimation_data.xlsx")
             df_rating = pd.DataFrame(expert_rating)
 
             #   2) personal_info -> 写到 ExpertInfo sheet
@@ -1378,7 +1399,7 @@ class RootUpdateDialog(QDialog):
             # 读取Excel文件
             df = pd.read_excel(self.selected_file)
             # 保存到新的文件
-            new_file = os.path.join(self.info_dir, "prior prob test.xlsx")
+            new_file = os.path.join(self.info_dir, "root_prior_data.xlsx")
             df.to_excel(new_file, index=False)
 
             CustomInformationDialog("成功", "根节点先验数据已更新并保存到 Excel。").exec_()

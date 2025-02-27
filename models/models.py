@@ -532,7 +532,7 @@ class BehaviorDefinition(Base):
     is_required = Column(Boolean, default=True, nullable=False)
     object_entity_type_id = Column(Integer, ForeignKey('entity_type.entity_type_id',
                                                        ondelete='CASCADE', onupdate='RESTRICT'),
-                                   nullable=False)
+                                   nullable=True)
     is_multi_valued = Column(Boolean, default=False, nullable=False)
     description = Column(Text, nullable=True)
 

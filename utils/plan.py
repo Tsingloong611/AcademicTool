@@ -3,11 +3,13 @@
 # @FileName: plan.py
 # @Software: PyCharm
 import json
+import logging
 import os
 import re
 from collections import defaultdict
 from datetime import datetime
 
+import pandas as pd
 import requests
 from jedi.inference.gradual.typing import Tuple
 from semantictools import config_path
@@ -17,6 +19,7 @@ from typing import Dict, List, Optional, Any
 
 from models.models import AttributeValue, Entity, AttributeDefinition, AttributeCode, EntityType, Template, Category, \
     PosterioriData, BayesNode, BayesNodeState, AttributeValueReference
+from views.dialogs.custom_warning_dialog import CustomWarningDialog
 
 
 class PlanDataCollector:
@@ -41,7 +44,8 @@ class PlanDataCollector:
         JOIN attribute_definition ad ON av.attribute_definition_id = ad.attribute_definition_id
         JOIN attribute_code ac ON ad.attribute_code_id = ac.attribute_code_id
         WHERE e.scenario_id = :scenario_id
-        AND ac.attribute_code_name = 'ClosureCondition'
+        AND (ac.attribute_code_name = 'ClosureCondition'
+        OR(ac.attribute_code_name = 'RoadClosureStatus' AND e.entity_parent_id IS NOT NULL))
         """
         return self.session.execute(text(sql), {"scenario_id": self.scenario_id}).all()
 
@@ -55,7 +59,11 @@ class PlanDataCollector:
         JOIN attribute_definition ad ON av.attribute_definition_id = ad.attribute_definition_id
         JOIN attribute_code ac ON ad.attribute_code_id = ac.attribute_code_id
         WHERE e.scenario_id = :scenario_id
-        AND ac.attribute_code_name = 'RoadDamageCondition'
+        AND (
+            ac.attribute_code_name = 'RoadDamageCondition' 
+            OR 
+            (ac.attribute_code_name = 'FacilityDamageStatus' AND e.entity_parent_id IS NOT NULL)
+        )
         """
         return self.session.execute(text(sql), {"scenario_id": self.scenario_id}).all()
 
@@ -401,6 +409,34 @@ def get_driving_distance(origin, destination, api_key):
             return int(distance) if distance else None
     return None
 
+
+def get_coordinates_from_stake_by_file(stake_number):
+    try:
+        # 设置 Excel 文件路径
+        excel_path = os.path.join(os.path.dirname(__file__), '../data/required_information/01_上海路网_申字型_中环路桩号数据及关联关系(1).xlsx')
+
+        # 读取 Excel 文件中的数据，指定需要的列（桩号、经度、纬度）
+        df = pd.read_excel(excel_path, header=0)
+        print(df.head())
+
+        # 查找给定桩号的行
+        stake_data = df[df['桩号名称'] == stake_number]
+
+        if not stake_data.empty:
+            # 提取经纬度
+            longitude = stake_data['经度'].values[0]
+            latitude = stake_data['维度'].values[0]
+            print(f"桩号 {stake_number} 对应的经纬度为 ({longitude}, {latitude})")
+            return (longitude, latitude)
+        else:
+            print(f"未找到桩号 {stake_number} 的数据")
+            return None
+    except Exception as e:
+        print(f"请求异常: {e}")
+        return None
+
+
+
 def convert_to_evidence(data):
     print(f"3525data: {data}")
 
@@ -411,22 +447,20 @@ def convert_to_evidence(data):
     # 处理 road_passibility
     road_passibility_data = data.get('road_passibility', [])
     if road_passibility_data:
-        # 假设 '0' 表示 Impassable，'1' 表示 Passable
-        closure_condition = str(road_passibility_data[0][-1]).lower()
-        if closure_condition in ('1', 'true'):
-            evidence['roadPassibility'] = 1
-        else:
-            evidence['roadPassibility'] = 0
+        print(f"153315{road_passibility_data}")
+        # 检查是否有任何一条记录的 ClosureCondition 为不通行状态
+        impassable_values = {'1', 'true'}
+        # 任何一条记录为不通行，整体就判定为不通行
+        is_impassable = any(str(record[4]).strip().lower() in impassable_values for record in road_passibility_data)
+        evidence['roadPassibility'] = 0 if is_impassable else 1
 
     # 处理 road_damage
     road_damage_data = data.get('road_damage', [])
     if road_damage_data:
-        # 假设 '0' 表示 Not_Loss，'1' 表示 Loss
-        road_damage_condition = str(road_damage_data[0][-1]).lower()
-        if road_damage_condition in ('1', 'true'):
-            evidence['roadLoss'] = 1
-        else:
-            evidence['roadLoss'] = 0
+        # 有任意一条记录表示损坏，就认为是损坏状态
+        damage_values = {'1', 'true'}
+        is_damaged = any(str(record[4]).strip().lower() in damage_values for record in road_damage_data)
+        evidence['roadLoss'] = 1 if is_damaged else 0
 
     # 处理 casualties
     casualties_data = data.get('casualties', [])
@@ -471,8 +505,10 @@ def convert_to_evidence(data):
         api_key = config.get('gaode-map')['web_service_key']
         emergency_speed = config.get('emergency_speed', 60)
         # 分别获取起点和终点桩号的经纬度
-        start_coordinates = get_coordinates_from_stake(road_name, start_stake, api_key)
-        end_coordinates = get_coordinates_from_stake(road_name, end_stake, api_key)
+        # start_coordinates = get_coordinates_from_stake(road_name, start_stake, api_key)
+        # end_coordinates = get_coordinates_from_stake(road_name, end_stake, api_key)
+        start_coordinates = get_coordinates_from_stake_by_file(start_stake)
+        end_coordinates = get_coordinates_from_stake_by_file(end_stake)
 
         if start_coordinates and end_coordinates:
             # 转换成 float 类型进行计算
@@ -488,6 +524,8 @@ def convert_to_evidence(data):
             print("平均坐标:", (avg_lon, avg_lat))
         else:
             print("无法获取桩号对应的坐标")
+            CustomWarningDialog("警告","无法获取桩号对应的坐标").exec_()
+            return evidence
 
         pattern = r'(.+?)\s*\(\s*([-+]?\d+\.\d+)\s*,\s*([-+]?\d+\.\d+)\s*\)'
 
@@ -586,6 +624,8 @@ def convert_to_evidence(data):
 
     evidence['disposalDuration'] = disposal_duration
     print(f"3214evidence: {evidence}")
+
+
 
 
     return evidence

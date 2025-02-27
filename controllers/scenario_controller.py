@@ -885,25 +885,26 @@ class ScenarioController(QObject):
         current_time = datetime.datetime.utcnow()
 
         for class_name, class_data in structure.items():
-            if 'Properties' in class_data:
+            if 'properties' in class_data:
                 owl_class = session.query(OwlClass).filter_by(
                     owl_class_name=class_name,
                     owl_id=owl_id
                 ).first()
 
                 if owl_class:
-                    for prop in class_data['Properties']:
+                    for prop in class_data['properties']:
                         # 处理 None 和列表
                         if prop['property_value'] is None:
                             value = ""
                         elif isinstance(prop['property_value'], list):
                             value = ", ".join(map(str, prop['property_value']))  # 转换为字符串并用逗号分隔
                         else:
+                            # 取'_'之前的部分
                             value = str(prop['property_value'])
                         if prop['property_type'].lower() == 'datatypeproperty':
                             # Add attribute
                             attr = OwlClassAttribute(
-                                owl_class_attribute_name=prop['property_name'],
+                                owl_class_attribute_name=prop['property_name'].split('_')[0],
                                 owl_class_attribute_range=prop['property_range'],
                                 owl_class_attribute_value=value,
                                 owl_class_id=owl_class.owl_class_id,
@@ -914,9 +915,10 @@ class ScenarioController(QObject):
 
                         elif prop['property_type'].lower() == 'objectproperty':
                             # Add behavior
+                            value = str(prop['property_range'])
                             behavior = OwlClassBehavior(
-                                owl_class_behavior_name=prop['property_name'],
-                                owl_class_behavior_range=prop['property_range'],
+                                owl_class_behavior_name=prop['property_name'].split('_')[0],
+                                owl_class_behavior_range=prop['property_domain'][0],
                                 owl_class_behavior_value=value,
                                 owl_class_id=owl_class.owl_class_id,
                                 create_time=current_time,

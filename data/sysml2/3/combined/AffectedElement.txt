@@ -2,16 +2,8 @@ package AffectedElement{
 
     part def AffectedElement{}
 
-    action def VehicleSpillage{
-        }
-
-    action def Collide {
-            in CollideCondition = true;
-            out DamageCondition = true;
-            out Casualty = true;
-        }
-
-    action def VehicleTransport{
+    action def Explode {
+            out ExplodeCondition = true;
         }
 
     action def Spill {
@@ -23,14 +15,22 @@ package AffectedElement{
     action def VehicleSpeedChange{
         }
 
-    action def Explode {
-            out ExplodeCondition = true;
+    action def VehicleSpillage{
         }
 
     action def VehicleDeparture{
         }
 
+    action def VehicleTransport{
+        }
+
     action def VehicleMotion{
+        }
+
+    action def Collide {
+            in CollideCondition = true;
+            out DamageCondition = true;
+            out Casualty = true;
         }
 
     action def VehicleExplosion{
@@ -47,48 +47,30 @@ package AffectedElement{
             state ExplodeState;
         }
 
-    item def VehicleLoad{
+    item def VehiclePart{
         }
 
     item def Lane{
         }
 
-    item def VehiclePart{
+    item def Facility{
+        }
+
+    item def VehicleLoad{
         }
 
     item def People{
         }
 
-    item def Facility{
-        }
-
-    part Road : AffectedElement{
-            attribute RoadName : String = null;
-            attribute RoadType : Enum = "主路";
-            attribute NumberOfLanes : Real = null;
-            attribute TrafficVolume : Real = null;
-            attribute SegmentStartStakeNumber : String = null;
-            attribute SegmentEndStakeNumber : String = null;
-            attribute DesignSpeed : Real = null;
-            attribute ClosureCondition : Bool = "0";
-            attribute DamageConditon : Bool = "0";
-            attribute PollutionCondition : Bool = "0";
-
-
-
-        }
-
-    part HazardVehicle : AffectedElement{
-            attribute VehicleType : String = "truck";
+    part AffectedVehicle : AffectedElement{
+            attribute VehicleType : String = "car";
             attribute CombustionCondition : Bool = "0";
-            attribute SpillCondition : Bool = true;
+            attribute SpillCondition : Bool = "0";
             attribute DrivingDirection : Enum = "forward";
             attribute VehiclePosition : String = "ND569";
             attribute VehicleSpeed : Real = null;
-            attribute DamageCondition : Bool = "0";
-            attribute CollisionCondition : Bool = true;
+            attribute DamageCondition : Bool = true;
 
-            item passenger : People;
             ref part Road;
 
             perform action VehicleMotion;
@@ -97,6 +79,81 @@ package AffectedElement{
             perform action VehicleExplosion;
             perform action VehicleSpillage;
             perform action VehicleSpeedChange;
+
+        }
+
+    part hob : AffectedElement{
+            attribute RoadName : String = "341";
+            attribute RoadType : Enum = "主路";
+            attribute NumberOfLanes : Real = null;
+            attribute TrafficVolume : Real = null;
+            attribute SegmentStartStakeNumber : String = null;
+            attribute SegmentEndStakeNumber : String = null;
+            attribute DesignSpeed : Real = null;
+            attribute ClosureCondition : Bool = "0";
+            attribute RoadDamageCondition : Bool = "0";
+            attribute PollutionCondition : Bool = "0";
+            attribute RoadMaintenanceConditon : Bool = "0";
+            attribute RoadConstrucetionCondition : Bool = "0";
+
+            item 2 : Facility;
+            item lane1 : Lane;
+            ref part HazardVehicle;
+
+
+        }
+
+    part 23 : AffectedElement{
+            attribute RoadName : String = "1";
+            attribute RoadType : Enum = "主路";
+            attribute NumberOfLanes : Real = null;
+            attribute TrafficVolume : Real = null;
+            attribute SegmentStartStakeNumber : String = null;
+            attribute SegmentEndStakeNumber : String = null;
+            attribute DesignSpeed : Real = null;
+            attribute ClosureCondition : Bool = "0";
+            attribute RoadDamageCondition : Bool = "0";
+            attribute PollutionCondition : Bool = "0";
+            attribute RoadMaintenanceConditon : Bool = "0";
+            attribute RoadConstrucetionCondition : Bool = "0";
+
+
+
+        }
+
+    part hello : AffectedElement{
+            attribute RoadName : String = null;
+            attribute RoadType : Enum = "主路";
+            attribute NumberOfLanes : Real = null;
+            attribute TrafficVolume : Real = null;
+            attribute SegmentStartStakeNumber : String = null;
+            attribute SegmentEndStakeNumber : String = null;
+            attribute DesignSpeed : Real = null;
+            attribute ClosureCondition : Bool = "0";
+            attribute RoadDamageCondition : Bool = "0";
+            attribute PollutionCondition : Bool = "0";
+            attribute RoadMaintenanceConditon : Bool = "0";
+            attribute RoadConstrucetionCondition : Bool = "0";
+
+
+
+        }
+
+    part Road : AffectedElement{
+            attribute RoadName : String = null;
+            attribute RoadType : Enum = "主路";
+            attribute NumberOfLanes : Real = null;
+            attribute TrafficVolume : Real = null;
+            attribute SegmentStartStakeNumber : String = "NN0001";
+            attribute SegmentEndStakeNumber : String = "NN0002";
+            attribute DesignSpeed : Real = null;
+            attribute ClosureCondition : Bool = "0";
+            attribute RoadDamageCondition : Bool = "0";
+            attribute PollutionCondition : Bool = "0";
+            attribute RoadMaintenanceConditon : Bool = "0";
+            attribute RoadConstrucetionCondition : Bool = "0";
+
+
 
         }
 

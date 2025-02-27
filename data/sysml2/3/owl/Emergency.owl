@@ -8,6 +8,8 @@
 
 <owl:Ontology rdf:about="http://example.org/emergency.owl"/>
 
+<owl:Ontology rdf:about="D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/3/owl\Emergency.owl"/>
+
 <owl:ObjectProperty rdf:about="#inPhase">
   <rdfs:domain rdf:resource="#Emergency"/>
   <rdfs:range rdf:resource="#EmergencyPhase"/>

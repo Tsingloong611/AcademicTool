@@ -2,13 +2,19 @@ package ResponsePlanElement{
 
     part def ResponsePlanElement{}
 
+    action def PersonnalRescue{
+        }
+
+    action def RoadCleaning{
+        }
+
+    action def VehicleTowing{
+        }
+
     action def RoadRepair{
         }
 
     action def Firefighting{
-        }
-
-    action def VehicleTowing{
         }
 
     action def Action{
@@ -18,12 +24,6 @@ package ResponsePlanElement{
         }
 
     action def RoadControl{
-        }
-
-    action def PersonnalRescue{
-        }
-
-    action def RoadCleaning{
         }
 
     state def rescueStates{
@@ -58,132 +58,23 @@ package ResponsePlanElement{
             state implementState;
         }
 
-    part def ResponseResource{}
-
-    part 674675-类型B : ResponseResource{
-            attribute ResourceType : Enum = "类型A";
-            attribute ResourceUsageCondition : Bool = "0";
-            attribute ResourceQuantityOrQuality : Real = "1";
-            attribute Location : String = "123";
-
-            ref part 674675-救助;
-
-
-        }
-
-    part 674675-救助 : ResponseAction{
-            attribute BehaviorType : Enum = "救助";
-            attribute ImplementationCondition : Bool = true;
-            attribute Duration : Real = "3";
-
-
-            perform action Firefighting;
-            perform action PersonnalRescue;
-            perform action VehicleTowing;
-            perform action RoadCleaning;
-            perform action RoadRepair;
-            perform action RoadControl;
-
-        }
-
-    part 674675-人员 : ResponseResource{
-            attribute ResourceType : Enum = "医生";
-            attribute ResourceUsageCondition : Bool = "0";
-            attribute ResourceQuantityOrQuality : Real = "1";
-            attribute Location : String = "7357";
-
-            ref part 674675-抢修;
-
-
-        }
-
-    part 674675-抢修 : ResponseAction{
-            attribute BehaviorType : Enum = "抢修";
-            attribute ImplementationCondition : Bool = false;
-            attribute Duration : Real = "2";
-
-
-            perform action Firefighting;
-            perform action PersonnalRescue;
-            perform action VehicleTowing;
-            perform action RoadCleaning;
-            perform action RoadRepair;
-            perform action RoadControl;
-
-        }
-
-    part 3256-人员 : ResponseResource{
-            attribute ResourceType : Enum = "医生";
-            attribute ResourceUsageCondition : Bool = "0";
-            attribute ResourceQuantityOrQuality : Real = "1";
-            attribute Location : String = "666";
-
-            ref part 3256-牵引;
-
-
-        }
-
-    part 123445-物资 : ResponseResource{
-            attribute ResourceType : Enum = "类型B";
-            attribute ResourceUsageCondition : Bool = "0";
-            attribute ResourceQuantityOrQuality : Real = "1";
-            attribute Location : String = "123";
-
-            ref part 123445-救助;
-
-
-        }
-
-    part 674675-牵引 : ResponseAction{
-            attribute BehaviorType : Enum = "牵引";
-            attribute ImplementationCondition : Bool = true;
-            attribute Duration : Real = "2";
-
-
-            perform action Firefighting;
-            perform action PersonnalRescue;
-            perform action VehicleTowing;
-            perform action RoadCleaning;
-            perform action RoadRepair;
-            perform action RoadControl;
-
-        }
-
     part def ResponseAction{}
 
-    part 3256-物资 : ResponseResource{
-            attribute ResourceType : Enum = "类型B";
+    part def ResponseResource{}
+
+    part plan1-人员 : ResponseResource{
+            attribute ResourceType : Enum = "医生";
             attribute ResourceUsageCondition : Bool = "0";
             attribute ResourceQuantityOrQuality : Real = "1";
-            attribute Location : String = "123";
+            attribute Location : String = "上海市黄浦区瑞金二路街道雁荡路109-1号雁荡大厦 (31.21833,121.47023)";
 
-            ref part 3256-救助;
-
-
-        }
-
-    part 123445 : ResponsePlanElement{
-            attribute PlanName : String = "123445";
-
-            ref part 123445-物资;
-            ref part 123445-救助;
+            ref part plan1-救助;
 
 
         }
 
-    part 3256 : ResponsePlanElement{
-            attribute PlanName : String = "3256";
-
-            ref part 3256-物资;
-            ref part 3256-人员;
-            ref part 3256-救助;
-            ref part 3256-牵引;
-
-
-        }
-
-    part 3256-牵引 : ResponseAction{
-            attribute BehaviorType : Enum = "牵引";
+    part plan1-救助 : ResponseAction{
+            attribute BehaviorType : Enum = "救助";
             attribute ImplementationCondition : Bool = true;
             attribute Duration : Real = "2";
 
@@ -197,26 +88,32 @@ package ResponsePlanElement{
 
         }
 
-    part 应急行为 : ResponseAction{
-            attribute BehaviorType : Enum = null;
-            attribute ImplementationCondition : Bool = "0";
-            attribute Duration : Real = null;
+    part plan1 : ResponsePlanElement{
+            attribute PlanName : String = "plan1";
 
+            ref part plan1-人员;
+            ref part plan1-救助;
 
-            perform action Firefighting;
-            perform action PersonnalRescue;
-            perform action VehicleTowing;
-            perform action RoadCleaning;
-            perform action RoadRepair;
-            perform action RoadControl;
 
         }
 
-    part 123445-救助 : ResponseAction{
+    part 14 : ResponsePlanElement{
+            attribute PlanName : String = "14";
+
+            ref part 14-医生;
+            ref part 14-救助;
+
+
+        }
+
+    part 14-救助 : ResponseAction{
             attribute BehaviorType : Enum = "救助";
             attribute ImplementationCondition : Bool = true;
             attribute Duration : Real = "3";
 
+            ref part passenger;
+            ref part 1;
+            ref part human1;
 
             perform action Firefighting;
             perform action PersonnalRescue;
@@ -227,51 +124,13 @@ package ResponsePlanElement{
 
         }
 
-    part 3256-救助 : ResponseAction{
-            attribute BehaviorType : Enum = "救助";
-            attribute ImplementationCondition : Bool = true;
-            attribute Duration : Real = "3";
-
-
-            perform action Firefighting;
-            perform action PersonnalRescue;
-            perform action VehicleTowing;
-            perform action RoadCleaning;
-            perform action RoadRepair;
-            perform action RoadControl;
-
-        }
-
-    part 674675 : ResponsePlanElement{
-            attribute PlanName : String = "674675";
-
-            ref part 674675-类型B;
-            ref part 674675-医生;
-            ref part 674675-人员;
-            ref part 674675-救助;
-            ref part 674675-牵引;
-            ref part 674675-抢修;
-
-
-        }
-
-    part 674675-医生 : ResponseResource{
+    part 14-医生 : ResponseResource{
             attribute ResourceType : Enum = "类型A";
             attribute ResourceUsageCondition : Bool = "0";
             attribute ResourceQuantityOrQuality : Real = "1";
-            attribute Location : String = "666";
+            attribute Location : String = "上海市黄浦区瑞金二路街道雁荡路109-1号雁荡大厦 (31.21833,121.47023)";
 
-            ref part 674675-牵引;
-
-
-        }
-
-    part 应急资源 : ResponseResource{
-            attribute ResourceType : Enum = null;
-            attribute ResourceUsageCondition : Bool = "0";
-            attribute ResourceQuantityOrQuality : Real = null;
-            attribute Location : String = "未知";
-
+            ref part 14-救助;
 
 
         }

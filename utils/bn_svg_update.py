@@ -13,6 +13,7 @@ import graphviz
 import numpy as np
 import pandas as pd
 import pyAgrum as gum
+from matplotlib import pyplot as plt
 from owlready2 import *
 from scipy.stats import truncnorm, norm
 
@@ -51,7 +52,9 @@ class FuzzyEvaluation:
             for j in k_filtered:
                 differences_sum = 1 - (sum(abs(a - b) for a, b in zip(row[i], row[j]))) / len(row[i])
                 temp.append(differences_sum)
-            avg_similarity.append(sum(temp) / len(temp))
+
+            current_avg = sum(temp) / len(temp) if temp else 1.0  # Default to 1.0 if no comparisons
+            avg_similarity.append(current_avg)
             ss.append(temp)
             relative_similarity.append(avg_similarity[i] / sum(avg_similarity))
 
@@ -90,6 +93,7 @@ class ScenarioResilience:
         self.ie = None
         self.fuzzy_evaluator = FuzzyEvaluation()
         self.current_evidence = {}  # 添加追踪当前证据的属性
+        self.ontology_path = ontology_path
 
         self.state_numb_dict = {
             'roadPassibility': [0, 1],
@@ -131,9 +135,10 @@ class ScenarioResilience:
         # 定义因子-能力关系
         self.factor_capacity = {
             'AbsorptionScenario': ['roadPassibility', 'roadLoss'],
-            'AdaptionScenario': ['emergencyType', 'emergencyPeriod'],
+            'AdaptionScenario': ['emergencyType', 'emergencyPeriod','casualties'],
             'RecoveryScenario': ['AidResource', 'TowResource', 'FirefightingResource',
-                                 'RescueResource', 'responseDuration', 'disposalDuration', 'casualties']
+                                 'RescueResource', 'responseDuration', 'disposalDuration'],
+            'ScenarioResilience': ['AbsorptionCapacity', 'AdaptionCapacity', 'RecoveryCapacity']
         }
 
     def process_expert_evaluation(self, expert_info_path: str, expert_estimation_path: str) -> pd.DataFrame:
@@ -408,13 +413,17 @@ class ScenarioResilience:
 
     def _set_discrete_prior(self, node_name: str, data: pd.Series) -> None:
         """设置离散变量的先验概率"""
-        category_counts = data.value_counts()
-        probabilities = (category_counts / category_counts.sum()).tolist()
-        self.bn.cpt(node_name).fillWith(probabilities)
+        # category_counts = data.value_counts()
+        # probabilities = (category_counts / category_counts.sum()).tolist()
+        # self.bn.cpt(node_name).fillWith(probabilities)
+        category_probabilities = data.value_counts(normalize=True).sort_index().tolist()
+        print(category_probabilities)
+        self.bn.cpt(node_name).fillWith(category_probabilities)
 
     def _set_continuous_prior(self, node_name: str, data: pd.Series) -> None:
         """使用截断正态分布设置连续变量的先验概率"""
         truncated_normal = self._fit_truncated_normal(data)
+        self.draw_thorm(node_name, truncated_normal, data, debug=True)
         probs = [
             self._calculate_interval_probability(truncated_normal, 0, 15),
             self._calculate_interval_probability(truncated_normal, 15, 30),
@@ -423,12 +432,61 @@ class ScenarioResilience:
         ]
         self.bn.cpt(node_name).fillWith(probs)
 
+
+    def draw_thorm(self,node_name:str,truncated_normal: truncnorm, data: pd.Series, debug = False) -> None:
+        # 绘图，以便调试
+        if not debug:
+            return
+        data = data.dropna()
+        mu, std = norm.fit(data)
+
+        lower_bound = np.percentile(data, 1)  # 1th percentile
+        upper_bound = np.percentile(data, 99)  # 99th percentile
+
+        a = (lower_bound - mu) / std  # Lower bound in terms of z-score
+        b = (upper_bound - mu) / std  # Upper bound in terms of z-score
+        #     a = (min(data) - mu) / std  # Lower bound in terms of z-score
+        #     b = (max(data) - mu) / std  # Upper bound in terms of z-score
+        # Generate sampled values from the truncated normal distribution
+        sampled_values = truncated_normal.rvs(size=1000)
+
+        plt.figure(figsize=(10, 6))
+        plt.hist(sampled_values, bins=50, density=True, alpha=0.6, color='g', label='Data Histogram')
+
+        # 绘制截断正态分布曲线
+        #     x = np.linspace(min(data), max(data), 1000)
+        x = np.linspace(truncnorm.ppf(0.01, a, b),
+                        truncnorm.ppf(0.99, a, b), 100)
+        #     x = np.linspace(lower_bound, upper_bound, 1000)
+        p = truncated_normal.pdf(x)
+        plt.plot(x, p, 'k-', linewidth=2, label=f'Truncated Normal Fit (μ={mu:.2f}, σ={std:.2f})')
+
+        # 添加标签和图例
+        plt.title('Truncated Normal Distribution Fit')
+        plt.xlabel('Continuous Variable')
+        plt.ylabel('Density')
+        plt.legend()
+        # 保存
+        # 保存路径
+        scenario_id = os.path.basename(os.path.dirname(os.path.dirname(self.ontology_path)))
+        output_path = os.path.abspath(os.path.join(os.path.dirname(self.ontology_path), f'../../../bn/{scenario_id}'))
+        os.makedirs(output_path, exist_ok=True)
+        plt.savefig(f'{output_path}/{node_name}_truncated_normal_fit.png')
+        print(f"Saved truncated normal fit plot for {node_name} to {output_path}")
+
     @staticmethod
     def _fit_truncated_normal(data: pd.Series) -> truncnorm:
         """拟合截断正态分布"""
+        # mu, std = norm.fit(data)
+        # lower = np.percentile(data, 5)
+        # upper = np.percentile(data, 95)
+        # a = (lower - mu) / std
+        # b = (upper - mu) / std
+        # return truncnorm(a, b, loc=mu, scale=std)
+
         mu, std = norm.fit(data)
-        lower = np.percentile(data, 5)
-        upper = np.percentile(data, 95)
+        lower = np.percentile(data, 1)
+        upper = np.percentile(data, 99)
         a = (lower - mu) / std
         b = (upper - mu) / std
         return truncnorm(a, b, loc=mu, scale=std)
@@ -440,24 +498,42 @@ class ScenarioResilience:
 
     def make_inference(self, evidence: Optional[Dict] = None) -> None:
         """
-        在贝叶斯网络上执行推理
-
-        Args:
-            evidence (Dict, optional): 推理中要考虑的证据
+        执行带有给定证据的贝叶斯网络推理
         """
+        # 创建新的推理引擎
         self.ie = gum.LazyPropagation(self.bn)
 
         # 更新当前证据
         if evidence is not None:
             self.current_evidence = evidence.copy()
         else:
-            self.current_evidence = {}  # 如果没有提供证据，则清空当前证据
+            self.current_evidence = {}
 
+        # 如果有证据需要设置
         if self.current_evidence:
-            for node, value in self.current_evidence.items():
-                self.ie.setEvidence({node: value})
+            print("Setting all evidence at once...")
+            print(self.current_evidence)
+            try:
+                # 设置所有证据
+                self.ie.setEvidence(self.current_evidence)
 
-        self.ie.makeInference()
+                # 执行推理 - 在访问任何后验之前
+                self.ie.makeInference()
+
+                # 只有推理成功后才检查后验
+                print("Evidence successfully set and inference completed.")
+
+            except Exception as e:
+                print(f"Error during evidence setting or inference: {e}")
+                # 创建一个没有证据的新推理引擎
+                self.ie = gum.LazyPropagation(self.bn)
+                self.ie.makeInference()
+                print("Falling back to inference without evidence.")
+        else:
+            # 无证据情况下的推理
+            self.ie.makeInference()
+
+        print("Inference completed.")
 
     def clear_evidence(self) -> None:
         """清除所有证据并重新进行推理"""
@@ -696,7 +772,7 @@ class NetworkVisualizer:
         """创建水平布局的组合可视化"""
         # 只获取实际存在的SVG文件
         all_svg_files = ["bn_structure.svg", "bn_inference.svg", "bn_inference_with_evidence.svg"]
-        all_titles = ["Network Structure", "Initial Inference", "Inference with Evidence"]
+        all_titles = ["Network Structure", "Prior Possibility", "Inference with Evidence"]
 
         svg_files = []
         titles = []
@@ -856,6 +932,12 @@ def update_with_evidence(analyzer: ScenarioResilience, evidence: Optional[Dict[s
     if evidence is None:
         analyzer.clear_evidence()
     else:
+        # 保存到 evidence.log 中
+        with open('evidence.log', 'a') as f:
+            import time
+            timestamp = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
+            evidence_str = f"{timestamp} - {str(evidence)}\n"
+            f.write(evidence_str)
         analyzer.make_inference(evidence)
 
     # 构建后验概率的字典，使用状态名称作为键
@@ -863,6 +945,7 @@ def update_with_evidence(analyzer: ScenarioResilience, evidence: Optional[Dict[s
     for node in analyzer.bn.nodes():
         node_name = analyzer.bn.variable(node).name()
         posterior = analyzer.ie.posterior(node_name).tolist()
+        print(f"142315{posterior}")
 
         # 获取该节点的状态映射
         state_labels = analyzer.state_mapping.get(node_name, [])
@@ -901,7 +984,7 @@ def update_with_evidence(analyzer: ScenarioResilience, evidence: Optional[Dict[s
 def bn_svg_update():
     """主函数演示用法"""
     # 初始化分析器
-    analyzer = ScenarioResilience(r"D:\PythonProjects\AcademicTool_PySide\data\sysml2\21\owl\Scenario.owl")
+    analyzer = ScenarioResilience(r"D:\PythonProjects\AcademicTool_PySide\data\sysml2\3\owl\Scenario.owl")
 
     # 提取数据属性
     analyzer.extract_data_properties()
@@ -910,12 +993,12 @@ def bn_svg_update():
     analyzer.create_bayesian_network()
 
     # 设置先验概率
-    analyzer.set_prior_probabilities(r"C:\Users\Tsing_loong\Desktop\Work Section\推演代码合成\推演代码合成\prior prob test.xlsx")
+    analyzer.set_prior_probabilities(r"D:\PythonProjects\AcademicTool_PySide\data\required_information\prior prob test.xlsx")
 
     # 处理专家评估
     expert_df = analyzer.process_expert_evaluation(
-        expert_info_path=r"C:\Users\Tsing_loong\Desktop\Work Section\推演代码合成\推演代码合成\expertInfo.xlsx",
-        expert_estimation_path=r"C:\Users\Tsing_loong\Desktop\Work Section\推演代码合成\推演代码合成\expert estimation test.xlsx"
+        expert_info_path=r"D:\PythonProjects\AcademicTool_PySide\data\required_information\expertInfo.xlsx",
+        expert_estimation_path=r"D:\PythonProjects\AcademicTool_PySide\data\required_information\expert estimation test.xlsx"
     )
 
     # 设置条件概率表

@@ -279,6 +279,7 @@ class ClickableAttributeWidget(QWidget):
         """将标签设置为蓝色加粗，表示正在编辑。"""
 
         self.name_label.setStyleSheet("font-weight: bold;")
+        self.name_label.setStyleSheet(("color: #0078d7 !important;"))
 
 
     def unhighlight(self, is_edit):
@@ -360,6 +361,7 @@ class EditAttributeDialog(QDialog):
             return combobox
         elif self.attr_type == "Bool":
             checkbox = QCheckBox()
+            print(f"234234{self.attr_value}")
             checkbox.setChecked(str(self.attr_value).lower() in ["true", "1", "yes"])
             return checkbox
         elif self.attr_type == "int":
@@ -756,7 +758,7 @@ class EditEntityDialog(QDialog):
         # basic_data_type_id = self.get_result_by_sql(
         #     f"SELECT attribute_type_id FROM attribute_type WHERE code IN {tuple(basic_data_type)}")
         # basic_data_type_id = [row[0] for row in basic_data_type_id]
-        if object['is_reference'] == 0 or False:
+        if object['is_reference'] == 0 or False or str(object['is_reference']).lower() == 'false':
             return False
         return True
 
@@ -1059,7 +1061,7 @@ class EditRelatedObjectDialog(QDialog):
             event.accept()
         else:
             # 如果没有更改，恢复到初始状态
-            self.selected_entities = self.previous_selected_entities
+            # self.selected_entities = self.previous_selected_entities
             self.update_element()
             event.accept()
 
@@ -1067,14 +1069,14 @@ class EditRelatedObjectDialog(QDialog):
         """重写接受处理"""
         if not self.has_changes:
             # 如果没有更改，恢复初始状态
-            self.selected_entities = self.previous_selected_entities
+            # self.selected_entities = self.previous_selected_entities
             self.update_element()
         super().accept()
 
     def reject(self):
         """重写取消处理"""
         # 恢复到初始状态
-        self.selected_entities = self.previous_selected_entities
+       # self.selected_entities = self.previous_selected_entities
         self.update_element()
         super().reject()
 
@@ -1119,12 +1121,34 @@ class EditRelatedObjectDialog(QDialog):
         else:
             self.is_multi_valued = self.object['is_multi_valued']
             self.current_name = self.object['behavior_code_name']
-            self.current_type_id = self.object['object_entity_type_id']
-            self.current_type_name = self.parent.get_result_by_sql(f"SELECT entity_type_name FROM entity_type WHERE entity_type_id = {self.object['object_entity_type_id']}")[0][0]
+            if self.object['object_entity_type_id']:
+                self.current_type_id = self.object['object_entity_type_id']
+                self.target_type_name = self.parent.get_result_by_sql(
+                    f"SELECT entity_type_name FROM entity_type WHERE entity_type_id = {self.object['object_entity_type_id']}")[
+                    0][0]
+                self.current_type_name = self.parent.get_result_by_sql(f"SELECT entity_type_name FROM entity_type WHERE entity_type_id = {self.object['object_entity_type_id']}")[0][0]
+                self.target_type_id = self.object['object_entity_type_id']
+            else:
+                # 弹出对话框选择关联实体类型
+                entity_types = self.parent.get_result_by_sql(
+                    "SELECT entity_type_id, entity_type_name FROM entity_type WHERE is_item_type = 0")
+                if not entity_types:
+                    QMessageBox.warning(self, "警告", "没有可用的实体类型。")
+                    raise ValueError("没有可用的实体类型")
+                dialog = EntityTypeDialog(entity_types, self)
+                result = dialog.exec()
+
+                if result == QDialog.Accepted:
+                    self.current_type_id, self.current_type_name = dialog.get_selected_entity()
+                    self.target_type_name = self.current_type_name
+                    self.target_type_id = self.current_type_id
+                else:
+                    CustomInformationDialog("未选择任何实体类型", "未选择任何实体类型。").exec_()
+                    raise ValueError("未选择任何实体类型")  # 抛出异常而不是直接关闭
+
             self.is_required = self.object['is_required']
             self.scenario_id = self.parent.scenario_data["scenario_id"]
-            self.target_type_id = self.object['object_entity_type_id']
-            self.target_type_name = self.parent.get_result_by_sql(f"SELECT entity_type_name FROM entity_type WHERE entity_type_id = {self.object['object_entity_type_id']}")[0][0]
+
             for item_key, item_value in self.object_parent.items():
                 behaviors = item_value.get("behaviors", [])
                 for behavior in behaviors:
@@ -1205,7 +1229,8 @@ class EditRelatedObjectDialog(QDialog):
         self.all_entities_id.clear()
         self.all_entities_name.clear()
         # 清空选中实体集合
-        self.selected_entities.clear
+        self.selected_entities.clear()
+
 
         if self.type == "attribute":
             # 获取当前属性类型的 element_type_id
@@ -1241,8 +1266,7 @@ class EditRelatedObjectDialog(QDialog):
             if current_attribute:
                 # 只更新当前编辑属性的关联实体
                 for item in self.parent.element_data.keys():
-                    if (self.parent.element_data[item]['entity_type_id'] == current_attribute[
-                        'reference_target_type_id'] and
+                    if (self.parent.element_data[item]['entity_type_id'] == self.target_type_id and
                             self.parent.element_data[item]['entity_parent_id'] == self.current_element_name):
 
                         # 如果不是列表，转为列表
@@ -1268,11 +1292,12 @@ class EditRelatedObjectDialog(QDialog):
                 else:
                     self.associated_element_id = [current_attribute["referenced_entities"]]
 
+
             print(f"当前属性关联的实体IDs: {self.associated_element_id}")
 
         elif self.type == "behavior":
             # 获取当前行为类型的 element_type_id
-            element_type_id = self.object["object_entity_type_id"]
+            element_type_id = self.target_type_id
 
             for item_key, item_value in self.object_parent.items():
                 if item_value["entity_type_id"] == element_type_id:
@@ -1380,9 +1405,15 @@ class EditRelatedObjectDialog(QDialog):
                 self.resource_table.setItem(starting_row + idx, 2, name_item)
 
         # 移除名字为空的行
-        for row in range(self.resource_table.rowCount()):
-            if self.resource_table.item(row, 2) and self.resource_table.item(row, 2).text() == "":
-                self.resource_table.removeRow(row)
+        # 从后向前遍历删除空行，这样不会影响索引
+        for row in range(self.resource_table.rowCount() - 1, -1, -1):
+            item = self.resource_table.item(row, 2)
+            if item is None or item.text() == "":
+                # 隐藏行
+                self.resource_table.hideRow(row)
+
+        # 确保表格状态更新
+        self.resource_table.viewport().update()
 
         # 清除任何选择
         self.resource_table.clearSelection()
@@ -1703,208 +1734,225 @@ class EditRelatedObjectDialog(QDialog):
         print("删除实体")
         selected_items = self.resource_table.selectedItems()
 
-        if selected_items:
-            row = selected_items[0].row()
-            # 从第 3 列获取实体名称
-            entity_name_item = self.resource_table.item(row, 2)
-            entity_state_item = self.resource_table.cellWidget(row, 1)
-            entity_id_item = self.resource_table.item(row, 0)
-            if not entity_name_item or not entity_id_item:
-                QMessageBox.warning(self, "错误", "无法获取选定实体的信息。")
+        if not selected_items:
+            CustomWarningDialog("删除失败", "请选择要删除的实体。").exec_()
+            return
+
+        row = selected_items[0].row()
+        # 获取实体信息
+        entity_name_item = self.resource_table.item(row, 2)
+        entity_state_item = self.resource_table.cellWidget(row, 1)
+        entity_id_item = self.resource_table.item(row, 0)
+
+        # 如果是最后一个item，不允许删除
+        if self.resource_table.rowCount() - 1 == 0:
+            CustomWarningDialog("删除失败", "请不要删除最后一个实体。").exec_()
+            return
+
+        if not entity_name_item or not entity_id_item:
+            CustomWarningDialog("错误", "无法获取选定实体的信息。").exec_()
+            return
+
+        if entity_state_item.findChild(QCheckBox).isChecked():
+            CustomWarningDialog("删除失败", "请先取消选中实体后再删除。").exec_()
+            return
+
+        entity_name = entity_name_item.text()
+        entity_id = int(entity_id_item.text())
+
+        print(f"尝试删除实体：名称={entity_name}, ID={entity_id}")
+
+        # 检查是否是核心要素
+        core_elements = [item[0] for item in self.parent.get_result_by_sql(
+            "SELECT element_base_name FROM element_base")]
+        if entity_name in core_elements:
+            CustomWarningDialog("删除失败", "核心要素不得删除。").exec_()
+            return
+
+        # 检查依赖关系
+        try:
+            if self._check_entity_dependencies(entity_id, entity_name):
                 return
-            if entity_state_item.findChild(QCheckBox).isChecked():
-                CustomWarningDialog("删除失败", "请先取消选中实体后再删除。").exec_()
-                return
 
-            entity_name = entity_name_item.text()
-            entity_id = int(entity_id_item.text())  # 确保为整数
-
-            print(f"尝试删除实体：名称={entity_name}, ID={entity_id}")
-
-            # TODO 核心要素不得删除
-            core_element = [item[0] for item in self.parent.get_result_by_sql(f"SELECT element_base_name FROM element_base")]
-            if entity_name in core_element:
-                CustomWarningDialog("删除失败", "核心要素不得删除。").exec_()
-                return
-
-            # 遍历是否有正在使用该实体的属性或行为
-            for element_key, element in self.object_parent.items():
-                if element_key == self.current_element_name:
-                    continue
-                # 检查属性
-                for attribute in element.get("attributes", []):
-                    if self.parent.is_related_data(attribute):
-                        attribute_values = attribute.get("attribute_value", [])
-                        # 确保 attribute_values 是列表
-                        if isinstance(attribute_values, int):
-                            attribute_values = [attribute_values]
-                        elif isinstance(attribute_values, list):
-                            attribute_values = [val for val in attribute_values]
-                        else:
-                            continue  # 不支持的类型，跳过
-
-                        print(f"检查属性 '{attribute['attribute_name']}' 的值: {attribute_values}")
-
-                        if entity_id in attribute_values:
-                            CustomWarningDialog(
-                                "删除失败",
-                                f"该实体被属性 '{attribute['attribute_name']}' 使用，请先解除关联。"
-                            ).exec_()
-                            return
-
-                # 检查行为
-                for behavior in element.get("behaviors", []):
-                    related_objects = behavior.get("object_entities", [])
-                    # 确保 related_objects 是列表
-                    if isinstance(related_objects, int):
-                        related_objects = [related_objects]
-                    elif isinstance(related_objects, list):
-                        related_objects = [obj for obj in related_objects]
-                    else:
-                        continue  # 不支持的类型，跳过
-
-                    print(f"检查行为 '{behavior['behavior_name']}' 的相关对象: {related_objects}")
-
-                    if entity_id in related_objects:
-                        CustomWarningDialog(
-                            "删除失败",
-                            f"该实体被行为 '{behavior['behavior_name']}' 使用，请先解除关联。"
-                        ).exec_()
-                        return
-
-            # 从 object_parent 中删除实体
-            if entity_id in self.object_parent:
-                # 从字典中删除
-                self.object_parent.pop(entity_id)
-                print(f"已删除实体 '{entity_name}' 从 object_parent。")
-                CustomInformationDialog("删除成功", f"实体 '{entity_name}' 已删除。").exec_()
-                # 从关联列表中删除
-                if self.type == "attribute":
-                    for attribute in self.object_parent[f"{self.current_element_name}"]["attributes"]:
-                        if attribute["attribute_name"] == self.current_name:
-                            print(f"删除前：{attribute['attribute_value']}")
-                            print(f"删除的实体ID：{entity_id}")
-                            # 如果是int，转为list
-                            if isinstance(attribute["attribute_value"], int):
-                                attribute["attribute_value"] = [attribute["attribute_value"]]
-                            # 直接移除实体 ID
-                            attribute["attribute_value"].remove(entity_id)
-                            break
-                elif self.type == "behavior":
-                    for behavior in self.object_parent[f"{self.current_element_name}"]["behaviors"]:
-                        if behavior["behavior_name"] == self.current_name:
-                            print(f"删除前：{behavior['object_entities']}")
-                            print(f"删除的实体ID：{entity_id}")
-                            # 如果是int，转为list
-                            if isinstance(behavior["related_objects"], int):
-                                behavior["object_entities"] = [behavior["object_entities"]]
-                            # 直接移除实体 ID
-                            behavior["object_entities"].remove(entity_id)
-                            break
-
-                # 输出格式化的object_parent
-                print(
-                    f"[DELETE ELEMENT MAIN INFO]: 现在的object_parent数据：{json.dumps(self.object_parent, ensure_ascii=False, indent=4)}")
-
+            # 执行删除操作
+            if self._perform_entity_deletion(entity_id, entity_name):
+                self.selected_entities.discard(entity_id)
                 self.load_entities()
-                CustomWarningDialog("删除成功", f"实体 '{entity_name}' 已删除。").exec_()
+                CustomInformationDialog("删除成功", f"实体 '{entity_name}' 已删除。").exec_()
             else:
                 CustomWarningDialog("删除失败", "无法找到要删除的实体。").exec_()
-        else:
-            CustomWarningDialog("删除失败", "请先取消选中实体后再删除。").exec_()
+        except Exception as e:
+            print(f"删除实体时发生错误: {e}")
+            CustomWarningDialog("删除失败", f"删除过程中发生错误：{str(e)}").exec_()
+
+    def _check_entity_dependencies(self, entity_id, entity_name):
+        """检查实体的依赖关系"""
+        for element_key, element in self.object_parent.items():
+            if element_key == self.current_element_name:
+                continue
+
+            # 检查属性依赖
+            for attribute in element.get("attributes", []):
+                if self.parent.is_related_data(attribute):
+                    attribute_values = attribute.get("referenced_entities", [])
+                    if not isinstance(attribute_values, list):
+                        attribute_values = [attribute_values] if attribute_values is not None else []
+
+                    if entity_id in attribute_values:
+                        CustomWarningDialog(
+                            "删除失败",
+                            f"该实体被属性 '{attribute.get('attribute_name', '未知属性')}' 使用，请先解除关联。"
+                        ).exec_()
+                        return True
+
+            # 检查行为依赖
+            for behavior in element.get("behaviors", []):
+                related_objects = behavior.get("object_entities", [])
+                if not isinstance(related_objects, list):
+                    related_objects = [related_objects] if related_objects is not None else []
+
+                if entity_id in related_objects:
+                    CustomWarningDialog(
+                        "删除失败",
+                        f"该实体被行为 '{behavior.get('behavior_name', '未知行为')}' 使用，请先解除关联。"
+                    ).exec_()
+                    return True
+
+        return False
+
+    def _perform_entity_deletion(self, entity_id, entity_name):
+        """执行实体删除操作"""
+        if entity_id not in self.object_parent:
+            return False
+
+        # 从对象父级中删除实体
+        self.object_parent.pop(entity_id)
+        print(f"已删除实体 '{entity_name}' 从 object_parent")
+
+        # 更新关联数据
+        if self.type == "attribute":
+            self._update_attribute_references(entity_id)
+        elif self.type == "behavior":
+            self._update_behavior_references(entity_id)
+
+        return True
+
+    def _update_attribute_references(self, entity_id):
+        """更新属性引用"""
+        for attribute in self.object_parent[self.current_element_name]["attributes"]:
+            if attribute["attribute_code_name"] == self.current_name:
+                # 确保 attribute_value 是列表
+                if not isinstance(attribute["attribute_value"], list):
+                    attribute["attribute_value"] = [attribute["attribute_value"]] if attribute[
+                                                                                         "attribute_value"] is not None else []
+
+                # 更新 attribute_value
+                if entity_id in attribute["attribute_value"]:
+                    attribute["attribute_value"].remove(entity_id)
+
+                # 同时更新 referenced_entities
+                if "referenced_entities" in attribute:
+                    if not isinstance(attribute["referenced_entities"], list):
+                        attribute["referenced_entities"] = [attribute["referenced_entities"]] if attribute[
+                                                                                                     "referenced_entities"] is not None else []
+                    if entity_id in attribute["referenced_entities"]:
+                        attribute["referenced_entities"].remove(entity_id)
+                break
+
+    def _update_behavior_references(self, entity_id):
+        """更新行为引用"""
+        for behavior in self.object_parent[self.current_element_name]["behaviors"]:
+            if behavior["behavior_code_name"] == self.current_name:
+                if not isinstance(behavior["object_entities"], list):
+                    behavior["object_entities"] = [behavior["object_entities"]] if behavior[
+                                                                                       "object_entities"] is not None else []
+
+                if entity_id in behavior["object_entities"]:
+                    behavior["object_entities"].remove(entity_id)
+                break
 
     def on_checkbox_state_changed(self, entity_id, state):
-        """处理复选框状态变化"""
-        # 记录当前的选中状态
-        self.has_changes = True
-        if not self.is_add:
-            self.previous_selected_entities = set(self.selected_entities)
+        """
+        处理复选框状态变化
 
-        if state == 2:
-            self.selected_entities.add(entity_id)
-            print(f"实体 {entity_id} 被选中。当前选中列表: {self.selected_entities}")
+        Args:
+            entity_id: 实体ID
+            state: 复选框状态 (Qt.Checked=2, Qt.Unchecked=0)
+        """
+        newest_selection = None
+        try:
+            # 记录更改前的状态
+            self.has_changes = True
+            previous_selection = set(self.selected_entities)
+            print(f"更改前的选择: {previous_selection}")
 
-        else:
-            self.selected_entities.discard(entity_id)
-            print(f"实体 {entity_id} 被取消选中。当前选中列表: {self.selected_entities}")
+            # 更新选中状态
+            if state == 2:  # Checked
+                self.selected_entities.add(entity_id)
+            else:  # Unchecked
+                self.selected_entities.discard(entity_id)
 
-        flag = False
-        if not self.debug:
-            # 如果该属性不是多选项，检查是否选择了多个实体
-            if not self.is_multi_valued:
-                if len(self.selected_entities) > 1:
-                    # 弹出警告框
-                    CustomWarningDialog("选择错误", "该属性不支持多选，请只选择一个实体。").exec_()
-                    flag = True
+            # 如果不是调试模式，执行验证
+            if not self.debug:
+                validation_error = None
 
-                    # 选中刚刚选择的实体，也就是取消之前的选择，就是现在的和之前的做差
-                    self.selected_entities = self.selected_entities - self.previous_selected_entities
-                    self.previous_selected_entities = self.selected_entities
-                    print(f"选中列表已恢复: {self.selected_entities}")
+                # 检查是否违反单选限制
+                if not self.is_multi_valued and len(self.selected_entities) > 1:
+                    validation_error = "该属性不支持多选，请只选择一个实体。"
+                    # 保持最新选择的实体
+                    self.selected_entities = {entity_id} if state == 2 else set()
+                    print(f"最新选择: {self.selected_entities}")
+                    newest_selection = self.selected_entities
+                    self.update_element()
 
-                    # 恢复复选框状态
-                    for row in range(self.resource_table.rowCount()):
-                        current_entity_id = self.resource_table.item(row, 0).text()
-                        if current_entity_id == entity_id:
-                            checkbox_widget = self.resource_table.cellWidget(row, 1)
-                            if checkbox_widget:
-                                checkbox = checkbox_widget.findChild(QCheckBox)
-                                if checkbox:
-                                    # 阻止信号触发，避免递归调用
-                                    checkbox.blockSignals(True)
-                                    checkbox.setChecked(entity_id in self.selected_entities)
-                                    checkbox.blockSignals(False)
-                            break
+                # 检查必选项限制
+                elif self.is_required and not self.selected_entities and previous_selection:
+                    validation_error = "该属性为必选项，请至少选择一个实体。"
+                    self.selected_entities = previous_selection
 
+                # 如果有验证错误，显示警告并恢复状态
+                if validation_error:
+                    CustomWarningDialog("选择错误", validation_error).exec_()
+                    self.restore_checkbox_states()
+                    return
 
+            # 更新关联数据
+            if newest_selection:
+                print(f"最新选341择: {newest_selection}")
+                self.selected_entities = newest_selection
+            self.update_element()
 
-            # 如果该属性是必选项，检查是否选择了至少一个实体
-            if self.is_required and self.previous_selected_entities is not set():
-                if not self.selected_entities:
-                    # 弹出警告框
-                    print(f"214134{self.previous_selected_entities}")
-                    if not self.previous_selected_entities or self.previous_selected_entities == {None}:
-                        return
-                    else:
-                        # 如果之前不空，现在空了，才真的要恢复
-                        CustomWarningDialog("选择错误", "该属性为必选项，请至少选择一个实体。").exec_()
+        except Exception as e:
+            print(f"Error in on_checkbox_state_changed: {e}")
+            # 发生错误时恢复到之前的状态
+            self.selected_entities = previous_selection
+            self.restore_checkbox_states()
 
-
-                    # 恢复之前的选中状态
-                    self.selected_entities = self.previous_selected_entities
-                    flag = True
-                    print(f"选中列表已恢复: {self.selected_entities}")
-
-                    # 恢复复选框状态
-                    for row in range(self.resource_table.rowCount()):
-                        current_entity_id = self.resource_table.item(row, 0).text()
-                        if current_entity_id == entity_id:
-                            checkbox_widget = self.resource_table.cellWidget(row, 1)
-                            if checkbox_widget:
-                                checkbox = checkbox_widget.findChild(QCheckBox)
-                                if checkbox:
-                                    # 阻止信号触发，避免递归调用
-                                    checkbox.blockSignals(True)
-                                    checkbox.setChecked(entity_id in self.selected_entities)
-                                    checkbox.blockSignals(False)
-                            break
-
-        self.update_element()
-
-        if flag:
-            # 刷新界面
-            self.load_entities()
-            return
+    def restore_checkbox_states(self):
+        """恢复复选框状态以匹配 selected_entities"""
+        try:
+            for row in range(self.resource_table.rowCount()):
+                entity_id = int(self.resource_table.item(row, 0).text())
+                checkbox_widget = self.resource_table.cellWidget(row, 1)
+                if checkbox_widget:
+                    checkbox = checkbox_widget.findChild(QCheckBox)
+                    if checkbox:
+                        checkbox.blockSignals(True)
+                        checkbox.setChecked(entity_id in self.selected_entities)
+                        checkbox.blockSignals(False)
+        except Exception as e:
+            print(f"Error in restore_checkbox_states: {e}")
 
     def update_element(self):
         print(f"更新 {self.current_element_name} 的 {self.current_name} 属性/行为")
+        print(f"当前选择的实体: {self.selected_entities}")
         if self.type == "attribute":
             # Find the current attribute being edited
             current_attribute = None
             for attribute in self.object_parent[self.current_element_name]["attributes"]:
                 if attribute["attribute_code_name"] == self.current_name:
                     current_attribute = attribute
-                    entity_type_id = attribute['reference_target_type_id']
+                    entity_type_id = self.target_type_id
                     attribute["attribute_value"] = list(self.selected_entities)
                     attribute["referenced_entities"] = list(self.selected_entities)
                     print(f"wqe{entity_type_id},{attribute['attribute_value'], attribute['referenced_entities']}")
@@ -2622,9 +2670,10 @@ class ElementSettingTab(QWidget):
 
                 attr_name = attr.get("china_default_name", "")
                 attr_value = self.show_object_value(attr, "attribute")
+                print(f"{attr_name}_{attr_value}")
                 if attr.get("attribute_type_code") == "Bool":
                     print(f"2231{attr_value}")
-                    attr_value = "是" if attr_value in ["True","1"] else "否"
+                    attr_value = "是" if str(attr_value).lower() in ["true","1"] else "否"
                 attr_type = attr.get("attribute_type", "")
 
                 attr_widget = ClickableAttributeWidget(attr_name, attr_value, attr_type)
@@ -2705,6 +2754,7 @@ class ElementSettingTab(QWidget):
                     if new_value is not None:
                         # 更新属性值
                         attr["attribute_value"] = new_value
+                        print(f"更新{attr}的{new_value}_{attr['attribute_value']}")
                         element_name = element.get("element_name")
                         # if element_name == "道路环境要素":
                         #     for attribute in self.element_data['道路承灾要素']['attributes']:
@@ -3226,6 +3276,7 @@ class ElementSettingTab(QWidget):
                 # 你也可以先令 final_behavior_name = None => 让后面回写
                 # 或者默认就用 bh_def.china_default_name
                 final_behavior_name = None
+                print(bh_def.object_entity_type_id)
 
                 behavior_item = {
                     "behavior_value_id": bv_id,
@@ -3315,7 +3366,15 @@ class ElementSettingTab(QWidget):
             print(f"TemplateInfo: {template}")
             has_template = []
             for item in template:
-                has_template.append(self.get_result_by_sql(f"SELECT template_name FROM template WHERE entity_type_id = {item['id']} AND category_id = {item['categories']};")[0][0])
+                result = self.get_result_by_sql(
+                    f"SELECT template_name FROM template WHERE entity_type_id = {item['id']} AND category_id = {item['categories']};")
+                if result and len(result) > 0:
+                    has_template.append(result[0][0])
+                else:
+                    print(
+                        f"Warning: No template found for entity_type_id={item['id']} and category_id={item['categories']}")
+                    # 可以选择跳过或使用默认值
+                    continue
             print(f"has_template: {has_template}")
             # 规定的8类要素
             # 1. 必须有的要素

@@ -186,7 +186,7 @@ class CustomCheckBoxWithLabel(QWidget):
 
         layout.addWidget(self.checkbox)
         layout.addWidget(self.label)
-        layout.addWidget(QLabel(self.tr("时长:")))
+        layout.addWidget(QLabel(self.tr("处置时长:")))
         layout.addWidget(self.duration_spin)
 
     def emit_duration_changed(self):
