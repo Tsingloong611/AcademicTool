@@ -13,6 +13,7 @@ from PySide6.QtWidgets import (
 from PySide6.QtCore import Qt, Signal, QSize
 from PySide6.QtGui import QPixmap, QFont, QIcon, QWheelEvent, QPainter
 
+from utils.get_config import get_cfg
 from views.dialogs.custom_warning_dialog import CustomWarningDialog
 from views.dialogs.update_prior_dialog import *
 from views.tabs.condition_setting import CustomTableWidget
@@ -244,6 +245,8 @@ QTableWidget:focus {
 
         self.set_condition_button = QPushButton(self.tr("设置推演条件"))
         self.set_condition_button.setFixedWidth(110)
+        if get_cfg()['i18n']['language'] == 'en_US':
+            self.set_condition_button.setFixedWidth(180)
         self.set_condition_button.clicked.connect(self.set_inference_conditions)
         button_layout.addWidget(self.set_condition_button)
 
@@ -314,6 +317,8 @@ QTableWidget:focus {
         top_layout.addStretch()  # 将按钮推到右侧
         self.update_prior_button = QPushButton(self.tr("更新先验"))
         self.update_prior_button.setFixedWidth(110)
+        if get_cfg()['i18n']['language'] == 'en_US':
+            self.update_prior_button.setFixedWidth(160)
         self.update_prior_button.clicked.connect(self.update_prior)
         top_layout.addWidget(self.update_prior_button)
         outer_layout.addLayout(top_layout)

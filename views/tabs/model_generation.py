@@ -449,6 +449,8 @@ QListWidget::item:selected {{
         # 生成推演模型按钮
         self.generate_button = QPushButton(self.tr("生成推演模型"))
         self.generate_button.setFixedWidth(110)
+        if get_cfg()["i18n"]["language"] == "en_US":
+            self.generate_button.setFixedWidth(210)
         self.generate_button.clicked.connect(self.handle_generate)
 
         combo_zoom_layout.addWidget(self.ontology_combo)

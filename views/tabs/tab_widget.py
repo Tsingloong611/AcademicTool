@@ -19,6 +19,7 @@ from test6 import convert_owl_to_svg
 from utils.bn_svg_update import NetworkVisualizer, ScenarioResilience, bn_svg_update, update_with_evidence
 from utils.combinesysml2 import combine_sysml2
 from utils.createowlfromoriginjson import ScenarioOntologyGenerator
+from utils.get_config import get_cfg
 from utils.json2owl import create_ontology, owl_excel_creator, Scenario_owl_creator, Emergency_owl_creator
 from utils.parserowl import parse_owl
 from utils.plan import PlanDataCollector, convert_to_evidence, PlanData
@@ -341,6 +342,8 @@ class CustomTabWidget(QWidget):
             progress.setWindowModality(Qt.WindowModal)
             progress.setMinimumDuration(0)  # 立即显示进度条
             progress.setMinimumWidth(300)
+            if get_cfg()['i18n']['language'] == "en_US":
+                progress.setMinimumWidth(400)
             progress.setCancelButton(None)  # 不显示取消按钮
             progress.setAutoClose(True)
             progress.show()
@@ -523,6 +526,8 @@ class CustomTabWidget(QWidget):
             progress.setWindowModality(Qt.WindowModal)
             progress.setMinimumDuration(0)
             progress.setMinimumWidth(300)
+            if get_cfg()['i18n']['language'] == "en_US":
+                progress.setMinimumWidth(400)
             progress.setCancelButton(None)
             progress.setAutoClose(True)
             progress.show()

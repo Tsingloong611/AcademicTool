@@ -2620,6 +2620,8 @@ class ElementSettingTab(QWidget):
         # 生成情景模型按钮
         self.generate_button = QPushButton(self.tr("生成情景模型"))
         self.generate_button.setFixedWidth(110)
+        if get_cfg()['i18n']['language'] == "en_US":
+            self.generate_button.setFixedWidth(210)
         self.generate_button.setObjectName("generate_button")
         self.generate_button.setToolTip(self.tr("点击生成情景级孪生模型"))
 

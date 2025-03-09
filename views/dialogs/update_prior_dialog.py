@@ -16,6 +16,7 @@ import pandas as pd
 import os
 import ast
 
+from utils.get_config import get_cfg
 from views.dialogs.custom_error_dialog import CustomErrorDialog
 from views.dialogs.custom_information_dialog import CustomInformationDialog
 from views.dialogs.custom_warning_dialog import CustomWarningDialog
@@ -1021,6 +1022,10 @@ class MainUpdateDialog(QDialog):
         layout.addWidget(btn_nonroot)
         layout.addStretch()
         self.info_dir = info_dir
+        if get_cfg()['i18n']['language'] == 'en_US':
+            self.resize(220, 50)
+            btn_root.setFixedWidth(210)
+            btn_nonroot.setFixedWidth(210)
 
     def open_root_dialog(self):
 
@@ -1314,6 +1319,11 @@ class NonRootActionDialog(QDialog):
         btn_modify.setFixedWidth(110)
         btn_add.setFixedWidth(110)
         btn_upload.setFixedWidth(110)
+        if get_cfg()['i18n']['language'] == 'en_US':
+            self.resize(280, 70)
+            btn_modify.setFixedWidth(270)
+            btn_add.setFixedWidth(270)
+            btn_upload.setFixedWidth(270)
 
         btn_modify.clicked.connect(self.open_modify_dialog)
         btn_add.clicked.connect(self.open_add_dialog)

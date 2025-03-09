@@ -733,12 +733,17 @@ class SaveResultDialog(QDialog):
 
         self.listwidget = QListWidget()
         for sc in saved_categories:
-            self.listwidget.addItem(sc["category"])
+            if get_cfg()["i18n"]["language"] == "en_US":
+                self.listwidget.addItem(to_display_text(sc["category"]))
+            else:
+                self.listwidget.addItem(sc["category"])
         main_layout.addWidget(self.listwidget)
 
         btn_h = QHBoxLayout()
         self.btn_detail = QPushButton(self.tr("查看详情"))
         self.btn_detail.setFixedWidth(85)
+        if get_cfg()["i18n"]["language"] == "en_US":
+            self.btn_detail.setFixedWidth(120)
         self.btn_detail.clicked.connect(lambda: self.open_detail_dialog(info_html))
         self.btn_ok = QPushButton(self.tr("确定"))
         self.btn_ok.setFixedWidth(50)
@@ -871,6 +876,9 @@ class ConditionSettingTab(QWidget):
         self.edit_resource_btn.setFixedWidth(110)
         self.delete_resource_btn.setFixedWidth(110)
         self.execute_btn.setFixedWidth(110)
+        if get_cfg()["i18n"]["language"] == "en_US":
+            self.execute_btn.setFixedWidth(160)
+
 
         self.execute_btn.setEnabled(False)
         self.execute_btn.setToolTip(self.tr("请配置应急行为"))
@@ -1278,14 +1286,28 @@ class ConditionSettingTab(QWidget):
             b_resources = []
             # 收集表格里本行为对应的资源
             for row in range(self.resource_table.rowCount()):
-                if self.resource_table.item(row, 0).text() == b:
-                    r = {
-                        "资源": self.resource_table.item(row, 1).text(),
-                        "类型": self.resource_table.item(row, 2).text(),
-                        "数量": int(self.resource_table.item(row, 3).text()),
-                        "位置": self.resource_table.item(row, 4).text()
-                    }
-                    b_resources.append(r)
+                for row in range(self.resource_table.rowCount()):
+                    table_behavior = self.resource_table.item(row, 0).text()
+
+                    # 如果是英文界面，将表格中的行为名称转换为中文进行比较
+                    if get_cfg()["i18n"]["language"] == "en_US":
+                        if to_storage_text(table_behavior) == b:
+                            r = {
+                                "资源": self.resource_table.item(row, 1).text(),
+                                "类型": self.resource_table.item(row, 2).text(),
+                                "数量": int(self.resource_table.item(row, 3).text()),
+                                "位置": self.resource_table.item(row, 4).text()
+                            }
+                            b_resources.append(r)
+                    else:
+                        if table_behavior == b:
+                            r = {
+                                "资源": self.resource_table.item(row, 1).text(),
+                                "类型": self.resource_table.item(row, 2).text(),
+                                "数量": int(self.resource_table.item(row, 3).text()),
+                                "位置": self.resource_table.item(row, 4).text()
+                            }
+                            b_resources.append(r)
 
             saved_categories.append({
                 "category": b,
@@ -1304,8 +1326,12 @@ class ConditionSettingTab(QWidget):
          .no-behavior{color:red;font-style:italic;text-align:center}
         </style></head><body><h2>""" + self.tr("保存结果详情") + """</h2>
         """
+        print(f"[DEBUG] Saved categories: {saved_categories}")
         for item in saved_categories:
-            info_html += f"<h3>{self.tr('类别')}: {item['category']}</h3>"
+            if get_cfg()["i18n"]["language"] == "en_US":
+                info_html += self.tr("<h3>类别: ")+f"{to_display_text(item['category'])}</h3>"
+            else:
+                info_html += self.tr("<h3>类别: ")+f"{item['category']}</h3>"
             info_html += """<b>""" + self.tr("属性") + """:</b>
             <table><tr><th>""" + self.tr("属性名称") + """</th><th>""" + self.tr("属性值") + """</th></tr>"""
             for k,v in item["attributes"].items():
