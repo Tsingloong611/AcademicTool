@@ -215,7 +215,7 @@ class AddExpertDialog(QDialog):
 
     def __init__(self, info_dir, parent=None):
         super().__init__(parent)
-        self.setWindowTitle("新增专家问卷")
+        self.setWindowTitle(self.tr("新增专家问卷"))
         self.resize(1200, 700)
         self.info_dir = info_dir  # 可能用于保存/读取Excel的路径
         self.parent = parent
@@ -233,33 +233,33 @@ class AddExpertDialog(QDialog):
         nodes = sorted({node for (node, state) in QUESTION_TEXT.keys()})
         self.combo_node.addItems(nodes)
         # 增加默认值
-        self.combo_node.insertItem(0, "请选择节点")
+        self.combo_node.insertItem(0, self.tr("请选择节点"))
         self.combo_node.setCurrentIndex(0)
         self.flag = True
         self.combo_node.currentTextChanged.connect(self.on_node_changed)
-        form_layout.addRow("请选择节点：", self.combo_node)
+        form_layout.addRow(self.tr("请选择节点："), self.combo_node)
 
         self.combo_age = QComboBox()
         self.combo_age.addItems(AGE_OPTIONS)
-        form_layout.addRow("您的年龄：", self.combo_age)
+        form_layout.addRow(self.tr("您的年龄："), self.combo_age)
 
         self.combo_edu = QComboBox()
         self.combo_edu.addItems(EDU_OPTIONS)
-        form_layout.addRow("您的教育水平：", self.combo_edu)
+        form_layout.addRow(self.tr("您的教育水平："), self.combo_edu)
 
         self.combo_workyear = QComboBox()
         self.combo_workyear.addItems(WORK_OPTIONS)
-        form_layout.addRow("您的工作年限：", self.combo_workyear)
+        form_layout.addRow(self.tr("您的工作年限："), self.combo_workyear)
 
         self.combo_job = QComboBox()
         self.combo_job.addItems(JOB_OPTIONS)
-        form_layout.addRow("您的工作职位：", self.combo_job)
+        form_layout.addRow(self.tr("您的工作职位："), self.combo_job)
 
         main_layout.addLayout(form_layout)
 
 
         # 分割线/标题
-        sep_label = QLabel("请为下列问题进行打分：")
+        sep_label = QLabel(self.tr("请为下列问题进行打分："))
         sep_label.setStyleSheet("font-weight: bold; margin-top: 8px;")
         main_layout.addWidget(sep_label)
 
@@ -289,12 +289,12 @@ class AddExpertDialog(QDialog):
         btn_layout = QHBoxLayout()
         btn_layout.addStretch()
 
-        btn_cancel = QPushButton("取消")
+        btn_cancel = QPushButton(self.tr("取消"))
         btn_cancel.setFixedWidth(110)
         btn_cancel.clicked.connect(self.reject)
         btn_layout.addWidget(btn_cancel)
 
-        btn_save = QPushButton("保存")
+        btn_save = QPushButton(self.tr("保存"))
         btn_save.setFixedWidth(110)
         btn_save.clicked.connect(self.on_save_clicked)
         btn_layout.addWidget(btn_save)
@@ -387,11 +387,11 @@ class AddExpertDialog(QDialog):
             combo = QComboBox()
             combo.addItems(EVAL_OPTIONS)
             # 如果当前节点已有答案，则按条件显示，否则设为“未评估”
-            rating = saved_answers.get(cond_tuple, "未评估")
+            rating = saved_answers.get(cond_tuple, self.tr("未评估"))
             if rating in EVAL_OPTIONS:
                 combo.setCurrentText(rating)
             else:
-                combo.setCurrentText("未评估")
+                combo.setCurrentText(self.tr("未评估"))
             self.table.setCellWidget(row_idx, 2, combo)
 
 
@@ -428,7 +428,7 @@ class AddExpertDialog(QDialog):
                 cond_tuple = cond_str
             # 第三列为 Rating，通过下拉框获取
             combo = self.table.cellWidget(row, 2)
-            rating = combo.currentText() if combo else "未评估"
+            rating = combo.currentText() if combo else self.tr("未评估")
             answers[cond_tuple] = rating
         self.node_answers[node] = answers
 
@@ -443,11 +443,11 @@ class AddExpertDialog(QDialog):
             ratings = list(answers.values())
             if not ratings:
                 continue
-            has_unevaluated = any(r == "未评估" or r.strip() == "" for r in ratings)
-            has_evaluated = any(r != "未评估" and r.strip() != "" for r in ratings)
+            has_unevaluated = any(r == self.tr("未评估") or r.strip() == "" for r in ratings)
+            has_evaluated = any(r != self.tr("未评估") and r.strip() != "" for r in ratings)
             if has_unevaluated and has_evaluated:
                 CustomWarningDialog(
-                    "警告", f"节点 {node} 下的问卷问题存在部分未评估与部分已评估，请修正后再保存！"
+                    self.tr("警告"), self.tr("节点 {0} 下的问卷问题存在部分未评估与部分已评估，请修正后再保存！").format(node)
                 ).exec_()
                 return  # 校验失败，不允许保存
         # 获取用户选择的值
@@ -461,7 +461,7 @@ class AddExpertDialog(QDialog):
                 selected_edu == EDU_OPTIONS[0] or
                 selected_workyear == WORK_OPTIONS[0] or
                 selected_job == JOB_OPTIONS[0]):
-            CustomWarningDialog("警告", "请完整填写所有个人信息！").exec_()
+            CustomWarningDialog(self.tr("警告"), self.tr("请完整填写所有个人信息！")).exec_()
             return  # 阻止保存操作
 
         #####################################################
@@ -482,13 +482,13 @@ class AddExpertDialog(QDialog):
         expert_rating = {}
         for node, answers in self.node_answers.items():
             # 如果全部都是“未评估”，则跳过该节点
-            if all(r == "未评估" or r.strip() == "" for r in answers.values()):
+            if all(r == self.tr("未评估") or r.strip() == "" for r in answers.values()):
                 continue
             # 默认 state 为 0
             expert_rating[(node, 0)] = answers
 
         if not expert_rating:
-            CustomWarningDialog("警告", "请至少为一个节点的问卷问题提供完整评分！").exec_()
+            CustomWarningDialog(self.tr("警告"), self.tr("请至少为一个节点的问卷问题提供完整评分！")).exec_()
             return
         # 这里只演示打印
         print("\n===== 个人信息 =====")
@@ -509,7 +509,7 @@ class AddExpertDialog(QDialog):
             with open(expert_info_path, "rb") as f:
                 pass  # 仅用于检查文件是否可以访问
         except PermissionError:
-            CustomWarningDialog("错误", "无法访问 expertInfo.xlsx，请关闭 Excel 后重试！").exec_()
+            CustomWarningDialog(self.tr("错误"), self.tr("无法访问 expertInfo.xlsx，请关闭 Excel 后重试！")).exec_()
             return
 
         if os.path.exists(expert_info_path):
@@ -561,7 +561,7 @@ class AddExpertDialog(QDialog):
 
                 # 如果匹配到行，则写入评分，否则跳过
                 if mask.any():
-                    if rating != "未评估":  # 如果不是 "未评估"，才写入
+                    if rating != self.tr("未评估"):  # 如果不是 "未评估"，才写入
                         df_estimation.loc[mask, new_expert_col] = rating
 
         df_estimation.to_excel(expert_estimation_path, index=False, engine="openpyxl")
@@ -569,7 +569,7 @@ class AddExpertDialog(QDialog):
         self.parent.updated = True
 
 
-        CustomInformationDialog("成功", "已成功获取个人信息与问卷评分。").exec_()
+        CustomInformationDialog(self.tr("成功"), self.tr("已成功获取个人信息与问卷评分。")).exec_()
 
         self.accept()  # 关闭对话框
 
@@ -577,7 +577,7 @@ class AddExpertDialog(QDialog):
 class NonRootTableUpdateDialog(QDialog):
     def __init__(self, info_dir, parent=None):
         super().__init__(parent)
-        self.setWindowTitle("更新非根节点先验数据")
+        self.setWindowTitle(self.tr("更新非根节点先验数据"))
         self.resize(850, 700)
 
         self.info_dir = info_dir
@@ -700,13 +700,13 @@ class NonRootTableUpdateDialog(QDialog):
         main_layout = QVBoxLayout(self)
         main_layout.setSpacing(15)
 
-        header = QLabel("更新非根节点先验数据（问卷填写）")
+        header = QLabel(self.tr("更新非根节点先验数据（问卷填写）"))
         header.setAlignment(Qt.AlignCenter)
         header.setFont(QFont("SimSun", 16, QFont.Bold))
         main_layout.addWidget(header)
 
         select_layout = QHBoxLayout()
-        select_layout.addWidget(QLabel("非根节点："))
+        select_layout.addWidget(QLabel(self.tr("非根节点：")))
         self.combo_nonroot = QComboBox()
         self.combo_nonroot.addItems(list(NONROOT_PARENTS.keys()))
         # 当节点变化时，需要先保存当前表格，再生成新表格
@@ -727,7 +727,7 @@ class NonRootTableUpdateDialog(QDialog):
         # 表格
         self.table = QTableWidget()
         self.table.setColumnCount(1 + self.num_experts)
-        header_labels = ["Condition"] + [f"专家{i+1}" for i in range(self.num_experts)]
+        header_labels = [self.tr("Condition")] + [self.tr("专家{0}").format(i + 1) for i in range(self.num_experts)]
         self.table.setHorizontalHeaderLabels(header_labels)
         self.table.horizontalHeader().setSectionResizeMode(0, QHeaderView.Stretch)
         self.table.verticalHeader().setVisible(False)
@@ -737,9 +737,9 @@ class NonRootTableUpdateDialog(QDialog):
 
         btn_layout = QHBoxLayout()
         btn_layout.addStretch()
-        btn_cancel = QPushButton("取消")
+        btn_cancel = QPushButton(self.tr("取消"))
         btn_cancel.setFixedWidth(110)
-        btn_ok = QPushButton("确定")
+        btn_ok = QPushButton(self.tr("确定"))
         btn_ok.setFixedWidth(110)
         btn_cancel.clicked.connect(self.reject)
         btn_ok.clicked.connect(self.on_ok_clicked)
@@ -807,7 +807,7 @@ class NonRootTableUpdateDialog(QDialog):
             expert_vals = []
             for col in range(1, 1 + self.num_experts):
                 widget = self.table.cellWidget(row, col)
-                val = widget.currentText().strip() if widget else "未评估"
+                val = widget.currentText().strip() if widget else self.tr("未评估")
                 expert_vals.append(val)
 
             self.all_node_data[ns_key][cond_tuple] = expert_vals
@@ -860,9 +860,9 @@ class NonRootTableUpdateDialog(QDialog):
                     if val in EVAL_OPTIONS:
                         combo.setCurrentText(val)
                     else:
-                        combo.setCurrentText("未评估")
+                        combo.setCurrentText(self.tr("未评估"))
                 else:
-                    combo.setCurrentText("未评估")
+                    combo.setCurrentText(self.tr("未评估"))
 
                 self.table.setCellWidget(row, col, combo)
 
@@ -954,18 +954,19 @@ class NonRootTableUpdateDialog(QDialog):
                 col_vals = [row[expert_index] for row in data_rows if len(row) > expert_index]
                 if not col_vals:
                     continue  # 若该列没有数据则跳过
-                has_unevaluated = any(val == "未评估" or val.strip() == "" for val in col_vals)
-                has_evaluated = any(val != "未评估" and val.strip() != "" for val in col_vals)
+                has_unevaluated = any(val == self.tr("未评估") or val.strip() == "" for val in col_vals)
+                has_evaluated = any(val != self.tr("未评估") and val.strip() != "" for val in col_vals)
                 if has_unevaluated and has_evaluated:
                     CustomWarningDialog(
-                        "警告",
-                        f"节点 {node} / 中，第 {expert_index + 1} 位专家存在部分已评估与部分未评估的混合，请修正后再保存。"
+                        self.tr("警告"),
+                        self.tr("节点 {0} / 中，第 {1} 位专家存在部分已评估与部分未评估的混合，请修正后再保存。").format(
+                            node, expert_index + 1)
                     ).exec_()
                     return False
 
             # 对于当前节点的每一行数据，若整行都是“未评估”，则跳过，否则构造保存用的数据行
             for cond_tuple, expert_vals in cond_map.items():
-                if all(val == "未评估" or val.strip() == "" for val in expert_vals):
+                if all(val == self.tr("未评估") or val.strip() == "" for val in expert_vals):
                     continue  # 整行都未评估，则不保存
                 row_dict = {
                     "Node": node,
@@ -973,7 +974,7 @@ class NonRootTableUpdateDialog(QDialog):
                     "State": state_int
                 }
                 for i, val in enumerate(expert_vals):
-                    if val == "未评估":
+                    if val == self.tr("未评估"):
                         val = ""
                     row_dict[f"E{i + 1}"] = val
                 rows_to_save.append(row_dict)
@@ -988,10 +989,10 @@ class NonRootTableUpdateDialog(QDialog):
             df_final = pd.DataFrame(rows_to_save, columns=df_old.columns)
             print(f"最终保存的数据：\n{df_final}")
             df_final.to_excel(self.expert_excel_path, index=False, engine="openpyxl")
-            CustomInformationDialog("成功", "所有非根节点问卷数据已校验并保存到 Excel。").exec_()
+            CustomInformationDialog(self.tr("成功"), self.tr("所有非根节点问卷数据已校验并保存到 Excel。")).exec_()
             return True
         except Exception as e:
-            CustomErrorDialog("错误", f"保存Excel文件时发生错误：{str(e)}").exec_()
+            CustomErrorDialog(self.tr("错误"), self.tr("保存Excel文件时发生错误：{0}").format(str(e))).exec_()
             return False
 
 
@@ -999,7 +1000,7 @@ class NonRootTableUpdateDialog(QDialog):
 class MainUpdateDialog(QDialog):
     def __init__(self, info_dir, parent=None):
         super().__init__(parent)
-        self.setWindowTitle("类型选择")
+        self.setWindowTitle(self.tr("类型选择"))
         # 使用最小尺寸
         self.resize(100, 50)
         self.updated = False
@@ -1009,8 +1010,8 @@ class MainUpdateDialog(QDialog):
         # # 使用宋体
         # font = QFont("SimSun", 14, QFont.Bold)
         # layout.addWidget(header)
-        btn_root = QPushButton("更新根节点")
-        btn_nonroot = QPushButton("更新非根节点")
+        btn_root = QPushButton(self.tr("更新根节点"))
+        btn_nonroot = QPushButton(self.tr("更新非根节点"))
         # 固定宽度为110
         btn_root.setFixedWidth(110)
         btn_nonroot.setFixedWidth(110)
@@ -1040,7 +1041,7 @@ class UploadExpertDialog(QDialog):
     """
     def __init__(self, info_dir, parent=None):
         super().__init__(parent)
-        self.setWindowTitle("上传专家意见")
+        self.setWindowTitle(self.tr("上传专家意见"))
         self.resize(400, 200)
         self.info_dir = info_dir
         self.parent = parent
@@ -1051,12 +1052,12 @@ class UploadExpertDialog(QDialog):
 
         # 文件上传区域：上传按钮 + 文件名称显示区域
         file_layout = QHBoxLayout()
-        self.btn_select_file = QPushButton("选择文件")
+        self.btn_select_file = QPushButton(self.tr("选择文件"))
         self.btn_select_file.setFixedWidth(110)
         self.btn_select_file.clicked.connect(self.select_file)
         file_layout.addWidget(self.btn_select_file)
 
-        self.file_label = QLabel("未选择文件")
+        self.file_label = QLabel(self.tr("未选择文件"))
         file_layout.addWidget(self.file_label)
         file_layout.addStretch()
         main_layout.addLayout(file_layout)
@@ -1065,12 +1066,12 @@ class UploadExpertDialog(QDialog):
         btn_layout = QHBoxLayout()
         btn_layout.addStretch()
 
-        self.btn_cancel = QPushButton("取消")
+        self.btn_cancel = QPushButton(self.tr("取消"))
         self.btn_cancel.setFixedWidth(110)
         self.btn_cancel.clicked.connect(self.reject)
         btn_layout.addWidget(self.btn_cancel)
 
-        self.btn_ok = QPushButton("确定")
+        self.btn_ok = QPushButton(self.tr("确定"))
         self.btn_ok.setFixedWidth(110)
         self.btn_ok.clicked.connect(self.on_ok)
         btn_layout.addWidget(self.btn_ok)
@@ -1101,7 +1102,7 @@ class UploadExpertDialog(QDialog):
         校验通过后，将解析结果打印出来。
         """
         if not self.selected_file:
-            CustomWarningDialog("警告", "请先选择文件！").exec_()
+            CustomWarningDialog(self.tr("警告"), self.tr("请先选择文件！")).exec_()
             return
 
         try:
@@ -1110,10 +1111,10 @@ class UploadExpertDialog(QDialog):
 
             # 查找第一列中包含“节点”的行作为问卷数据的标题行
             header_indices = df.index[
-                df.iloc[:, 0].astype(str).str.strip().str.contains("节点", na=False)
+                df.iloc[:, 0].astype(str).str.strip().str.contains(self.tr("节点"), na=False)
             ].tolist()
             if not header_indices:
-                raise ValueError("未能在上传文件中找到问卷数据标题行 '节点'")
+                raise ValueError(self.tr("未能在上传文件中找到问卷数据标题行 '节点'"))
             header_row = header_indices[0]
 
             # -------------------------------
@@ -1135,16 +1136,16 @@ class UploadExpertDialog(QDialog):
             valid_ADE = {"A", "B", "C", "D"}
             valid_job = {"A", "B", "C", "D", "E"}
             if ans_age not in valid_ADE:
-                CustomWarningDialog("警告", "个人信息：年龄答案不合法，必须是 A、B、C 或 D！").exec_()
+                CustomWarningDialog(self.tr("警告"), self.tr("个人信息：年龄答案不合法，必须是 A、B、C 或 D！")).exec_()
                 return
             if ans_edu not in valid_ADE:
-                CustomWarningDialog("警告", "个人信息：教育水平答案不合法，必须是 A、B、C 或 D！").exec_()
+                CustomWarningDialog(self.tr("警告"), self.tr("个人信息：教育水平答案不合法，必须是 A、B、C 或 D！")).exec_()
                 return
             if ans_work not in valid_ADE:
-                CustomWarningDialog("警告", "个人信息：工作年限答案不合法，必须是 A、B、C 或 D！").exec_()
+                CustomWarningDialog(self.tr("警告"), self.tr("个人信息：工作年限答案不合法，必须是 A、B、C 或 D！")).exec_()
                 return
             if ans_job not in valid_job:
-                CustomWarningDialog("警告", "个人信息：工作职位答案不合法，必须是 A、B、C、D 或 E！").exec_()
+                CustomWarningDialog(self.tr("警告"), self.tr("个人信息：工作职位答案不合法，必须是 A、B、C、D 或 E！")).exec_()
                 return
 
             # 根据答案构造个人信息（此处使用自定义映射：A->1, B->2, C->3, D->4；工作职位 A-E映射为1-5）
@@ -1163,7 +1164,7 @@ class UploadExpertDialog(QDialog):
             df_questionnaire = pd.read_excel(self.selected_file, header=header_row, engine="openpyxl")
             # 判断评分列：如果存在"评分"列则使用，否则使用第三列
             if "评分" in df_questionnaire.columns:
-                rating_col = "评分"
+                rating_col = self.tr("评分")
             else:
                 rating_col = df_questionnaire.columns[2]
 
@@ -1194,12 +1195,12 @@ class UploadExpertDialog(QDialog):
                 question_text = str(row["问题"]).strip()
                 raw_rating = str(row[rating_col]).strip()
                 if not raw_rating:
-                    CustomWarningDialog("警告", f"问卷题目 '{question_text}' 缺失评分，请补充完整！").exec_()
+                    CustomWarningDialog(self.tr("警告"), self.tr("问卷题目 '{0}' 缺失评分，请补充完整！").format(question_text)).exec_()
                     return
                 rating = raw_rating.upper()
                 if rating not in valid_ratings:
-                    CustomWarningDialog("警告",
-                                        f"问卷题目 '{question_text}' 的评分不合法（{raw_rating}），必须是 VL, L, M, H 或 VH！").exec_()
+                    CustomWarningDialog(self.tr("警告"),
+                                        self.tr("问卷题目 '{0}' 的评分不合法（{1}），必须是 VL, L, M, H 或 VH！").format(question_text,raw_rating)).exec_()
                     return
 
                 # 归一化题目文本进行匹配
@@ -1211,7 +1212,7 @@ class UploadExpertDialog(QDialog):
                         matched = True
                         break
                 if not matched:
-                    print(f"警告：无法匹配题目文本: {question_text} 在节点 {current_node}")
+                    print(self.tr("警告：无法匹配题目文本: {0} 在节点 {1}").format(question_text, current_node))
 
             print("===== 问卷评分 =====")
             print(expert_rating)
@@ -1221,13 +1222,13 @@ class UploadExpertDialog(QDialog):
             df_rating = pd.DataFrame(expert_rating)
 
             #   2) personal_info -> 写到 ExpertInfo sheet
-            expert_info_path = os.path.join(self.info_dir, "expertInfo.xlsx")
+            expert_info_path = os.path.join(self.info_dir, "expert_info_data.xlsx")
 
             try:
                 with open(expert_info_path, "rb") as f:
                     pass  # 仅用于检查文件是否可以访问
             except PermissionError:
-                CustomWarningDialog("错误", "无法访问 expertInfo.xlsx，请关闭 Excel 后重试！").exec_()
+                CustomWarningDialog(self.tr("错误"), self.tr("无法访问 expertInfo.xlsx，请关闭 Excel 后重试！")).exec_()
                 return
 
             if os.path.exists(expert_info_path):
@@ -1280,25 +1281,25 @@ class UploadExpertDialog(QDialog):
 
                     # 如果匹配到行，则写入评分，否则跳过
                     if mask.any():
-                        if rating != "未评估":  # 如果不是 "未评估"，才写入
+                        if rating != self.tr("未评估"):  # 如果不是 "未评估"，才写入
                             df_estimation.loc[mask, new_expert_col] = rating
 
             df_estimation.to_excel(expert_estimation_path, index=False, engine="openpyxl")
 
             self.parent.updated = True
 
-            CustomInformationDialog("成功", "已成功获取个人信息与问卷评分。").exec_()
+            CustomInformationDialog(self.tr("成功"), self.tr("已成功获取个人信息与问卷评分。")).exec_()
 
             self.accept()
         except Exception as e:
-            CustomErrorDialog("错误", f"处理上传文件时发生错误：{str(e)}").exec_()
+            CustomErrorDialog(self.tr("错误"), self.tr("处理上传文件时发生错误：{0}").format(str(e))).exec_()
             return
 
 
 class NonRootActionDialog(QDialog):
     def __init__(self, info_dir, parent=None):
         super().__init__(parent)
-        self.setWindowTitle("非根节点操作选择")
+        self.setWindowTitle(self.tr("非根节点操作选择"))
         self.resize(100, 70)
         self.info_dir = info_dir
         self.parent = parent
@@ -1306,9 +1307,9 @@ class NonRootActionDialog(QDialog):
         layout = QVBoxLayout(self)
 
         # 两个按钮
-        btn_modify = QPushButton("修改专家意见")
-        btn_add = QPushButton("增加专家意见")
-        btn_upload = QPushButton("上传专家意见")
+        btn_modify = QPushButton(self.tr("修改专家意见"))
+        btn_add = QPushButton(self.tr("增加专家意见"))
+        btn_upload = QPushButton(self.tr("上传专家意见"))
         # 固定宽度为110
         btn_modify.setFixedWidth(110)
         btn_add.setFixedWidth(110)
@@ -1355,23 +1356,23 @@ class NonRootActionDialog(QDialog):
 class RootUpdateDialog(QDialog):
     def __init__(self, info_dir,parent=None):
         super().__init__(parent)
-        self.setWindowTitle("更新根节点先验")
+        self.setWindowTitle(self.tr("更新根节点先验"))
         self.resize(500, 300)
         self.info_dir = info_dir
         self.parent = parent
         layout = QVBoxLayout(self)
-        instruction = QLabel("请选择包含根节点先验数据的事故数据Excel文件：")
+        instruction = QLabel(self.tr("请选择包含根节点先验数据的事故数据Excel文件："))
         layout.addWidget(instruction)
-        self.btn_select_file = QPushButton("选择文件")
+        self.btn_select_file = QPushButton(self.tr("选择文件"))
         self.btn_select_file.setFixedWidth(110)
         self.btn_select_file.clicked.connect(self.select_file)
         layout.addWidget(self.btn_select_file)
-        self.file_label = QLabel("未选择文件")
+        self.file_label = QLabel(self.tr("未选择文件"))
         layout.addWidget(self.file_label)
         btn_layout = QHBoxLayout()
-        self.btn_ok = QPushButton("确定")
+        self.btn_ok = QPushButton(self.tr("确定"))
         self.btn_ok.setFixedWidth(110)
-        self.btn_cancel = QPushButton("取消")
+        self.btn_cancel = QPushButton(self.tr("取消"))
         self.btn_cancel.setFixedWidth(110)
         self.btn_ok.clicked.connect(self.on_ok)
         self.btn_cancel.clicked.connect(self.reject)
@@ -1392,7 +1393,7 @@ class RootUpdateDialog(QDialog):
     def on_ok(self):
         if not hasattr(self, "selected_file") or not self.selected_file:
 
-            CustomWarningDialog("警告", "请先选择事故数据文件！").exec_()
+            CustomWarningDialog(self.tr("警告"), self.tr("请先选择事故数据文件！")).exec_()
             return
         # 把info_dir/prior prob test.xlsx替换掉
         try:
@@ -1402,9 +1403,9 @@ class RootUpdateDialog(QDialog):
             new_file = os.path.join(self.info_dir, "root_prior_data.xlsx")
             df.to_excel(new_file, index=False)
 
-            CustomInformationDialog("成功", "根节点先验数据已更新并保存到 Excel。").exec_()
+            CustomInformationDialog(self.tr("成功"), self.tr("根节点先验数据已更新并保存到 Excel。")).exec_()
         except Exception as e:
-            CustomErrorDialog("错误", f"保存Excel文件时发生错误：{str(e)}").exec_()
+            CustomErrorDialog(self.tr("错误"), self.tr("保存Excel文件时发生错误：{0}").format(str(e))).exec_()
         self.parent.updated = True
         self.accept()
 

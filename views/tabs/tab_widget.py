@@ -336,8 +336,8 @@ class CustomTabWidget(QWidget):
             import time
 
             # 创建进度条对话框
-            progress = QProgressDialog("准备开始...", None, 0, 8, self)
-            progress.setWindowTitle("生成模型")
+            progress = QProgressDialog(self.tr("准备开始..."), None, 0, 8, self)
+            progress.setWindowTitle(self.tr("生成模型"))
             progress.setWindowModality(Qt.WindowModal)
             progress.setMinimumDuration(0)  # 立即显示进度条
             progress.setMinimumWidth(300)
@@ -352,7 +352,7 @@ class CustomTabWidget(QWidget):
                 time.sleep(0.1)  # 添加小延迟让进度条可见
 
             # 第1步：初始化
-            update_progress(0, "正在初始化...")
+            update_progress(0, self.tr("正在初始化..."))
 
 
             scenario_id = self.ElementSettingTab.scenario_data['scenario_id']
@@ -360,16 +360,16 @@ class CustomTabWidget(QWidget):
             output_dir = os.path.join(os.path.dirname(__file__), f'../../data/sysml2/{scenario_id}/combined')
 
             # 第2步：合并SysML2文件
-            update_progress(1, "正在合并SysML2文件...")
+            update_progress(1, self.tr("正在合并SysML2文件..."))
 
             try:
                 config_path = os.path.join(os.path.dirname(__file__), '../../config.json')
                 combine_sysml2(input_dir, output_dir, config_path)
             except Exception as e:
-                raise Exception(f"合并SysML2文件失败: {str(e)}")
+                raise Exception(self.tr('合并SysML2文件失败: {e}').format(e=str(e)))
 
             # 第3步：处理文件
-            update_progress(2, "正在处理文件...")
+            update_progress(2, self.tr("正在处理文件..."))
 
             input_dir = output_dir
             output_dir = os.path.join(os.path.dirname(__file__), f'../../data/sysml2/{scenario_id}/result')
@@ -381,10 +381,10 @@ class CustomTabWidget(QWidget):
                         input_path = os.path.join(input_dir, file_name)
                         process_file(input_path, output_dir)
             except Exception as e:
-                raise Exception(f"处理文件失败: {str(e)}")
+                raise Exception(self.tr('处理文件失败: {e}'.format(e=str(e))))
 
             # 第4步：生成ScenarioElement本体
-            update_progress(3, "正在生成ScenarioElement本体...")
+            update_progress(3, self.tr("正在生成ScenarioElement本体..."))
 
             try:
                 input_dir = output_dir
@@ -418,10 +418,10 @@ class CustomTabWidget(QWidget):
 
                 owl_excel_creator(scenario_element_owl, os.path.join(output_dir, "ScenarioElement_Prop.xlsx"))
             except Exception as e:
-                raise Exception(f"生成ScenarioElement本体失败: {str(e)}")
+                raise Exception(self.tr('生成ScenarioElement本体失败: {e}').format(e=str(e)))
 
             # 第5步：创建其他本体文件
-            update_progress(4, "正在创建其他本体文件...")
+            update_progress(4, self.tr("正在创建其他本体文件..."))
 
             try:
                 scenario_output_path = os.path.join(output_dir, "Scenario.owl")
@@ -432,10 +432,10 @@ class CustomTabWidget(QWidget):
                 Emergency_owl_creator(emergency_output_path)
                 owl_excel_creator(emergency_output_path, os.path.join(output_dir, "Emergency_Prop.xlsx"))
             except Exception as e:
-                raise Exception(f"创建Scenario和Emergency本体失败: {str(e)}")
+                raise Exception(self.tr('创建Scenario和Emergency本体失败: {e}').format(e=str(e)))
 
             # 第6步：合并OWL文件
-            update_progress(5, "正在合并OWL文件...")
+            update_progress(5, self.tr("正在合并OWL文件..."))
 
             try:
                 input_owl_files = [
@@ -451,10 +451,10 @@ class CustomTabWidget(QWidget):
 
                 combined_graph.serialize(destination=combined_output_path, format="xml")
             except Exception as e:
-                raise Exception(f"合并OWL文件失败: {str(e)}")
+                raise Exception(self.tr('合并OWL文件失败: {e}').format(e=str(e)))
 
             # 第7步：创建OWL图片和解析模型
-            update_progress(6, "正在创建OWL图片和解析模型...")
+            update_progress(6, self.tr("正在创建OWL图片和解析模型..."))
 
             try:
                 input_owl_files = input_owl_files + [combined_output_path]
@@ -466,19 +466,19 @@ class CustomTabWidget(QWidget):
                     json_data = converted_data
                     parse_owl(input_owl, json_data)
             except Exception as e:
-                raise Exception(f"创建OWL图片或解析模型失败: {str(e)}")
+                raise Exception(self.tr('创建OWL图片或解析模型失败: {e}').format(e=str(e)))
 
             # 第8步：保存到数据库
-            update_progress(7, "正在保存到数据库...")
+            update_progress(7, self.tr("正在保存到数据库..."))
 
             try:
                 self.generate_model_save_to_database.emit()
 
             except Exception as e:
-                raise Exception(f"保存到数据库失败: {str(e)}")
+                raise Exception(self.tr('保存到数据库失败: {e}').format(e=str(e)))
 
             # 完成
-            update_progress(8, "完成")
+            update_progress(8, self.tr("完成"))
             time.sleep(0.5)  # 让用户看到100%的进度
             progress.close()
             self.unlock_tabs(2)
@@ -488,7 +488,7 @@ class CustomTabWidget(QWidget):
         except Exception as e:
             if 'progress' in locals():
                 progress.close()
-            QMessageBox.critical(None, "错误", f"模型生成失败:\n{str(e)}")
+            QMessageBox.critical(None, "错误", self.tr('模型生成失败:{e}').format(e=str(e)))
             print(f"Error: {str(e)}")
 
     def generate_bayes(self):
@@ -496,8 +496,8 @@ class CustomTabWidget(QWidget):
             import time
 
             # 创建进度条对话框
-            progress = QProgressDialog("准备开始...", None, 0, 8, self)
-            progress.setWindowTitle("生成贝叶斯网络")
+            progress = QProgressDialog(self.tr("准备开始..."), None, 0, 8, self)
+            progress.setWindowTitle(self.tr("生成贝叶斯网络"))
             progress.setWindowModality(Qt.WindowModal)
             progress.setMinimumDuration(0)
             progress.setMinimumWidth(300)
@@ -512,35 +512,35 @@ class CustomTabWidget(QWidget):
                 time.sleep(0.1)
 
             # 步骤1：初始化
-            update_progress(0, "正在初始化...")
+            update_progress(0, self.tr("正在初始化..."))
 
             scenario_id = self.ElementSettingTab.scenario_data['scenario_id']
 
             # 步骤2：加载OWL文件
-            update_progress(1, "正在加载OWL文件...")
+            update_progress(1, self.tr("正在加载OWL文件..."))
             try:
                 input_owl = os.path.abspath(os.path.join(os.path.dirname(__file__),
                                                          f'../../data/sysml2/{scenario_id}/owl/Scenario.owl'))
                 analyzer = ScenarioResilience(input_owl)
             except Exception as e:
-                raise Exception(f"加载OWL文件失败: {str(e)}")
+                raise Exception(self.tr('加载OWL文件失败: {e}').format(e=str(e)))
 
             # 步骤3：提取数据属性
-            update_progress(2, "正在提取数据属性...")
+            update_progress(2, self.tr("正在提取数据属性..."))
             try:
                 analyzer.extract_data_properties()
             except Exception as e:
-                raise Exception(f"提取数据属性失败: {str(e)}")
+                raise Exception(self.tr('提取数据属性失败: {e}').format(e=str(e)))
 
             # 步骤4：创建贝叶斯网络结构
-            update_progress(3, "正在创建贝叶斯网络结构...")
+            update_progress(3, self.tr("正在创建贝叶斯网络结构..."))
             try:
                 analyzer.create_bayesian_network()
             except Exception as e:
-                raise Exception(f"创建贝叶斯网络结构失败: {str(e)}")
+                raise Exception(self.tr('创建贝叶斯网络结构失败: {e}').format(e=str(e)))
 
             # 步骤5：设置先验概率
-            update_progress(4, "正在设置先验概率...")
+            update_progress(4, self.tr("正在设置先验概率..."))
             # try:
             #     # 当前脚本所在的目录
             #     current_dir = os.path.dirname(__file__)
@@ -595,10 +595,10 @@ class CustomTabWidget(QWidget):
                 self.ModelTransformationTab.info_dir = os.path.abspath(os.path.join(os.path.dirname(__file__),
                                                                 f'../../data/required_information'))
             except Exception as e:
-                raise Exception(f"设置先验概率失败: {str(e)}")
+                raise Exception(self.tr('设置先验概率失败: {e}').format(e=str(e)))
 
             # 步骤6：处理专家评估
-            update_progress(5, "正在处理专家评估...")
+            update_progress(5, self.tr("正在处理专家评估..."))
             try:
                 expert_df = analyzer.process_expert_evaluation(
                     expert_info_path=expert_info_path,
@@ -606,20 +606,20 @@ class CustomTabWidget(QWidget):
                 )
                 analyzer.set_conditional_probabilities(expert_df)
             except Exception as e:
-                raise Exception(f"处理专家评估失败: {str(e)}")
+                raise Exception(self.tr('处理专家评估失败: {e}').format(e=str(e)))
 
             # 步骤7：执行推理和保存网络
-            update_progress(6, "正在执行推理和保存网络...")
+            update_progress(6, self.tr("正在执行推理和保存网络..."))
             try:
                 analyzer.make_inference()
 
                 output_dir = os.path.join(os.path.dirname(__file__), f'../../data/bn/{scenario_id}')
                 structure_path, params_path = analyzer.save_network(output_dir)
             except Exception as e:
-                raise Exception(f"执行推理或保存网络失败: {str(e)}")
+                raise Exception(self.tr('执行推理或保存网络失败: {e}').format(e=str(e)))
 
             # 步骤8：可视化网络
-            update_progress(7, "正在可视化网络...")
+            update_progress(7, self.tr("正在可视化网络..."))
             try:
                 visualizer = NetworkVisualizer()
                 ie = visualizer.visualize_network(
@@ -638,12 +638,20 @@ class CustomTabWidget(QWidget):
 
                 # 转换为贝叶斯网络证据
                 evidence = convert_to_evidence(plan_data)
-                evidence.pop('responseDuration', None)
-                evidence.pop('disposalDuration', None)
-                evidence['AidResource'] = 0
-                evidence['TowResource'] = 0
-                evidence['FirefightingResource'] = 0
-                evidence['RescueResource'] = 0
+                # 查看有没有设置resource
+                related_usage = collector.get_related_resource()
+                print(f"324234243{related_usage}")
+                if not related_usage:
+                    evidence.pop('responseDuration', None)
+                    evidence.pop('disposalDuration', None)
+                    # evidence.pop('AidResource', None)
+                    # evidence.pop('TowResource', None)
+                    # evidence.pop('FirefightingResource', None)
+                    # evidence.pop('RescueResource', None)
+                    evidence['AidResource']= 0
+                    evidence['TowResource'] = 0
+                    evidence['FirefightingResource'] = 0
+                    evidence['RescueResource'] = 0
                 update_with_evidence(analyzer, evidence,output_dir)
 
                 self.ModelTransformationTab.set_node_data(json.load(open(node_data_path, 'r')))
@@ -651,10 +659,10 @@ class CustomTabWidget(QWidget):
                     os.path.join(output_dir, "combined_visualization.svg"))
                 self.generate_bayes_save_to_database.emit()
             except Exception as e:
-                raise Exception(f"可视化网络失败: {str(e)}")
+                raise Exception(self.tr('可视化网络失败: {e}').format(e=str(e)))
 
             # 完成
-            update_progress(8, "完成")
+            update_progress(8, self.tr("完成"))
             time.sleep(0.5)  # 让用户看到100%的进度
             progress.close()
             self.unlock_tabs(3)
@@ -665,7 +673,7 @@ class CustomTabWidget(QWidget):
         except Exception as e:
             if 'progress' in locals():
                 progress.close()
-            CustomErrorDialog("错误", f"生成推演模型失败:\n{str(e)}", parent=self).exec()
+            CustomErrorDialog(self.tr("错误"), self.tr('生成推演模型失败:{e}').format(e=str(e)), parent=self).exec()
             print(f"Error: {str(e)}")
 
 
@@ -674,6 +682,7 @@ class CustomTabWidget(QWidget):
         self.ConditionSettingTab.scenario_id = self.ElementSettingTab.scenario_data['scenario_id']
         self.ConditionSettingTab.analyzer = self.analyzer
         self.ConditionSettingTab.new_plan_generator = PlanData(self.ConditionSettingTab.session,self.ConditionSettingTab.scenario_id,self.ConditionSettingTab.neg_id_gen)
+        self.ConditionSettingTab.change_path =os.path.abspath(os.path.join(os.path.dirname(__file__), f"../../data/bn/{self.ElementSettingTab.scenario_data['scenario_id']}/posterior_probabilities.json"))
         self.ConditionSettingTab.load_saved_plans()
         self.unlock_tabs(4)
         self.switch_tab(4)

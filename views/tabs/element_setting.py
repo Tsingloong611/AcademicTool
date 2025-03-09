@@ -25,6 +25,7 @@ from sqlalchemy import text
 from sqlalchemy.orm import Session
 
 from models.models import Template, Category
+from utils.get_config import get_cfg
 from utils.json2sysml import json_to_sysml2_txt
 from views.dialogs.custom_information_dialog import CustomInformationDialog
 from views.dialogs.custom_input_dialog import CustomInputDialog
@@ -32,6 +33,7 @@ from views.dialogs.custom_question_dialog import CustomQuestionDialog
 from views.dialogs.custom_select_dialog import CustomSelectDialog
 from views.dialogs.custom_warning_dialog import CustomWarningDialog
 from views.dialogs.entity_type_select import EntityTypeDialog
+
 
 
 class CenteredItemDelegate(QStyledItemDelegate):
@@ -227,8 +229,9 @@ class ClickableAttributeWidget(QWidget):
     """一个可点击的属性项控件，包含属性名称和展示框。"""
     clicked = Signal(str)  # 发射属性名称信号
 
-    def __init__(self, attr_name, attr_value, attr_type, parent=None):
+    def __init__(self, attr_code,attr_name, attr_value, attr_type, parent=None):
         super().__init__(parent)
+        self.attr_code = attr_code
         self.attr_name = attr_name
         self.attr_value = attr_value
         self.attr_type = attr_type
@@ -273,7 +276,7 @@ class ClickableAttributeWidget(QWidget):
 
     def on_clicked(self, event):
         """发射属性名称信号，触发编辑对话框。"""
-        self.clicked.emit(self.attr_name)
+        self.clicked.emit(self.attr_code)
 
     def highlight(self):
         """将标签设置为蓝色加粗，表示正在编辑。"""
@@ -306,12 +309,12 @@ class EditAttributeDialog(QDialog):
         self.init_ui()
 
     def init_ui(self):
-        self.setWindowTitle(self.tr(f"编辑属性: {self.attr_name}"))
+        self.setWindowTitle(self.tr('编辑属性: {attr_name}').format(attr_name=self.attr_name))
         self.setFixedSize(300, 200)
         layout = QVBoxLayout(self)
 
         # 显示正在编辑的属性名称和类型
-        info_label = QLabel(self.tr(f"正在编辑属性: {self.attr_name}\n类型: {self.attr_type_name}"))
+        info_label = QLabel(self.tr('正在编辑属性: {attr_name}\n类型: {attr_type_name}').format(attr_name = self.attr_name, attr_type_name = self.attr_type_name))
         info_label.setAlignment(Qt.AlignCenter)
         info_label.setStyleSheet("font-weight: bold; font-size: 14px;")
         layout.addWidget(info_label)
@@ -677,14 +680,19 @@ class EditEntityDialog(QDialog):
                 if self.parent.should_hide_attribute(attr):
                     continue
 
-                attr_name = attr.get("china_default_name", "")
+                attr_code = attr.get("attribute_code_name", "")
+                if get_cfg()["i18n"]["language"] =="en_US":
+                    attr_name = attr.get("english_default_name", "")
+                else:
+                    attr_name = attr.get("china_default_name", "")
+
                 attr_value = self.show_object_value(attr, "attribute")
                 attr_type = attr.get("attribute_type", "")
                 if attr.get("attribute_type_code") == "Bool":
                     print(f"266231{attr_value}")
                     attr_value = "是" if attr_value == "True" else "否"
 
-                attr_widget = ClickableAttributeWidget(attr_name, attr_value, attr_type)
+                attr_widget = ClickableAttributeWidget(attr_code,attr_name, attr_value, attr_type)
                 attr_widget.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)  # 组件大小策略
                 attr_widget.clicked.connect(self.open_attribute_editor)
 
@@ -778,13 +786,13 @@ class EditEntityDialog(QDialog):
             self.attribute_display_widget.hide()
             self.behavior_display_widget.show()
 
-    def open_attribute_editor(self, attr_name):
+    def open_attribute_editor(self, attr_code):
         """打开属性编辑对话框，允许用户编辑属性值。"""
         if self.entity_data:
             element = self.entity_data
             print(f"当前选中编辑的要素：{element}")
             # 查找属性的值和类型
-            attr = next((a for a in element.get("attributes", []) if a["china_default_name"] == attr_name), None)
+            attr = next((a for a in element.get("attributes", []) if a["attribute_code_name"] == attr_code), None)
             is_edit = False
             print(attr)
             attr_widget = None
@@ -792,7 +800,7 @@ class EditEntityDialog(QDialog):
                 item = self.attribute_content_layout.itemAt(i)
                 if item:
                     widget = item.widget()
-                    if isinstance(widget, ClickableAttributeWidget) and widget.attr_name == attr_name:
+                    if isinstance(widget, ClickableAttributeWidget) and widget.attr_code == attr_code:
                         attr_widget = widget
                         break
 
@@ -888,20 +896,16 @@ class EditEntityDialog(QDialog):
 
             self.behavior_table.setRowCount(len(behaviors))
             for row_idx, behavior in enumerate(behaviors):
-                name_item = QTableWidgetItem(behavior.get("china_default_name", ""))
+                if get_cfg()["i18n"]["language"] == "en_US":
+                    name_item = QTableWidgetItem(behavior.get("english_default_name", ""))
+                else:
+                    name_item = QTableWidgetItem(behavior.get("china_default_name", ""))
                 name_item.setFlags(name_item.flags() & ~Qt.ItemIsEditable)
                 name_item.setTextAlignment(Qt.AlignCenter)
                 self.behavior_table.setItem(row_idx, 0, name_item)
 
                 # 处理行为主体名称
-                subject = behavior.get("behavior_id", "")
-                if isinstance(subject, int):
-                    subject_name_result = self.parent.get_result_by_sql(
-                        f"SELECT element_name FROM element WHERE element_id = (SELECT element_id FROM behavior WHERE behavior_id = {subject})"
-                    )
-                    subject_name = subject_name_result[0][0] if subject_name_result else "未知"
-                else:
-                    subject_name = str(subject)
+                subject_name = self.entity_data.get("entity_name")
                 subject_item = QTableWidgetItem(subject_name)
                 subject_item.setTextAlignment(Qt.AlignCenter)
                 self.behavior_table.setItem(row_idx, 1, subject_item)
@@ -1038,7 +1042,7 @@ class EditRelatedObjectDialog(QDialog):
         self.all_entities_id = []
         self.new_entities = dict()
         self.selected_entities = set()  # 初始化选中实体集合
-        self.setWindowTitle("复合属性编辑")
+        self.setWindowTitle(self.tr("复合属性编辑"))
         self.resize(800, 600)
 
         self.object_parent = object_parent
@@ -2078,6 +2082,19 @@ class ElementSettingTab(QWidget):
 
     def __init__(self):
         super().__init__()
+        self.element_name_mapping = {
+            "道路环境要素": "Road Environment Element",
+            "气象环境要素": "Meteorological Environment Element",
+            "车辆致灾要素": "VehicleHazard Element",
+            "车辆承灾要素": "VehicleAffected Element",
+            "道路承灾要素": "Road Affected Element",
+            "人类承灾要素": "Human Affected Element",
+            "应急资源要素": "Emergency Resource Element",
+            "应急行为要素": "Emergency Action Element"
+        }
+
+        # 反向映射（英文到中文）
+        self.reverse_element_name_mapping = {v: k for k, v in self.element_name_mapping.items()}
 
 
         self.current_selected_element = None
@@ -2089,6 +2106,7 @@ class ElementSettingTab(QWidget):
 
         self.init_data()
         self.init_ui()
+
         self.setup_connections()
 
         self.session = None
@@ -2315,6 +2333,8 @@ class ElementSettingTab(QWidget):
         # 创建并添加复选框
         self.checkboxes = {}
         for i, element in enumerate(self.show_element):
+            if get_cfg()['i18n']['language'] == "en_US":
+                element = self.element_name_mapping[element]
             checkbox = CustomCheckBoxWithLabel(element)
             self.checkboxes[element] = checkbox
             row = i // 4
@@ -2325,8 +2345,6 @@ class ElementSettingTab(QWidget):
             checkbox.label.clicked.connect(partial(self.handle_label_clicked, element, "element"))
 
             self.element_layout.addWidget(checkbox, row, column, 1, 1, alignment)
-
-
 
         # 将内容小部件设置为滚动区域的子部件
         self.element_scroll_area.setWidget(self.element_content_widget)
@@ -2566,7 +2584,10 @@ class ElementSettingTab(QWidget):
 
             self.behavior_table.setRowCount(len(behaviors))
             for row_idx, behavior in enumerate(behaviors):
-                name_item = QTableWidgetItem(behavior.get("china_default_name", ""))
+                if get_cfg()['i18n']['language'] == "en_US":
+                    name_item = QTableWidgetItem(behavior.get("english_default_name", ""))
+                else:
+                    name_item = QTableWidgetItem(behavior.get("china_default_name", ""))
                 name_item.setFlags(name_item.flags() & ~Qt.ItemIsEditable)
                 name_item.setTextAlignment(Qt.AlignCenter)
                 self.behavior_table.setItem(row_idx, 0, name_item)
@@ -2668,7 +2689,11 @@ class ElementSettingTab(QWidget):
                 if self.should_hide_attribute(attr):
                     continue
 
-                attr_name = attr.get("china_default_name", "")
+                attr_code = attr.get("attribute_code_name", "")
+                if get_cfg()['i18n']['language'] == "en_US":
+                    attr_name = attr.get("english_default_name", "")
+                else:
+                    attr_name = attr.get("china_default_name", "")
                 attr_value = self.show_object_value(attr, "attribute")
                 print(f"{attr_name}_{attr_value}")
                 if attr.get("attribute_type_code") == "Bool":
@@ -2676,7 +2701,7 @@ class ElementSettingTab(QWidget):
                     attr_value = "是" if str(attr_value).lower() in ["true","1"] else "否"
                 attr_type = attr.get("attribute_type", "")
 
-                attr_widget = ClickableAttributeWidget(attr_name, attr_value, attr_type)
+                attr_widget = ClickableAttributeWidget(attr_code, attr_name, attr_value, attr_type)
                 attr_widget.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)  # 组件大小策略
                 attr_widget.clicked.connect(self.open_attribute_editor)
 
@@ -2698,13 +2723,13 @@ class ElementSettingTab(QWidget):
         else:
             self.reset_attribute_model(self.tr("没有属性模型"))
 
-    def open_attribute_editor(self, attr_name):
+    def open_attribute_editor(self, attr_code):
         """打开属性编辑对话框，允许用户编辑属性值。"""
         if self.current_selected_entity:
             element = self.element_data[self.current_selected_entity]
             print(f"当前选中编辑的要素：{element}")
             # 查找属性的值和类型
-            attr = next((a for a in element.get("attributes", []) if a["china_default_name"] == attr_name), None)
+            attr = next((a for a in element.get("attributes", []) if a["attribute_code_name"] == attr_code), None)
             is_edit = False
             print(attr)
             attr_widget = None
@@ -2712,7 +2737,7 @@ class ElementSettingTab(QWidget):
                 item = self.attribute_content_layout.itemAt(i)
                 if item:
                     widget = item.widget()
-                    if isinstance(widget, ClickableAttributeWidget) and widget.attr_name == attr_name:
+                    if isinstance(widget, ClickableAttributeWidget) and widget.attr_code == attr_code:
                         attr_widget = widget
                         break
 
@@ -3412,7 +3437,7 @@ class ElementSettingTab(QWidget):
             # 对缺失的要素逐个提示用户补充
             for element in missing_elements:
                 ask_name = CustomInputDialog(
-                    self.tr(f"缺失 {element}，尝试从模板补充"),
+                    self.tr("缺失 {element}，尝试从模板补充").format(element=element),
                     self.tr("请输入补充要素的名称"),
                     parent=self
                 )
@@ -3421,7 +3446,7 @@ class ElementSettingTab(QWidget):
                     # 保存失败
                     CustomWarningDialog(
                         self.tr("保存失败"),
-                        self.tr(f"缺少 {element}，保存失败。"),
+                        self.tr("缺少 {element}，保存失败。").format(element=element),
                         parent=self
                     ).exec()
                     return
@@ -3493,7 +3518,7 @@ class ElementSettingTab(QWidget):
             print(f"保存过程中发生错误: {e}")
             CustomWarningDialog(
                 self.tr("保存失败"),
-                self.tr(f"保存过程中发生错误:\n{str(e)}"),
+                self.tr("保存过程中发生错误:\n{e}").format(e=str(e)),
                 parent=self
             ).exec_()
 
@@ -3688,7 +3713,7 @@ class ElementSettingTab(QWidget):
         if missing_elements:
             CustomWarningDialog(
                 self.tr("生成失败"),
-                self.tr(f"缺少以下要素：{missing_elements}，请先补充并保存。"),
+                self.tr("缺少以下要素：{missing_elements}，请先补充并保存。").format(missing_elements=missing_elements),
                 parent=self
             ).exec()
             return
@@ -3760,6 +3785,7 @@ class ElementSettingTab(QWidget):
             if attr.get("attribute_aspect_name") == 'Environment':
                 return True
         return False
+
 
 # 主程序入口
 class MainWindow(QDialog):

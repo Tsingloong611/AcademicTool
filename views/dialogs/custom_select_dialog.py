@@ -22,6 +22,7 @@ from utils import json2sysml
 
 from sqlalchemy import text
 
+from utils.get_config import get_cfg
 from utils.json2sysml import json_to_sysml2_txt
 from views.dialogs.custom_input_dialog import CustomInputDialog
 from views.dialogs.custom_warning_dialog import CustomWarningDialog
@@ -166,11 +167,11 @@ class SelectCodeDialog(QDialog):
         """
         super().__init__(parent)
         if type == 'attribute':
-            title_name = "选择 attribute_code"
-            label_str = f"文件中出现属性名: '{file_attr_name}'\n请选择对应的 attribute_code:"
+            title_name = self.tr("选择 attribute_code")
+            label_str = self.tr("文件中出现属性名: '{0}'\n请选择对应的 attribute_code:").format(file_attr_name)
         else:
-            title_name = "选择 behavior_code"
-            label_str = f"文件中出现行为名: '{file_attr_name}'\n请选择对应的 behavior_code:"
+            title_name = self.tr("选择 behavior_code")
+            label_str = self.tr("文件中出现行为名: '{0}'\n请选择对应的 behavior_code:").format(file_attr_name)
         self.setWindowTitle(title_name)
 
         self.selected_code_id = None
@@ -236,8 +237,10 @@ class CustomSelectDialog(QDialog):
         super().__init__(parent)
         self.parent = parent
         self.element = self.parent.current_selected_element
+        if get_cfg()["i18n"]["language"] == "en_US":
+            self.element = self.parent.reverse_element_name_mapping[self.element]
         self.update_match_entities()
-        self.setWindowTitle(f"实体管理")
+        self.setWindowTitle(self.tr("实体管理"))
         self.resize(400, 300)
         self.setStyleSheet("""
             background : #f0f0f0;
@@ -265,15 +268,15 @@ QListWidget {
         # 按钮布局
         button_layout = QHBoxLayout()
 
-        self.new_button = QPushButton("新建")
+        self.new_button = QPushButton(self.tr("新建"))
         self.new_button.clicked.connect(self.handle_new)
         button_layout.addWidget(self.new_button)
 
-        self.delete_button = QPushButton("删除")
+        self.delete_button = QPushButton(self.tr("删除"))
         self.delete_button.clicked.connect(self.handle_delete)
         button_layout.addWidget(self.delete_button)
 
-        self.read_button = QPushButton("读取")
+        self.read_button = QPushButton(self.tr("读取"))
         self.read_button.clicked.connect(self.handle_read)
         button_layout.addWidget(self.read_button)
 
@@ -291,7 +294,7 @@ QListWidget {
         self.stacked_layout.addWidget(self.list_widget)
 
         # 占位符视图
-        self.placeholder_label = QLabel("请新建实体")
+        self.placeholder_label = QLabel(self.tr("请新建实体"))
         self.placeholder_label.setAlignment(Qt.AlignCenter)
         self.placeholder_label.setObjectName("placeholder")
         # 字体设置为灰色
@@ -315,6 +318,7 @@ QListWidget {
 
 
     def update_match_entities(self):
+
 
         self.rule = self.parent.get_result_by_sql(
             f"SELECT template_restrict FROM template WHERE template_name = '{self.element}'"
@@ -374,15 +378,15 @@ QListWidget {
         """处理新建按钮点击"""
         # 创建一个子对话框，包含“从文件新建”和“从模板新建”按钮
         new_dialog = QDialog(self)
-        new_dialog.setWindowTitle("新建实体")
+        new_dialog.setWindowTitle(self.tr("新建实体"))
         new_dialog.setFixedSize(200, 100)
         layout = QVBoxLayout(new_dialog)
 
-        from_file_button = QPushButton("从文件新建")
+        from_file_button = QPushButton(self.tr("从文件新建"))
         from_file_button.clicked.connect(lambda: self.create_entity_from_file(new_dialog))
         layout.addWidget(from_file_button)
 
-        from_template_button = QPushButton("从模板新建")
+        from_template_button = QPushButton(self.tr("从模板新建"))
         from_template_button.clicked.connect(lambda: self.create_entity_from_template(new_dialog))
         layout.addWidget(from_template_button)
 
@@ -546,7 +550,7 @@ QListWidget {
             self.update_view()
 
             # 弹出成功消息
-            QMessageBox.information(self, "成功", f"已成功从文件新建实体 '{name}'。")
+            QMessageBox.information(self, self.tr("成功"), self.tr("已成功从文件新建实体 '{0}'。").format(name))
 
             # 发射信号
             self.entity_created.emit(new_entity)
@@ -600,8 +604,8 @@ QListWidget {
                 # => 用户手动选择 code_id
                 code_id = self.ask_user_to_select_code_for_name(file_attr_name)
                 if code_id is None:
-                    QMessageBox.warning(None, "未映射属性",
-                                        f"文件属性 '{file_attr_name}' 无法与任一 attribute_code 映射,已跳过.")
+                    QMessageBox.warning(None, self.tr("未映射属性"),
+                                        self.tr("文件属性 '{0}' 无法与任一 attribute_code 映射,已跳过.").format(file_attr_name))
                     continue
                 # 插入 attribute_code_name
                 insert_sql = text("""
@@ -638,8 +642,8 @@ QListWidget {
                 # => 用户手动创建 definition
                 definition_id = self.ask_user_create_definition_for_code(code_id, file_attr_name)
                 if not definition_id:
-                    QMessageBox.warning(None, "无法新建属性",
-                                        f"属性 '{file_attr_name}' 无法在 code_id={code_id} 下创建 definition, 跳过.")
+                    QMessageBox.warning(None, self.tr("无法新建属性"),
+                                        self.tr("属性 '{0}' 无法在 code_id={code_id} 下创建 definition, 跳过.").format(file_attr_name))
                     continue
                 # 再查
                 def_row = session.execute(def_sql, {"cid": code_id}).fetchone()
@@ -868,7 +872,7 @@ QListWidget {
         self.update_view()
 
         # 弹出成功消息
-        QMessageBox.information(self, "成功", f"已成功从模板新建实体 '{name}'。")
+        QMessageBox.information(self, self.tr("成功"), self.tr('已成功从模板新建实体 "{name}"').format(name = name))
 
         # 发射信号
         self.entity_created.emit(new_entity)
@@ -878,7 +882,7 @@ QListWidget {
         """处理删除按钮点击"""
         selected_items = self.list_widget.selectedItems()
         if not selected_items:
-            QMessageBox.warning(self, "警告", "请先选择要删除的实体。")
+            QMessageBox.warning(self, self.tr("警告"), self.tr("请先选择要删除的实体。"))
             return
 
         item = selected_items[0]
@@ -887,15 +891,15 @@ QListWidget {
 
         # 删除实体
         confirm = QMessageBox.question(
-            self, "确认删除",
-            f"确定要删除实体 '{entity_name}' 吗？",
+            self, self.tr("确认删除"),
+            self.tr('确定要删除实体 "{entity_name}" 吗？').format(entity_name=entity_name),
             QMessageBox.Yes | QMessageBox.No
         )
         if confirm == QMessageBox.Yes:
             del self.parent.element_data[entity_id]
             self.populate_list()
             self.update_view()
-            QMessageBox.information(self, "成功", f"已删除实体 '{entity_name}'。")
+            QMessageBox.information(self, self.tr("成功"), self.tr('已删除实体 "{entity_name}"'.format(entity_name=entity_name)))
             print(f"after_delete_element_data: {self.parent.element_data}")
 
             # 发射信号
@@ -905,7 +909,7 @@ QListWidget {
         """处理读取按钮点击"""
         selected_items = self.list_widget.selectedItems()
         if not selected_items:
-            QMessageBox.warning(self, "警告", "请先选择要读取的实体。")
+            QMessageBox.warning(self, self.tr("警告"), self.tr("请先选择要读取的实体。"))
             return
 
         item = selected_items[0]
@@ -914,16 +918,16 @@ QListWidget {
 
         # 创建一个子对话框，包含“读取至sysml2文件”和“读取至界面”按钮
         read_dialog = QDialog(self)
-        read_dialog.setWindowTitle("读取实体")
+        read_dialog.setWindowTitle(self.tr("读取实体"))
         read_dialog.setFixedSize(250, 100)
         layout = QVBoxLayout(read_dialog)
 
-        to_sysml_button = QPushButton("读取至sysml2文件")
-        to_sysml_button.clicked.connect(lambda: self.read_entity(entity_id, "sysml2文件"))
+        to_sysml_button = QPushButton(self.tr("读取至sysml2文件"))
+        to_sysml_button.clicked.connect(lambda: self.read_entity(entity_id, self.tr("sysml2文件")))
         layout.addWidget(to_sysml_button)
 
-        to_interface_button = QPushButton("读取至界面")
-        to_interface_button.clicked.connect(lambda: self.read_entity(entity_id, "界面"))
+        to_interface_button = QPushButton(self.tr("读取至界面"))
+        to_interface_button.clicked.connect(lambda: self.read_entity(entity_id, self.tr("界面")))
         layout.addWidget(to_interface_button)
 
         read_dialog.exec()
@@ -946,7 +950,7 @@ QListWidget {
         else:
             self.parent.current_selected_entity = entity_id
 
-        QMessageBox.information(self, "成功", f"已读取实体 '{self.parent.element_data[entity_id]['entity_name']}' 至{destination}。")
+        QMessageBox.information(self, self.tr("成功"), self.tr("已读取实体 '{entity_name}' 至{destination}。").format(entity_name = self.parent.element_data[entity_id]['entity_name'], destination = destination))
 
         # 发射信号
         self.entity_read.emit(entity_id, destination)
@@ -969,7 +973,7 @@ QListWidget {
         codes = session.execute(code_sql).fetchall()
 
         if not codes:
-            QMessageBox.warning(self, "无可用Code", "数据库中无任何 attribute_code 记录。")
+            QMessageBox.warning(self, self.tr("无可用Code"), self.tr("数据库中无任何 attribute_code 记录。"))
             return None
 
         dlg = SelectCodeDialog(parent=self, codes=codes, file_attr_name=file_attr_name)
@@ -1004,7 +1008,7 @@ QListWidget {
         codes = session.execute(code_sql).fetchall()
 
         if not codes:
-            QMessageBox.warning(self, "无可用Code", "数据库中无任何 behavior_code 记录。")
+            QMessageBox.warning(self, self.tr("无可用Code"), self.tr("数据库中无任何 behavior_code 记录。"))
             return None
 
         dlg = SelectCodeDialog(parent=self, codes=codes, file_attr_name=perform_name,type='behavior')

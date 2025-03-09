@@ -39,6 +39,8 @@ class MainWindow(QMainWindow):
         left_container = QFrame()
         left_container.setObjectName("LeftContainer")
         left_layout = QVBoxLayout(left_container)
+        # 设置最大宽度
+        left_container.setMaximumWidth(365)
         left_layout.setContentsMargins(0, 0, 0, 0)  # 移除容器的外边距
         left_layout.setSpacing(15)  # 设置两个小框架之间的间距
         # 移除左侧大框架的边框，并添加圆角和背景颜色

@@ -224,7 +224,7 @@ QToolTip {
         scenario_name = item.text().split(" - ")[0]
         scenario_description = item.data(Qt.UserRole + 1)
 
-        reply = CustomQuestionDialog(self.tr("确认选择"), self.tr(f'您确定要选择情景 "{scenario_name}" 吗?')).ask()
+        reply = CustomQuestionDialog(self.tr("确认选择"), self.tr('您确定要选择情景 "{0}" 吗?').format(scenario_name)).ask()
 
         if reply:
             self.scenario_selected.emit(scenario_id)
@@ -317,7 +317,7 @@ QToolTip {
         scenario_names = [item.text().split(" - ")[0] for item in selected_items]
         scenario_id = selected_items[0].data(Qt.UserRole)
         scenario_name = scenario_names[0]
-        reply = CustomQuestionDialog(self.tr("确认删除"), self.tr(f'您确定要删除情景 "{scenario_name}" 吗?')).ask()
+        reply = CustomQuestionDialog(self.tr("确认删除"), self.tr('您确定要删除情景 "{scenario_name}" 吗?').format(scenario_name=scenario_name)).ask()
 
         if reply:
             self.delete_requested.emit(scenario_id)

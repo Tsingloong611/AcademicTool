@@ -493,9 +493,10 @@ class SingleResourceDialog(QDialog):
 
         # 定义类型映射
         type_mapping = {
-            "人员": ["医生", "护士", "志愿者"],
-            "车辆": ["救护车", "消防车", "警车"],
-            "物资": ["类型A", "类型B", "类型C"]
+            "人员": ["牵引人员", "交警", "医生", "消防员", "抢险人员"],
+            "车辆": ["牵引车", "警车", "救护车", "消防车", "融雪车辆", "防汛车辆", "封道抢险车"],
+            "物资": ["随车修理工具", "钢丝绳", "安全锥", "撬棒", "黄沙", "扫帚", "辅助轮", "千斤顶",
+                     "灭火器", "草包", "蛇皮袋", "融雪剂", "发电机", "抽水泵", "医疗物资"]
         }
 
         # 添加新选项并保持居中样式
@@ -633,6 +634,7 @@ class ConditionSettingTab(QWidget):
         self.scenario_id = None
         self.session = None
         self.analyzer = None
+        self.change_path = None
         self.neg_id_gen = NegativeIdGenerator()
 
         self.setWindowTitle(self.tr("应急预案设置"))
@@ -1274,7 +1276,8 @@ class ConditionSettingTab(QWidget):
         """
         try:
             self.simulation_table_clear_header()
-            self.plans_data = self.new_plan_generator.get_all_plans()
+            print(f"[DEBUG] Loading plans from file: {self.change_path}")
+            self.plans_data = self.new_plan_generator.get_all_plans(change_path=self.change_path)
             print(f"[DEBUG] Loaded plans: {self.plans_data}")
 
             for plan_name, plan_data in self.plans_data.items():
@@ -1305,6 +1308,7 @@ class ConditionSettingTab(QWidget):
             "推演后-较好": "60%",
             "推演后-较差": "10%"
         })
+        print(f"[DEBUG] Simulation results: {sim_res}")
         columns = [
             sim_res["推演前-较好"],
             sim_res["推演前-较差"],
@@ -1441,7 +1445,7 @@ class ConditionSettingTab(QWidget):
                     self.evidence_table.item(rowpos, col).setToolTip(self.evidence_table.item(rowpos, col).text())
 
     def set_stylesheet(self):
-        self.setStyleSheet(self.tr("""
+        self.setStyleSheet("""
         QGroupBox {
             border:1px solid #ccc;
             border-radius:8px;
@@ -1486,7 +1490,7 @@ class ConditionSettingTab(QWidget):
         QScrollBar::add-page:horizontal, QScrollBar::sub-page:horizontal {
             background:none;
         }
-        """))
+        """)
 
     def apply_table_style(self, table: QTableWidget):
         table.setStyleSheet("""

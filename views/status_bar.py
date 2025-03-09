@@ -97,10 +97,10 @@ class StatusBar(QWidget):
         label.setToolTip(text)
 
     def update_status(self, username, database, scenario_name, owl_status, bayes_status, scenario_description, update_time):
-        full_user_text = self.tr(f"当前用户: {username}")
+        full_user_text = self.tr('当前用户: {username}').format(username=username)
         self.set_label_text_with_tooltip(self.user_label, full_user_text, max_length=40)
 
-        full_database_text = self.tr(f"当前数据库: {database}")
+        full_database_text = self.tr('当前数据库: {database}').format(database=database)
         self.set_label_text_with_tooltip(self.database_label, full_database_text, max_length=50)
 
         if not scenario_description:
@@ -123,8 +123,8 @@ class StatusBar(QWidget):
         self.scenario_update_time_label.setToolTip(self.tr(update_time))
 
     def update_user_info(self, username, database):
-        full_user_text = self.tr(f"当前用户: {username}")
+        full_user_text = self.tr('当前用户: {username}').format(username=username)
         self.set_label_text_with_tooltip(self.user_label, full_user_text, max_length=40)
 
-        full_database_text = self.tr(f"当前数据库: {database}")
+        full_database_text = self.tr('当前数据库: {database}').format(database=database)
         self.set_label_text_with_tooltip(self.database_label, full_database_text, max_length=50)

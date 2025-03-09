@@ -116,7 +116,7 @@ class ModelTransformationTab(QWidget):
 
     def set_stylesheet(self):
         # 去除表格单元格的边框，并为后面添加悬浮显示工具提示做准备
-        self.setStyleSheet(self.tr("""
+        self.setStyleSheet("""
 QGroupBox {
     border: 1px solid #ccc;
     border-radius: 8px;
@@ -216,7 +216,7 @@ QTableWidget::item:selected {
 QTableWidget:focus {
     outline: none;
 }
-"""))
+""")
 
     def create_bayesian_network_group_box(self):
         group_box = QGroupBox(self.tr("贝叶斯网络"))

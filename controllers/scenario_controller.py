@@ -19,6 +19,7 @@ from sqlalchemy.sql.base import elements
 from models.models import Scenario, BehaviorValue, AttributeValue, Category, Entity, Template, BehaviorValueReference, \
     AttributeValueReference, entity_category, Owl, Bayes, OwlClassBehavior, OwlClassAttribute, OwlClass, BayesNodeState, \
     BayesNode, BayesNodeTarget
+from utils.get_config import get_cfg
 # 假设您已经在 models/scenario.py 中定义了 Scenario 类，
 # 其中字段为 scenario_id, scenario_name, scenario_description, ...
 from views.dialogs.custom_error_dialog import CustomErrorDialog
@@ -80,7 +81,7 @@ class ScenarioController(QObject):
         if scenarios:
             self.tab_widget.show_placeholder(True)
         else:
-            self.tab_widget.show_placeholder(True, "请添加情景")
+            self.tab_widget.show_placeholder(True, self.tr("请添加情景"))
 
     def get_all_scenarios(self):
         try:
@@ -108,20 +109,20 @@ class ScenarioController(QObject):
             owl_record = self.session.query(Owl).filter(Owl.scenario_id == scenario.scenario_id).first()
 
             if owl_record:
-                owl_state = "就绪"
+                owl_state = self.tr("就绪")
             else:
-                owl_state = "未完成"
+                owl_state = self.tr("未完成")
 
             bayes_record = self.session.query(Bayes).filter(Bayes.scenario_id == scenario.scenario_id).first()
             if bayes_record:
-                bayes_state = "待推演"
+                bayes_state = self.tr("待推演")
             else:
-                bayes_state = "待推演"
+                bayes_state = self.tr("待推演")
             update_time = getattr(scenario, 'scenario_update_time', None)
             if update_time is not None:
                 update_time = update_time.strftime("%Y-%m-%d %H:%M:%S")
             else:
-                update_time = "无"
+                update_time = self.tr("无")
 
             self.status_bar.update_status(
                 username=username,
@@ -586,7 +587,7 @@ class ScenarioController(QObject):
         if dialog.exec() == QDialog.Accepted:
             name, description = dialog.get_data()
             if not name:
-                CustomWarningDialog("添加失败", "情景名称不能为空。").exec()
+                CustomWarningDialog(self.tr("添加失败"), self.tr("情景名称不能为空。")).exec()
                 return
             new_scenario = self.add_scenario(name, description)
             if new_scenario:
@@ -600,19 +601,19 @@ class ScenarioController(QObject):
         """用户点击“编辑情景”按钮时执行"""
         current_item = self.scenario_manager.list_widget.currentItem()
         if not current_item:
-            CustomWarningDialog("警告", "请选择要修改的情景。").exec()
+            CustomWarningDialog(self.tr("警告"), self.tr("请选择要修改的情景。")).exec()
             return
         scenario_id = current_item.data(Qt.UserRole)
         scenario = self.get_scenario_by_id(scenario_id)
         if not scenario:
-            CustomWarningDialog("警告", "未找到选中的情景。").exec()
+            CustomWarningDialog(self.tr("警告"), self.tr("未找到选中的情景。")).exec()
             return
 
         dialog = ScenarioDialog(self.scenario_manager, scenario=scenario)
         if dialog.exec() == QDialog.Accepted:
             name, description = dialog.get_data()
             if not name:
-                CustomWarningDialog("修改失败", "情景名称不能为空。").exec()
+                CustomWarningDialog(self.tr("修改失败"), self.tr("情景名称不能为空。")).exec()
                 return
             updated = self.update_scenario(scenario_id, name, description)
             if updated:
@@ -626,14 +627,14 @@ class ScenarioController(QObject):
         """用户点击“删除情景”按钮时执行"""
         current_item = self.scenario_manager.list_widget.currentItem()
         if not current_item:
-            CustomWarningDialog("警告", "请选择要删除的情景。").exec()
+            CustomWarningDialog(self.tr("警告"), self.tr("请选择要删除的情景。")).exec()
             return
         scenario_id = current_item.data(Qt.UserRole)
 
 
         scenario = self.get_scenario_by_id(scenario_id)
         if not scenario:
-            CustomWarningDialog("警告", "未找到选中的情景。").exec()
+            CustomWarningDialog(self.tr("警告"), self.tr("未找到选中的情景。")).exec()
             return
         self.scenario_manager.list_widget.setCurrentItem(None)
 
@@ -669,7 +670,7 @@ class ScenarioController(QObject):
         except SQLAlchemyError as e:
             self.session.rollback()
             print(f"Error adding scenario: {e}")
-            CustomErrorDialog("错误", f"新增情景失败: {e}").exec()
+            CustomErrorDialog(self.tr("错误"), self.tr('新增情景失败: {e}').format(e)).exec()
             return None
 
 
@@ -689,7 +690,7 @@ class ScenarioController(QObject):
         except SQLAlchemyError as e:
             self.session.rollback()
             print(f"Error updating scenario: {e}")
-            CustomErrorDialog("错误", f"修改情景失败: {e}").exec()
+            CustomErrorDialog(self.tr("错误"), self.tr('修改情景失败: "{e}"').format(e=e)).exec()
             return None
 
     def delete_scenario(self, scenario_id):
@@ -704,7 +705,7 @@ class ScenarioController(QObject):
         except SQLAlchemyError as e:
             self.session.rollback()
             print(f"Error deleting scenario: {e}")
-            CustomErrorDialog("错误", f"删除情景失败: {e}").exec()
+            CustomErrorDialog(self.tr("错误"), self.tr('删除情景失败: "{e}"').format(e=e)).exec()
             return False
 
     def get_scenario_by_id(self, scenario_id):
@@ -1047,6 +1048,8 @@ class ScenarioController(QObject):
             self.tab_widget.ModelGenerationTab.CLASS_OPTIONS = class_options
             self.tab_widget.ModelGenerationTab.ATTRIBUTE_SAMPLE_DATA = attribute_data
             self.tab_widget.ModelGenerationTab.BEHAVIOR_SAMPLE_DATA = behavior_data
+            if get_cfg()["i18n"]["language"] == "en_US":
+                self.tab_widget.ModelGenerationTab.create_english_version()
             print("数据获取成功")
 
 
@@ -1143,7 +1146,7 @@ class ScenarioController(QObject):
                     bif_content = f.read()
 
                 # 使用正则表达式提取节点关系
-                pattern = r'probability\s*\(\s*([^|]+)\s*\|\s*([^)]+)\)'
+                pattern = r'probability\s*\(\s*(\w+)\s*\|\s*([^)]+)\)'
                 relationships = re.findall(pattern, bif_content)
 
                 # 创建节点关系记录

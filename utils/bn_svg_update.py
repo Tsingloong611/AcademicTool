@@ -134,11 +134,11 @@ class ScenarioResilience:
 
         # 定义因子-能力关系
         self.factor_capacity = {
-            'AbsorptionScenario': ['roadPassibility', 'roadLoss'],
-            'AdaptionScenario': ['emergencyType', 'emergencyPeriod','casualties'],
-            'RecoveryScenario': ['AidResource', 'TowResource', 'FirefightingResource',
-                                 'RescueResource', 'responseDuration', 'disposalDuration'],
-            'ScenarioResilience': ['AbsorptionCapacity', 'AdaptionCapacity', 'RecoveryCapacity']
+            "AbsorptionCapacity": ["roadPassibility", "roadLoss"],
+            "AdaptionCapacity": ["emergencyPeriod", "emergencyType", "casualties"],
+            "RecoveryCapacity": ["disposalDuration", "responseDuration",
+                                 "RescueResource", "FirefightingResource", "TowResource", "AidResource"],
+            "ScenarioResilience": ["RecoveryCapacity", "AdaptionCapacity", "AbsorptionCapacity"]
         }
 
     def process_expert_evaluation(self, expert_info_path: str, expert_estimation_path: str) -> pd.DataFrame:
@@ -258,35 +258,140 @@ class ScenarioResilience:
         return df
 
     def set_conditional_probabilities(self, df: pd.DataFrame) -> None:
-        """
-        设置贝叶斯网络的条件概率表
+        """使用字典索引方式设置贝叶斯网络的条件概率表"""
+        # 按节点分组处理数据
+        grouped_df = df.groupby('Node')
 
-        Args:
-            df (pd.DataFrame): 包含条件概率的数据框
-        """
-        # 创建索引列表
-        index = []
-        for _, row in df.iterrows():
-            sublist = ast.literal_eval(row['Condition'])
-            sublist.append(row['State'])
-            index.append(sublist)
+        for node, node_df in grouped_df:
+            try:
+                print(f"\n处理节点: {node}")
 
-        # 创建CPT字典
-        cpt = {
-            'AbsorptionCapacity': self.bn.cpt('AbsorptionCapacity'),
-            'AdaptionCapacity': self.bn.cpt('AdaptionCapacity'),
-            'RecoveryCapacity': self.bn.cpt('RecoveryCapacity'),
-            'ScenarioResilience': self.bn.cpt('ScenarioResilience')
-        }
+                # 获取节点的父节点
+                node_id = self.bn.idFromName(node)
+                parent_ids = list(self.bn.parents(node_id))
+                actual_parents = [self.bn.variable(p).name() for p in parent_ids]
 
-        # 填充条件概率
-        for i, row in df.iterrows():
-            idx = ast.literal_eval(','.join(str(x) for x in index[i]))
-            cpt[row['Node']][idx] = row['conditonProbability']
+                print(f"节点 {node} 的父节点: {actual_parents}")
 
-        # 更新网络CPT
-        for node in cpt:
-            self.bn.cpt(node).fillWith(cpt[node])
+                # 处理每个条件概率
+                for _, row in node_df.iterrows():
+                    condition_str = row['Condition']
+                    state = int(row['State'])
+                    prob = row['conditonProbability']
+
+                    # 解析条件
+                    if isinstance(condition_str, str):
+                        condition = ast.literal_eval(condition_str)
+                    else:
+                        condition = condition_str
+
+                    # 创建条件字典
+                    condition_dict = {}
+
+                    # 对于每个节点，尝试两种索引方式
+                    # 1. 标准方式：将条件与父节点一一对应
+                    standard_dict = {}
+                    for i, parent in enumerate(actual_parents):
+                        if i < len(condition):
+                            standard_dict[parent] = condition[i]
+
+                    # 2. 使用 factor_capacity 中定义的顺序（如果存在）
+                    factor_dict = {}
+                    if node in self.factor_capacity:
+                        expected_parents = self.factor_capacity[node]
+                        print(f"预期父节点顺序: {expected_parents}")
+
+                        for i, expected_parent in enumerate(expected_parents):
+                            if i < len(condition) and expected_parent in actual_parents:
+                                factor_dict[expected_parent] = condition[i]
+
+                    # 判断哪个字典更合适
+                    if factor_dict and len(factor_dict) == len(actual_parents):
+                        condition_dict = factor_dict
+                    else:
+                        condition_dict = standard_dict
+
+                    # 检查条件字典是否完整
+                    if len(condition_dict) != len(actual_parents):
+                        print(f"警告: 条件字典不完整 {condition_dict}，需要 {len(actual_parents)} 个父节点")
+                        continue
+
+                    try:
+                        # 首先获取当前条件下的所有状态概率
+                        current_probs = list(self.bn.cpt(node)[condition_dict])
+
+                        # 更新特定状态的概率
+                        current_probs[state] = prob
+
+                        # 设置整个条件下的概率分布
+                        self.bn.cpt(node)[condition_dict] = current_probs
+
+                        print(f"成功设置 {node} {condition_dict} 状态 {state} 的概率: {prob}")
+
+                        # 检查设置是否成功
+                        actual_prob = self.bn.cpt(node)[{**condition_dict, node: state}]
+                        print(f"验证: {node} {condition_dict} 状态 {state} 的概率: {actual_prob}")
+
+
+                    except Exception as e:
+                        print(f"设置 {node} {condition_dict} 时出错: {e}")
+
+                        # 尝试使用索引元组方式作为备选方案
+                        try:
+                            # 构建索引元组
+                            idx_tuple = []
+                            for parent in actual_parents:
+                                idx_tuple.append(condition_dict[parent])
+                            idx_tuple.append(state)
+
+                            # 使用索引元组设置CPT
+                            self.bn.cpt(node)[tuple(idx_tuple)] = prob
+                            print(f"使用索引元组成功设置 {node} {tuple(idx_tuple)} = {prob}")
+                        except Exception as e2:
+                            print(f"索引元组方式也失败: {e2}")
+
+            except Exception as e:
+                print(f"处理节点 {node} 时出错: {e}")
+                import traceback
+                print(traceback.format_exc())
+
+        # 完成后验证所有CPT
+        self._verify_all_cpts()
+
+    def _verify_all_cpts(self):
+        """验证所有节点的CPT是否正确设置和归一化"""
+        print("\n验证所有CPT:")
+        for node in self.bn.nodes():
+            node_name = self.bn.variable(node).name()
+            parent_ids = list(self.bn.parents(node))
+
+            if not parent_ids:  # 根节点
+                probs = self.bn.cpt(node_name).tolist()
+                total = sum(probs)
+                print(f"根节点 {node_name} 的概率和: {total}")
+                if not abs(total - 1.0) < 1e-10:
+                    print(f"警告: 根节点 {node_name} 的概率和不为1")
+            else:
+                # 获取所有父节点的取值范围
+                parent_vars = [self.bn.variable(p) for p in parent_ids]
+                parent_domains = [var.domainSize() for var in parent_vars]
+                parent_names = [var.name() for var in parent_vars]
+
+                # 获取所有可能的父节点组合
+                all_combinations = list(itertools.product(*[range(dom) for dom in parent_domains]))
+
+                for combo in all_combinations:
+                    # 创建条件字典
+                    cond_dict = {parent_names[i]: combo[i] for i in range(len(parent_names))}
+
+                    # 获取该条件下的所有状态概率
+                    probs = self.bn.cpt(node_name)[cond_dict]
+                    total = sum(probs)
+
+                    if not abs(total - 1.0) < 1e-10:
+                        print(f"警告: 节点 {node_name} 条件 {cond_dict} 下的概率和为 {total}")
+
+        print("CPT验证完成")
 
     def extract_data_properties(self) -> None:
         """从本体中提取数据属性"""
@@ -325,31 +430,60 @@ class ScenarioResilience:
                 return False
 
     def create_bayesian_network(self) -> None:
-        """创建贝叶斯网络结构"""
-        if not self._node_exists("ScenarioResilience"):
-            node_resilience = self.bn.add(gum.LabelizedVariable("ScenarioResilience", 'resilienceLevel', 2))
+        """创建贝叶斯网络结构，确保按照 factor_capacity 中定义的顺序添加节点和弧"""
+        print("开始创建贝叶斯网络...")
 
-        # Create capacity nodes first
-        capacity_nodes = ["AbsorptionCapacity", "AdaptionCapacity", "RecoveryCapacity"]
-        for capacity in capacity_nodes:
-            if not self._node_exists(capacity):
-                self.bn.add(gum.LabelizedVariable(capacity, 'capacityLevel', 2))
-                self.bn.addArc(capacity, "ScenarioResilience")
+        # 首先创建所有节点（但不添加弧）
+        for node_name in self.state_mapping.keys():
+            if not self._node_exists(node_name):
+                domain_size = len(self.state_mapping[node_name])
+                self.bn.add(gum.LabelizedVariable(node_name, f'{node_name}_states', domain_size))
+                print(f"创建节点: {node_name}，域大小: {domain_size}")
 
-        for cls in self.onto.classes():
-            if cls.name == "Scenario":
-                self._process_scenario_class(cls)
-            elif cls.name == "ResilienceInfluentialFactors":
-                self._process_influential_factors(cls)
+        # 然后按照 factor_capacity 中的顺序添加弧
+        for scenario, factors in self.factor_capacity.items():
+            if scenario == 'ScenarioResilience':
+                # 特殊处理根节点
+                for capacity in factors:  # 按照定义的顺序添加弧
+                    if not self.bn.existsArc(capacity, "ScenarioResilience"):
+                        self.bn.addArc(capacity, "ScenarioResilience")
+                        print(f"添加弧: {capacity} -> ScenarioResilience")
+            else:
+                # 处理其他能力节点
+                capacity_name = f"{scenario.replace('Scenario', 'Capacity')}"
+                # 确保按照 factor_capacity 中定义的确切顺序添加弧
+                for factor in factors:
+                    if not self.bn.existsArc(factor, capacity_name):
+                        self.bn.addArc(factor, capacity_name)
+                        print(f"添加弧: {factor} -> {capacity_name}")
 
-        print("All nodes in the Bayesian Network:")
+        # 打印最终的网络结构以验证
+        print("\n=== 最终网络结构 ===")
         for node in self.bn.nodes():
-            print(self.bn.variable(node).name())
+            node_name = self.bn.variable(node).name()
+            parents = [self.bn.variable(p).name() for p in self.bn.parents(node)]
+            print(f"节点: {node_name}, 父节点: {parents}")
+            if parents:
+                # 检查父节点顺序是否与 factor_capacity 一致
+                for scenario, factors in self.factor_capacity.items():
+                    if scenario.replace('Scenario', 'Capacity') == node_name:
+                        if parents != factors:
+                            print(f"警告: {node_name} 的父节点顺序与 factor_capacity 不一致!")
+                            print(f"  - 实际顺序: {parents}")
+                            print(f"  - 期望顺序: {factors}")
+                        break
+                if node_name == "ScenarioResilience":
+                    if parents != self.factor_capacity["ScenarioResilience"]:
+                        print(f"警告: ScenarioResilience 的父节点顺序与 factor_capacity 不一致!")
+                        print(f"  - 实际顺序: {parents}")
+                        print(f"  - 期望顺序: {self.factor_capacity['ScenarioResilience']}")
+
+        print("贝叶斯网络创建完成")
 
     def _process_scenario_class(self, cls: Any) -> None:
         """处理场景类以添加能力节点"""
         for capacity in cls.subclasses():
-            capacity_name = f"{capacity.name.replace('Scenario', '')}Capacity"
+            capacity_name = f"{capacity.name.replace('Scenario', 'Capacity')}"
             if not self._node_exists(capacity_name):
                 self.bn.add(gum.LabelizedVariable(capacity_name, 'capacityLevel', 2))
                 if not self.bn.existsArc(capacity_name, "ScenarioResilience"):
@@ -376,7 +510,7 @@ class ScenarioResilience:
             print(f"Node {dp['name']} already exists, skipping addition")
 
         for scenario in self._find_capacity_by_factor(dp['name']):
-            capacity_name = f"{scenario.replace('Scenario', '')}Capacity"
+            capacity_name = f"{scenario.replace('Scenario', 'Capacity')}"
             print(f"Attempting to add arc from {dp['name']} to {capacity_name}")
             try:
                 if self._node_exists(capacity_name):
@@ -440,8 +574,8 @@ class ScenarioResilience:
         data = data.dropna()
         mu, std = norm.fit(data)
 
-        lower_bound = np.percentile(data, 1)  # 1th percentile
-        upper_bound = np.percentile(data, 99)  # 99th percentile
+        lower_bound = np.percentile(data, 5)  # 5th percentile
+        upper_bound = np.percentile(data, 95)  # 95th percentile
 
         a = (lower_bound - mu) / std  # Lower bound in terms of z-score
         b = (upper_bound - mu) / std  # Upper bound in terms of z-score
@@ -455,9 +589,9 @@ class ScenarioResilience:
 
         # 绘制截断正态分布曲线
         #     x = np.linspace(min(data), max(data), 1000)
-        x = np.linspace(truncnorm.ppf(0.01, a, b),
-                        truncnorm.ppf(0.99, a, b), 100)
-        #     x = np.linspace(lower_bound, upper_bound, 1000)
+        # x = np.linspace(truncnorm.ppf(0.01, a, b),
+        #                 truncnorm.ppf(0.99, a, b), 100)
+        x = np.linspace(lower_bound, upper_bound, 1000)
         p = truncated_normal.pdf(x)
         plt.plot(x, p, 'k-', linewidth=2, label=f'Truncated Normal Fit (μ={mu:.2f}, σ={std:.2f})')
 
@@ -485,8 +619,8 @@ class ScenarioResilience:
         # return truncnorm(a, b, loc=mu, scale=std)
 
         mu, std = norm.fit(data)
-        lower = np.percentile(data, 1)
-        upper = np.percentile(data, 99)
+        lower = np.percentile(data, 5)
+        upper = np.percentile(data, 95)
         a = (lower - mu) / std
         b = (upper - mu) / std
         return truncnorm(a, b, loc=mu, scale=std)
@@ -926,9 +1060,144 @@ class NetworkVisualizer:
             f.write(doc.toprettyxml())
 
 
+def export_detailed_cpts(bn, output_file):
+    """
+    导出详细的条件概率表到文件，同时打印到控制台
+
+    Args:
+        bn: 贝叶斯网络对象
+        output_file (str): 输出文件路径
+    """
+    # 准备输出内容
+    content = []
+    content.append("贝叶斯网络条件概率表详细信息")
+    content.append("=" * 80 + "\n")
+
+    for node in bn.nodes():
+        node_name = bn.variable(node).name()
+        node_size = bn.variable(node).domainSize()
+        node_states = [bn.variable(node).label(i) for i in range(node_size)]
+
+        content.append(f"节点: {node_name}")
+        content.append(f"状态: {node_states}")
+
+        # 获取父节点
+        parent_ids = list(bn.parents(node))
+        if parent_ids:
+            parents = []
+            parent_states = []
+
+            for p_id in parent_ids:
+                p_name = bn.variable(p_id).name()
+                p_size = bn.variable(p_id).domainSize()
+                p_labels = [bn.variable(p_id).label(i) for i in range(p_size)]
+
+                parents.append(p_name)
+                parent_states.append(p_labels)
+
+            content.append(f"父节点: {parents}")
+
+            # 生成所有可能的父节点状态组合
+            parent_combinations = list(itertools.product(*[range(len(s)) for s in parent_states]))
+
+            content.append("条件概率详情:")
+            content.append("-" * 80)
+
+            # 表头
+            header = " | ".join(parents + [f"{node_name} = {state}" for state in node_states])
+            content.append(header)
+            content.append("-" * len(header))
+
+            # 每一行代表一种父节点状态组合
+            for combo in parent_combinations:
+                # 构建条件组合描述
+                condition_desc = []
+                for i, val in enumerate(combo):
+                    p_name = parents[i]
+                    p_state = parent_states[i][val]
+                    condition_desc.append(f"{p_name}={p_state}")
+
+                # 获取该条件下每个状态的概率
+                probs = []
+                for state in range(node_size):
+                    idx = tuple(list(combo) + [state])
+                    try:
+                        prob = bn.cpt(node_name)[idx]
+                        probs.append(f"{prob:.6f}")
+                    except Exception as e:
+                        probs.append(f"错误: {e}")
+
+                # 写入一行
+                line = " | ".join([", ".join(condition_desc)] + probs)
+                content.append(line)
+        else:
+            # 根节点只有先验概率
+            content.append("无父节点（根节点）")
+            content.append("先验概率:")
+
+            for i, state in enumerate(node_states):
+                prob = bn.cpt(node_name)[i]
+                content.append(f"{state}: {prob:.6f}")
+
+        content.append("\n" + "=" * 80 + "\n")
+
+    # 写入文件
+    with open(output_file, 'w', encoding='utf-8') as f:
+        f.write("\n".join(content))
+
+    # 打印到控制台
+    for line in content:
+        print(line)
+
+    print(f"\n详细的条件概率表已导出到: {output_file}")
+
+
+def save_cpt_tables(bn, output_file):
+    """完整保存和打印所有节点的CPT表格到文件和控制台，不省略任何内容"""
+    # 收集所有CPT表格的字符串
+    content = []
+    content.append("贝叶斯网络条件概率表")
+    content.append("=" * 80 + "\n")
+
+    for node in bn.nodes():
+        node_name = bn.variable(node).name()
+        content.append(f"节点: {node_name}")
+
+        # 获取父节点
+        parent_ids = list(bn.parents(node))
+        parent_names = [bn.variable(p).name() for p in parent_ids]
+
+        content.append(f"父节点: {parent_names}\n")
+
+        # 获取CPT表格的字符串表示
+        cpt_str = str(bn.cpt(node_name))
+        # 分割表格的每一行
+        cpt_lines = cpt_str.strip().split('\n')
+
+        # 添加所有行，不省略
+        for line in cpt_lines:
+            content.append(line)
+
+        content.append("\n" + "=" * 80 + "\n")
+
+    # 添加一条完整保存确认信息
+    content.append("全部保存完成")
+
+    # 打印到控制台
+    for line in content:
+        print(line)
+
+    # 保存到文件
+    with open(output_file, 'w', encoding='utf-8') as f:
+        f.write('\n'.join(content))
+
+    print(f"\nCPT表格已完整保存到: {output_file}")
+
 def update_with_evidence(analyzer: ScenarioResilience, evidence: Optional[Dict[str, int]] = None,output_dir = "./scenario_bn") -> None:
     """使用新证据更新贝叶斯网络，如果没有提供证据则清除现有证据"""
     # 执行推理
+    # export_detailed_cpts(analyzer.bn, os.path.join(output_dir, 'detailed_cpts.txt'))
+    # save_cpt_tables(analyzer.bn, os.path.join(output_dir, 'cpt_tables.txt'))
     if evidence is None:
         analyzer.clear_evidence()
     else:
@@ -944,8 +1213,13 @@ def update_with_evidence(analyzer: ScenarioResilience, evidence: Optional[Dict[s
     posterior_dict = {}
     for node in analyzer.bn.nodes():
         node_name = analyzer.bn.variable(node).name()
+        print(f"142315{node_name}")
+        # 打印条件概率表，不要省略
+
+        print(analyzer.bn.cpt(node_name))
         posterior = analyzer.ie.posterior(node_name).tolist()
         print(f"142315{posterior}")
+
 
         # 获取该节点的状态映射
         state_labels = analyzer.state_mapping.get(node_name, [])

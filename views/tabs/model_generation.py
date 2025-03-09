@@ -12,6 +12,7 @@ from PySide6.QtSvg import QSvgRenderer
 import os
 import sys
 
+from utils.get_config import get_cfg
 from views.dialogs.custom_information_dialog import CustomInformationDialog
 from views.dialogs.custom_warning_dialog import CustomWarningDialog
 
@@ -432,6 +433,8 @@ QListWidget::item:selected {{
 
         self.ontology_combo = QComboBox()
         self.ontology_combo.addItem(self.tr("请选择本体"))
+        if get_cfg()["i18n"]["language"] == "en_US":
+            self.create_english_version()
         self.ontology_combo.addItems(list(self.SVG_FILES.keys()))
         self.ontology_combo.setCurrentIndex(0)
         self.ontology_combo.model().item(0).setEnabled(False)
@@ -874,3 +877,30 @@ QListWidget::item:selected {{
             self.behavior_table.hide()
             self.behavior_placeholder_label.setText(self.tr("无行为数据"))
             self.behavior_placeholder_label.show()
+
+    def create_english_version(self):
+        # 定义中英文键映射
+        key_translations = {
+            "整体": "Overall",
+            "突发事件本体": "Emergency Ontology",
+            "情景本体": "Scenario Ontology",
+            "情景要素本体": "ScenarioElement Ontology"
+        }
+
+        print(f"原始svg文件：{self.SVG_FILES}")
+        print(f"原始类选项：{self.CLASS_OPTIONS}")
+
+        # 修改 SVG_FILES 字典
+        for zh_key in list(self.SVG_FILES.keys()):  # 使用 list() 创建键的副本，避免在迭代时修改字典
+            if zh_key in key_translations:
+                value = self.SVG_FILES.pop(zh_key)  # 移除原始键值对
+                self.SVG_FILES[key_translations[zh_key]] = value  # 添加新键值对
+
+        # 修改 CLASS_OPTIONS 字典
+        for zh_key in list(self.CLASS_OPTIONS.keys()):
+            if zh_key in key_translations:
+                value = self.CLASS_OPTIONS.pop(zh_key)
+                self.CLASS_OPTIONS[key_translations[zh_key]] = value
+
+        print(f"修改后的svg文件：{self.SVG_FILES}")
+        print(f"修改后的类选项：{self.CLASS_OPTIONS}")

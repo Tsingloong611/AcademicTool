@@ -11,6 +11,7 @@ from datetime import datetime
 
 import pandas as pd
 import requests
+from PySide6.QtCore import QTimer, QThread, QCoreApplication
 from jedi.inference.gradual.typing import Tuple
 from semantictools import config_path
 from sqlalchemy import select, and_, create_engine, text, bindparam
@@ -409,6 +410,43 @@ def get_driving_distance(origin, destination, api_key):
             return int(distance) if distance else None
     return None
 
+def get_driving_time(origin, destination, api_key):
+    """
+    根据起点和终点坐标调用高德驾车路径规划 API 获取行驶时间。
+
+    :param origin: 起点坐标元组 (经度, 纬度)，例如 (112.4328, 39.338005)
+    :param destination: 终点坐标元组 (经度, 纬度)
+    :param api_key: 高德地图 API Key
+    :return: 行驶时间（单位：s），如果查询失败返回 None
+    """
+    url = "https://restapi.amap.com/v3/direction/driving"
+    origin_str = f"{origin[0]},{origin[1]}"
+    destination_str = f"{destination[0]},{destination[1]}"
+    params = {
+        "origin": origin_str,
+        "destination": destination_str,
+        "key": api_key,
+        # 可以设置 extensions 参数为 "all" 以获得更详细的路径信息
+        "extensions": "base"
+    }
+
+    response = requests.get(url, params=params)
+    data = response.json()
+    if data.get("status") != "1":
+        print("请求失败，返回数据:", data)
+
+    if data.get("status") == "1" and data.get("route"):
+        paths = data["route"].get("paths", [])
+        if paths:
+            first_path = paths[0]
+            duration = first_path.get("duration")  # 单位为秒
+            if duration:
+                print(f"duration: {duration}")
+            else:
+                print("duration is None")
+                print("data: ", data)
+            return int(duration) if duration else None
+    return None
 
 def get_coordinates_from_stake_by_file(stake_number):
     try:
@@ -474,92 +512,31 @@ def convert_to_evidence(data):
 
     # 处理 emergency_period
     emergency_period_data = data.get('emergency_period', [])
+    emergency_period_map_dict = {
+        '凌晨': 'Earlymorning',
+        '上午': 'Morning',
+        '下午': 'Afternoon',
+        '晚上': 'Evening',
+        'Earlymorning': 'Earlymorning',
+        'Morning': 'Morning',
+        'Afternoon': 'Afternoon',
+        'Evening': 'Evening'
+    }
     if emergency_period_data:
         # 凌晨 上午 下午 晚上	0/1/2/3
         emergency_period = emergency_period_data[0][-1]
-        if emergency_period == '凌晨':
+        emergency_period_map = emergency_period_map_dict.get(emergency_period, 'Unknown')
+        if emergency_period == '凌晨' or emergency_period_map == 'Earlymorning':
             evidence['emergencyPeriod'] = 0
-        elif emergency_period == '上午':
+        elif emergency_period == '上午' or emergency_period_map == 'Morning':
             evidence['emergencyPeriod'] = 1
-        elif emergency_period == '下午':
+        elif emergency_period == '下午' or emergency_period_map == 'Afternoon':
             evidence['emergencyPeriod'] = 2
-        elif emergency_period == '晚上':
+        elif emergency_period == '晚上' or emergency_period_map == 'Evening':
             evidence['emergencyPeriod'] = 3
 
     # 处理 emergency_type
     evidence['emergencyType'] = data.get('emergency_type', 0)
-
-    # 处理 road_position和resource_positions
-    road_position = data.get('road_position', [])
-    resource_positions = data.get('resource_positions', [])
-    if road_position and resource_positions:
-        road_name, start_stake, end_stake = road_position
-        print("道路名称:", road_name)
-        print("起点桩号:", start_stake)
-        print("终点桩号:", end_stake)
-
-        config_path = os.path.join(os.path.dirname(__file__), '../config.json')
-        with open(config_path, 'r', encoding='utf-8') as f:
-            config = json.load(f)
-
-        api_key = config.get('gaode-map')['web_service_key']
-        emergency_speed = config.get('emergency_speed', 60)
-        # 分别获取起点和终点桩号的经纬度
-        # start_coordinates = get_coordinates_from_stake(road_name, start_stake, api_key)
-        # end_coordinates = get_coordinates_from_stake(road_name, end_stake, api_key)
-        start_coordinates = get_coordinates_from_stake_by_file(start_stake)
-        end_coordinates = get_coordinates_from_stake_by_file(end_stake)
-
-        if start_coordinates and end_coordinates:
-            # 转换成 float 类型进行计算
-            start_lon, start_lat = map(float, start_coordinates)
-            end_lon, end_lat = map(float, end_coordinates)
-
-            # 计算平均经纬度
-            avg_lon = (start_lon + end_lon) / 2
-            avg_lat = (start_lat + end_lat) / 2
-
-            print("起点坐标:", start_coordinates)
-            print("终点坐标:", end_coordinates)
-            print("平均坐标:", (avg_lon, avg_lat))
-        else:
-            print("无法获取桩号对应的坐标")
-            CustomWarningDialog("警告","无法获取桩号对应的坐标").exec_()
-            return evidence
-
-        pattern = r'(.+?)\s*\(\s*([-+]?\d+\.\d+)\s*,\s*([-+]?\d+\.\d+)\s*\)'
-
-        # 遍历 resource_positions 列表，使用正则表达式提取地址和经纬度
-        distance = 0
-        for resource in resource_positions:
-            match = re.search(pattern, resource)
-            if match:
-                # 提取捕获的各组内容，并去除两端空白字符
-                address = match.group(1).strip()
-                latitude = match.group(2)
-                longitude = match.group(3)
-                print("地址:", address)
-                print("纬度:", latitude)
-                print("经度:", longitude)
-                # 计算距离
-                distance += get_driving_distance((avg_lon, avg_lat), (float(longitude), float(latitude)), api_key)
-
-        if distance != 0:
-            print("总行驶距离:", distance)
-            time = distance / (emergency_speed * 1000 / 60)
-            print("预计行驶时间:", time)
-            # 根据距离判断
-            if time <= 15:
-                evidence['responseDuration'] = 0
-            elif time <= 30:
-                evidence['responseDuration'] = 1
-            elif time <= 60:
-                evidence['responseDuration'] = 2
-            else:
-                evidence['responseDuration'] = 3
-
-
-
 
     # 处理 related_resource
     related_resource = data.get('related_resource', {})
@@ -608,9 +585,12 @@ def convert_to_evidence(data):
     }
 
     total_duration_value = 0
+    # for duration in durations:
+    #     if duration is not None:
+    #         total_duration_value += int(duration)
     for duration in durations:
         if duration is not None:
-            total_duration_value += int(duration)
+            total_duration_value = max(total_duration_value, int(duration))
 
     # 根据总和转换为 disposalDuration
     if total_duration_value <= 15:
@@ -623,6 +603,86 @@ def convert_to_evidence(data):
         disposal_duration = 3
 
     evidence['disposalDuration'] = disposal_duration
+
+    # 处理 road_position和resource_positions
+    road_position = data.get('road_position', [])
+    resource_positions = data.get('resource_positions', [])
+    if road_position and resource_positions:
+        road_name, start_stake, end_stake = road_position
+        print("道路名称:", road_name)
+        print("起点桩号:", start_stake)
+        print("终点桩号:", end_stake)
+
+        config_path = os.path.join(os.path.dirname(__file__), '../config.json')
+        with open(config_path, 'r', encoding='utf-8') as f:
+            config = json.load(f)
+
+        api_key = config.get('gaode-map')['web_service_key']
+        emergency_speed = config.get('emergency_speed', 60)
+        # 分别获取起点和终点桩号的经纬度
+        # start_coordinates = get_coordinates_from_stake(road_name, start_stake, api_key)
+        # end_coordinates = get_coordinates_from_stake(road_name, end_stake, api_key)
+        start_coordinates = get_coordinates_from_stake_by_file(start_stake)
+        end_coordinates = get_coordinates_from_stake_by_file(end_stake)
+
+        if start_coordinates and end_coordinates:
+            # 转换成 float 类型进行计算
+            start_lon, start_lat = map(float, start_coordinates)
+            end_lon, end_lat = map(float, end_coordinates)
+
+            # 计算平均经纬度
+            avg_lon = (start_lon + end_lon) / 2
+            avg_lat = (start_lat + end_lat) / 2
+
+            print("起点坐标:", start_coordinates)
+            print("终点坐标:", end_coordinates)
+            print("平均坐标:", (avg_lon, avg_lat))
+        else:
+            print("无法获取桩号对应的坐标")
+            CustomWarningDialog("警告","无法获取桩号对应的坐标").exec_()
+            return evidence
+
+        pattern = r'(.+?)\s*\(\s*([-+]?\d+\.\d+)\s*,\s*([-+]?\d+\.\d+)\s*\)'
+
+        # 遍历 resource_positions 列表，使用正则表达式提取地址和经纬度
+        distance = 0
+        time = 0
+        for resource in resource_positions:
+            match = re.search(pattern, resource)
+            if match:
+                # 提取捕获的各组内容，并去除两端空白字符
+                address = match.group(1).strip()
+                latitude = match.group(2)
+                longitude = match.group(3)
+                print("地址:", address)
+                print("纬度:", latitude)
+                print("经度:", longitude)
+
+                # 计算距离
+                #distance += get_driving_distance((avg_lon, avg_lat), (float(longitude), float(latitude)), api_key)
+                each_time = get_driving_time((avg_lon, avg_lat), (float(longitude), float(latitude)), api_key)
+                time = max(each_time,time)
+                # 延迟1000毫秒(1秒)
+                QThread.msleep(1000)
+                QCoreApplication.processEvents()
+
+        #if distance != 0:
+            #print("总行驶距离:", distance)
+            # time = distance / (emergency_speed * 1000 / 60)
+        if time != 0:
+            # 秒转分钟
+            time = time / 60
+            print("预计行驶时间(min):", time)
+            # 根据距离判断
+            if time <= 15:
+                evidence['responseDuration'] = 0
+            elif time <= 30:
+                evidence['responseDuration'] = 1
+            elif time <= 60:
+                evidence['responseDuration'] = 2
+            else:
+                evidence['responseDuration'] = 3
+
     print(f"3214evidence: {evidence}")
 
 
@@ -1159,7 +1219,7 @@ class PlanData:
         return all_plans.get(plan_name, {})
 
 
-    def get_all_plans(self) -> Dict[str, Any]:
+    def get_all_plans(self, change_path = None) -> Dict[str, Any]:
         """
         返回形如:
         {
@@ -1337,6 +1397,19 @@ class PlanData:
                         sim_results["推演后-较差"] = f"{post_bad.posterior_probability * 100:.2f}%"
 
             # ========== (C) 最终组装 plan_info ==========
+            if change_path:
+                # print(f"传入路径：{change_path}")
+                # change_path = os.path.abspath(os.path.join(change_path, f"posterior_probabilities.json"))
+                print(f"根据以下路径进行调整：{change_path}")
+                with open(change_path, 'r') as f:
+                    change_dict = json.load(f)
+                    # print(f"读取到的数据：{change_dict}")
+                    # print(change_dict["ScenarioResilience"]["Good"])
+                    # print(change_dict["ScenarioResilience"]["Bad"])
+                    good_prior = change_dict["ScenarioResilience"]["Good"]
+                    sim_results["推演前-较好"] = f"{good_prior * 100:.2f}%"
+                    bad_prior = change_dict["ScenarioResilience"]["Bad"]
+                    sim_results["推演前-较差"] = f"{bad_prior * 100:.2f}%"
 
             plan_info = {
                 "plan_name": plan_name,
@@ -1344,6 +1417,8 @@ class PlanData:
                 "simulation_results": sim_results,
                 "timestamp": plan_create_time
             }
+
+
 
             # 放进 results，用 plan_name 做 key
             results[plan_name] = plan_info
