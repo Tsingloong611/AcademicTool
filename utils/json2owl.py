@@ -356,7 +356,7 @@ def create_ontology(input_path, output_path):
     onto.save(file=output_path, format="rdfxml")
     print(f"本体已保存到: {output_path}")
 
-def Scenario_owl_creator(output_path):
+def Scenario_owl_creator(output_path,evidence = None):
     """
     创建Scenario本体并保存到指定的位置。
     """
@@ -458,6 +458,86 @@ def Scenario_owl_creator(output_path):
             namespace = onto
             domain = [Scenario]
             range = [ResilienceInfluentialFactors]
+
+        # 设置属性值（如果提供了evidence）
+        if evidence:
+            # 使用注解属性存储值
+            if 'casualties' in evidence:
+                casualties.hasValue = str(evidence['casualties'])
+
+            if 'emergencyType' in evidence:
+                type_value = evidence['emergencyType']
+                if type_value == 0:
+                    emergencyType.hasValue = "Vehicle_Self_Accident"
+                elif type_value == 1:
+                    emergencyType.hasValue = "Vehicle_to_Fixed_Object_Accident"
+                elif type_value == 2:
+                    emergencyType.hasValue = "Collision_Accident"
+                else:
+                    emergencyType.hasValue = str(type_value)
+
+            if 'roadPassibility' in evidence:
+                roadPassibility.hasValue = str(evidence['roadPassibility'])
+
+            if 'resourceType' in evidence:
+                resourceTypeValue = []
+                if evidence.get('AidResource') == 1:
+                    resourceTypeValue.append("AidResource")
+                if evidence.get('TowResource') == 1:
+                    resourceTypeValue.append("TowResource")
+                if evidence.get('FirefightingResource') == 1:
+                    resourceTypeValue.append("FirefightingResource")
+                if evidence.get('RescueResource') == 1:
+                    resourceTypeValue.append("RescueResource")
+
+                # 如果没有任何资源被使用，则设置为"None"
+                if not resourceTypeValue:
+                    resourceTypeValue = ["None"]
+
+                # 将资源列表转换为逗号分隔的字符串
+                resourceType.hasValue = ", ".join(resourceTypeValue)
+
+            if 'roadLoss' in evidence:
+                roadLoss.hasValue = str(evidence['roadLoss'])
+
+            if 'disposalDuration' in evidence:
+                disposal_value = evidence['disposalDuration']
+                if disposal_value == 0:
+                    disposalDuration.hasValue = "0-15min"
+                elif disposal_value == 1:
+                    disposalDuration.hasValue = "15-30min"
+                elif disposal_value == 2:
+                    disposalDuration.hasValue = "30-60min"
+                elif disposal_value == 3:
+                    disposalDuration.hasValue = "60min+"
+
+
+            if 'emergencyPeriod' in evidence:
+                period_value = evidence['emergencyPeriod']
+                if period_value == 0:
+                    emergencyPeriod.hasValue = "Earlymorning"
+                elif period_value == 1:
+                    emergencyPeriod.hasValue = "Morning"
+                elif period_value == 2:
+                    emergencyPeriod.hasValue = "Afternoon"
+                elif period_value == 3:
+                    emergencyPeriod.hasValue = "Evening"
+                else:
+                    emergencyPeriod.hasValue = str(period_value)
+
+            if 'responseDuration' in evidence:
+                response_value = evidence['responseDuration']
+                if response_value == 0:
+                    responseDuration.hasValue = "0-15min"
+                elif response_value == 1:
+                    responseDuration.hasValue = "15-30min"
+                elif response_value == 2:
+                    responseDuration.hasValue = "30-60min"
+                elif response_value == 3:
+                    responseDuration.hasValue = "60min+"
+                else:
+                    responseDuration.hasValue = str(response_value)
+
 
     # 保存
     output_dir = os.path.dirname(output_path)

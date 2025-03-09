@@ -20,6 +20,7 @@ from typing import Dict, List, Optional, Any
 
 from models.models import AttributeValue, Entity, AttributeDefinition, AttributeCode, EntityType, Template, Category, \
     PosterioriData, BayesNode, BayesNodeState, AttributeValueReference
+from utils.get_config import get_cfg
 from views.dialogs.custom_warning_dialog import CustomWarningDialog
 
 
@@ -639,7 +640,11 @@ def convert_to_evidence(data):
             print("平均坐标:", (avg_lon, avg_lat))
         else:
             print("无法获取桩号对应的坐标")
-            CustomWarningDialog("警告","无法获取桩号对应的坐标").exec_()
+            if get_cfg()['i18n']['language'] == 'en_US':
+                CustomWarningDialog("Warning","Unable to obtain coordinates corresponding to the stake number").exec_()
+            else:
+                CustomWarningDialog("警告","无法获取桩号对应的坐标").exec_()
+
             return evidence
 
         pattern = r'(.+?)\s*\(\s*([-+]?\d+\.\d+)\s*,\s*([-+]?\d+\.\d+)\s*\)'
@@ -1328,11 +1333,21 @@ class PlanData:
                             code_name = ad.attribute_code.attribute_code_name  # 例如 "ResourceType", "ResourceQuantityOrQuality"
                             res_attr_map[code_name] = rav.attribute_value
 
-                    # Demo: 其中 resource_category, location 在示例中没有明确字段，先用示例值
+                    type_mapping = {
+                        "人员": ["牵引人员", "交警", "医生", "消防员", "抢险人员"],
+                        "车辆": ["牵引车", "警车", "救护车", "消防车", "融雪车辆", "防汛车辆", "封道抢险车"],
+                        "物资": ["随车修理工具", "钢丝绳", "安全锥", "撬棒", "黄沙", "扫帚", "辅助轮", "千斤顶",
+                                 "灭火器", "草包", "蛇皮袋", "融雪剂", "发电机", "抽水泵", "医疗物资"]
+                    }
+                    # 看category是人员还是车辆还是物资
+                    for key, value in type_mapping.items():
+                        if res_attr_map.get("ResourceType") in value:
+                            resource_type = key
+                            break
                     # 也可根据实际字段/业务设置
                     resource_item = {
-                        "resource_type": res_attr_map.get("ResourceType", "未知资源"),
-                        "resource_category": "类型A",  # 示例中写死
+                        "resource_type": resource_type,
+                        "resource_category": res_attr_map.get("ResourceType", "未知资源"),
                         "quantity": res_attr_map.get("ResourceQuantityOrQuality", 0),
                         "location": res_attr_map.get("Location", "未知位置")
                     }

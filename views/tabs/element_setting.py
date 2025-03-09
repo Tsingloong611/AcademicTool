@@ -34,7 +34,80 @@ from views.dialogs.custom_select_dialog import CustomSelectDialog
 from views.dialogs.custom_warning_dialog import CustomWarningDialog
 from views.dialogs.entity_type_select import EntityTypeDialog
 
+ATTR_TYPE_NAME_MAP ={
+    "布尔型": "Bool",
+    "数值型": "Real",
+    "枚举型": "Enum",
+    "字符串": "String"
+}
 
+ENTITY_TYPE_MAP = {
+    '车辆': 'Vehicle',
+    '路段': 'Road',
+    '自然环境': 'Meteorology',
+    '应急资源': 'ResponseResource',
+    '应急行为': 'ResponseAction',
+    '车辆部件': 'VehiclePart',
+    '承载物': 'VehicleLoad',
+    '基础设施': 'Facility',
+    '车道': 'Lane',
+    '人类': 'People',
+    '应急预案': 'ResponsePlan',
+    'Entity': 'Entity',
+    'Item': 'Item',
+}
+
+ENUM_VALUE_MAP = {
+    "正向": "Forward direction",
+    "反向": "Reverse direction",
+    "主路": "Main road",
+    "辅路": "Service road",
+    "匝道": "Ramp",
+    "晴天": "Sunny day",
+    "阴天": "Cloudy day",
+    "小雪": "Light snow",
+    "中雪": "Moderate snow",
+    "大雪": "Heavy snow",
+    "牵引车": "Tow truck",
+    "消防车": "Fire truck",
+    "救护车": "Ambulance",
+    "养护车辆": "Maintenance vehicle",
+    "交警": "Traffic police",
+    "医生": "Doctor",
+    "路政人员": "Highway administration personnel",
+    "消防物资": "Firefighting materials",
+    "危化处置物资": "Hazardous chemical disposal materials",
+    "抢修物资": "Emergency repair materials",
+    "救助": "Rescue",
+    "牵引": "Towing",
+    "抢修": "Emergency repair",
+    "消防": "Firefighting",
+    "发动机": "Engine",
+    "轮胎": "Tire",
+    "车门": "Car door",
+    "易燃品": "Flammable items",
+    "易爆品": "Explosive items",
+    "易碎品": "Fragile items",
+    "立柱": "Column/Pillar",
+    "路名牌": "Road name sign",
+    "护栏": "Guardrail",
+    "声屏障": "Sound barrier",
+    "水泥防撞墙": "Concrete crash wall",
+    "防撞隔离墩": "Crash isolation pier",
+    "防撞护栏": "Crash barrier",
+    "防撞墙": "Crash wall",
+    "道路绿化": "Road landscaping",
+    "防眩屏": "Anti-glare screen",
+    "照明设施": "Lighting facilities",
+    "交通标志": "Traffic signs",
+    "交通标线": "Traffic markings",
+    "凌晨": "Earlymorning",
+    "上午": "Morning",
+    "下午": "Afternoon",
+    "晚上": "Evening"
+}
+
+ENUM_VALUE_MAP_REVERSE = {v: k for k, v in ENUM_VALUE_MAP.items()}
 
 class CenteredItemDelegate(QStyledItemDelegate):
     """自定义委托，使 QComboBox 的下拉项内容居中显示。"""
@@ -305,7 +378,12 @@ class EditAttributeDialog(QDialog):
         self.attr_type = attr_type
         self.attr_type_name = attr_type_name
         self.is_required = is_required
-        self.enum_values = enum_values
+        if get_cfg()["i18n"]["language"] == "en_US":
+            self.enum_values = [ENUM_VALUE_MAP.get(item, item) for item in enum_values] if enum_values else []
+            self.attr_value = ENUM_VALUE_MAP.get(attr_value, attr_value)
+        else:
+            self.enum_values = [ENUM_VALUE_MAP_REVERSE.get(item, item) for item in enum_values] if enum_values else []
+            self.attr_value = ENUM_VALUE_MAP_REVERSE.get(attr_value, attr_value)
         self.init_ui()
 
     def init_ui(self):
@@ -314,7 +392,10 @@ class EditAttributeDialog(QDialog):
         layout = QVBoxLayout(self)
 
         # 显示正在编辑的属性名称和类型
-        info_label = QLabel(self.tr('正在编辑属性: {attr_name}\n类型: {attr_type_name}').format(attr_name = self.attr_name, attr_type_name = self.attr_type_name))
+        if get_cfg()["i18n"]["language"] == "en_US":
+            info_label = QLabel(self.tr('Editing attribute: {attr_name}\nType: {attr_type_name}').format(attr_name=self.attr_name, attr_type_name=ATTR_TYPE_NAME_MAP[self.attr_type_name]))
+        else:
+            info_label = QLabel(self.tr('正在编辑属性: {attr_name}\n类型: {attr_type_name}').format(attr_name = self.attr_name, attr_type_name = self.attr_type_name))
         info_label.setAlignment(Qt.AlignCenter)
         info_label.setStyleSheet("font-weight: bold; font-size: 14px;")
         layout.addWidget(info_label)
@@ -350,7 +431,10 @@ class EditAttributeDialog(QDialog):
         if self.attr_type == "Enum":
             combobox = QComboBox()
             if not self.is_required:
-                combobox.addItem("<空>")
+                if get_cfg()["i18n"]["language"] == "en_US":
+                    combobox.addItem("<Empty>")
+                else:
+                    combobox.addItem("<空>")
                 for item in self.enum_values:
                     combobox.addItem(item)
                 if self.attr_value in self.enum_values:
@@ -389,7 +473,7 @@ class EditAttributeDialog(QDialog):
             new_value = "True" if self.value_edit.isChecked() else "False"
         elif self.attr_type == "Enum":
             new_value = self.value_edit.currentText()
-            if new_value == "<空>":
+            if new_value == "<空>" or new_value == "<Empty>":
                 new_value = ""
         else:
             new_value = self.value_edit.text().strip()
@@ -437,7 +521,7 @@ class EditEntityDialog(QDialog):
 
         # 创建顶部描述信息
         label_layout = QHBoxLayout()
-        self.entity_label = QLabel(f"正在编辑实体：{self.entity_data.get('entity_name', '')}")
+        self.entity_label = QLabel(self.tr("正在编辑实体：{0}").format(self.entity_data.get('entity_name', '')))
         self.entity_label.setAlignment(Qt.AlignCenter)
         self.entity_label.setStyleSheet("font-weight:bold;color:gray;")
         label_layout.addWidget(self.entity_label)
@@ -690,7 +774,16 @@ class EditEntityDialog(QDialog):
                 attr_type = attr.get("attribute_type", "")
                 if attr.get("attribute_type_code") == "Bool":
                     print(f"266231{attr_value}")
-                    attr_value = "是" if attr_value == "True" else "否"
+                    if get_cfg()['i18n']['language'] == "en_US":
+                        attr_value = "True" if str(attr_value).lower() in ["true", "1"] else "False"
+                    else:
+                        attr_value = "是" if str(attr_value).lower() in ["true","1"] else "否"
+
+                if attr.get("attribute_type_code") == "Enum":
+                    if get_cfg()['i18n']['language'] == "en_US":
+                        attr_value = ENUM_VALUE_MAP.get(attr_value, attr_value)
+                    else:
+                        attr_value = ENUM_VALUE_MAP_REVERSE.get(attr_value, attr_value)
 
                 attr_widget = ClickableAttributeWidget(attr_code,attr_name, attr_value, attr_type)
                 attr_widget.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)  # 组件大小策略
@@ -1102,7 +1195,7 @@ class EditRelatedObjectDialog(QDialog):
                 entity_types = self.parent.get_result_by_sql(
                     "SELECT entity_type_id, entity_type_name FROM entity_type WHERE is_item_type = 1")
                 if not entity_types:
-                    QMessageBox.warning(self, "警告", "没有可用的实体类型。")
+                    QMessageBox.warning(self, self.tr("警告"), self.tr("没有可用的实体类型。"))
                     raise ValueError("没有可用的实体类型")  # 抛出异常而不是直接关闭
 
                 dialog = EntityTypeDialog(entity_types, self)
@@ -1111,7 +1204,7 @@ class EditRelatedObjectDialog(QDialog):
                 if result == QDialog.Accepted:
                     self.target_type_id, self.target_type_name = dialog.get_selected_entity()
                 else:
-                    CustomInformationDialog("未选择任何实体类型", "未选择任何实体类型。").exec_()
+                    CustomInformationDialog(self.tr("未选择任何实体类型"), self.tr("未选择任何实体类型。")).exec_()
                     raise ValueError("未选择任何实体类型")  # 抛出异常而不是直接关闭
 
 
@@ -1137,7 +1230,7 @@ class EditRelatedObjectDialog(QDialog):
                 entity_types = self.parent.get_result_by_sql(
                     "SELECT entity_type_id, entity_type_name FROM entity_type WHERE is_item_type = 0")
                 if not entity_types:
-                    QMessageBox.warning(self, "警告", "没有可用的实体类型。")
+                    QMessageBox.warning(self, self.tr("警告"), self.tr("没有可用的实体类型。"))
                     raise ValueError("没有可用的实体类型")
                 dialog = EntityTypeDialog(entity_types, self)
                 result = dialog.exec()
@@ -1147,7 +1240,7 @@ class EditRelatedObjectDialog(QDialog):
                     self.target_type_name = self.current_type_name
                     self.target_type_id = self.current_type_id
                 else:
-                    CustomInformationDialog("未选择任何实体类型", "未选择任何实体类型。").exec_()
+                    CustomInformationDialog(self.tr("未选择任何实体类型"), self.tr("未选择任何实体类型。")).exec_()
                     raise ValueError("未选择任何实体类型")  # 抛出异常而不是直接关闭
 
             self.is_required = self.object['is_required']
@@ -1166,7 +1259,10 @@ class EditRelatedObjectDialog(QDialog):
 
         # 创建顶部描述信息
         label_layout = QHBoxLayout()
-        self.current_behavior_label = QLabel(f"当前正在编辑复合属性：{self.current_name}，属性类型：{self.current_type_name}, 实体类型：{self.target_type_name}")
+        if get_cfg()["i18n"]["language"] == "en_US":
+            self.current_behavior_label = QLabel(self.tr("当前正在编辑属性：{0}，属性类型：{1}, 实体类型：{2}").format(self.current_name, ENTITY_TYPE_MAP[self.current_type_name], ENTITY_TYPE_MAP[self.target_type_name]))
+        else:
+            self.current_behavior_label = QLabel(self.tr("当前正在编辑复合属性：{0}，属性类型：{1}, 实体类型：{2}").format(self.current_name, self.current_type_name, self.target_type_name))
         self.current_behavior_label.setAlignment(Qt.AlignCenter)
         self.current_behavior_label.setStyleSheet("font-weight:bold;color:gray;")
         label_layout.addWidget(self.current_behavior_label)
@@ -1175,7 +1271,7 @@ class EditRelatedObjectDialog(QDialog):
 
         # 创建表格
         self.resource_table = QTableWidget(0, 3)
-        self.resource_table.setHorizontalHeaderLabels(["ID", "选中", "实体名称"])
+        self.resource_table.setHorizontalHeaderLabels(["ID", self.tr("选中"), self.tr("实体名称")])
         self.resource_table.setEditTriggers(QTableWidget.NoEditTriggers)
         self.resource_table.setSelectionBehavior(QTableWidget.SelectRows)
         self.resource_table.setSelectionMode(QTableWidget.SingleSelection)
@@ -1193,9 +1289,9 @@ class EditRelatedObjectDialog(QDialog):
 
         main_layout.addWidget(self.resource_table)
 
-        self.add_resource_btn = QPushButton("增加")
-        self.edit_resource_btn = QPushButton("修改")
-        self.delete_resource_btn = QPushButton("删除")
+        self.add_resource_btn = QPushButton(self.tr("增加"))
+        self.edit_resource_btn = QPushButton(self.tr("修改"))
+        self.delete_resource_btn = QPushButton(self.tr("删除"))
 
         self.add_resource_btn.setIcon(QIcon(os.path.join(os.path.dirname(os.path.abspath(__file__)), "../../resources/icons/add.png")))
         self.edit_resource_btn.setIcon(QIcon(os.path.join(os.path.dirname(os.path.abspath(__file__)), "../../resources/icons/edit.png")))
@@ -1440,12 +1536,12 @@ class EditRelatedObjectDialog(QDialog):
     def add_resource(self):
         """增加新实体"""
         # 获取新建实体名字
-        name, ok = QInputDialog.getText(self, "输入名称", "输入名称")
+        name, ok = QInputDialog.getText(self, self.tr("输入名称"), self.tr("输入名称"))
         if not ok:
             return
         # 如果名字为空
         if name == "":
-            CustomWarningDialog("输入错误", "名字不能为空").exec_()
+            CustomWarningDialog(self.tr("输入错误"), self.tr("名字不能为空")).exec_()
             return
         # 判断是属性还是行为
         if self.type == "attribute":
@@ -1473,7 +1569,7 @@ class EditRelatedObjectDialog(QDialog):
 
                 # 确保类别 ID 存在
                 if len(category_ids) == 0:
-                    CustomWarningDialog("错误", "无法找到类别信息").exec_()
+                    CustomWarningDialog(self.tr("错误"), self.tr("无法找到类别信息")).exec_()
                     return
 
                 # 查询所有类别的名称，并建立 ID 与名称的映射
@@ -1489,7 +1585,7 @@ class EditRelatedObjectDialog(QDialog):
                 # 打印映射关系用于调试
                 print(f"[DEBUG] category_map: {category_map}")
                 # 弹出对话框，选择类别
-                category_name, ok = QInputDialog.getItem(self, "选择类别", "选择类别", category_map.values(), 0, False)
+                category_name, ok = QInputDialog.getItem(self, self.tr("选择类别"), self.tr("选择类别"), category_map.values(), 0, False)
                 if not ok:
                     return
                 print(f"[EDIT RELATED OBJECT DIALOG MAIN INFO]: 用户选择了类别:{category_name}")
@@ -1533,7 +1629,7 @@ class EditRelatedObjectDialog(QDialog):
 
                 # 确保类别 ID 存在
                 if len(category_ids) == 0:
-                    CustomWarningDialog("错误", "无法找到类别信息").exec_()
+                    CustomWarningDialog(self.tr("错误"), self.tr("无法找到类别信息")).exec_()
                     return
 
                 # 查询所有类别的名称，并建立 ID 与名称的映射
@@ -1551,7 +1647,7 @@ class EditRelatedObjectDialog(QDialog):
                 # 打印映射关系用于调试
                 print(f"[DEBUG] category_map: {category_map}")
                 # 弹出对话框，选择类别
-                category_name, ok = QInputDialog.getItem(self, "选择类别", "选择类别", category_map.values(), 0, False)
+                category_name, ok = QInputDialog.getItem(self, self.tr("选择类别"), self.tr("选择类别"), category_map.values(), 0, False)
                 if not ok:
                     return
                 print(f"[EDIT RELATED OBJECT DIALOG MAIN INFO]: 用户选择了类别:{category_name}")
@@ -1707,7 +1803,7 @@ class EditRelatedObjectDialog(QDialog):
             entity_name_item = self.resource_table.item(row, 2)
             entity_id_item = self.resource_table.item(row, 0)
             if not entity_name_item or not entity_id_item:
-                CustomWarningDialog("错误", "无法获取选定实体的信息。").exec_()
+                CustomWarningDialog(self.tr("错误"), self.tr("无法获取选定实体的信息。")).exec_()
                 return
 
             entity_name = entity_name_item.text()
@@ -1723,7 +1819,7 @@ class EditRelatedObjectDialog(QDialog):
                     break
 
             if not entity_data:
-                CustomWarningDialog("错误", "无法找到要编辑的实体。").exec_()
+                CustomWarningDialog(self.tr("错误"), self.tr("无法找到要编辑的实体。")).exec_()
                 return
 
             # 打开编辑对话框
@@ -1731,7 +1827,7 @@ class EditRelatedObjectDialog(QDialog):
 
 
         else:
-            CustomWarningDialog("修改失败", "请先选择要修改的实体。").exec_()
+            CustomWarningDialog(self.tr("修改失败"), self.tr("请先选择要修改的实体。")).exec_()
 
     def delete_resource(self):
         """删除实体"""
@@ -1739,7 +1835,7 @@ class EditRelatedObjectDialog(QDialog):
         selected_items = self.resource_table.selectedItems()
 
         if not selected_items:
-            CustomWarningDialog("删除失败", "请选择要删除的实体。").exec_()
+            CustomWarningDialog(self.tr("删除失败"), self.tr("请选择要删除的实体。")).exec_()
             return
 
         row = selected_items[0].row()
@@ -1750,15 +1846,15 @@ class EditRelatedObjectDialog(QDialog):
 
         # 如果是最后一个item，不允许删除
         if self.resource_table.rowCount() - 1 == 0:
-            CustomWarningDialog("删除失败", "请不要删除最后一个实体。").exec_()
+            CustomWarningDialog(self.tr("删除失败"), self.tr("请不要删除最后一个实体。")).exec_()
             return
 
         if not entity_name_item or not entity_id_item:
-            CustomWarningDialog("错误", "无法获取选定实体的信息。").exec_()
+            CustomWarningDialog(self.tr("错误"), self.tr("无法获取选定实体的信息。")).exec_()
             return
 
         if entity_state_item.findChild(QCheckBox).isChecked():
-            CustomWarningDialog("删除失败", "请先取消选中实体后再删除。").exec_()
+            CustomWarningDialog(self.tr("删除失败"), self.tr("请先取消选中实体后再删除。")).exec_()
             return
 
         entity_name = entity_name_item.text()
@@ -1770,7 +1866,7 @@ class EditRelatedObjectDialog(QDialog):
         core_elements = [item[0] for item in self.parent.get_result_by_sql(
             "SELECT element_base_name FROM element_base")]
         if entity_name in core_elements:
-            CustomWarningDialog("删除失败", "核心要素不得删除。").exec_()
+            CustomWarningDialog(self.tr("删除失败"), self.tr("核心要素不得删除。")).exec_()
             return
 
         # 检查依赖关系
@@ -1782,12 +1878,12 @@ class EditRelatedObjectDialog(QDialog):
             if self._perform_entity_deletion(entity_id, entity_name):
                 self.selected_entities.discard(entity_id)
                 self.load_entities()
-                CustomInformationDialog("删除成功", f"实体 '{entity_name}' 已删除。").exec_()
+                CustomInformationDialog(self.tr("删除成功"), self.tr("实体 '{0}' 已删除。").format(entity_name)).exec_()
             else:
-                CustomWarningDialog("删除失败", "无法找到要删除的实体。").exec_()
+                CustomWarningDialog(self.tr("删除失败"), self.tr("无法找到要删除的实体。")).exec_()
         except Exception as e:
             print(f"删除实体时发生错误: {e}")
-            CustomWarningDialog("删除失败", f"删除过程中发生错误：{str(e)}").exec_()
+            CustomWarningDialog(self.tr("删除失败"), self.tr("删除过程中发生错误：{0}").format(str(e))).exec_()
 
     def _check_entity_dependencies(self, entity_id, entity_name):
         """检查实体的依赖关系"""
@@ -1804,8 +1900,8 @@ class EditRelatedObjectDialog(QDialog):
 
                     if entity_id in attribute_values:
                         CustomWarningDialog(
-                            "删除失败",
-                            f"该实体被属性 '{attribute.get('attribute_name', '未知属性')}' 使用，请先解除关联。"
+                            self.tr("删除失败"),
+                            self.tr("该实体被属性 '{0}' 使用，请先解除关联。").format(attribute.get('attribute_name', '未知属性'))
                         ).exec_()
                         return True
 
@@ -1817,8 +1913,8 @@ class EditRelatedObjectDialog(QDialog):
 
                 if entity_id in related_objects:
                     CustomWarningDialog(
-                        "删除失败",
-                        f"该实体被行为 '{behavior.get('behavior_name', '未知行为')}' 使用，请先解除关联。"
+                        self.tr("删除失败"),
+                        self.tr("该实体被行为 '{0}' 使用，请先解除关联。").format(behavior.get('behavior_name', '未知行为'))
                     ).exec_()
                     return True
 
@@ -2084,13 +2180,13 @@ class ElementSettingTab(QWidget):
         super().__init__()
         self.element_name_mapping = {
             "道路环境要素": "Road Environment Element",
-            "气象环境要素": "Meteorological Environment Element",
-            "车辆致灾要素": "VehicleHazard Element",
-            "车辆承灾要素": "VehicleAffected Element",
+            "气象环境要素": "Meteorology Environment Element",
+            "车辆致灾要素": "Vehicle Hazard Element",
+            "车辆承灾要素": "Vehicle Affected Element",
             "道路承灾要素": "Road Affected Element",
-            "人类承灾要素": "Human Affected Element",
-            "应急资源要素": "Emergency Resource Element",
-            "应急行为要素": "Emergency Action Element"
+            "人类承灾要素": "People Affected Element",
+            "应急资源要素": "Response Resource Element",
+            "应急行为要素": "Response Action Element"
         }
 
         # 反向映射（英文到中文）
@@ -2698,7 +2794,17 @@ class ElementSettingTab(QWidget):
                 print(f"{attr_name}_{attr_value}")
                 if attr.get("attribute_type_code") == "Bool":
                     print(f"2231{attr_value}")
-                    attr_value = "是" if str(attr_value).lower() in ["true","1"] else "否"
+                    if get_cfg()['i18n']['language'] == "en_US":
+                        attr_value = "True" if str(attr_value).lower() in ["true", "1"] else "False"
+                    else:
+                        attr_value = "是" if str(attr_value).lower() in ["true","1"] else "否"
+
+                if attr.get("attribute_type_code") == "Enum":
+                    if get_cfg()['i18n']['language'] == "en_US":
+                        attr_value = ENUM_VALUE_MAP.get(attr_value, attr_value)
+                    else:
+                        attr_value = ENUM_VALUE_MAP_REVERSE.get(attr_value, attr_value)
+
                 attr_type = attr.get("attribute_type", "")
 
                 attr_widget = ClickableAttributeWidget(attr_code, attr_name, attr_value, attr_type)
@@ -3569,7 +3675,7 @@ class ElementSettingTab(QWidget):
 
         for item in show_saved_elements:
             entity_name = item.get('entity_name', '未知要素')
-            detailed_info += f"<h3>{self.tr('元素')}: {entity_name}</h3>"
+            detailed_info += "<h3>self.tr('元素'): "+ f"{entity_name}</h3>"
 
             detailed_info += """
             <b>""" + self.tr("属性") + """:</b>
@@ -3777,11 +3883,11 @@ class ElementSettingTab(QWidget):
     def should_hide_attribute(self, attr):
         if self.current_selected_element is None:
             return False
-        if self.current_selected_element == "道路环境要素":  # 替换 "xxx" 为需要隐藏属性时的特定值
+        if self.current_selected_element == "道路环境要素" or "Road Environment Element":  # 替换 "xxx" 为需要隐藏属性时的特定值
             # 根据条件判断是否隐藏此属性，例如：
             if attr.get("attribute_aspect_name") == 'Affected':
                 return True
-        elif self.current_selected_element == "道路承灾要素":
+        elif self.current_selected_element == "道路承灾要素" or "Road Affected Element":
             if attr.get("attribute_aspect_name") == 'Environment':
                 return True
         return False

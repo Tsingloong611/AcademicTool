@@ -423,9 +423,31 @@ class CustomTabWidget(QWidget):
             # 第5步：创建其他本体文件
             update_progress(4, self.tr("正在创建其他本体文件..."))
 
+            collector = PlanDataCollector(self.ElementSettingTab.session, scenario_id=scenario_id)
+
+            # 收集数据
+            plan_data = collector.collect_all_data(plan_name=None)
+
+            # 转换为贝叶斯网络证据
+            evidence = convert_to_evidence(plan_data)
+            # 查看有没有设置resource
+            related_usage = collector.get_related_resource()
+            print(f"324234243{related_usage}")
+            if not related_usage:
+                evidence.pop('responseDuration', None)
+                evidence.pop('disposalDuration', None)
+                # evidence.pop('AidResource', None)
+                # evidence.pop('TowResource', None)
+                # evidence.pop('FirefightingResource', None)
+                # evidence.pop('RescueResource', None)
+                evidence['AidResource'] = 0
+                evidence['TowResource'] = 0
+                evidence['FirefightingResource'] = 0
+                evidence['RescueResource'] = 0
+
             try:
                 scenario_output_path = os.path.join(output_dir, "Scenario.owl")
-                Scenario_owl_creator(scenario_output_path)
+                Scenario_owl_creator(scenario_output_path,evidence)
                 owl_excel_creator(scenario_output_path, os.path.join(output_dir, "Scenario_Prop.xlsx"))
 
                 emergency_output_path = os.path.join(output_dir, "Emergency.owl")

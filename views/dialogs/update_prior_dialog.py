@@ -727,7 +727,7 @@ class NonRootTableUpdateDialog(QDialog):
         # 表格
         self.table = QTableWidget()
         self.table.setColumnCount(1 + self.num_experts)
-        header_labels = [self.tr("Condition")] + [self.tr("专家{0}").format(i + 1) for i in range(self.num_experts)]
+        header_labels = [self.tr("条件")] + [self.tr("专家{0}").format(i + 1) for i in range(self.num_experts)]
         self.table.setHorizontalHeaderLabels(header_labels)
         self.table.horizontalHeader().setSectionResizeMode(0, QHeaderView.Stretch)
         self.table.verticalHeader().setVisible(False)

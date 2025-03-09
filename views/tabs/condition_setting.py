@@ -22,12 +22,84 @@ from sqlalchemy.orm import Session
 # 假设你的 models / utils / views 路径与本示例一致，这里仅示例。
 from models.models import Template, Category
 from utils.bn_svg_update import update_with_evidence
+from utils.get_config import get_cfg
 from utils.plan import PlanData, PlanDataCollector, convert_to_evidence
 from views.dialogs.custom_information_dialog import CustomInformationDialog
 from views.dialogs.custom_input_dialog import CustomInputDialog
 from views.dialogs.custom_question_dialog import CustomQuestionDialog
 from views.dialogs.custom_warning_dialog import CustomWarningDialog
 
+ZH_TO_EN = {
+    # Behaviors
+    "救助": "Rescue",
+    "牵引": "Towing",
+    "抢修": "Repair",
+    "消防": "Firefighting",
+
+    # Resource types
+    "人员": "Personnel",
+    "物资": "Materials",
+    "车辆": "Vehicles",
+
+    # Personnel categories
+    "牵引人员": "Towing Staff",
+    "交警": "Traffic Police",
+    "医生": "Doctors",
+    "消防员": "Firefighters",
+    "抢险人员": "Emergency Staff",
+
+    # Vehicle categories
+    "牵引车": "Tow Truck",
+    "警车": "Police Car",
+    "救护车": "Ambulance",
+    "消防车": "Fire Truck",
+    "融雪车辆": "Snow Removal Vehicle",
+    "防汛车辆": "Flood Control Vehicle",
+    "封道抢险车": "Road Closure Emergency Vehicle",
+
+    # Material categories
+    "随车修理工具": "Vehicle Repair Tools",
+    "钢丝绳": "Steel Cable",
+    "安全锥": "Safety Cone",
+    "撬棒": "Crowbar",
+    "黄沙": "Sand",
+    "扫帚": "Broom",
+    "辅助轮": "Auxiliary Wheel",
+    "千斤顶": "Jack",
+    "灭火器": "Fire Extinguisher",
+    "草包": "Straw Bag",
+    "蛇皮袋": "Tarpaulin Bag",
+    "融雪剂": "Snow Melting Agent",
+    "发电机": "Generator",
+    "抽水泵": "Water Pump",
+    "医疗物资": "Medical Supplies",
+
+    # UI elements
+    "行为": "Action",
+    "资源": "Resource",
+    "类型": "Type",
+    "数量": "Quantity",
+    "位置": "Location",
+    "应急行为设置": "Emergency Action Settings",
+    "应急资源设置": "Emergency Resource Settings",
+    "添加": "Add",
+    "修改": "Edit",
+    "删除": "Delete",
+    "执行推演": "Run Simulation",
+    "证据更新": "Evidence Updates",
+    "推演结果": "Simulation Results",
+    # Add more UI text translations as needed
+}
+
+TYPE_MAPPING_EN = {
+    "Personnel": ["Towing Staff", "Traffic Police", "Doctors", "Firefighters", "Emergency Staff"],
+    "Vehicles": ["Tow Truck", "Police Car", "Ambulance", "Fire Truck", "Snow Removal Vehicle", "Flood Control Vehicle", "Road Closure Emergency Vehicle"],
+    "Materials": ["Vehicle Repair Tools", "Steel Cable", "Safety Cone", "Crowbar", "Sand", "Broom", "Auxiliary Wheel", "Jack",
+                 "Fire Extinguisher", "Straw Bag", "Tarpaulin Bag", "Snow Melting Agent", "Generator", "Water Pump", "Medical Supplies"]
+}
+
+# Dictionary for internal processing (English to Chinese)
+EN_TO_ZH = {v: k for k, v in ZH_TO_EN.items()}
 
 # ================== 一些通用小组件 ===================
 
@@ -171,8 +243,11 @@ class CustomCheckBoxWithLabel(QWidget):
 
         self.checkbox = QCheckBox()
         self.checkbox.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
-
-        self.label = ClickableLabel(self.tr(label_text))
+        if get_cfg()["i18n"]["language"] == "en_US":
+            displayed_text = to_display_text(label_text)
+            self.label = ClickableLabel(displayed_text)
+        else:
+            self.label = ClickableLabel(label_text)
         self.label.setStyleSheet("cursor: pointer;color: black;font-weight: normal;")
         self.label.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
 
@@ -389,6 +464,18 @@ def get_config():
     print(f"Gaode Map enabled: {gaode_map_config.get('enable')}")
     return config
 
+def to_display_text(chinese_text):
+    """将中文转换为显示用的英文"""
+    if isinstance(chinese_text, str):
+        return ZH_TO_EN.get(chinese_text, chinese_text)
+    return chinese_text
+
+def to_storage_text(english_text):
+    """将英文转换为存储用的中文"""
+    if isinstance(english_text, str):
+        return EN_TO_ZH.get(english_text, english_text)
+    return english_text
+
 
 # ================== 新增/修改资源的对话框：多一个“行为”下拉框 ===================
 
@@ -409,18 +496,27 @@ class SingleResourceDialog(QDialog):
 
         # “行为” 的选择下拉
         self.behavior_label = QLabel(self.tr("行为:"))
-        self.behavior_input = create_centered_combobox(["救助", "牵引", "抢修", "消防"], "救助")
+        if get_cfg()["i18n"]["language"] == "en_US":
+            self.behavior_input = create_centered_combobox(["Rescue", "Towing", "Repair", "Firefighting"], "Rescue")
+        else:
+            self.behavior_input = create_centered_combobox(["救助", "牵引", "抢修", "消防"], "救助")
         layout.addWidget(self.behavior_label)
         layout.addWidget(self.behavior_input)
 
         self.resource_label = QLabel(self.tr("资源:"))
-        self.resource_input = create_centered_combobox(["人员", "物资", "车辆"], "人员")
+        if get_cfg()["i18n"]["language"] == "en_US":
+            self.resource_input = create_centered_combobox(["Personnel", "Materials", "Vehicles"], "Personnel")
+        else:
+            self.resource_input = create_centered_combobox(["人员", "物资", "车辆"], "人员")
         self.resource_input.currentTextChanged.connect(self.update_type_options)  # 新增信号连接
         layout.addWidget(self.resource_label)
         layout.addWidget(self.resource_input)
 
         self.type_label = QLabel(self.tr("类型:"))
-        self.type_input = create_centered_combobox(["类型A", "类型B", "类型C"], "类型A")
+        if get_cfg()["i18n"]["language"] == "en_US":
+            self.type_input = create_centered_combobox(TYPE_MAPPING_EN["Personnel"], TYPE_MAPPING_EN["Personnel"][0])
+        else:
+            self.type_input = create_centered_combobox(["类型A", "类型B", "类型C"], "类型A")
         self.update_type_options()  # 初始化类型选项
         layout.addWidget(self.type_label)
         layout.addWidget(self.type_input)
@@ -464,12 +560,23 @@ class SingleResourceDialog(QDialog):
 
         # 如果是修改已有资源，则回填数据
         if self.resource:
-            # 先设置资源类型以触发选项更新
-            self.resource_input.setCurrentText(self.resource["资源"])
-            # 然后设置类型（此时选项已更新）
-            self.type_input.setCurrentText(self.resource["类型"])
-            # 其他字段设置保持不变...
-            self.behavior_input.setCurrentText(self.resource.get("行为", "救助"))
+            # 获取资源的基本信息（都是中文）
+            behavior = self.resource.get("行为", "救助")
+            resource_type = self.resource["资源"]
+            resource_category = self.resource["类型"]
+
+            if get_cfg()["i18n"]["language"] == "en_US":
+                # 英文界面：设置英文显示
+                self.behavior_input.setCurrentText(to_display_text(behavior))
+                self.resource_input.setCurrentText(to_display_text(resource_type))
+                # 类型选项会在update_type_options中更新
+            else:
+                # 中文界面：直接设置中文
+                self.behavior_input.setCurrentText(behavior)
+                self.resource_input.setCurrentText(resource_type)
+                # 类型选项会在update_type_options中更新
+
+            # 设置数量和位置（不需要翻译）
             self.quantity_spin.setValue(self.resource["数量"])
             self.location_input.setText(self.resource["位置"])
 
@@ -486,12 +593,18 @@ class SingleResourceDialog(QDialog):
                 border: 2px solid #0078d7; /* 蓝色边框 */
             }
         """)
+
     def update_type_options(self):
         """根据资源类型更新类型选项"""
         current_resource = self.resource_input.currentText()
         self.type_input.clear()
 
-        # 定义类型映射
+        # 确保获取中文资源类型
+        resource_zh = current_resource
+        if get_cfg()["i18n"]["language"] == "en_US":
+            resource_zh = to_storage_text(current_resource)
+
+        # 类型映射（中文）
         type_mapping = {
             "人员": ["牵引人员", "交警", "医生", "消防员", "抢险人员"],
             "车辆": ["牵引车", "警车", "救护车", "消防车", "融雪车辆", "防汛车辆", "封道抢险车"],
@@ -499,17 +612,45 @@ class SingleResourceDialog(QDialog):
                      "灭火器", "草包", "蛇皮袋", "融雪剂", "发电机", "抽水泵", "医疗物资"]
         }
 
-        # 添加新选项并保持居中样式
-        self.type_input.addItems(type_mapping.get(current_resource, []))
+        # 获取中文类型列表
+        zh_types = type_mapping.get(resource_zh, [])
+
+        # 根据界面语言填充类型选项
+        if get_cfg()["i18n"]["language"] == "en_US":
+            # 英文界面：添加英文选项
+            for zh_type in zh_types:
+                en_type = to_display_text(zh_type)
+                self.type_input.addItem(en_type)
+        else:
+            # 中文界面：添加中文选项
+            self.type_input.addItems(zh_types)
+
+        # 如果没有选项，添加一个空选项
+        if self.type_input.count() == 0:
+            self.type_input.addItem("")
+
+        # 默认选择第一项
         self.type_input.setCurrentIndex(0)
 
-        # 如果是编辑现有资源，需要确保类型值正确
-        if self.resource:
-            current_type = self.resource.get("类型", "")
-            if current_type in type_mapping.get(current_resource, []):
-                self.type_input.setCurrentText(current_type)
-            else:
-                self.type_input.setCurrentIndex(0)
+        # 如果是编辑已有资源，尝试找到并选中对应的类型
+        if self.resource and "类型" in self.resource:
+            zh_type = self.resource["类型"]  # 原始中文类型
+
+            # 检查此中文类型是否在当前资源的有效选项中
+            if zh_type in zh_types:
+                if get_cfg()["i18n"]["language"] == "en_US":
+                    # 英文界面：查找并选中对应的英文类型
+                    en_type = to_display_text(zh_type)
+                    for i in range(self.type_input.count()):
+                        if self.type_input.itemText(i) == en_type:
+                            self.type_input.setCurrentIndex(i)
+                            break
+                else:
+                    # 中文界面：查找并选中对应的中文类型
+                    for i in range(self.type_input.count()):
+                        if self.type_input.itemText(i) == zh_type:
+                            self.type_input.setCurrentIndex(i)
+                            break
 
     def open_map_dialog(self):
         map_dlg = MapDialog(self)
@@ -536,13 +677,22 @@ class SingleResourceDialog(QDialog):
         返回对话框最终填入的资源信息字典：
           { "行为", "资源", "类型", "数量", "位置" }
         """
-        return {
+        if get_cfg()["i18n"]["language"] == "en_US":
+            return {
+                "行为": to_storage_text(self.behavior_input.currentText()),
+                "资源": to_storage_text(self.resource_input.currentText()),
+                "类型": to_storage_text(self.type_input.currentText()),
+                "数量": self.quantity_spin.value(),
+                "位置": self.location_input.text() or self.tr("未知")
+            }
+        else:
+            return {
             "行为": self.behavior_input.currentText(),
             "资源": self.resource_input.currentText(),
             "类型": self.type_input.currentText(),
             "数量": self.quantity_spin.value(),
             "位置": self.location_input.text() or self.tr("未知")
-        }
+            }
 
 
 # ================== 其它辅助对话框 ===================
@@ -848,12 +998,13 @@ class ConditionSettingTab(QWidget):
             action_type = action.get("action_type", "")
             duration_str = action.get("duration", "0 minutes")
 
-            # 解析行为名称（去掉预案名前缀）
+            # 先分割获取原始行为名称（中文）
             if "-" in action_type:
                 behavior_name = action_type.split("-", 1)[1]  # 只分割一次
             else:
                 behavior_name = action_type
 
+            # 检查是否存在对应的行为设置
             if behavior_name not in self.behavior_settings:
                 continue
 
@@ -871,13 +1022,30 @@ class ConditionSettingTab(QWidget):
 
             # 处理关联资源
             for resource in action.get("resources", []):
-                self.add_resource_to_table(
-                    behavior=behavior_name,
-                    resource=resource.get("resource_type", "").split("-", 1)[-1],  # 去掉前缀
-                    res_type=resource.get("resource_category", ""),
-                    quantity=resource.get("quantity", 0),
-                    location=resource.get("location", "")
-                )
+                resource_type = resource.get("resource_type", "").split("-", 1)[-1]  # 先获取基本资源名称（中文）
+                resource_category = resource.get("resource_category", "")
+
+                if get_cfg()['i18n']['language'] == 'en_US':
+                    # 界面显示时转换为英文
+                    displayed_behavior = to_display_text(behavior_name)
+                    displayed_resource = to_display_text(resource_type)
+                    displayed_res_type = to_display_text(resource_category)
+
+                    self.add_resource_to_table(
+                        behavior=displayed_behavior,
+                        resource=displayed_resource,
+                        res_type=displayed_res_type,
+                        quantity=resource.get("quantity", 0),
+                        location=resource.get("location", "")
+                    )
+                else:
+                    self.add_resource_to_table(
+                        behavior=behavior_name,
+                        resource=resource_type,
+                        res_type=resource_category,
+                        quantity=resource.get("quantity", 0),
+                        location=resource.get("location", "")
+                    )
 
         collector = PlanDataCollector(self.session, scenario_id=self.scenario_id)
 
@@ -956,9 +1124,14 @@ class ConditionSettingTab(QWidget):
         r = dlg.get_resource()  # dict: { "行为", "资源", "类型", "数量", "位置" }
         rowpos = self.resource_table.rowCount()
         self.resource_table.insertRow(rowpos)
-        self.resource_table.setItem(rowpos, 0, QTableWidgetItem(r["行为"]))
-        self.resource_table.setItem(rowpos, 1, QTableWidgetItem(r["资源"]))
-        self.resource_table.setItem(rowpos, 2, QTableWidgetItem(r["类型"]))
+        if get_cfg()["i18n"]["language"] == "en_US":
+            self.resource_table.setItem(rowpos, 0, QTableWidgetItem(to_display_text(r["行为"])))
+            self.resource_table.setItem(rowpos, 1, QTableWidgetItem(to_display_text(r["资源"])))
+            self.resource_table.setItem(rowpos, 2, QTableWidgetItem(to_display_text(r["类型"])))
+        else:
+            self.resource_table.setItem(rowpos, 0, QTableWidgetItem(r["行为"]))
+            self.resource_table.setItem(rowpos, 1, QTableWidgetItem(r["资源"]))
+            self.resource_table.setItem(rowpos, 2, QTableWidgetItem(r["类型"]))
         self.resource_table.setItem(rowpos, 3, QTableWidgetItem(str(r["数量"])))
         self.resource_table.setItem(rowpos, 4, QTableWidgetItem(r["位置"]))
         for col in range(5):
@@ -970,27 +1143,55 @@ class ConditionSettingTab(QWidget):
         if not sel:
             CustomWarningDialog(self.tr("提示"), self.tr("请选择要修改的资源。")).open()
             return
+
         row = sel[0].row()
-        resource = {
-            "行为": self.resource_table.item(row, 0).text(),
-            "资源": self.resource_table.item(row, 1).text(),
-            "类型": self.resource_table.item(row, 2).text(),
-            "数量": int(self.resource_table.item(row, 3).text()),
-            "位置": self.resource_table.item(row, 4).text()
-        }
+
+        # 构建资源字典
+        if get_cfg()["i18n"]["language"] == "en_US":
+            # 英文界面：需要将表格中的英文转换为中文存储
+            resource = {
+                "行为": to_storage_text(self.resource_table.item(row, 0).text()),
+                "资源": to_storage_text(self.resource_table.item(row, 1).text()),
+                "类型": to_storage_text(self.resource_table.item(row, 2).text()),
+                "数量": int(self.resource_table.item(row, 3).text()),
+                "位置": self.resource_table.item(row, 4).text()
+            }
+        else:
+            # 中文界面：直接使用表格中的中文
+            resource = {
+                "行为": self.resource_table.item(row, 0).text(),
+                "资源": self.resource_table.item(row, 1).text(),
+                "类型": self.resource_table.item(row, 2).text(),
+                "数量": int(self.resource_table.item(row, 3).text()),
+                "位置": self.resource_table.item(row, 4).text()
+            }
+
         dlg = SingleResourceDialog(resource, parent=self)
         dlg.accepted.connect(lambda: self.on_edit_resource_ok(dlg, row))
         dlg.open()
 
     def on_edit_resource_ok(self, dlg, row):
-        updated = dlg.get_resource()
-        self.resource_table.setItem(row, 0, QTableWidgetItem(updated["行为"]))
-        self.resource_table.setItem(row, 1, QTableWidgetItem(updated["资源"]))
-        self.resource_table.setItem(row, 2, QTableWidgetItem(updated["类型"]))
+        updated = dlg.get_resource()  # 获取资源（中文格式）
+
+        if get_cfg()["i18n"]["language"] == "en_US":
+            # 英文界面：设置英文显示
+            self.resource_table.setItem(row, 0, QTableWidgetItem(to_display_text(updated["行为"])))
+            self.resource_table.setItem(row, 1, QTableWidgetItem(to_display_text(updated["资源"])))
+            self.resource_table.setItem(row, 2, QTableWidgetItem(to_display_text(updated["类型"])))
+        else:
+            # 中文界面：直接设置中文
+            self.resource_table.setItem(row, 0, QTableWidgetItem(updated["行为"]))
+            self.resource_table.setItem(row, 1, QTableWidgetItem(updated["资源"]))
+            self.resource_table.setItem(row, 2, QTableWidgetItem(updated["类型"]))
+
+        # 数量和位置不需要翻译
         self.resource_table.setItem(row, 3, QTableWidgetItem(str(updated["数量"])))
         self.resource_table.setItem(row, 4, QTableWidgetItem(updated["位置"]))
+
+        # 设置文本对齐
         for col in range(5):
             self.resource_table.item(row, col).setTextAlignment(Qt.AlignCenter)
+
         self.check_execute_button()
 
     def delete_resource(self):
@@ -1041,6 +1242,10 @@ class ConditionSettingTab(QWidget):
         behaviors_in_table = []
         for row in range(self.resource_table.rowCount()):
             bh = self.resource_table.item(row, 0).text()
+            # 如果是英文界面，需要将表格中的英文行为名称转换为中文进行比较
+            if get_cfg()["i18n"]["language"] == "en_US":
+                bh = to_storage_text(bh)  # 将英文转为中文
+
             if bh not in behaviors_in_table:
                 behaviors_in_table.append(bh)
 
@@ -1206,18 +1411,32 @@ class ConditionSettingTab(QWidget):
             b_resources = []
             # 找到表格中属于 b 的资源
             for row in range(self.resource_table.rowCount()):
-                if self.resource_table.item(row, 0).text() == b:
-                    res_name = self.resource_table.item(row, 1).text()
-                    res_type = self.resource_table.item(row, 2).text()
-                    quantity = int(self.resource_table.item(row, 3).text())
-                    location = self.resource_table.item(row, 4).text()
-                    resource_data = {
-                        "resource_type": f"{plan_name}-{res_name}",
-                        "resource_category": res_type,
-                        "quantity": quantity,
-                        "location": location
-                    }
-                    b_resources.append(resource_data)
+                if get_cfg()["i18n"]["language"] == "en_US":
+                    if to_storage_text(self.resource_table.item(row, 0).text()) == b:
+                        res_name = to_storage_text(self.resource_table.item(row, 1).text())
+                        res_type = to_storage_text(self.resource_table.item(row, 2).text())
+                        quantity = int(self.resource_table.item(row, 3).text())
+                        location = self.resource_table.item(row, 4).text()
+                        resource_data = {
+                            "resource_type": f"{plan_name}-{res_name}",
+                            "resource_category": res_type,
+                            "quantity": quantity,
+                            "location": location
+                        }
+                        b_resources.append(resource_data)
+                else:
+                    if self.resource_table.item(row, 0).text() == b:
+                        res_name = self.resource_table.item(row, 1).text()
+                        res_type = self.resource_table.item(row, 2).text()
+                        quantity = int(self.resource_table.item(row, 3).text())
+                        location = self.resource_table.item(row, 4).text()
+                        resource_data = {
+                            "resource_type": f"{plan_name}-{res_name}",
+                            "resource_category": res_type,
+                            "quantity": quantity,
+                            "location": location
+                        }
+                        b_resources.append(resource_data)
 
             if b_resources:
                 action_data = {
@@ -1435,14 +1654,24 @@ class ConditionSettingTab(QWidget):
         self.evidence_table.setRowCount(0)
         for d in self.posterior_probabilities:
             if d.get("要素节点") not in ["ScenarioResilience"]:
-                rowpos = self.evidence_table.rowCount()
-                self.evidence_table.insertRow(rowpos)
-                self.evidence_table.setItem(rowpos, 0, QTableWidgetItem(d.get("要素节点","")))
-                self.evidence_table.setItem(rowpos, 1, QTableWidgetItem(d.get("状态","")))
-                self.evidence_table.setItem(rowpos, 2, QTableWidgetItem(d.get("概率","")))
-                for col in range(3):
-                    self.evidence_table.item(rowpos, col).setTextAlignment(Qt.AlignCenter)
-                    self.evidence_table.item(rowpos, col).setToolTip(self.evidence_table.item(rowpos, col).text())
+                if get_cfg()["i18n"]["language"] == "en_US":
+                    rowpos = self.evidence_table.rowCount()
+                    self.evidence_table.insertRow(rowpos)
+                    self.evidence_table.setItem(rowpos, 0, QTableWidgetItem(to_display_text(d.get("要素节点",""))))
+                    self.evidence_table.setItem(rowpos, 1, QTableWidgetItem(to_display_text(d.get("状态",""))))
+                    self.evidence_table.setItem(rowpos, 2, QTableWidgetItem(d.get("概率","")))
+                    for col in range(3):
+                        self.evidence_table.item(rowpos, col).setTextAlignment(Qt.AlignCenter)
+                        self.evidence_table.item(rowpos, col).setToolTip(self.evidence_table.item(rowpos, col).text())
+                else:
+                    rowpos = self.evidence_table.rowCount()
+                    self.evidence_table.insertRow(rowpos)
+                    self.evidence_table.setItem(rowpos, 0, QTableWidgetItem(d.get("要素节点","")))
+                    self.evidence_table.setItem(rowpos, 1, QTableWidgetItem(d.get("状态","")))
+                    self.evidence_table.setItem(rowpos, 2, QTableWidgetItem(d.get("概率","")))
+                    for col in range(3):
+                        self.evidence_table.item(rowpos, col).setTextAlignment(Qt.AlignCenter)
+                        self.evidence_table.item(rowpos, col).setToolTip(self.evidence_table.item(rowpos, col).text())
 
     def set_stylesheet(self):
         self.setStyleSheet("""
