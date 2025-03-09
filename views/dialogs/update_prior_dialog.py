@@ -9,7 +9,7 @@ from PySide6.QtWidgets import (
     QFileDialog, QMessageBox, QApplication, QWidget, QScrollArea, QGroupBox,
     QFormLayout, QFrame, QTableWidget, QTableWidgetItem, QHeaderView, QStyleFactory
 )
-from PySide6.QtCore import Qt
+from PySide6.QtCore import Qt, QObject
 from PySide6.QtGui import QFont, QPalette, QColor
 from itertools import product
 import pandas as pd
@@ -20,187 +20,10 @@ from utils.get_config import get_cfg
 from views.dialogs.custom_error_dialog import CustomErrorDialog
 from views.dialogs.custom_information_dialog import CustomInformationDialog
 from views.dialogs.custom_warning_dialog import CustomWarningDialog
+from PySide6.QtCore import QCoreApplication
 
-NONROOT_PARENTS = {
-    "AbsorptionCapacity": ["roadPassibility", "roadLoss"],
-    "AdaptionCapacity": ["emergencyPeriod", "emergencyType", "casualties"],
-    "RecoveryCapacity": ["disposalDuration", "responseDuration",
-                         "RescueResource", "FirefightingResource", "TowResource", "AidResource"],
-    "ScenarioResilience": ["RecoveryCapacity", "AdaptionCapacity", "AbsorptionCapacity"]
-}
-
-STATE_OPTIONS = {
-    "roadPassibility": ["Impassable", "Passable"],
-    "emergencyType": ["Vehicle_Self_Accident", "Vehicle_to_Fixed_Object_Accident", "Collision_Acident"],
-    "roadLoss": ["Not_Loss", "Loss"],
-    "casualties": ["No_Casualties", "Casualties"],
-    "RescueResource": ["Not_Used", "Used"],
-    "FirefightingResource": ["Not_Used", "Used"],
-    "TowResource": ["Not_Used", "Used"],
-    "AidResource": ["Not_Used", "Used"],
-    "emergencyPeriod": ["Early_Morning", "Morning", "Afternoon", "Evening"],
-    "responseDuration": ["0-15min", "15-30min", "30-60min", "60min+"],
-    "disposalDuration": ["0-15min", "15-30min", "30-60min", "60min+"],
-    "RecoveryCapacity": ["Good", "Bad"],
-    "AdaptionCapacity": ["Good", "Bad"],
-    "AbsorptionCapacity": ["Good", "Bad"],
-}
-
-# 原来的模糊选项 + “未评估”
-EVAL_OPTIONS = ["未评估", "VL", "L", "M", "H", "VH"]
-
-# EXPERT_EXCEL_PATH = r"D:\PythonProjects\AcademicTool_PySide\data\expert estimation test.xlsx"
-
-QUESTION_TEXT = {}
-
-# 1. AbsorptionCapacity
-QUESTION_TEXT[("AbsorptionCapacity", 0)] = {
-    (1, 0): "道路可通行且不存在道路设施损失时，请评估道路具有较好吸收扰动的能力的可能性：",
-    (1, 1): "道路可通行且存在道路设施损失时，请评估道路具有较好吸收扰动的能力的可能性：",
-    (0, 1): "道路不可通行且存在道路设施损失时，请评估道路具有较好吸收扰动的能力的可能性：",
-    (0, 0): "道路不可通行且不存在道路设施损失时，请评估道路具有较好吸收扰动的能力的可能性：",
-}
-
-# 2. AdaptionCapacity
-QUESTION_TEXT[("AdaptionCapacity", 0)] = {
-    (0, 0,0): "突发事件发生于当天00:00至06:00，事件类型为车辆自身事故（侧翻、抛锚），没有造成人员伤亡，请评估具有较好适应扰动的能力的可能性：",
-    (0, 0, 1): "突发事件发生于当天00:00至06:00，事件类型为车辆自身事故（侧翻、抛锚），发生人员伤亡，请评估具有较好适应扰动的能力的可能性：",
-    (0, 1,0): "突发事件发生于当天00:00至06:00，事件类型为车辆对固定物事故（撞到护栏、路墩等），没有造成人员伤亡，请评估具有较好适应扰动的能力的可能性：",
-    (0, 1, 1): "突发事件发生于当天00:00至06:00，事件类型为车辆对固定物事故（撞到护栏、路墩等），发生人员伤亡，请评估具有较好适应扰动的能力的可能性：",
-    (0, 2,0): "突发事件发生于当天00:00至06:00，事件类型为车辆擦碰事故（指两辆或两辆以上的车辆发生意外碰撞），没有造成人员伤亡，请评估具有较好适应扰动的能力的可能性：",
-    (0, 2,1): "突发事件发生于当天00:00至06:00，事件类型为车辆擦碰事故（指两辆或两辆以上的车辆发生意外碰撞），发生人员伤亡，请评估具有较好适应扰动的能力的可能性：",
-    (1, 0,0): "突发事件发生于当天06:00至12:00，事件类型为车辆自身事故（侧翻、抛锚），没有造成人员伤亡，请评估具有较好适应扰动的能力的可能性：",
-    (1, 0,1): "突发事件发生于当天06:00至12:00，事件类型为车辆自身事故（侧翻、抛锚），发生人员伤亡，请评估具有较好适应扰动的能力的可能性：",
-    (1, 1,0): "突发事件发生于当天06:00至12:00，事件类型为车辆对固定物事故（撞到护栏、路墩等），没有造成人员伤亡，请评估具有较好适应扰动的能力的可能性：",
-    (1, 1,1): "突发事件发生于当天06:00至12:00，事件类型为车辆对固定物事故（撞到护栏、路墩等），发生人员伤亡，请评估具有较好适应扰动的能力的可能性：",
-    (1, 2,0): "突发事件发生于当天06:00至12:00，事件类型为车辆擦碰事故（指两辆或两辆以上的车辆发生意外碰撞），没有造成人员伤亡，请评估具有较好适应扰动的能力的可能性：",
-    (1, 2,1): "突发事件发生于当天06:00至12:00，事件类型为车辆擦碰事故（指两辆或两辆以上的车辆发生意外碰撞），发生人员伤亡，请评估具有较好适应扰动的能力的可能性：",
-    (2, 0,0): "突发事件发生于当天12:00至18:00，事件类型为车辆自身事故（侧翻、抛锚），没有造成人员伤亡，请评估具有较好适应扰动的能力的可能性：",
-    (2, 0,1): "突发事件发生于当天12:00至18:00，事件类型为车辆自身事故（侧翻、抛锚），发生人员伤亡，请评估具有较好适应扰动的能力的可能性：",
-    (2, 1,0): "突发事件发生于当天12:00至18:00，事件类型为车辆对固定物事故（撞到护栏、路墩等），没有造成人员伤亡，请评估具有较好适应扰动的能力的可能性：",
-    (2, 1,1): "突发事件发生于当天12:00至18:00，事件类型为车辆对固定物事故（撞到护栏、路墩等），发生人员伤亡，请评估具有较好适应扰动的能力的可能性：",
-    (2, 2,0): "突发事件发生于当天12:00至18:00，事件类型为车辆擦碰事故（指两辆或两辆以上的车辆发生意外碰撞），没有造成人员伤亡，请评估具有较好适应扰动的能力的可能性：",
-    (2, 2,1): "突发事件发生于当天12:00至18:00，事件类型为车辆擦碰事故（指两辆或两辆以上的车辆发生意外碰撞），发生人员伤亡，请评估具有较好适应扰动的能力的可能性：",
-    (3, 0,0): "突发事件发生于当天18:00至24:00，事件类型为车辆自身事故（侧翻、抛锚），没有造成人员伤亡，请评估具有较好适应扰动的能力的可能性：",
-    (3, 0,1): "突发事件发生于当天18:00至24:00，事件类型为车辆自身事故（侧翻、抛锚），发生人员伤亡，请评估具有较好适应扰动的能力的可能性：",
-    (3, 1,0): "突发事件发生于当天18:00至24:00，事件类型为车辆对固定物事故（撞到护栏、路墩等），没有造成人员伤亡，请评估具有较好适应扰动的能力的可能性：",
-    (3, 1,1): "突发事件发生于当天18:00至24:00，事件类型为车辆对固定物事故（撞到护栏、路墩等），发生人员伤亡，请评估具有较好适应扰动的能力的可能性：",
-    (3, 2,0): "突发事件发生于当天18:00至24:00，事件类型为车辆擦碰事故（指两辆或两辆以上的车辆发生意外碰撞），没有造成人员伤亡，请评估具有较好适应扰动的能力的可能性：",
-    (3, 2, 1): "突发事件发生于当天18:00至24:00，事件类型为车辆擦碰事故（指两辆或两辆以上的车辆发生意外碰撞），发生人员伤亡，请评估具有较好适应扰动的能力的可能性："
-}
-
-# 3. RecoveryCapacity
-# 定义响应与处置时长的描述文本：
-response_time_text = ["响应时长在15分钟以内", "响应时长在15-30分钟", "响应时长在30-60分钟", "响应时长在60分钟以上"]
-disposal_time_text = ["处置时长在15分钟以内", "处置时长在15-30分钟", "处置时长在30-60分钟", "处置时长在60分钟以上"]
-# casualties: 0 -> 无人员伤亡，1 -> 有人员伤亡
-casualties_text = ["且无人员伤亡", "且有人员伤亡"]
-
-# 定义各应急资源对应的中文名称
-resource_names = {
-    "RescueResource": "救助资源",
-    "FirefightingResource": "消防资源",
-    "TowResource": "牵引资源",
-    "AidResource": "抢修资源"
-}
-
-# 构造一个函数，根据 4 个应急资源的取值（0 或 1）生成资源部分的描述
-def resources_used(rr, ff, tw, aid):
-    used = []
-    if rr == 1:
-        used.append(resource_names["RescueResource"])
-    if ff == 1:
-        used.append(resource_names["FirefightingResource"])
-    if tw == 1:
-        used.append(resource_names["TowResource"])
-    if aid == 1:
-        used.append(resource_names["AidResource"])
-    if not used:
-        return "未使用任何应急资源"
-    elif len(used) == 1:
-        return f"仅使用{used[0]}"
-    else:
-        return "使用" + "和".join(used)
-
-# 对 RecoveryCapacity 生成问题文本
-QUESTION_TEXT[("RecoveryCapacity", 0)] = {}
-resource_combinations = sorted(list(itertools.product(range(2), repeat=4)), key=lambda x: sum(x))
-
-for rr, ff, tw, aid in resource_combinations:
-    for r in range(4):  # responseDuration: 0~3
-        for d in range(4):  # disposalDuration: 0~3
-            key = (d, r, rr, ff, tw, aid)
-            resource_phrase = resources_used(rr, ff, tw, aid)
-            question = (
-                f"在应急响应过程中{resource_phrase}，"
-                f"{response_time_text[r]}，"
-                f"{disposal_time_text[d]}，"
-                "请评估道路具有较好从扰动中恢复的能力的可能性："
-            )
-            QUESTION_TEXT[("RecoveryCapacity", 0)][key] = question
-# data = []
-# for key, q in QUESTION_TEXT[("RecoveryCapacity", 0)].items():
-#     d, r, rr, ff, tw, aid = key
-#     data.append({
-#          "处置时长": disposal_time_text[d],
-#          "响应时长": response_time_text[r],
-#          "救助资源": rr,
-#          "消防资源": ff,
-#          "牵引资源": tw,
-#          "抢修资源": aid,
-#          "问题": q
-#     })
-#
-# # 转换为 DataFrame 并保存到 Excel 文件中
-# df = pd.DataFrame(data)
-# df.to_excel("RecoveryCapacity_questions.xlsx", index=False)
-# print("问题文本已保存到 RecoveryCapacity_questions.xlsx 文件中。")
-
-QUESTION_TEXT[(("ScenarioResilience", 0))] = {
-    (0, 0, 0): "在突发事件发生前城市道路系统能够自动吸收潜在的扰动并维持正常运行，在突发事件发生时城市道路系统能够在很少或完全不涉及外部快速恢复操作的情况下快速恢复损失的性能，在实施应急预案后城市道路系统能够快速恢复至正常运行状态，请评估道路具有较好韧性的可能性：",
-    (0, 0, 1): "在突发事件发生前城市道路系统能够自动吸收潜在的扰动并维持正常运行，在突发事件发生时城市道路系统能够在很少或完全不涉及外部恢复操作的情况下难以快速恢复损失的性能，在实施应急预案后城市道路系统能够快速恢复至正常运行状态，请评估道路具有较好韧性的可能性：",
-    (0, 1, 0): "在突发事件发生前城市道路系统能够自动吸收潜在的扰动并维持正常运行，在突发事件发生时城市道路系统能够在很少或完全不涉及外部快速恢复操作的情况下快速恢复损失的性能，在实施应急预案后城市道路系统难以快速恢复至正常运行状态，请评估道路具有较好韧性的可能性：",
-    (0, 1, 1): "在突发事件发生前城市道路系统能够自动吸收潜在的扰动并维持正常运行，在突发事件发生时城市道路系统能够在很少或完全不涉及外部恢复操作的情况下难以快速恢复损失的性能，在实施应急预案后城市道路系统难以快速恢复至正常运行状态，请评估道路具有较好韧性的可能性：",
-    (1, 0, 0): "在突发事件发生前城市道路系统难以自动吸收潜在的扰动并维持正常运行，在突发事件发生时城市道路系统能够在很少或完全不涉及外部快速恢复操作的情况下快速恢复损失的性能，在实施应急预案后城市道路系统能够快速恢复至正常运行状态，请评估道路具有较好韧性的可能性：",
-    (1, 0, 1): "在突发事件发生前城市道路系统难以自动吸收潜在的扰动并维持正常运行，在突发事件发生时城市道路系统能够在很少或完全不涉及外部恢复操作的情况下难以快速恢复损失的性能，在实施应急预案后城市道路系统能够快速恢复至正常运行状态，请评估道路具有较好韧性的可能性：",
-    (1, 1, 0): "在突发事件发生前城市道路系统难以自动吸收潜在的扰动并维持正常运行，在突发事件发生时城市道路系统能够在很少或完全不涉及外部快速恢复操作的情况下快速恢复损失的性能，在实施应急预案后城市道路系统难以快速恢复至正常运行状态，请评估道路具有较好韧性的可能性：",
-    (1, 1, 1): "在突发事件发生前城市道路系统难以自动吸收潜在的扰动并维持正常运行，在突发事件发生时城市道路系统能够在很少或完全不涉及外部恢复操作的情况下难以快速恢复损失的性能，在实施应急预案后城市道路系统难以快速恢复至正常运行状态，请评估道路具有较好韧性的可能性："
-}
-
-
-AGE_OPTIONS = ["请选择您的年龄","A.30岁及以下", "B.31-40岁", "C.41-50岁", "D.50岁以上"]
-EDU_OPTIONS = ["请选择您的教育水平","A.大专及以下", "B.本科", "C.硕士", "D.博士及以上"]
-WORK_OPTIONS = ["请选择您的工作年限","A.5年及以下", "B.6-10年", "C.11-19年", "D.20年及以上"]
-JOB_OPTIONS = ["请选择您的工作职位","A.工人", "B.技术员", "C.工程师", "D.副教授", "E.教授"]
-
-AGE_MAPPING = {
-    "A.30岁及以下": 1,
-    "B.31-40岁": 2,
-    "C.41-50岁": 3,
-    "D.50岁以上": 4
-}
-
-EDU_MAPPING = {
-    "A.大专及以下": 1,
-    "B.本科": 2,
-    "C.硕士": 3,
-    "D.博士及以上": 4
-}
-
-WORK_MAPPING = {
-    "A.5年及以下": 1,
-    "B.6-10年": 2,
-    "C.11-19年": 3,
-    "D.20年及以上": 4
-}
-
-JOB_MAPPING = {
-    "A.工人": 1,
-    "B.技术员": 2,
-    "C.工程师": 3,
-    "D.副教授": 4,
-    "E.教授": 5,
-}
+import os
+from PySide6.QtCore import QTranslator, QCoreApplication, QLocale
 
 
 class AddExpertDialog(QDialog):
@@ -231,7 +54,7 @@ class AddExpertDialog(QDialog):
 
         self.combo_node = QComboBox()
         # 从 QUESTION_TEXT 的 key 中提取唯一节点（注意 QUESTION_TEXT 的 key 为 (node, state)）
-        nodes = sorted({node for (node, state) in QUESTION_TEXT.keys()})
+        nodes = sorted({node for (node, state) in self.parent.QUESTION_TEXT.keys()})
         self.combo_node.addItems(nodes)
         # 增加默认值
         self.combo_node.insertItem(0, self.tr("请选择节点"))
@@ -241,19 +64,19 @@ class AddExpertDialog(QDialog):
         form_layout.addRow(self.tr("请选择节点："), self.combo_node)
 
         self.combo_age = QComboBox()
-        self.combo_age.addItems(AGE_OPTIONS)
+        self.combo_age.addItems(self.parent.AGE_OPTIONS)
         form_layout.addRow(self.tr("您的年龄："), self.combo_age)
 
         self.combo_edu = QComboBox()
-        self.combo_edu.addItems(EDU_OPTIONS)
+        self.combo_edu.addItems(self.parent.EDU_OPTIONS)
         form_layout.addRow(self.tr("您的教育水平："), self.combo_edu)
 
         self.combo_workyear = QComboBox()
-        self.combo_workyear.addItems(WORK_OPTIONS)
+        self.combo_workyear.addItems(self.parent.WORK_OPTIONS)
         form_layout.addRow(self.tr("您的工作年限："), self.combo_workyear)
 
         self.combo_job = QComboBox()
-        self.combo_job.addItems(JOB_OPTIONS)
+        self.combo_job.addItems(self.parent.JOB_OPTIONS)
         form_layout.addRow(self.tr("您的工作职位："), self.combo_job)
 
         main_layout.addLayout(form_layout)
@@ -357,8 +180,8 @@ class AddExpertDialog(QDialog):
         """
         node = self.current_node
         key = (node, 0)
-        if key in QUESTION_TEXT:
-            cond_map = QUESTION_TEXT[key]
+        if key in self.parent.QUESTION_TEXT:
+            cond_map = self.parent.QUESTION_TEXT[key]
             # 将问题转为列表，每一项为 (cond_tuple, question_text)
             self.current_questions = list(cond_map.items())
         else:
@@ -386,10 +209,10 @@ class AddExpertDialog(QDialog):
             item_q.setToolTip(q_text)
             # Column 2: Rating 下拉框
             combo = QComboBox()
-            combo.addItems(EVAL_OPTIONS)
+            combo.addItems(self.parent.EVAL_OPTIONS)
             # 如果当前节点已有答案，则按条件显示，否则设为“未评估”
             rating = saved_answers.get(cond_tuple, self.tr("未评估"))
-            if rating in EVAL_OPTIONS:
+            if rating in self.parent.EVAL_OPTIONS:
                 combo.setCurrentText(rating)
             else:
                 combo.setCurrentText(self.tr("未评估"))
@@ -458,10 +281,10 @@ class AddExpertDialog(QDialog):
         selected_job = self.combo_job.currentText()
 
         # 检查是否有未选择的个人信息
-        if (selected_age == AGE_OPTIONS[0] or
-                selected_edu == EDU_OPTIONS[0] or
-                selected_workyear == WORK_OPTIONS[0] or
-                selected_job == JOB_OPTIONS[0]):
+        if (selected_age == self.parent.AGE_OPTIONS[0] or
+                selected_edu == self.parent.EDU_OPTIONS[0] or
+                selected_workyear == self.parent.WORK_OPTIONS[0] or
+                selected_job == self.parent.JOB_OPTIONS[0]):
             CustomWarningDialog(self.tr("警告"), self.tr("请完整填写所有个人信息！")).exec_()
             return  # 阻止保存操作
 
@@ -469,10 +292,10 @@ class AddExpertDialog(QDialog):
         # A) 收集个人信息
         #####################################################
         personal_info = {
-            "Age": AGE_MAPPING.get(self.combo_age.currentText(), 0),
-            "Education": EDU_MAPPING.get(self.combo_edu.currentText(), 0),
-            "WorkYear": WORK_MAPPING.get(self.combo_workyear.currentText(), 0),
-            "JobPosition": JOB_MAPPING.get(self.combo_job.currentText(), 0),
+            "Age": self.parent.AGE_MAPPING.get(self.combo_age.currentText(), 0),
+            "Education": self.parent.EDU_MAPPING.get(self.combo_edu.currentText(), 0),
+            "WorkYear": self.parent.WORK_MAPPING.get(self.combo_workyear.currentText(), 0),
+            "JobPosition": self.parent.JOB_MAPPING.get(self.combo_job.currentText(), 0),
         }
 
 
@@ -633,7 +456,7 @@ class NonRootTableUpdateDialog(QDialog):
                     cond_list = condition_raw
 
                 if isinstance(cond_list, list):
-                    parents = NONROOT_PARENTS.get(node, [])
+                    parents = self.parent.NONROOT_PARENTS.get(node, [])
                     if len(parents) == len(cond_list):
                         numeric_cond = []
                         for p, val in zip(parents, cond_list):
@@ -642,7 +465,7 @@ class NonRootTableUpdateDialog(QDialog):
                                 numeric_val = int(val_str)
                             except:
                                 # 如果不是数字，尝试到 STATE_OPTIONS 里找
-                                options = STATE_OPTIONS.get(p, [])
+                                options = self.parent.STATE_OPTIONS.get(p, [])
                                 found = False
                                 for idx, opt in enumerate(options):
                                     if str(opt).strip() == val_str:
@@ -709,7 +532,7 @@ class NonRootTableUpdateDialog(QDialog):
         select_layout = QHBoxLayout()
         select_layout.addWidget(QLabel(self.tr("非根节点：")))
         self.combo_nonroot = QComboBox()
-        self.combo_nonroot.addItems(list(NONROOT_PARENTS.keys()))
+        self.combo_nonroot.addItems(list(self.parent.NONROOT_PARENTS.keys()))
         # 当节点变化时，需要先保存当前表格，再生成新表格
         self.combo_nonroot.currentTextChanged.connect(self.on_nonroot_changed)
         select_layout.addWidget(self.combo_nonroot)
@@ -824,12 +647,12 @@ class NonRootTableUpdateDialog(QDialog):
         ns_key = (current_node, current_state)
         # print(f"生成表格：{ns_key}")
 
-        parents = NONROOT_PARENTS.get(current_node, [])
+        parents = self.parent.NONROOT_PARENTS.get(current_node, [])
         if not parents:
             self.table.setRowCount(0)
             return
 
-        parent_options = [STATE_OPTIONS.get(p, []) for p in parents]
+        parent_options = [self.parent.STATE_OPTIONS.get(p, []) for p in parents]
         combinations = list(product(*parent_options))
         # print(f"当前节点的所有条件组合：{combinations}")
         self.table.setRowCount(len(combinations))
@@ -840,7 +663,7 @@ class NonRootTableUpdateDialog(QDialog):
 
         for row, comb in enumerate(combinations):
             # numeric_comb = [0,1,...]
-            numeric_comb = [STATE_OPTIONS[p].index(val) for p, val in zip(parents, comb)]
+            numeric_comb = [self.parent.STATE_OPTIONS[p].index(val) for p, val in zip(parents, comb)]
             condition_str = str(numeric_comb)
             cond_desc = " & ".join([f"{p}={v}" for p, v in zip(parents, comb)])
             item = QTableWidgetItem(f"{cond_desc}\n{condition_str}")
@@ -855,10 +678,10 @@ class NonRootTableUpdateDialog(QDialog):
 
             for col in range(1, 1 + self.num_experts):
                 combo = QComboBox()
-                combo.addItems(EVAL_OPTIONS)
+                combo.addItems(self.parent.EVAL_OPTIONS)
                 if expert_vals and (col - 1) < len(expert_vals):
                     val = expert_vals[col - 1]
-                    if val in EVAL_OPTIONS:
+                    if val in self.parent.EVAL_OPTIONS:
                         combo.setCurrentText(val)
                     else:
                         combo.setCurrentText(self.tr("未评估"))
@@ -1027,6 +850,228 @@ class MainUpdateDialog(QDialog):
             btn_root.setFixedWidth(210)
             btn_nonroot.setFixedWidth(210)
 
+            self.NONROOT_PARENTS = {
+                "AbsorptionCapacity": ["roadPassibility", "roadLoss"],
+                "AdaptionCapacity": ["emergencyPeriod", "emergencyType", "casualties"],
+                "RecoveryCapacity": ["disposalDuration", "responseDuration",
+                                     "RescueResource", "FirefightingResource", "TowResource", "AidResource"],
+                "ScenarioResilience": ["RecoveryCapacity", "AdaptionCapacity", "AbsorptionCapacity"]
+            }
+
+            self.STATE_OPTIONS = {
+                "roadPassibility": ["Impassable", "Passable"],
+                "emergencyType": ["Vehicle_Self_Accident", "Vehicle_to_Fixed_Object_Accident", "Collision_Acident"],
+                "roadLoss": ["Not_Loss", "Loss"],
+                "casualties": ["No_Casualties", "Casualties"],
+                "RescueResource": ["Not_Used", "Used"],
+                "FirefightingResource": ["Not_Used", "Used"],
+                "TowResource": ["Not_Used", "Used"],
+                "AidResource": ["Not_Used", "Used"],
+                "emergencyPeriod": ["Early_Morning", "Morning", "Afternoon", "Evening"],
+                "responseDuration": ["0-15min", "15-30min", "30-60min", "60min+"],
+                "disposalDuration": ["0-15min", "15-30min", "30-60min", "60min+"],
+                "RecoveryCapacity": ["Good", "Bad"],
+                "AdaptionCapacity": ["Good", "Bad"],
+                "AbsorptionCapacity": ["Good", "Bad"],
+            }
+
+            # 原来的模糊选项 + “未评估”
+            self.EVAL_OPTIONS = [self.tr("未评估"), "VL", "L", "M", "H", "VH"]
+
+            # EXPERT_EXCEL_PATH = r"D:\PythonProjects\AcademicTool_PySide\data\expert estimation test.xlsx"
+
+            self.QUESTION_TEXT = {}
+
+            # 1. AbsorptionCapacity
+            self.QUESTION_TEXT[("AbsorptionCapacity", 0)] = {
+                (1, 0): self.tr("道路可通行且不存在道路设施损失时，请评估道路具有较好吸收扰动的能力的可能性："),
+                (1, 1): self.tr("道路可通行且存在道路设施损失时，请评估道路具有较好吸收扰动的能力的可能性："),
+                (0, 1): self.tr("道路不可通行且存在道路设施损失时，请评估道路具有较好吸收扰动的能力的可能性："),
+                (0, 0): self.tr("道路不可通行且不存在道路设施损失时，请评估道路具有较好吸收扰动的能力的可能性："),
+            }
+
+            # 2. AdaptionCapacity
+            self.QUESTION_TEXT[("AdaptionCapacity", 0)] = {
+                (0, 0, 0): self.tr(
+                    "突发事件发生于当天00:00至06:00，事件类型为车辆自身事故（侧翻、抛锚），没有造成人员伤亡，请评估具有较好适应扰动的能力的可能性："),
+                (0, 0, 1): self.tr(
+                    "突发事件发生于当天00:00至06:00，事件类型为车辆自身事故（侧翻、抛锚），发生人员伤亡，请评估具有较好适应扰动的能力的可能性："),
+                (0, 1, 0): self.tr(
+                    "突发事件发生于当天00:00至06:00，事件类型为车辆对固定物事故（撞到护栏、路墩等），没有造成人员伤亡，请评估具有较好适应扰动的能力的可能性："),
+                (0, 1, 1): self.tr(
+                    "突发事件发生于当天00:00至06:00，事件类型为车辆对固定物事故（撞到护栏、路墩等），发生人员伤亡，请评估具有较好适应扰动的能力的可能性："),
+                (0, 2, 0): self.tr(
+                    "突发事件发生于当天00:00至06:00，事件类型为车辆擦碰事故（指两辆或两辆以上的车辆发生意外碰撞），没有造成人员伤亡，请评估具有较好适应扰动的能力的可能性："),
+                (0, 2, 1): self.tr(
+                    "突发事件发生于当天00:00至06:00，事件类型为车辆擦碰事故（指两辆或两辆以上的车辆发生意外碰撞），发生人员伤亡，请评估具有较好适应扰动的能力的可能性："),
+                (1, 0, 0): self.tr(
+                    "突发事件发生于当天06:00至12:00，事件类型为车辆自身事故（侧翻、抛锚），没有造成人员伤亡，请评估具有较好适应扰动的能力的可能性："),
+                (1, 0, 1): self.tr(
+                    "突发事件发生于当天06:00至12:00，事件类型为车辆自身事故（侧翻、抛锚），发生人员伤亡，请评估具有较好适应扰动的能力的可能性："),
+                (1, 1, 0): self.tr(
+                    "突发事件发生于当天06:00至12:00，事件类型为车辆对固定物事故（撞到护栏、路墩等），没有造成人员伤亡，请评估具有较好适应扰动的能力的可能性："),
+                (1, 1, 1): self.tr(
+                    "突发事件发生于当天06:00至12:00，事件类型为车辆对固定物事故（撞到护栏、路墩等），发生人员伤亡，请评估具有较好适应扰动的能力的可能性："),
+                (1, 2, 0): self.tr(
+                    "突发事件发生于当天06:00至12:00，事件类型为车辆擦碰事故（指两辆或两辆以上的车辆发生意外碰撞），没有造成人员伤亡，请评估具有较好适应扰动的能力的可能性："),
+                (1, 2, 1): self.tr(
+                    "突发事件发生于当天06:00至12:00，事件类型为车辆擦碰事故（指两辆或两辆以上的车辆发生意外碰撞），发生人员伤亡，请评估具有较好适应扰动的能力的可能性："),
+                (2, 0, 0): self.tr(
+                    "突发事件发生于当天12:00至18:00，事件类型为车辆自身事故（侧翻、抛锚），没有造成人员伤亡，请评估具有较好适应扰动的能力的可能性："),
+                (2, 0, 1): self.tr(
+                    "突发事件发生于当天12:00至18:00，事件类型为车辆自身事故（侧翻、抛锚），发生人员伤亡，请评估具有较好适应扰动的能力的可能性："),
+                (2, 1, 0): self.tr(
+                    "突发事件发生于当天12:00至18:00，事件类型为车辆对固定物事故（撞到护栏、路墩等），没有造成人员伤亡，请评估具有较好适应扰动的能力的可能性："),
+                (2, 1, 1): self.tr(
+                    "突发事件发生于当天12:00至18:00，事件类型为车辆对固定物事故（撞到护栏、路墩等），发生人员伤亡，请评估具有较好适应扰动的能力的可能性："),
+                (2, 2, 0): self.tr(
+                    "突发事件发生于当天12:00至18:00，事件类型为车辆擦碰事故（指两辆或两辆以上的车辆发生意外碰撞），没有造成人员伤亡，请评估具有较好适应扰动的能力的可能性："),
+                (2, 2, 1): self.tr(
+                    "突发事件发生于当天12:00至18:00，事件类型为车辆擦碰事故（指两辆或两辆以上的车辆发生意外碰撞），发生人员伤亡，请评估具有较好适应扰动的能力的可能性："),
+                (3, 0, 0): self.tr(
+                    "突发事件发生于当天18:00至24:00，事件类型为车辆自身事故（侧翻、抛锚），没有造成人员伤亡，请评估具有较好适应扰动的能力的可能性："),
+                (3, 0, 1): self.tr(
+                    "突发事件发生于当天18:00至24:00，事件类型为车辆自身事故（侧翻、抛锚），发生人员伤亡，请评估具有较好适应扰动的能力的可能性："),
+                (3, 1, 0): self.tr(
+                    "突发事件发生于当天18:00至24:00，事件类型为车辆对固定物事故（撞到护栏、路墩等），没有造成人员伤亡，请评估具有较好适应扰动的能力的可能性："),
+                (3, 1, 1): self.tr(
+                    "突发事件发生于当天18:00至24:00，事件类型为车辆对固定物事故（撞到护栏、路墩等），发生人员伤亡，请评估具有较好适应扰动的能力的可能性："),
+                (3, 2, 0): self.tr(
+                    "突发事件发生于当天18:00至24:00，事件类型为车辆擦碰事故（指两辆或两辆以上的车辆发生意外碰撞），没有造成人员伤亡，请评估具有较好适应扰动的能力的可能性："),
+                (3, 2, 1): self.tr(
+                    "突发事件发生于当天18:00至24:00，事件类型为车辆擦碰事故（指两辆或两辆以上的车辆发生意外碰撞），发生人员伤亡，请评估具有较好适应扰动的能力的可能性：")
+            }
+
+            # 3. RecoveryCapacity
+            # 定义响应与处置时长的描述文本：
+            self.response_time_text = [self.tr("响应时长在15分钟以内"), self.tr("响应时长在15-30分钟"),
+                                       self.tr("响应时长在30-60分钟"), self.tr("响应时长在60分钟以上")]
+            self.disposal_time_text = [self.tr("处置时长在15分钟以内"), self.tr("处置时长在15-30分钟"),
+                                       self.tr("处置时长在30-60分钟"), self.tr("处置时长在60分钟以上")]
+            # casualties: 0 -> 无人员伤亡，1 -> 有人员伤亡
+            self.casualties_text = [self.tr("且无人员伤亡"), self.tr("且有人员伤亡")]
+
+            # 定义各应急资源对应的中文名称
+            self.resource_names = {
+                "RescueResource": "救助资源",
+                "FirefightingResource": "消防资源",
+                "TowResource": "牵引资源",
+                "AidResource": "抢修资源"
+            }
+
+            # 构造一个函数，根据 4 个应急资源的取值（0 或 1）生成资源部分的描述
+
+            # 对 RecoveryCapacity 生成问题文本
+            self.QUESTION_TEXT[("RecoveryCapacity", 0)] = {}
+            self.resource_combinations = sorted(list(itertools.product(range(2), repeat=4)), key=lambda x: sum(x))
+
+            for rr, ff, tw, aid in self.resource_combinations:
+                for r in range(4):  # responseDuration: 0~3
+                    for d in range(4):  # disposalDuration: 0~3
+                        key = (d, r, rr, ff, tw, aid)
+                        resource_phrase = self.resources_used(rr, ff, tw, aid)
+                        question = self.tr(
+                            "在应急响应过程中{}，"
+                            "{}，"
+                            "{}，"
+                            "请评估道路具有较好从扰动中恢复的能力的可能性："
+                        ).format(resource_phrase, self.response_time_text[r], self.disposal_time_text[d])
+                        self.QUESTION_TEXT[("RecoveryCapacity", 0)][key] = question
+            # data = []
+            # for key, q in QUESTION_TEXT[("RecoveryCapacity", 0)].items():
+            #     d, r, rr, ff, tw, aid = key
+            #     data.append({
+            #          "处置时长": disposal_time_text[d],
+            #          "响应时长": response_time_text[r],
+            #          "救助资源": rr,
+            #          "消防资源": ff,
+            #          "牵引资源": tw,
+            #          "抢修资源": aid,
+            #          "问题": q
+            #     })
+            #
+            # # 转换为 DataFrame 并保存到 Excel 文件中
+            # df = pd.DataFrame(data)
+            # df.to_excel("RecoveryCapacity_questions.xlsx", index=False)
+            # print("问题文本已保存到 RecoveryCapacity_questions.xlsx 文件中。")
+
+            self.QUESTION_TEXT[(("ScenarioResilience", 0))] = {
+                (0, 0, 0): self.tr(
+                    "在突发事件发生前城市道路系统能够自动吸收潜在的扰动并维持正常运行，在突发事件发生时城市道路系统能够在很少或完全不涉及外部快速恢复操作的情况下快速恢复损失的性能，在实施应急预案后城市道路系统能够快速恢复至正常运行状态，请评估道路具有较好韧性的可能性："),
+                (0, 0, 1): self.tr(
+                    "在突发事件发生前城市道路系统能够自动吸收潜在的扰动并维持正常运行，在突发事件发生时城市道路系统能够在很少或完全不涉及外部恢复操作的情况下难以快速恢复损失的性能，在实施应急预案后城市道路系统能够快速恢复至正常运行状态，请评估道路具有较好韧性的可能性："),
+                (0, 1, 0): self.tr(
+                    "在突发事件发生前城市道路系统能够自动吸收潜在的扰动并维持正常运行，在突发事件发生时城市道路系统能够在很少或完全不涉及外部快速恢复操作的情况下快速恢复损失的性能，在实施应急预案后城市道路系统难以快速恢复至正常运行状态，请评估道路具有较好韧性的可能性："),
+                (0, 1, 1): self.tr(
+                    "在突发事件发生前城市道路系统能够自动吸收潜在的扰动并维持正常运行，在突发事件发生时城市道路系统能够在很少或完全不涉及外部恢复操作的情况下难以快速恢复损失的性能，在实施应急预案后城市道路系统难以快速恢复至正常运行状态，请评估道路具有较好韧性的可能性："),
+                (1, 0, 0): self.tr(
+                    "在突发事件发生前城市道路系统难以自动吸收潜在的扰动并维持正常运行，在突发事件发生时城市道路系统能够在很少或完全不涉及外部快速恢复操作的情况下快速恢复损失的性能，在实施应急预案后城市道路系统能够快速恢复至正常运行状态，请评估道路具有较好韧性的可能性："),
+                (1, 0, 1): self.tr(
+                    "在突发事件发生前城市道路系统难以自动吸收潜在的扰动并维持正常运行，在突发事件发生时城市道路系统能够在很少或完全不涉及外部恢复操作的情况下难以快速恢复损失的性能，在实施应急预案后城市道路系统能够快速恢复至正常运行状态，请评估道路具有较好韧性的可能性："),
+                (1, 1, 0): self.tr(
+                    "在突发事件发生前城市道路系统难以自动吸收潜在的扰动并维持正常运行，在突发事件发生时城市道路系统能够在很少或完全不涉及外部快速恢复操作的情况下快速恢复损失的性能，在实施应急预案后城市道路系统难以快速恢复至正常运行状态，请评估道路具有较好韧性的可能性："),
+                (1, 1, 1): self.tr(
+                    "在突发事件发生前城市道路系统难以自动吸收潜在的扰动并维持正常运行，在突发事件发生时城市道路系统能够在很少或完全不涉及外部恢复操作的情况下难以快速恢复损失的性能，在实施应急预案后城市道路系统难以快速恢复至正常运行状态，请评估道路具有较好韧性的可能性：")
+            }
+
+            self.AGE_OPTIONS = [self.tr("请选择您的年龄"), self.tr("A.30岁及以下"), self.tr("B.31-40岁"),
+                                self.tr("C.41-50岁"), self.tr("D.50岁以上")]
+            self.EDU_OPTIONS = [self.tr("请选择您的教育水平"), self.tr("A.大专及以下"), self.tr("B.本科"),
+                                self.tr("C.硕士"), self.tr("D.博士及以上")]
+            self.WORK_OPTIONS = [self.tr("请选择您的工作年限"), self.tr("A.5年及以下"), self.tr("B.6-10年"),
+                                 self.tr("C.11-19年"), self.tr("D.20年及以上")]
+            self.JOB_OPTIONS = [self.tr("请选择您的工作职位"), self.tr("A.工人"), self.tr("B.技术员"),
+                                self.tr("C.工程师"), self.tr("D.副教授"), self.tr("E.教授")]
+
+            self.AGE_MAPPING = {
+                self.tr("A.30岁及以下"): 1,
+                self.tr("B.31-40岁"): 2,
+                self.tr("C.41-50岁"): 3,
+                self.tr("D.50岁以上"): 4
+            }
+
+            self.EDU_MAPPING = {
+                self.tr("A.大专及以下"): 1,
+                self.tr("B.本科"): 2,
+                self.tr("C.硕士"): 3,
+                self.tr("D.博士及以上"): 4
+            }
+
+            self.WORK_MAPPING = {
+                self.tr("A.5年及以下"): 1,
+                self.tr("B.6-10年"): 2,
+                self.tr("C.11-19年"): 3,
+                self.tr("D.20年及以上"): 4
+            }
+
+            self.JOB_MAPPING = {
+                self.tr("A.工人"): 1,
+                self.tr("B.技术员"): 2,
+                self.tr("C.工程师"): 3,
+                self.tr("D.副教授"): 4,
+                self.tr("E.教授"): 5,
+            }
+
+    def resources_used(self, rr, ff, tw, aid):
+        used = []
+        if rr == 1:
+            used.append(self.resource_names["RescueResource"])
+        if ff == 1:
+            used.append(self.resource_names["FirefightingResource"])
+        if tw == 1:
+            used.append(self.resource_names["TowResource"])
+        if aid == 1:
+            used.append(self.resource_names["AidResource"])
+        if not used:
+            return self.tr("未使用任何应急资源")
+        elif len(used) == 1:
+            return self.tr("仅使用{0}").format(used[0])
+        else:
+            if get_cfg()['i18n']['language'] == 'en_US':
+                return "using " + " and ".join(used)
+            else:
+                return "使用" + "和".join(used)
+
     def open_root_dialog(self):
 
         dialog = RootUpdateDialog(self.info_dir, self)
@@ -1189,8 +1234,8 @@ class UploadExpertDialog(QDialog):
                     expert_rating[(current_node, 0)] = {}
                     # 构造当前节点的反向映射（使用预定义的 QUESTION_TEXT）
                     reverse_map = {}
-                    if (current_node, 0) in QUESTION_TEXT:
-                        for cond, q_text in QUESTION_TEXT[(current_node, 0)].items():
+                    if (current_node, 0) in self.parent.QUESTION_TEXT:
+                        for cond, q_text in self.parent.QUESTION_TEXT[(current_node, 0)].items():
                             norm_q = q_text.replace(" ", "").replace("\n", "")
                             reverse_map[norm_q] = cond
                     else:

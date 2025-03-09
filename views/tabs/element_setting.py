@@ -3677,7 +3677,7 @@ class ElementSettingTab(QWidget):
 
         for item in show_saved_elements:
             entity_name = item.get('entity_name', '未知要素')
-            detailed_info += "<h3>self.tr('元素'): "+ f"{entity_name}</h3>"
+            detailed_info += self.tr("<h3>元素: ")+ f"{entity_name}</h3>"
 
             detailed_info += """
             <b>""" + self.tr("属性") + """:</b>

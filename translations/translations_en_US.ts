@@ -4,105 +4,105 @@
 <context>
     <name>AddExpertDialog</name>
     <message>
-        <location filename="../views/dialogs/update_prior_dialog.py" line="218"/>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="42"/>
         <source>新增专家问卷</source>
         <translation>New expert questionnaire</translation>
     </message>
     <message>
-        <location filename="../views/dialogs/update_prior_dialog.py" line="236"/>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="60"/>
         <source>请选择节点</source>
         <translation>Please select a node</translation>
     </message>
     <message>
-        <location filename="../views/dialogs/update_prior_dialog.py" line="240"/>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="64"/>
         <source>请选择节点：</source>
         <translation>Please select the node:</translation>
     </message>
     <message>
-        <location filename="../views/dialogs/update_prior_dialog.py" line="244"/>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="68"/>
         <source>您的年龄：</source>
         <translation>Your age:</translation>
     </message>
     <message>
-        <location filename="../views/dialogs/update_prior_dialog.py" line="248"/>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="72"/>
         <source>您的教育水平：</source>
         <translation>Your level of education:</translation>
     </message>
     <message>
-        <location filename="../views/dialogs/update_prior_dialog.py" line="252"/>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="76"/>
         <source>您的工作年限：</source>
         <translation>Your years of experience:</translation>
     </message>
     <message>
-        <location filename="../views/dialogs/update_prior_dialog.py" line="256"/>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="80"/>
         <source>您的工作职位：</source>
         <translation>Your job title:</translation>
     </message>
     <message>
-        <location filename="../views/dialogs/update_prior_dialog.py" line="262"/>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="86"/>
         <source>请为下列问题进行打分：</source>
         <translation>Please rate the following questions:</translation>
     </message>
     <message>
-        <location filename="../views/dialogs/update_prior_dialog.py" line="292"/>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="116"/>
         <source>取消</source>
         <translation>Cancel</translation>
     </message>
     <message>
-        <location filename="../views/dialogs/update_prior_dialog.py" line="297"/>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="121"/>
         <source>保存</source>
         <translation>Save</translation>
     </message>
     <message>
-        <location filename="../views/dialogs/update_prior_dialog.py" line="390"/>
-        <location filename="../views/dialogs/update_prior_dialog.py" line="394"/>
-        <location filename="../views/dialogs/update_prior_dialog.py" line="432"/>
-        <location filename="../views/dialogs/update_prior_dialog.py" line="446"/>
-        <location filename="../views/dialogs/update_prior_dialog.py" line="447"/>
-        <location filename="../views/dialogs/update_prior_dialog.py" line="485"/>
-        <location filename="../views/dialogs/update_prior_dialog.py" line="565"/>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="214"/>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="218"/>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="256"/>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="270"/>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="271"/>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="309"/>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="389"/>
         <source>未评估</source>
         <translation>Not evaluated</translation>
     </message>
     <message>
-        <location filename="../views/dialogs/update_prior_dialog.py" line="450"/>
-        <location filename="../views/dialogs/update_prior_dialog.py" line="464"/>
-        <location filename="../views/dialogs/update_prior_dialog.py" line="491"/>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="274"/>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="288"/>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="315"/>
         <source>警告</source>
         <translation>Warning</translation>
     </message>
     <message>
-        <location filename="../views/dialogs/update_prior_dialog.py" line="450"/>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="274"/>
         <source>节点 {0} 下的问卷问题存在部分未评估与部分已评估，请修正后再保存！</source>
         <translation>Questionnaire questions under node {0} are partially unassessed and partially assessed, please correct them before saving!</translation>
     </message>
     <message>
-        <location filename="../views/dialogs/update_prior_dialog.py" line="464"/>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="288"/>
         <source>请完整填写所有个人信息！</source>
         <translation>Please fill in all personal information completely!</translation>
     </message>
     <message>
-        <location filename="../views/dialogs/update_prior_dialog.py" line="491"/>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="315"/>
         <source>请至少为一个节点的问卷问题提供完整评分！</source>
         <translation>Please provide complete ratings for the questionnaire questions for at least one node!</translation>
     </message>
     <message>
-        <location filename="../views/dialogs/update_prior_dialog.py" line="512"/>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="336"/>
         <source>错误</source>
         <translation>incorrect</translation>
     </message>
     <message>
-        <location filename="../views/dialogs/update_prior_dialog.py" line="512"/>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="336"/>
         <source>无法访问 expertInfo.xlsx，请关闭 Excel 后重试！</source>
         <translation>Unable to access expertInfo.xlsx, please close Excel and try again!</translation>
     </message>
     <message>
-        <location filename="../views/dialogs/update_prior_dialog.py" line="572"/>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="396"/>
         <source>成功</source>
         <translation>Success</translation>
     </message>
     <message>
-        <location filename="../views/dialogs/update_prior_dialog.py" line="572"/>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="396"/>
         <source>已成功获取个人信息与问卷评分。</source>
         <translation>Personal information and questionnaire scores have been successfully obtained.</translation>
     </message>
@@ -110,243 +110,249 @@
 <context>
     <name>ConditionSettingTab</name>
     <message>
-        <location filename="../views/tabs/condition_setting.py" line="790"/>
+        <location filename="../views/tabs/condition_setting.py" line="795"/>
         <source>应急预案设置</source>
         <translation>Emergency Plan Settings</translation>
     </message>
     <message>
-        <location filename="../views/tabs/condition_setting.py" line="815"/>
+        <location filename="../views/tabs/condition_setting.py" line="820"/>
         <source>应急行为设置</source>
         <translation>Response Action Settings</translation>
     </message>
     <message>
-        <location filename="../views/tabs/condition_setting.py" line="836"/>
+        <location filename="../views/tabs/condition_setting.py" line="841"/>
         <source>应急资源设置</source>
         <translation>Response Resource Settings</translation>
     </message>
     <message>
-        <location filename="../views/tabs/condition_setting.py" line="861"/>
+        <location filename="../views/tabs/condition_setting.py" line="866"/>
         <source>添加</source>
         <translation>Add</translation>
     </message>
     <message>
-        <location filename="../views/tabs/condition_setting.py" line="862"/>
+        <location filename="../views/tabs/condition_setting.py" line="867"/>
         <source>修改</source>
         <translation>Edit</translation>
     </message>
     <message>
-        <location filename="../views/tabs/condition_setting.py" line="863"/>
+        <location filename="../views/tabs/condition_setting.py" line="868"/>
         <source>删除</source>
         <translation>Delete</translation>
     </message>
     <message>
-        <location filename="../views/tabs/condition_setting.py" line="864"/>
+        <location filename="../views/tabs/condition_setting.py" line="869"/>
         <source>执行推演</source>
         <translation>Execute Deduction</translation>
     </message>
     <message>
-        <location filename="../views/tabs/condition_setting.py" line="876"/>
-        <location filename="../views/tabs/condition_setting.py" line="1231"/>
+        <location filename="../views/tabs/condition_setting.py" line="884"/>
+        <location filename="../views/tabs/condition_setting.py" line="1239"/>
         <source>请配置应急行为</source>
         <translation>Please configure emergency behavior</translation>
     </message>
     <message>
-        <location filename="../views/tabs/condition_setting.py" line="844"/>
+        <location filename="../views/tabs/condition_setting.py" line="849"/>
         <source>资源</source>
         <translation>Resource</translation>
     </message>
     <message>
-        <location filename="../views/tabs/condition_setting.py" line="845"/>
-        <location filename="../views/tabs/condition_setting.py" line="1317"/>
-        <location filename="../views/tabs/condition_setting.py" line="1614"/>
+        <location filename="../views/tabs/condition_setting.py" line="850"/>
+        <location filename="../views/tabs/condition_setting.py" line="1343"/>
+        <location filename="../views/tabs/condition_setting.py" line="1640"/>
         <source>类型</source>
         <translation>Type</translation>
     </message>
     <message>
-        <location filename="../views/tabs/condition_setting.py" line="846"/>
-        <location filename="../views/tabs/condition_setting.py" line="1317"/>
-        <location filename="../views/tabs/condition_setting.py" line="1615"/>
+        <location filename="../views/tabs/condition_setting.py" line="851"/>
+        <location filename="../views/tabs/condition_setting.py" line="1343"/>
+        <location filename="../views/tabs/condition_setting.py" line="1641"/>
         <source>数量</source>
         <translation>Quantity</translation>
     </message>
     <message>
-        <location filename="../views/tabs/condition_setting.py" line="848"/>
-        <location filename="../views/tabs/condition_setting.py" line="1317"/>
-        <location filename="../views/tabs/condition_setting.py" line="1616"/>
+        <location filename="../views/tabs/condition_setting.py" line="853"/>
+        <location filename="../views/tabs/condition_setting.py" line="1343"/>
+        <location filename="../views/tabs/condition_setting.py" line="1642"/>
         <source>位置</source>
         <translation>Location</translation>
     </message>
     <message>
-        <location filename="../views/tabs/condition_setting.py" line="900"/>
+        <location filename="../views/tabs/condition_setting.py" line="908"/>
         <source>证据更新</source>
         <translation>Evidence Update</translation>
     </message>
     <message>
-        <location filename="../views/tabs/condition_setting.py" line="906"/>
+        <location filename="../views/tabs/condition_setting.py" line="914"/>
         <source>要素节点</source>
         <translation>Node</translation>
     </message>
     <message>
-        <location filename="../views/tabs/condition_setting.py" line="906"/>
+        <location filename="../views/tabs/condition_setting.py" line="914"/>
         <source>状态</source>
         <translation>State</translation>
     </message>
     <message>
-        <location filename="../views/tabs/condition_setting.py" line="906"/>
+        <location filename="../views/tabs/condition_setting.py" line="914"/>
         <source>概率</source>
         <translation>Prob.</translation>
     </message>
     <message>
-        <location filename="../views/tabs/condition_setting.py" line="919"/>
+        <location filename="../views/tabs/condition_setting.py" line="927"/>
         <source>推演结果</source>
         <translation>Deduction Results</translation>
     </message>
     <message>
-        <location filename="../views/tabs/condition_setting.py" line="1144"/>
-        <location filename="../views/tabs/condition_setting.py" line="1200"/>
-        <location filename="../views/tabs/condition_setting.py" line="1341"/>
+        <location filename="../views/tabs/condition_setting.py" line="1152"/>
+        <location filename="../views/tabs/condition_setting.py" line="1208"/>
+        <location filename="../views/tabs/condition_setting.py" line="1367"/>
         <source>提示</source>
         <translation>Notice</translation>
     </message>
     <message>
-        <location filename="../views/tabs/condition_setting.py" line="1144"/>
+        <location filename="../views/tabs/condition_setting.py" line="1152"/>
         <source>请选择要修改的资源。</source>
         <translation>Please select a resource to edit.</translation>
     </message>
     <message>
-        <location filename="../views/tabs/condition_setting.py" line="1200"/>
+        <location filename="../views/tabs/condition_setting.py" line="1208"/>
         <source>请选择要删除的资源。</source>
         <translation>Please select a resource to delete.</translation>
     </message>
     <message>
-        <location filename="../views/tabs/condition_setting.py" line="1207"/>
+        <location filename="../views/tabs/condition_setting.py" line="1215"/>
         <source>确认删除</source>
         <translation>Confirm Deletion</translation>
     </message>
     <message>
-        <location filename="../views/tabs/condition_setting.py" line="1292"/>
+        <location filename="../views/tabs/condition_setting.py" line="1314"/>
         <source>时长</source>
         <translation>Duration</translation>
     </message>
     <message>
-        <location filename="../views/tabs/condition_setting.py" line="1271"/>
+        <location filename="../views/tabs/condition_setting.py" line="1279"/>
         <source>保存结果</source>
         <translation>Save Results</translation>
     </message>
     <message>
-        <location filename="../views/tabs/condition_setting.py" line="843"/>
+        <location filename="../views/tabs/condition_setting.py" line="848"/>
         <source>行为</source>
         <translation>Behavior</translation>
     </message>
     <message>
-        <location filename="../views/tabs/condition_setting.py" line="1208"/>
+        <location filename="../views/tabs/condition_setting.py" line="1216"/>
         <source>确定要删除【</source>
         <translation>Confirm to delete</translation>
     </message>
     <message>
-        <location filename="../views/tabs/condition_setting.py" line="1208"/>
+        <location filename="../views/tabs/condition_setting.py" line="1216"/>
         <source>】行为下的资源：</source>
         <translation>Resources under Behavior:</translation>
     </message>
     <message>
-        <location filename="../views/tabs/condition_setting.py" line="1238"/>
+        <location filename="../views/tabs/condition_setting.py" line="1246"/>
         <source>请给已勾选的行为设置时长</source>
         <translation>Please set a duration for the selected actions</translation>
     </message>
     <message>
-        <location filename="../views/tabs/condition_setting.py" line="1256"/>
+        <location filename="../views/tabs/condition_setting.py" line="1264"/>
         <source>勾选行为需在表格中添加资源</source>
         <translation>Checking behavior requires adding resources to the form</translation>
     </message>
     <message>
-        <location filename="../views/tabs/condition_setting.py" line="1271"/>
+        <location filename="../views/tabs/condition_setting.py" line="1279"/>
         <source>没有要保存的应急行为。</source>
         <translation>No emergency behavior to save.</translation>
     </message>
     <message>
-        <location filename="../views/tabs/condition_setting.py" line="1305"/>
+        <location filename="../views/tabs/condition_setting.py" line="1327"/>
         <source>保存结果详情</source>
         <translation>Save Results Details</translation>
     </message>
     <message>
-        <location filename="../views/tabs/condition_setting.py" line="1309"/>
+        <location filename="../views/tabs/condition_setting.py" line="1332"/>
+        <location filename="../views/tabs/condition_setting.py" line="1334"/>
+        <source>&lt;h3&gt;类别: </source>
+        <translation>&lt;h3&gt;Category: </translation>
+    </message>
+    <message>
+        <location filename="../views/tabs/condition_setting.py" line="1335"/>
         <source>属性</source>
         <translation>Attributes</translation>
     </message>
     <message>
-        <location filename="../views/tabs/condition_setting.py" line="1310"/>
+        <location filename="../views/tabs/condition_setting.py" line="1336"/>
         <source>属性名称</source>
         <translation>Attribute Name</translation>
     </message>
     <message>
-        <location filename="../views/tabs/condition_setting.py" line="1310"/>
+        <location filename="../views/tabs/condition_setting.py" line="1336"/>
         <source>属性值</source>
         <translation>Attribute Value</translation>
     </message>
     <message>
-        <location filename="../views/tabs/condition_setting.py" line="1313"/>
+        <location filename="../views/tabs/condition_setting.py" line="1339"/>
         <source>资源列表</source>
         <translation>Resource List</translation>
     </message>
     <message>
-        <location filename="../views/tabs/condition_setting.py" line="1317"/>
-        <location filename="../views/tabs/condition_setting.py" line="1613"/>
+        <location filename="../views/tabs/condition_setting.py" line="1343"/>
+        <location filename="../views/tabs/condition_setting.py" line="1639"/>
         <source>资源名称</source>
         <translation>Resource Name</translation>
     </message>
     <message>
-        <location filename="../views/tabs/condition_setting.py" line="1323"/>
+        <location filename="../views/tabs/condition_setting.py" line="1349"/>
         <source>无资源</source>
         <translation>No Resource</translation>
     </message>
     <message>
-        <location filename="../views/tabs/condition_setting.py" line="1334"/>
+        <location filename="../views/tabs/condition_setting.py" line="1360"/>
         <source>预案名称设置</source>
         <translation>Set Plan Name</translation>
     </message>
     <message>
-        <location filename="../views/tabs/condition_setting.py" line="1334"/>
+        <location filename="../views/tabs/condition_setting.py" line="1360"/>
         <source>请输入预案名字:</source>
         <translation>Please enter the plan name:</translation>
     </message>
     <message>
-        <location filename="../views/tabs/condition_setting.py" line="1378"/>
+        <location filename="../views/tabs/condition_setting.py" line="1404"/>
         <source>成功</source>
         <translation>Success</translation>
     </message>
     <message>
-        <location filename="../views/tabs/condition_setting.py" line="1379"/>
+        <location filename="../views/tabs/condition_setting.py" line="1405"/>
         <source>预案 &apos;</source>
         <translation>Plan &apos;</translation>
     </message>
     <message>
-        <location filename="../views/tabs/condition_setting.py" line="1379"/>
+        <location filename="../views/tabs/condition_setting.py" line="1405"/>
         <source>&apos; 已保存并推演。</source>
         <translation>&apos; has been saved and simulated.</translation>
     </message>
     <message>
-        <location filename="../views/tabs/condition_setting.py" line="1384"/>
-        <location filename="../views/tabs/condition_setting.py" line="1508"/>
+        <location filename="../views/tabs/condition_setting.py" line="1410"/>
+        <location filename="../views/tabs/condition_setting.py" line="1534"/>
         <source>错误</source>
         <translation>Error</translation>
     </message>
     <message>
-        <location filename="../views/tabs/condition_setting.py" line="1385"/>
+        <location filename="../views/tabs/condition_setting.py" line="1411"/>
         <source>保存预案时出现错误。</source>
         <translation>There was an error when saving the profile.</translation>
     </message>
     <message>
-        <location filename="../views/tabs/condition_setting.py" line="1509"/>
+        <location filename="../views/tabs/condition_setting.py" line="1535"/>
         <source>加载预案数据时出现错误：</source>
         <translation>An error occurred while loading the profile data:</translation>
     </message>
     <message>
-        <location filename="../views/tabs/condition_setting.py" line="1580"/>
+        <location filename="../views/tabs/condition_setting.py" line="1606"/>
         <source>预案详情 - </source>
         <translation>Plan Detail</translation>
     </message>
     <message>
-        <location filename="../views/tabs/condition_setting.py" line="1341"/>
+        <location filename="../views/tabs/condition_setting.py" line="1367"/>
         <source>预案名字不能为空。</source>
         <translation>The plan name cannot be empty.</translation>
     </message>
@@ -592,226 +598,226 @@
 <context>
     <name>CustomTabWidget</name>
     <message>
-        <location filename="../views/tabs/tab_widget.py" line="75"/>
-        <location filename="../views/tabs/tab_widget.py" line="192"/>
+        <location filename="../views/tabs/tab_widget.py" line="76"/>
+        <location filename="../views/tabs/tab_widget.py" line="193"/>
         <source>情景要素设定</source>
         <translation>Scenario Element Setting</translation>
     </message>
     <message>
-        <location filename="../views/tabs/tab_widget.py" line="76"/>
-        <location filename="../views/tabs/tab_widget.py" line="120"/>
+        <location filename="../views/tabs/tab_widget.py" line="77"/>
+        <location filename="../views/tabs/tab_widget.py" line="121"/>
         <source>情景模型生成</source>
         <translation>Scenario Model Generation</translation>
     </message>
     <message>
-        <location filename="../views/tabs/tab_widget.py" line="77"/>
-        <location filename="../views/tabs/tab_widget.py" line="154"/>
+        <location filename="../views/tabs/tab_widget.py" line="78"/>
+        <location filename="../views/tabs/tab_widget.py" line="155"/>
         <source>推演模型转换</source>
         <translation>Deduction Model Mapping</translation>
     </message>
     <message>
-        <location filename="../views/tabs/tab_widget.py" line="78"/>
-        <location filename="../views/tabs/tab_widget.py" line="229"/>
+        <location filename="../views/tabs/tab_widget.py" line="79"/>
+        <location filename="../views/tabs/tab_widget.py" line="230"/>
         <source>推演条件设定</source>
         <translation>Deduction Analyzation</translation>
     </message>
     <message>
-        <location filename="../views/tabs/tab_widget.py" line="289"/>
+        <location filename="../views/tabs/tab_widget.py" line="290"/>
         <source>请选择或新建情景</source>
         <translation>Please select or create a scenario</translation>
     </message>
     <message>
-        <location filename="../views/tabs/tab_widget.py" line="339"/>
-        <location filename="../views/tabs/tab_widget.py" line="499"/>
+        <location filename="../views/tabs/tab_widget.py" line="340"/>
+        <location filename="../views/tabs/tab_widget.py" line="524"/>
         <source>准备开始...</source>
         <translation>Get ready to start...</translation>
     </message>
     <message>
-        <location filename="../views/tabs/tab_widget.py" line="340"/>
+        <location filename="../views/tabs/tab_widget.py" line="341"/>
         <source>生成模型</source>
         <translation>Generating Models</translation>
     </message>
     <message>
-        <location filename="../views/tabs/tab_widget.py" line="355"/>
-        <location filename="../views/tabs/tab_widget.py" line="515"/>
+        <location filename="../views/tabs/tab_widget.py" line="358"/>
+        <location filename="../views/tabs/tab_widget.py" line="542"/>
         <source>正在初始化...</source>
         <translation>Initializing...</translation>
     </message>
     <message>
-        <location filename="../views/tabs/tab_widget.py" line="363"/>
+        <location filename="../views/tabs/tab_widget.py" line="366"/>
         <source>正在合并SysML2文件...</source>
         <translation>Merging SysML2 files...</translation>
     </message>
     <message>
-        <location filename="../views/tabs/tab_widget.py" line="369"/>
+        <location filename="../views/tabs/tab_widget.py" line="372"/>
         <source>合并SysML2文件失败: {e}</source>
         <translation>Failed to merge SysML2 files: {e}</translation>
     </message>
     <message>
-        <location filename="../views/tabs/tab_widget.py" line="372"/>
+        <location filename="../views/tabs/tab_widget.py" line="375"/>
         <source>正在处理文件...</source>
         <translation>Documents being processed...</translation>
     </message>
     <message>
-        <location filename="../views/tabs/tab_widget.py" line="384"/>
+        <location filename="../views/tabs/tab_widget.py" line="387"/>
         <source>处理文件失败: {e}</source>
         <translation>Failed to process file: {e}</translation>
     </message>
     <message>
-        <location filename="../views/tabs/tab_widget.py" line="387"/>
+        <location filename="../views/tabs/tab_widget.py" line="390"/>
         <source>正在生成ScenarioElement本体...</source>
         <translation>ScenarioElement ontology being generated...</translation>
     </message>
     <message>
-        <location filename="../views/tabs/tab_widget.py" line="421"/>
+        <location filename="../views/tabs/tab_widget.py" line="424"/>
         <source>生成ScenarioElement本体失败: {e}</source>
         <translation>Failed to generate ScenarioElement ontology: {e}</translation>
     </message>
     <message>
-        <location filename="../views/tabs/tab_widget.py" line="424"/>
+        <location filename="../views/tabs/tab_widget.py" line="427"/>
         <source>正在创建其他本体文件...</source>
         <translation>Additional ontology files are being created...</translation>
     </message>
     <message>
-        <location filename="../views/tabs/tab_widget.py" line="435"/>
+        <location filename="../views/tabs/tab_widget.py" line="460"/>
         <source>创建Scenario和Emergency本体失败: {e}</source>
         <translation>Failed to create Scenario and Emergency ontologies: {e}</translation>
     </message>
     <message>
-        <location filename="../views/tabs/tab_widget.py" line="438"/>
+        <location filename="../views/tabs/tab_widget.py" line="463"/>
         <source>正在合并OWL文件...</source>
         <translation>OWL files being merged...</translation>
     </message>
     <message>
-        <location filename="../views/tabs/tab_widget.py" line="454"/>
+        <location filename="../views/tabs/tab_widget.py" line="479"/>
         <source>合并OWL文件失败: {e}</source>
         <translation>Failed to merge OWL files: {e}</translation>
     </message>
     <message>
-        <location filename="../views/tabs/tab_widget.py" line="457"/>
+        <location filename="../views/tabs/tab_widget.py" line="482"/>
         <source>正在创建OWL图片和解析模型...</source>
         <translation>OWL picture and parsing model being created...</translation>
     </message>
     <message>
-        <location filename="../views/tabs/tab_widget.py" line="469"/>
+        <location filename="../views/tabs/tab_widget.py" line="494"/>
         <source>创建OWL图片或解析模型失败: {e}</source>
         <translation>Failed to create OWL image or parse model: {e}</translation>
     </message>
     <message>
-        <location filename="../views/tabs/tab_widget.py" line="472"/>
+        <location filename="../views/tabs/tab_widget.py" line="497"/>
         <source>正在保存到数据库...</source>
         <translation>Saving to database...</translation>
     </message>
     <message>
-        <location filename="../views/tabs/tab_widget.py" line="478"/>
+        <location filename="../views/tabs/tab_widget.py" line="503"/>
         <source>保存到数据库失败: {e}</source>
         <translation>Save to database failed: {e}</translation>
     </message>
     <message>
-        <location filename="../views/tabs/tab_widget.py" line="481"/>
-        <location filename="../views/tabs/tab_widget.py" line="665"/>
+        <location filename="../views/tabs/tab_widget.py" line="506"/>
+        <location filename="../views/tabs/tab_widget.py" line="692"/>
         <source>完成</source>
         <translation>fulfillment</translation>
     </message>
     <message>
-        <location filename="../views/tabs/tab_widget.py" line="486"/>
+        <location filename="../views/tabs/tab_widget.py" line="511"/>
         <source>已成功生成情景级孪生模型。</source>
         <translation>Scenario-level twin model generated successfully.</translation>
     </message>
     <message>
-        <location filename="../views/tabs/tab_widget.py" line="491"/>
+        <location filename="../views/tabs/tab_widget.py" line="516"/>
         <source>模型生成失败:{e}</source>
         <translation>Model generation failed:{e}</translation>
     </message>
     <message>
-        <location filename="../views/tabs/tab_widget.py" line="500"/>
+        <location filename="../views/tabs/tab_widget.py" line="525"/>
         <source>生成贝叶斯网络</source>
         <translation>Generating Bayesian networks</translation>
     </message>
     <message>
-        <location filename="../views/tabs/tab_widget.py" line="520"/>
+        <location filename="../views/tabs/tab_widget.py" line="547"/>
         <source>正在加载OWL文件...</source>
         <translation>Loading OWL files...</translation>
     </message>
     <message>
-        <location filename="../views/tabs/tab_widget.py" line="526"/>
+        <location filename="../views/tabs/tab_widget.py" line="553"/>
         <source>加载OWL文件失败: {e}</source>
         <translation>Failed to load OWL file: {e}</translation>
     </message>
     <message>
-        <location filename="../views/tabs/tab_widget.py" line="529"/>
+        <location filename="../views/tabs/tab_widget.py" line="556"/>
         <source>正在提取数据属性...</source>
         <translation>Data properties being extracted...</translation>
     </message>
     <message>
-        <location filename="../views/tabs/tab_widget.py" line="533"/>
+        <location filename="../views/tabs/tab_widget.py" line="560"/>
         <source>提取数据属性失败: {e}</source>
         <translation>Failed to extract data attributes: {e}</translation>
     </message>
     <message>
-        <location filename="../views/tabs/tab_widget.py" line="536"/>
+        <location filename="../views/tabs/tab_widget.py" line="563"/>
         <source>正在创建贝叶斯网络结构...</source>
         <translation>Bayesian network structure being created...</translation>
     </message>
     <message>
-        <location filename="../views/tabs/tab_widget.py" line="540"/>
+        <location filename="../views/tabs/tab_widget.py" line="567"/>
         <source>创建贝叶斯网络结构失败: {e}</source>
         <translation>Failed to create Bayesian network structure: {e}</translation>
     </message>
     <message>
-        <location filename="../views/tabs/tab_widget.py" line="543"/>
+        <location filename="../views/tabs/tab_widget.py" line="570"/>
         <source>正在设置先验概率...</source>
         <translation>A priori probability is being set...</translation>
     </message>
     <message>
-        <location filename="../views/tabs/tab_widget.py" line="598"/>
+        <location filename="../views/tabs/tab_widget.py" line="625"/>
         <source>设置先验概率失败: {e}</source>
         <translation>Setting a priori probability fails: {e}</translation>
     </message>
     <message>
-        <location filename="../views/tabs/tab_widget.py" line="601"/>
+        <location filename="../views/tabs/tab_widget.py" line="628"/>
         <source>正在处理专家评估...</source>
         <translation>Expert assessments are being processed...</translation>
     </message>
     <message>
-        <location filename="../views/tabs/tab_widget.py" line="609"/>
+        <location filename="../views/tabs/tab_widget.py" line="636"/>
         <source>处理专家评估失败: {e}</source>
         <translation>Failed to process expert assessment: {e}</translation>
     </message>
     <message>
-        <location filename="../views/tabs/tab_widget.py" line="612"/>
+        <location filename="../views/tabs/tab_widget.py" line="639"/>
         <source>正在执行推理和保存网络...</source>
         <translation>Reasoning and saving network being performed...</translation>
     </message>
     <message>
-        <location filename="../views/tabs/tab_widget.py" line="619"/>
+        <location filename="../views/tabs/tab_widget.py" line="646"/>
         <source>执行推理或保存网络失败: {e}</source>
         <translation>Failed to perform reasoning or save network: {e}</translation>
     </message>
     <message>
-        <location filename="../views/tabs/tab_widget.py" line="622"/>
+        <location filename="../views/tabs/tab_widget.py" line="649"/>
         <source>正在可视化网络...</source>
         <translation>Visualizing network...</translation>
     </message>
     <message>
-        <location filename="../views/tabs/tab_widget.py" line="662"/>
+        <location filename="../views/tabs/tab_widget.py" line="689"/>
         <source>可视化网络失败: {e}</source>
         <translation>Visualization network failure: {e}</translation>
     </message>
     <message>
-        <location filename="../views/tabs/tab_widget.py" line="671"/>
+        <location filename="../views/tabs/tab_widget.py" line="698"/>
         <source>已成功生成推演模型。</source>
-        <translation>Inference model generated successfully.</translation>
+        <translation>Deduction model generated successfully.</translation>
     </message>
     <message>
-        <location filename="../views/tabs/tab_widget.py" line="676"/>
+        <location filename="../views/tabs/tab_widget.py" line="703"/>
         <source>错误</source>
         <translation>incorrect</translation>
     </message>
     <message>
-        <location filename="../views/tabs/tab_widget.py" line="676"/>
+        <location filename="../views/tabs/tab_widget.py" line="703"/>
         <source>生成推演模型失败:{e}</source>
-        <translation>Failed to generate derivation model:{e}</translation>
+        <translation>Failed to generate deduction model:{e}</translation>
     </message>
 </context>
 <context>
@@ -1150,7 +1156,7 @@ Type: {attr_type_name}</translation>
     </message>
     <message>
         <location filename="../views/tabs/element_setting.py" line="2483"/>
-        <location filename="../views/tabs/element_setting.py" line="3702"/>
+        <location filename="../views/tabs/element_setting.py" line="3704"/>
         <source>行为模型</source>
         <translation>Behavior Model</translation>
     </message>
@@ -1162,27 +1168,27 @@ Type: {attr_type_name}</translation>
     <message>
         <location filename="../views/tabs/element_setting.py" line="2546"/>
         <location filename="../views/tabs/element_setting.py" line="2594"/>
-        <location filename="../views/tabs/element_setting.py" line="2669"/>
-        <location filename="../views/tabs/element_setting.py" line="2769"/>
-        <location filename="../views/tabs/element_setting.py" line="3861"/>
+        <location filename="../views/tabs/element_setting.py" line="2671"/>
+        <location filename="../views/tabs/element_setting.py" line="2771"/>
+        <location filename="../views/tabs/element_setting.py" line="3863"/>
         <source>等待上传情景要素模型</source>
         <translation>Waiting for scenario element model upload</translation>
     </message>
     <message>
         <location filename="../views/tabs/element_setting.py" line="2576"/>
-        <location filename="../views/tabs/element_setting.py" line="3707"/>
+        <location filename="../views/tabs/element_setting.py" line="3709"/>
         <source>行为名称</source>
         <translation>Behavior Name</translation>
     </message>
     <message>
         <location filename="../views/tabs/element_setting.py" line="2576"/>
-        <location filename="../views/tabs/element_setting.py" line="3708"/>
+        <location filename="../views/tabs/element_setting.py" line="3710"/>
         <source>行为主体</source>
         <translation>Behavior Subject</translation>
     </message>
     <message>
         <location filename="../views/tabs/element_setting.py" line="2576"/>
-        <location filename="../views/tabs/element_setting.py" line="3709"/>
+        <location filename="../views/tabs/element_setting.py" line="3711"/>
         <source>行为对象</source>
         <translation>Behavior Object</translation>
     </message>
@@ -1202,137 +1208,142 @@ Type: {attr_type_name}</translation>
         <translation>Generate Scenario Model</translation>
     </message>
     <message>
-        <location filename="../views/tabs/element_setting.py" line="2624"/>
+        <location filename="../views/tabs/element_setting.py" line="2626"/>
         <source>点击生成情景级孪生模型</source>
         <translation>Click to generate a scenario-level twin model</translation>
     </message>
     <message>
-        <location filename="../views/tabs/element_setting.py" line="2713"/>
+        <location filename="../views/tabs/element_setting.py" line="2715"/>
         <source>没有行为模型</source>
         <translation>No behavior model</translation>
     </message>
     <message>
-        <location filename="../views/tabs/element_setting.py" line="2915"/>
+        <location filename="../views/tabs/element_setting.py" line="2917"/>
         <source>编辑错误</source>
         <translation>Editorial Error</translation>
     </message>
     <message>
-        <location filename="../views/tabs/element_setting.py" line="2916"/>
+        <location filename="../views/tabs/element_setting.py" line="2918"/>
         <source>未选中要素。</source>
         <translation>Unchecked element.</translation>
     </message>
     <message>
-        <location filename="../views/tabs/element_setting.py" line="3627"/>
+        <location filename="../views/tabs/element_setting.py" line="3629"/>
         <source>保存过程中发生错误:
 {e}</source>
         <translation>An error occurred while saving: {e}
 {e}</translation>
     </message>
     <message>
-        <location filename="../views/tabs/element_setting.py" line="2830"/>
+        <location filename="../views/tabs/element_setting.py" line="2832"/>
         <source>没有属性模型</source>
         <translation>No attribute model</translation>
     </message>
     <message>
-        <location filename="../views/tabs/element_setting.py" line="3469"/>
+        <location filename="../views/tabs/element_setting.py" line="3471"/>
         <source>保存结果</source>
         <translation>Save Results</translation>
     </message>
     <message>
-        <location filename="../views/tabs/element_setting.py" line="3470"/>
+        <location filename="../views/tabs/element_setting.py" line="3472"/>
         <source>没有要保存的要素。</source>
         <translation>No elements to save.</translation>
     </message>
     <message>
-        <location filename="../views/tabs/element_setting.py" line="3525"/>
+        <location filename="../views/tabs/element_setting.py" line="3527"/>
         <source>缺失承灾要素</source>
         <translation>Missing elements of disaster preparedness</translation>
     </message>
     <message>
-        <location filename="../views/tabs/element_setting.py" line="3526"/>
+        <location filename="../views/tabs/element_setting.py" line="3528"/>
         <source>请选择补充要素的类别：</source>
         <translation>Please select the category of the supplementary element:</translation>
     </message>
     <message>
-        <location filename="../views/tabs/element_setting.py" line="3534"/>
-        <location filename="../views/tabs/element_setting.py" line="3554"/>
-        <location filename="../views/tabs/element_setting.py" line="3626"/>
+        <location filename="../views/tabs/element_setting.py" line="3536"/>
+        <location filename="../views/tabs/element_setting.py" line="3556"/>
+        <location filename="../views/tabs/element_setting.py" line="3628"/>
         <source>保存失败</source>
         <translation>Fail to save</translation>
     </message>
     <message>
-        <location filename="../views/tabs/element_setting.py" line="3535"/>
+        <location filename="../views/tabs/element_setting.py" line="3537"/>
         <source>未选择任何承灾要素类别，保存失败。</source>
         <translation>No disaster-bearing element category is selected and the save fails.</translation>
     </message>
     <message>
-        <location filename="../views/tabs/element_setting.py" line="3546"/>
+        <location filename="../views/tabs/element_setting.py" line="3548"/>
         <source>缺失 {element}，尝试从模板补充</source>
         <translation>Missing {element}, trying to add from template</translation>
     </message>
     <message>
-        <location filename="../views/tabs/element_setting.py" line="3547"/>
+        <location filename="../views/tabs/element_setting.py" line="3549"/>
         <source>请输入补充要素的名称</source>
         <translation>Please enter the name of the supplementary element</translation>
     </message>
     <message>
-        <location filename="../views/tabs/element_setting.py" line="3555"/>
+        <location filename="../views/tabs/element_setting.py" line="3557"/>
         <source>缺少 {element}，保存失败。</source>
         <translation>Missing {element}, trying to add from template</translation>
     </message>
     <message>
-        <location filename="../views/tabs/element_setting.py" line="3673"/>
+        <location filename="../views/tabs/element_setting.py" line="3675"/>
         <source>保存结果详情</source>
         <translation>Save Results Details</translation>
     </message>
     <message>
-        <location filename="../views/tabs/element_setting.py" line="3681"/>
+        <location filename="../views/tabs/element_setting.py" line="3680"/>
+        <source>&lt;h3&gt;元素: </source>
+        <translation>&lt;h3&gt;Element: </translation>
+    </message>
+    <message>
+        <location filename="../views/tabs/element_setting.py" line="3683"/>
         <source>属性</source>
         <translation>Attributes</translation>
     </message>
     <message>
-        <location filename="../views/tabs/element_setting.py" line="3684"/>
+        <location filename="../views/tabs/element_setting.py" line="3686"/>
         <source>属性名称</source>
         <translation>Attribute Name</translation>
     </message>
     <message>
-        <location filename="../views/tabs/element_setting.py" line="3685"/>
+        <location filename="../views/tabs/element_setting.py" line="3687"/>
         <source>属性值</source>
         <translation>Attribute Value</translation>
     </message>
     <message>
-        <location filename="../views/tabs/element_setting.py" line="3686"/>
+        <location filename="../views/tabs/element_setting.py" line="3688"/>
         <source>属性类别</source>
         <translation>Attribute Category</translation>
     </message>
     <message>
-        <location filename="../views/tabs/element_setting.py" line="3693"/>
-        <location filename="../views/tabs/element_setting.py" line="3717"/>
+        <location filename="../views/tabs/element_setting.py" line="3695"/>
+        <location filename="../views/tabs/element_setting.py" line="3719"/>
         <source>无</source>
         <translation>None</translation>
     </message>
     <message>
-        <location filename="../views/tabs/element_setting.py" line="3726"/>
+        <location filename="../views/tabs/element_setting.py" line="3728"/>
         <source>无行为模型</source>
         <translation>No behavior model</translation>
     </message>
     <message>
-        <location filename="../views/tabs/element_setting.py" line="3737"/>
+        <location filename="../views/tabs/element_setting.py" line="3739"/>
         <source>保存并生成</source>
         <translation>Save and generate</translation>
     </message>
     <message>
-        <location filename="../views/tabs/element_setting.py" line="3738"/>
+        <location filename="../views/tabs/element_setting.py" line="3740"/>
         <source>是否保存当前修改后生成情景模型？</source>
         <translation>Does it save the current modifications to generate the scenario model?</translation>
     </message>
     <message>
-        <location filename="../views/tabs/element_setting.py" line="3821"/>
+        <location filename="../views/tabs/element_setting.py" line="3823"/>
         <source>生成失败</source>
         <translation>Generation Failure</translation>
     </message>
     <message>
-        <location filename="../views/tabs/element_setting.py" line="3822"/>
+        <location filename="../views/tabs/element_setting.py" line="3824"/>
         <source>缺少以下要素：{missing_elements}，请先补充并保存。</source>
         <translation>The following element is missing: {missing_elements}, please add it first and save it.</translation>
     </message>
@@ -1375,19 +1386,391 @@ Type: {attr_type_name}</translation>
 <context>
     <name>MainUpdateDialog</name>
     <message>
-        <location filename="../views/dialogs/update_prior_dialog.py" line="1003"/>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="827"/>
         <source>类型选择</source>
         <translation>Type Selection</translation>
     </message>
     <message>
-        <location filename="../views/dialogs/update_prior_dialog.py" line="1013"/>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="837"/>
         <source>更新根节点</source>
         <translation>Updating the root node</translation>
     </message>
     <message>
-        <location filename="../views/dialogs/update_prior_dialog.py" line="1014"/>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="838"/>
         <source>更新非根节点</source>
         <translation>Updating non-root nodes</translation>
+    </message>
+    <message>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="879"/>
+        <source>未评估</source>
+        <translation>Not evaluated</translation>
+    </message>
+    <message>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="887"/>
+        <source>道路可通行且不存在道路设施损失时，请评估道路具有较好吸收扰动的能力的可能性：</source>
+        <translation>When the road is passable and there is no loss of roadway facilities, assess the likelihood that the road has a good capacity to absorb the disturbance:</translation>
+    </message>
+    <message>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="888"/>
+        <source>道路可通行且存在道路设施损失时，请评估道路具有较好吸收扰动的能力的可能性：</source>
+        <translation>Where the road is passable and there is a loss of roadway facilities, assess the likelihood that the road has a good capacity to absorb the disturbance:</translation>
+    </message>
+    <message>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="889"/>
+        <source>道路不可通行且存在道路设施损失时，请评估道路具有较好吸收扰动的能力的可能性：</source>
+        <translation>Where roads are impassable and there is a loss of road facilities, assess the likelihood that the road has a good capacity to absorb disturbance:</translation>
+    </message>
+    <message>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="890"/>
+        <source>道路不可通行且不存在道路设施损失时，请评估道路具有较好吸收扰动的能力的可能性：</source>
+        <translation>When the road is impassable and there is no loss of roadway facilities, assess the likelihood that the road has a good capacity to absorb the disturbance:</translation>
+    </message>
+    <message>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="896"/>
+        <source>突发事件发生于当天00:00至06:00，事件类型为车辆自身事故（侧翻、抛锚），没有造成人员伤亡，请评估具有较好适应扰动的能力的可能性：</source>
+        <translation>The contingency occurred between 00:00 and 06:00 on the same day, the type of incident was an accident of the vehicle itself (rollover, break down), there were no injuries or fatalities, so please assess the likelihood of having a better ability to adapt to disturbances:</translation>
+    </message>
+    <message>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="898"/>
+        <source>突发事件发生于当天00:00至06:00，事件类型为车辆自身事故（侧翻、抛锚），发生人员伤亡，请评估具有较好适应扰动的能力的可能性：</source>
+        <translation>The contingency occurs between 00:00 and 06:00 on the same day, the type of event is an accident of the vehicle itself (rollover, break down), casualties occur, please assess the possibility of having a better ability to adapt to the disturbance:</translation>
+    </message>
+    <message>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="900"/>
+        <source>突发事件发生于当天00:00至06:00，事件类型为车辆对固定物事故（撞到护栏、路墩等），没有造成人员伤亡，请评估具有较好适应扰动的能力的可能性：</source>
+        <translation>The contingency occurred between 00:00 and 06:00 on the same day and the type of incident was a vehicle vs. fixed object accident (hitting a guardrail, road abutment, etc.) with no injuries or fatalities, so please assess the likelihood of having the ability to adapt well to the disturbance:</translation>
+    </message>
+    <message>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="902"/>
+        <source>突发事件发生于当天00:00至06:00，事件类型为车辆对固定物事故（撞到护栏、路墩等），发生人员伤亡，请评估具有较好适应扰动的能力的可能性：</source>
+        <translation>The unexpected event occurred between 00:00 and 06:00 on the same day, and the type of event was a vehicle-on-fixed object accident (hitting a guardrail, road abutment, etc.), with injuries and fatalities, so please assess the likelihood of having the ability to adapt well to the disturbance:</translation>
+    </message>
+    <message>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="904"/>
+        <source>突发事件发生于当天00:00至06:00，事件类型为车辆擦碰事故（指两辆或两辆以上的车辆发生意外碰撞），没有造成人员伤亡，请评估具有较好适应扰动的能力的可能性：</source>
+        <translation>The unexpected incident occurred between 00:00 and 06:00 on the same day, the type of incident was a vehicle rubbing accident (meaning an accidental collision between two or more vehicles), there were no injuries or fatalities, and please assess the likelihood of having a better ability to adapt to the disturbance:</translation>
+    </message>
+    <message>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="906"/>
+        <source>突发事件发生于当天00:00至06:00，事件类型为车辆擦碰事故（指两辆或两辆以上的车辆发生意外碰撞），发生人员伤亡，请评估具有较好适应扰动的能力的可能性：</source>
+        <translation>The unexpected event occurred between 00:00 and 06:00 on the same day, and the type of event was a vehicular rubbing accident (meaning an accidental collision between two or more vehicles) in which injuries or fatalities occurred, so please assess the likelihood of having a better ability to adapt to the disturbance:</translation>
+    </message>
+    <message>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="908"/>
+        <source>突发事件发生于当天06:00至12:00，事件类型为车辆自身事故（侧翻、抛锚），没有造成人员伤亡，请评估具有较好适应扰动的能力的可能性：</source>
+        <translation>The contingency occurred between 06:00 and 12:00 on the same day, the type of incident was an accident of the vehicle itself (rollover, break down), there were no injuries or fatalities, so please assess the likelihood of having a better ability to adapt to perturbations:</translation>
+    </message>
+    <message>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="910"/>
+        <source>突发事件发生于当天06:00至12:00，事件类型为车辆自身事故（侧翻、抛锚），发生人员伤亡，请评估具有较好适应扰动的能力的可能性：</source>
+        <translation>The contingency occurs between 06:00 and 12:00 on the same day, the type of incident is a vehicle own accident (rollover, break down), casualties occur, please assess the possibility of having a better ability to adapt to disturbances:</translation>
+    </message>
+    <message>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="912"/>
+        <source>突发事件发生于当天06:00至12:00，事件类型为车辆对固定物事故（撞到护栏、路墩等），没有造成人员伤亡，请评估具有较好适应扰动的能力的可能性：</source>
+        <translation>The contingency occurred between 06:00 and 12:00 on the same day, and the type of incident was a vehicle-on-fixed object accident (hitting a guardrail, road abutment, etc.), with no injuries or fatalities, so please assess the likelihood of having a better ability to adapt to disturbances:</translation>
+    </message>
+    <message>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="914"/>
+        <source>突发事件发生于当天06:00至12:00，事件类型为车辆对固定物事故（撞到护栏、路墩等），发生人员伤亡，请评估具有较好适应扰动的能力的可能性：</source>
+        <translation>The unexpected event occurred between 06:00 and 12:00 on the same day, the type of event was a vehicle vs. fixed object accident (hitting a guardrail, road abutment, etc.) with injuries and fatalities, so please assess the likelihood of having the ability to adapt well to the disturbance:</translation>
+    </message>
+    <message>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="916"/>
+        <source>突发事件发生于当天06:00至12:00，事件类型为车辆擦碰事故（指两辆或两辆以上的车辆发生意外碰撞），没有造成人员伤亡，请评估具有较好适应扰动的能力的可能性：</source>
+        <translation>The unexpected incident occurred between 06:00 and 12:00 on the same day, the type of incident was a vehicle rubbing accident (meaning an accidental collision between two or more vehicles), there were no injuries or fatalities, and please assess the likelihood of having a better ability to adapt to the disturbance:</translation>
+    </message>
+    <message>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="918"/>
+        <source>突发事件发生于当天06:00至12:00，事件类型为车辆擦碰事故（指两辆或两辆以上的车辆发生意外碰撞），发生人员伤亡，请评估具有较好适应扰动的能力的可能性：</source>
+        <translation>The unexpected event occurred between 06:00 and 12:00 on the same day, and the type of event was a vehicular rubbing accident (meaning an accidental collision between two or more vehicles) in which injuries or fatalities occurred, so please assess the likelihood of having a better ability to adapt to the disturbance:</translation>
+    </message>
+    <message>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="920"/>
+        <source>突发事件发生于当天12:00至18:00，事件类型为车辆自身事故（侧翻、抛锚），没有造成人员伤亡，请评估具有较好适应扰动的能力的可能性：</source>
+        <translation>The contingency occurred between 12:00 and 18:00 on the same day, the type of incident was an accident of the vehicle itself (rollover, break down), there were no injuries or fatalities, so please assess the likelihood of having a better ability to adapt to disturbances:</translation>
+    </message>
+    <message>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="922"/>
+        <source>突发事件发生于当天12:00至18:00，事件类型为车辆自身事故（侧翻、抛锚），发生人员伤亡，请评估具有较好适应扰动的能力的可能性：</source>
+        <translation>The contingency occurs between 12:00 and 18:00 on the same day, the type of event is an accident of the vehicle itself (rollover, break down), injuries and fatalities occur, please assess the likelihood of having a better ability to adapt to the disturbance:</translation>
+    </message>
+    <message>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="924"/>
+        <source>突发事件发生于当天12:00至18:00，事件类型为车辆对固定物事故（撞到护栏、路墩等），没有造成人员伤亡，请评估具有较好适应扰动的能力的可能性：</source>
+        <translation>The contingency occurred between 12:00 and 18:00 on the same day and the type of incident was a vehicle-on-fixed object accident (hitting a guardrail, road abutment, etc.) with no injuries or fatalities, so please assess the likelihood of having a better ability to adapt to the disturbance:</translation>
+    </message>
+    <message>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="926"/>
+        <source>突发事件发生于当天12:00至18:00，事件类型为车辆对固定物事故（撞到护栏、路墩等），发生人员伤亡，请评估具有较好适应扰动的能力的可能性：</source>
+        <translation>The contingency occurs between 12:00 and 18:00 on the same day, and the type of incident is a vehicle-on-fixed object accident (hitting a guardrail, road abutment, etc.), with injuries and fatalities, so please assess the likelihood of having the ability to adapt well to the disturbance:</translation>
+    </message>
+    <message>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="928"/>
+        <source>突发事件发生于当天12:00至18:00，事件类型为车辆擦碰事故（指两辆或两辆以上的车辆发生意外碰撞），没有造成人员伤亡，请评估具有较好适应扰动的能力的可能性：</source>
+        <translation>The unexpected incident occurred between 12:00 and 18:00 on the same day, the type of incident was a vehicle rubbing accident (meaning an accidental collision between two or more vehicles), there were no injuries or fatalities, and please assess the likelihood of having a better ability to adapt to the disturbance:</translation>
+    </message>
+    <message>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="930"/>
+        <source>突发事件发生于当天12:00至18:00，事件类型为车辆擦碰事故（指两辆或两辆以上的车辆发生意外碰撞），发生人员伤亡，请评估具有较好适应扰动的能力的可能性：</source>
+        <translation>The unexpected event occurs between 12:00 and 18:00 on the same day, and the type of event is a vehicular rubbing accident (meaning an accidental collision between two or more vehicles) in which injuries or fatalities occur, so please assess the likelihood of having a better ability to adapt to the disturbance:</translation>
+    </message>
+    <message>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="932"/>
+        <source>突发事件发生于当天18:00至24:00，事件类型为车辆自身事故（侧翻、抛锚），没有造成人员伤亡，请评估具有较好适应扰动的能力的可能性：</source>
+        <translation>The contingency occurred between 18:00 and 24:00 on the same day, the type of incident was an accident of the vehicle itself (rollover, break down), there were no injuries or fatalities, so please assess the likelihood of having a better ability to adapt to disturbances:</translation>
+    </message>
+    <message>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="934"/>
+        <source>突发事件发生于当天18:00至24:00，事件类型为车辆自身事故（侧翻、抛锚），发生人员伤亡，请评估具有较好适应扰动的能力的可能性：</source>
+        <translation>The contingency occurs between 18:00 and 24:00 on the same day, the type of event is an accident of the vehicle itself (rollover, break down), injuries and deaths occur, please assess the likelihood of having a better ability to adapt to the disturbance:</translation>
+    </message>
+    <message>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="936"/>
+        <source>突发事件发生于当天18:00至24:00，事件类型为车辆对固定物事故（撞到护栏、路墩等），没有造成人员伤亡，请评估具有较好适应扰动的能力的可能性：</source>
+        <translation>The contingency occurred between 18:00 and 24:00 on the same day and the type of incident was a vehicle-on-fixed object accident (hitting a guardrail, road abutment, etc.), which did not result in injuries or fatalities, so please assess the likelihood of having a better ability to adapt to the disturbance:</translation>
+    </message>
+    <message>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="938"/>
+        <source>突发事件发生于当天18:00至24:00，事件类型为车辆对固定物事故（撞到护栏、路墩等），发生人员伤亡，请评估具有较好适应扰动的能力的可能性：</source>
+        <translation>The contingency occurs between 18:00 and 24:00 on the same day, and the type of incident is a vehicle-on-fixed object accident (hitting a guardrail, road abutment, etc.), with injuries and fatalities, so please assess the likelihood of having the ability to adapt well to the disturbance:</translation>
+    </message>
+    <message>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="940"/>
+        <source>突发事件发生于当天18:00至24:00，事件类型为车辆擦碰事故（指两辆或两辆以上的车辆发生意外碰撞），没有造成人员伤亡，请评估具有较好适应扰动的能力的可能性：</source>
+        <translation>The unexpected incident occurred between 18:00 and 24:00 on the same day, the type of incident was a vehicle rubbing accident (meaning an accidental collision between two or more vehicles), there were no injuries or fatalities, and please assess the likelihood of having a better ability to adapt to the disturbance:</translation>
+    </message>
+    <message>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="947"/>
+        <source>突发事件发生于当天18:00至24:00，事件类型为车辆擦碰事故（指两辆或两辆以上的车辆发生意外碰撞），发生人员伤亡，请评估具有较好适应扰动的能力的可能性：</source>
+        <translation>The unexpected event occurred between 18:00 and 24:00 on the same day, and the type of event was a vehicular rubbing accident (meaning an accidental collision between two or more vehicles) in which injuries or fatalities occurred, so please assess the likelihood of having a better ability to adapt to the disturbance:</translation>
+    </message>
+    <message>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="947"/>
+        <source>响应时长在15分钟以内</source>
+        <translation>Response time within 15 minutes</translation>
+    </message>
+    <message>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="947"/>
+        <source>响应时长在15-30分钟</source>
+        <translation>Response time in the range of 15-30 minutes</translation>
+    </message>
+    <message>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="948"/>
+        <source>响应时长在30-60分钟</source>
+        <translation>Response time in the range of 30-60 minutes</translation>
+    </message>
+    <message>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="949"/>
+        <source>响应时长在60分钟以上</source>
+        <translation>Response time of 60 minutes or more</translation>
+    </message>
+    <message>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="949"/>
+        <source>处置时长在15分钟以内</source>
+        <translation>Disposal time within 15 minutes</translation>
+    </message>
+    <message>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="949"/>
+        <source>处置时长在15-30分钟</source>
+        <translation>Disposal time in the range of 15-30 minutes</translation>
+    </message>
+    <message>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="950"/>
+        <source>处置时长在30-60分钟</source>
+        <translation>Disposal time in the range of 30-60 minutes</translation>
+    </message>
+    <message>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="952"/>
+        <source>处置时长在60分钟以上</source>
+        <translation>Disposal duration of 60 minutes or more</translation>
+    </message>
+    <message>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="952"/>
+        <source>且无人员伤亡</source>
+        <translation>And no casualties.</translation>
+    </message>
+    <message>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="955"/>
+        <source>且有人员伤亡</source>
+        <translation>And there are casualties.</translation>
+    </message>
+    <message>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="978"/>
+        <source>在应急响应过程中{}，{}，{}，请评估道路具有较好从扰动中恢复的能力的可能性：</source>
+        <translation>During the emergency response process {}, {}, {}, please assess the likelihood that the road has the ability to recover well from the disturbance:</translation>
+    </message>
+    <message>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="1000"/>
+        <source>在突发事件发生前城市道路系统能够自动吸收潜在的扰动并维持正常运行，在突发事件发生时城市道路系统能够在很少或完全不涉及外部快速恢复操作的情况下快速恢复损失的性能，在实施应急预案后城市道路系统能够快速恢复至正常运行状态，请评估道路具有较好韧性的可能性：</source>
+        <translation>The ability of the urban road system to automatically absorb potential disturbances and maintain normal operation prior to an emergency event, the ability of the urban road system to quickly restore lost performance during an emergency event with little or no external rapid recovery operations involved, and the ability of the urban road system to quickly return to normal operation after implementation of an emergency response plan are invited to assess the likelihood that roads are more resilient:</translation>
+    </message>
+    <message>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="1002"/>
+        <source>在突发事件发生前城市道路系统能够自动吸收潜在的扰动并维持正常运行，在突发事件发生时城市道路系统能够在很少或完全不涉及外部恢复操作的情况下难以快速恢复损失的性能，在实施应急预案后城市道路系统能够快速恢复至正常运行状态，请评估道路具有较好韧性的可能性：</source>
+        <translation>The ability of the urban road system to automatically absorb potential disturbances and maintain normal operation prior to an emergency event, the ability of the urban road system to quickly recover lost performance during an emergency event with little or no difficulty involving external recovery operations, and the ability of the urban road system to quickly return to normal operation after implementation of an emergency response plan are invited to assess the likelihood that roads are more resilient:</translation>
+    </message>
+    <message>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="1004"/>
+        <source>在突发事件发生前城市道路系统能够自动吸收潜在的扰动并维持正常运行，在突发事件发生时城市道路系统能够在很少或完全不涉及外部快速恢复操作的情况下快速恢复损失的性能，在实施应急预案后城市道路系统难以快速恢复至正常运行状态，请评估道路具有较好韧性的可能性：</source>
+        <translation>Before an emergency event occurs the urban road system is able to automatically absorb potential disturbances and maintain normal operation, during an emergency event the urban road system is able to quickly restore lost performance with little or no external rapid recovery operations involved, after the implementation of the emergency plan the urban road system is difficult to quickly return to normal operation, please assess the possibility of better resilience of the road:</translation>
+    </message>
+    <message>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="1006"/>
+        <source>在突发事件发生前城市道路系统能够自动吸收潜在的扰动并维持正常运行，在突发事件发生时城市道路系统能够在很少或完全不涉及外部恢复操作的情况下难以快速恢复损失的性能，在实施应急预案后城市道路系统难以快速恢复至正常运行状态，请评估道路具有较好韧性的可能性：</source>
+        <translation>Before an emergency event occurs the urban road system is able to automatically absorb potential perturbations and maintain normal operation, during an emergency event the urban road system is able to recover lost performance with little or no difficulty in quickly recovering from external restoration operations, and after the implementation of an emergency response plan the urban road system has difficulty in quickly recovering to normal operation, please assess the possibility of a road being more resilient:</translation>
+    </message>
+    <message>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="1008"/>
+        <source>在突发事件发生前城市道路系统难以自动吸收潜在的扰动并维持正常运行，在突发事件发生时城市道路系统能够在很少或完全不涉及外部快速恢复操作的情况下快速恢复损失的性能，在实施应急预案后城市道路系统能够快速恢复至正常运行状态，请评估道路具有较好韧性的可能性：</source>
+        <translation>The urban road system has difficulty in automatically absorbing potential disturbances and maintaining normal operation prior to an emergency event, the urban road system is able to quickly restore lost performance during an emergency event with little or no external rapid recovery operations involved, and the urban road system is able to quickly return to normal operation after implementation of an emergency response plan, please assess the likelihood that roads are more resilient:</translation>
+    </message>
+    <message>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="1010"/>
+        <source>在突发事件发生前城市道路系统难以自动吸收潜在的扰动并维持正常运行，在突发事件发生时城市道路系统能够在很少或完全不涉及外部恢复操作的情况下难以快速恢复损失的性能，在实施应急预案后城市道路系统能够快速恢复至正常运行状态，请评估道路具有较好韧性的可能性：</source>
+        <translation>Before an emergency event the urban road system is difficult to automatically absorb potential disturbances and maintain normal operation, during an emergency event the urban road system can be difficult to quickly restore lost performance with little or no external recovery operations involved, and after the implementation of the emergency plan the urban road system can be quickly restored to normal operation, please assess the possibility that the road has a better resilience:</translation>
+    </message>
+    <message>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="1012"/>
+        <source>在突发事件发生前城市道路系统难以自动吸收潜在的扰动并维持正常运行，在突发事件发生时城市道路系统能够在很少或完全不涉及外部快速恢复操作的情况下快速恢复损失的性能，在实施应急预案后城市道路系统难以快速恢复至正常运行状态，请评估道路具有较好韧性的可能性：</source>
+        <translation>Difficulty in automatically absorbing potential disturbances and maintaining normal operation of the urban road system prior to an emergency event, the ability of the urban road system to quickly restore lost performance during an emergency event with little or no external rapid recovery operations involved, and the difficulty in quickly restoring the urban road system to a normal operating condition after implementation of an emergency response plan are requested to assess the potential for better resiliency of the roadway:</translation>
+    </message>
+    <message>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="1017"/>
+        <source>在突发事件发生前城市道路系统难以自动吸收潜在的扰动并维持正常运行，在突发事件发生时城市道路系统能够在很少或完全不涉及外部恢复操作的情况下难以快速恢复损失的性能，在实施应急预案后城市道路系统难以快速恢复至正常运行状态，请评估道路具有较好韧性的可能性：</source>
+        <translation>Difficulty in automatically absorbing potential disturbances and maintaining normal operation of the urban road system prior to an emergency event, difficulty in quickly recovering lost performance during an emergency event when the urban road system is able to do so with little or no external restoration operations involved, and difficulty in quickly restoring the urban road system to a normal operating condition after implementation of an emergency response plan, please assess the likelihood that the road will be more resilient:</translation>
+    </message>
+    <message>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="1017"/>
+        <source>请选择您的年龄</source>
+        <translation>Please select your age</translation>
+    </message>
+    <message>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="1017"/>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="1027"/>
+        <source>A.30岁及以下</source>
+        <translation>A. 30 years and under</translation>
+    </message>
+    <message>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="1017"/>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="1028"/>
+        <source>B.31-40岁</source>
+        <translation>B. 31-40 years</translation>
+    </message>
+    <message>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="1018"/>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="1029"/>
+        <source>C.41-50岁</source>
+        <translation>C. 41-50 years</translation>
+    </message>
+    <message>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="1019"/>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="1030"/>
+        <source>D.50岁以上</source>
+        <translation>D. Over 50 years of age</translation>
+    </message>
+    <message>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="1019"/>
+        <source>请选择您的教育水平</source>
+        <translation>Please select your level of education</translation>
+    </message>
+    <message>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="1019"/>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="1034"/>
+        <source>A.大专及以下</source>
+        <translation>A. College and below</translation>
+    </message>
+    <message>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="1019"/>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="1035"/>
+        <source>B.本科</source>
+        <translation>B. Undergraduate</translation>
+    </message>
+    <message>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="1020"/>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="1036"/>
+        <source>C.硕士</source>
+        <translation>C. Masters</translation>
+    </message>
+    <message>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="1021"/>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="1037"/>
+        <source>D.博士及以上</source>
+        <translation>D. Ph.D. and above</translation>
+    </message>
+    <message>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="1021"/>
+        <source>请选择您的工作年限</source>
+        <translation>Please select your years of service</translation>
+    </message>
+    <message>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="1021"/>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="1041"/>
+        <source>A.5年及以下</source>
+        <translation>A. 5 years and under</translation>
+    </message>
+    <message>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="1021"/>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="1042"/>
+        <source>B.6-10年</source>
+        <translation>B. 6-10 years</translation>
+    </message>
+    <message>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="1022"/>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="1043"/>
+        <source>C.11-19年</source>
+        <translation>C. 11-19 years</translation>
+    </message>
+    <message>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="1023"/>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="1044"/>
+        <source>D.20年及以上</source>
+        <translation>D. 20 years and over</translation>
+    </message>
+    <message>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="1023"/>
+        <source>请选择您的工作职位</source>
+        <translation>Please select your job title</translation>
+    </message>
+    <message>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="1023"/>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="1048"/>
+        <source>A.工人</source>
+        <translation>A. Workers</translation>
+    </message>
+    <message>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="1023"/>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="1049"/>
+        <source>B.技术员</source>
+        <translation>B. Technicians</translation>
+    </message>
+    <message>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="1024"/>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="1050"/>
+        <source>C.工程师</source>
+        <translation>C. Engineers</translation>
+    </message>
+    <message>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="1024"/>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="1051"/>
+        <source>D.副教授</source>
+        <translation>D. Associate professors</translation>
+    </message>
+    <message>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="1026"/>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="1052"/>
+        <source>E.教授</source>
+        <translation>E. Professors</translation>
+    </message>
+    <message>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="1067"/>
+        <source>未使用任何应急资源</source>
+        <translation>No emergency resources were utilized</translation>
+    </message>
+    <message>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="1068"/>
+        <source>仅使用{0}</source>
+        <translation>Use only {0}</translation>
     </message>
 </context>
 <context>
@@ -1413,12 +1796,12 @@ Type: {attr_type_name}</translation>
         <translation>Switch to tab {index}</translation>
     </message>
     <message>
-        <location filename="../views/tabs/element_setting.py" line="3900"/>
+        <location filename="../views/tabs/element_setting.py" line="3902"/>
         <source>情景要素设置</source>
         <translation>Scenario Element Settings</translation>
     </message>
     <message>
-        <location filename="../views/tabs/element_setting.py" line="3908"/>
+        <location filename="../views/tabs/element_setting.py" line="3910"/>
         <source>要素设置</source>
         <translation>Element Settings</translation>
     </message>
@@ -1470,10 +1853,10 @@ Type: {attr_type_name}</translation>
     </message>
     <message>
         <location filename="../views/tabs/model_generation.py" line="435"/>
-        <location filename="../views/tabs/model_generation.py" line="514"/>
-        <location filename="../views/tabs/model_generation.py" line="766"/>
-        <location filename="../views/tabs/model_generation.py" line="785"/>
-        <location filename="../views/tabs/model_generation.py" line="789"/>
+        <location filename="../views/tabs/model_generation.py" line="516"/>
+        <location filename="../views/tabs/model_generation.py" line="768"/>
+        <location filename="../views/tabs/model_generation.py" line="787"/>
+        <location filename="../views/tabs/model_generation.py" line="791"/>
         <source>请选择本体</source>
         <translation>Please select an ontology</translation>
     </message>
@@ -1490,95 +1873,95 @@ Type: {attr_type_name}</translation>
     <message>
         <location filename="../views/tabs/model_generation.py" line="450"/>
         <source>生成推演模型</source>
-        <translation>Generate Inference Model</translation>
+        <translation>Mapping Deduction Model</translation>
     </message>
     <message>
-        <location filename="../views/tabs/model_generation.py" line="474"/>
-        <location filename="../views/tabs/model_generation.py" line="725"/>
+        <location filename="../views/tabs/model_generation.py" line="476"/>
+        <location filename="../views/tabs/model_generation.py" line="727"/>
         <source>图形加载区</source>
         <translation>Graphics Loading Area</translation>
     </message>
     <message>
-        <location filename="../views/tabs/model_generation.py" line="489"/>
+        <location filename="../views/tabs/model_generation.py" line="491"/>
         <source>缩放</source>
         <translation>Zoom</translation>
     </message>
     <message>
-        <location filename="../views/tabs/model_generation.py" line="497"/>
+        <location filename="../views/tabs/model_generation.py" line="499"/>
         <source>类</source>
         <translation>Class</translation>
     </message>
     <message>
-        <location filename="../views/tabs/model_generation.py" line="534"/>
+        <location filename="../views/tabs/model_generation.py" line="536"/>
         <source>属性</source>
         <translation>Attribute</translation>
     </message>
     <message>
-        <location filename="../views/tabs/model_generation.py" line="534"/>
-        <location filename="../views/tabs/model_generation.py" line="567"/>
+        <location filename="../views/tabs/model_generation.py" line="536"/>
+        <location filename="../views/tabs/model_generation.py" line="569"/>
         <source>范围</source>
         <translation>Range</translation>
     </message>
     <message>
-        <location filename="../views/tabs/model_generation.py" line="534"/>
-        <location filename="../views/tabs/model_generation.py" line="567"/>
+        <location filename="../views/tabs/model_generation.py" line="536"/>
+        <location filename="../views/tabs/model_generation.py" line="569"/>
         <source>值</source>
         <translation>Value</translation>
     </message>
     <message>
-        <location filename="../views/tabs/model_generation.py" line="548"/>
-        <location filename="../views/tabs/model_generation.py" line="582"/>
-        <location filename="../views/tabs/model_generation.py" line="715"/>
-        <location filename="../views/tabs/model_generation.py" line="719"/>
-        <location filename="../views/tabs/model_generation.py" line="797"/>
-        <location filename="../views/tabs/model_generation.py" line="801"/>
+        <location filename="../views/tabs/model_generation.py" line="550"/>
+        <location filename="../views/tabs/model_generation.py" line="584"/>
+        <location filename="../views/tabs/model_generation.py" line="717"/>
+        <location filename="../views/tabs/model_generation.py" line="721"/>
+        <location filename="../views/tabs/model_generation.py" line="799"/>
+        <location filename="../views/tabs/model_generation.py" line="803"/>
         <source>请选择类</source>
         <translation>Please select a class</translation>
     </message>
     <message>
-        <location filename="../views/tabs/model_generation.py" line="567"/>
+        <location filename="../views/tabs/model_generation.py" line="569"/>
         <source>行为</source>
         <translation>Behavior</translation>
     </message>
     <message>
-        <location filename="../views/tabs/model_generation.py" line="699"/>
+        <location filename="../views/tabs/model_generation.py" line="701"/>
         <source>无法找到 SVG 文件</source>
         <translation>SVG file not found</translation>
     </message>
     <message>
-        <location filename="../views/tabs/model_generation.py" line="702"/>
+        <location filename="../views/tabs/model_generation.py" line="704"/>
         <source>提示</source>
         <translation>Notice</translation>
     </message>
     <message>
-        <location filename="../views/tabs/model_generation.py" line="702"/>
+        <location filename="../views/tabs/model_generation.py" line="704"/>
         <source>无法找到对应的图形文件。</source>
         <translation>Cannot find the corresponding graphic file.</translation>
     </message>
     <message>
-        <location filename="../views/tabs/model_generation.py" line="758"/>
+        <location filename="../views/tabs/model_generation.py" line="760"/>
         <source>该本体没有类</source>
         <translation>This ontology has no classes</translation>
     </message>
     <message>
-        <location filename="../views/tabs/model_generation.py" line="818"/>
-        <location filename="../views/tabs/model_generation.py" line="869"/>
+        <location filename="../views/tabs/model_generation.py" line="820"/>
+        <location filename="../views/tabs/model_generation.py" line="871"/>
         <source>无属性数据</source>
         <translation>No attribute data</translation>
     </message>
     <message>
-        <location filename="../views/tabs/model_generation.py" line="829"/>
-        <location filename="../views/tabs/model_generation.py" line="878"/>
+        <location filename="../views/tabs/model_generation.py" line="831"/>
+        <location filename="../views/tabs/model_generation.py" line="880"/>
         <source>无行为数据</source>
         <translation>No behavior data</translation>
     </message>
     <message>
-        <location filename="../views/tabs/model_generation.py" line="846"/>
+        <location filename="../views/tabs/model_generation.py" line="848"/>
         <source>保存成功</source>
         <translation>Save Successful</translation>
     </message>
     <message>
-        <location filename="../views/tabs/model_generation.py" line="846"/>
+        <location filename="../views/tabs/model_generation.py" line="848"/>
         <source>已成功保存要素数据。</source>
         <translation>Element data saved successfully.</translation>
     </message>
@@ -1586,73 +1969,73 @@ Type: {attr_type_name}</translation>
 <context>
     <name>ModelTransformationTab</name>
     <message>
-        <location filename="../views/tabs/model_transformation.py" line="222"/>
+        <location filename="../views/tabs/model_transformation.py" line="223"/>
         <source>贝叶斯网络</source>
         <translation>Bayesian Network</translation>
     </message>
     <message>
-        <location filename="../views/tabs/model_transformation.py" line="242"/>
+        <location filename="../views/tabs/model_transformation.py" line="243"/>
         <source>放大图像(按住 Ctrl 并滚动鼠标滚轮)</source>
         <translation>Zoom in (hold Ctrl and scroll mouse wheel)</translation>
     </message>
     <message>
-        <location filename="../views/tabs/model_transformation.py" line="243"/>
+        <location filename="../views/tabs/model_transformation.py" line="244"/>
         <source>缩小图像(按住 Ctrl 并滚动鼠标滚轮)</source>
         <translation>Zoom out (hold Ctrl and scroll mouse wheel)</translation>
     </message>
     <message>
-        <location filename="../views/tabs/model_transformation.py" line="245"/>
+        <location filename="../views/tabs/model_transformation.py" line="246"/>
         <source>设置推演条件</source>
         <translation>Deduction condition </translation>
     </message>
     <message>
-        <location filename="../views/tabs/model_transformation.py" line="255"/>
+        <location filename="../views/tabs/model_transformation.py" line="258"/>
         <source>贝叶斯网络图像加载区</source>
         <translation>Bayesian Network Image Loading Area</translation>
     </message>
     <message>
-        <location filename="../views/tabs/model_transformation.py" line="262"/>
-        <location filename="../views/tabs/model_transformation.py" line="592"/>
+        <location filename="../views/tabs/model_transformation.py" line="265"/>
+        <location filename="../views/tabs/model_transformation.py" line="597"/>
         <source>无法加载贝叶斯网络图像</source>
         <translation>Failed to load Bayesian network image</translation>
     </message>
     <message>
-        <location filename="../views/tabs/model_transformation.py" line="288"/>
+        <location filename="../views/tabs/model_transformation.py" line="291"/>
         <source>缩放</source>
         <translation>Zoom</translation>
     </message>
     <message>
-        <location filename="../views/tabs/model_transformation.py" line="295"/>
+        <location filename="../views/tabs/model_transformation.py" line="298"/>
         <source>先验概率</source>
         <translation>Prior Probability</translation>
     </message>
     <message>
-        <location filename="../views/tabs/model_transformation.py" line="315"/>
+        <location filename="../views/tabs/model_transformation.py" line="318"/>
         <source>更新先验</source>
         <translation>Update Priori</translation>
     </message>
     <message>
-        <location filename="../views/tabs/model_transformation.py" line="322"/>
+        <location filename="../views/tabs/model_transformation.py" line="327"/>
         <source>节点选择</source>
         <translation>Node Selection</translation>
     </message>
     <message>
-        <location filename="../views/tabs/model_transformation.py" line="406"/>
+        <location filename="../views/tabs/model_transformation.py" line="411"/>
         <source>节点</source>
         <translation>Node</translation>
     </message>
     <message>
-        <location filename="../views/tabs/model_transformation.py" line="406"/>
+        <location filename="../views/tabs/model_transformation.py" line="411"/>
         <source>状态</source>
         <translation>State</translation>
     </message>
     <message>
-        <location filename="../views/tabs/model_transformation.py" line="406"/>
+        <location filename="../views/tabs/model_transformation.py" line="411"/>
         <source>概率</source>
         <translation>Prob.</translation>
     </message>
     <message>
-        <location filename="../views/tabs/model_transformation.py" line="420"/>
+        <location filename="../views/tabs/model_transformation.py" line="425"/>
         <source>请选择节点</source>
         <translation>Please select a node</translation>
     </message>
@@ -1660,22 +2043,22 @@ Type: {attr_type_name}</translation>
 <context>
     <name>NonRootActionDialog</name>
     <message>
-        <location filename="../views/dialogs/update_prior_dialog.py" line="1302"/>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="1352"/>
         <source>非根节点操作选择</source>
         <translation>Non-root node operation selection</translation>
     </message>
     <message>
-        <location filename="../views/dialogs/update_prior_dialog.py" line="1310"/>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="1360"/>
         <source>修改专家意见</source>
         <translation>Modification of expert advice</translation>
     </message>
     <message>
-        <location filename="../views/dialogs/update_prior_dialog.py" line="1311"/>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="1361"/>
         <source>增加专家意见</source>
         <translation>Add expert opinion</translation>
     </message>
     <message>
-        <location filename="../views/dialogs/update_prior_dialog.py" line="1312"/>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="1362"/>
         <source>上传专家意见</source>
         <translation>Uploading expert opinion</translation>
     </message>
@@ -1683,78 +2066,78 @@ Type: {attr_type_name}</translation>
 <context>
     <name>NonRootTableUpdateDialog</name>
     <message>
-        <location filename="../views/dialogs/update_prior_dialog.py" line="580"/>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="404"/>
         <source>更新非根节点先验数据</source>
         <translation>Update non-root node a priori data</translation>
     </message>
     <message>
-        <location filename="../views/dialogs/update_prior_dialog.py" line="703"/>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="527"/>
         <source>更新非根节点先验数据（问卷填写）</source>
         <translation>Updating non-root node a priori data (questionnaire completion)</translation>
     </message>
     <message>
-        <location filename="../views/dialogs/update_prior_dialog.py" line="709"/>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="533"/>
         <source>非根节点：</source>
         <translation>Non-root nodes:</translation>
     </message>
     <message>
-        <location filename="../views/dialogs/update_prior_dialog.py" line="730"/>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="554"/>
         <source>专家{0}</source>
         <translation>Expert {0}</translation>
     </message>
     <message>
-        <location filename="../views/dialogs/update_prior_dialog.py" line="730"/>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="554"/>
         <source>条件</source>
         <translation>Condition</translation>
     </message>
     <message>
-        <location filename="../views/dialogs/update_prior_dialog.py" line="740"/>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="564"/>
         <source>取消</source>
         <translation>Cancel</translation>
     </message>
     <message>
-        <location filename="../views/dialogs/update_prior_dialog.py" line="742"/>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="566"/>
         <source>确定</source>
         <translation>OK</translation>
     </message>
     <message>
-        <location filename="../views/dialogs/update_prior_dialog.py" line="811"/>
-        <location filename="../views/dialogs/update_prior_dialog.py" line="863"/>
-        <location filename="../views/dialogs/update_prior_dialog.py" line="865"/>
-        <location filename="../views/dialogs/update_prior_dialog.py" line="957"/>
-        <location filename="../views/dialogs/update_prior_dialog.py" line="958"/>
-        <location filename="../views/dialogs/update_prior_dialog.py" line="969"/>
-        <location filename="../views/dialogs/update_prior_dialog.py" line="978"/>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="635"/>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="687"/>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="689"/>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="781"/>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="782"/>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="793"/>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="802"/>
         <source>未评估</source>
         <translation>Not evaluated</translation>
     </message>
     <message>
-        <location filename="../views/dialogs/update_prior_dialog.py" line="961"/>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="785"/>
         <source>警告</source>
         <translation>Warning</translation>
     </message>
     <message>
-        <location filename="../views/dialogs/update_prior_dialog.py" line="962"/>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="786"/>
         <source>节点 {0} / 中，第 {1} 位专家存在部分已评估与部分未评估的混合，请修正后再保存。</source>
         <translation>In node {0} /, there is a mix of partially evaluated and partially un-evaluated experts in the {1}th expert, please fix it before saving.</translation>
     </message>
     <message>
-        <location filename="../views/dialogs/update_prior_dialog.py" line="992"/>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="816"/>
         <source>成功</source>
         <translation>Success</translation>
     </message>
     <message>
-        <location filename="../views/dialogs/update_prior_dialog.py" line="992"/>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="816"/>
         <source>所有非根节点问卷数据已校验并保存到 Excel。</source>
         <translation>All non-root node questionnaire data were validated and saved to Excel.</translation>
     </message>
     <message>
-        <location filename="../views/dialogs/update_prior_dialog.py" line="995"/>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="819"/>
         <source>错误</source>
         <translation>incorrect</translation>
     </message>
     <message>
-        <location filename="../views/dialogs/update_prior_dialog.py" line="995"/>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="819"/>
         <source>保存Excel文件时发生错误：{0}</source>
         <translation>Error while saving Excel file: {0}</translation>
     </message>
@@ -1762,62 +2145,62 @@ Type: {attr_type_name}</translation>
 <context>
     <name>RootUpdateDialog</name>
     <message>
-        <location filename="../views/dialogs/update_prior_dialog.py" line="1359"/>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="1414"/>
         <source>更新根节点先验</source>
         <translation>Update root node a priori</translation>
     </message>
     <message>
-        <location filename="../views/dialogs/update_prior_dialog.py" line="1364"/>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="1419"/>
         <source>请选择包含根节点先验数据的事故数据Excel文件：</source>
         <translation>Please select the Incident Data Excel file that contains the root node a priori data:</translation>
     </message>
     <message>
-        <location filename="../views/dialogs/update_prior_dialog.py" line="1366"/>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="1421"/>
         <source>选择文件</source>
         <translation>Select File</translation>
     </message>
     <message>
-        <location filename="../views/dialogs/update_prior_dialog.py" line="1370"/>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="1425"/>
         <source>未选择文件</source>
         <translation>No document selected</translation>
     </message>
     <message>
-        <location filename="../views/dialogs/update_prior_dialog.py" line="1373"/>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="1428"/>
         <source>确定</source>
         <translation>OK</translation>
     </message>
     <message>
-        <location filename="../views/dialogs/update_prior_dialog.py" line="1375"/>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="1430"/>
         <source>取消</source>
         <translation>Cancel</translation>
     </message>
     <message>
-        <location filename="../views/dialogs/update_prior_dialog.py" line="1396"/>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="1451"/>
         <source>警告</source>
         <translation>Warning</translation>
     </message>
     <message>
-        <location filename="../views/dialogs/update_prior_dialog.py" line="1396"/>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="1451"/>
         <source>请先选择事故数据文件！</source>
         <translation>Please select the incident data file first!</translation>
     </message>
     <message>
-        <location filename="../views/dialogs/update_prior_dialog.py" line="1406"/>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="1461"/>
         <source>成功</source>
         <translation>Success</translation>
     </message>
     <message>
-        <location filename="../views/dialogs/update_prior_dialog.py" line="1406"/>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="1461"/>
         <source>根节点先验数据已更新并保存到 Excel。</source>
         <translation>The root node a priori data has been updated and saved to Excel.</translation>
     </message>
     <message>
-        <location filename="../views/dialogs/update_prior_dialog.py" line="1408"/>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="1463"/>
         <source>错误</source>
         <translation>incorrect</translation>
     </message>
     <message>
-        <location filename="../views/dialogs/update_prior_dialog.py" line="1408"/>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="1463"/>
         <source>保存Excel文件时发生错误：{0}</source>
         <translation>Error while saving Excel file: {0}</translation>
     </message>
@@ -1845,13 +2228,13 @@ Type: {attr_type_name}</translation>
         <translation>Emergency Acts Implemented.</translation>
     </message>
     <message>
-        <location filename="../views/tabs/condition_setting.py" line="740"/>
+        <location filename="../views/tabs/condition_setting.py" line="743"/>
         <location filename="../views/tabs/element_setting.py" line="182"/>
         <source>查看详情</source>
         <translation>View Details</translation>
     </message>
     <message>
-        <location filename="../views/tabs/condition_setting.py" line="743"/>
+        <location filename="../views/tabs/condition_setting.py" line="748"/>
         <location filename="../views/tabs/element_setting.py" line="187"/>
         <source>确定</source>
         <translation>OK</translation>
@@ -2292,124 +2675,124 @@ Please select the corresponding behavior_code.</translation>
 <context>
     <name>UploadExpertDialog</name>
     <message>
-        <location filename="../views/dialogs/update_prior_dialog.py" line="1044"/>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="1094"/>
         <source>上传专家意见</source>
         <translation>Uploading expert opinion</translation>
     </message>
     <message>
-        <location filename="../views/dialogs/update_prior_dialog.py" line="1055"/>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="1105"/>
         <source>选择文件</source>
         <translation>Select File</translation>
     </message>
     <message>
-        <location filename="../views/dialogs/update_prior_dialog.py" line="1060"/>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="1110"/>
         <source>未选择文件</source>
         <translation>No document selected</translation>
     </message>
     <message>
-        <location filename="../views/dialogs/update_prior_dialog.py" line="1069"/>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="1119"/>
         <source>取消</source>
         <translation>Cancel</translation>
     </message>
     <message>
-        <location filename="../views/dialogs/update_prior_dialog.py" line="1074"/>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="1124"/>
         <source>确定</source>
         <translation>OK</translation>
     </message>
     <message>
-        <location filename="../views/dialogs/update_prior_dialog.py" line="1105"/>
-        <location filename="../views/dialogs/update_prior_dialog.py" line="1139"/>
-        <location filename="../views/dialogs/update_prior_dialog.py" line="1142"/>
-        <location filename="../views/dialogs/update_prior_dialog.py" line="1145"/>
-        <location filename="../views/dialogs/update_prior_dialog.py" line="1148"/>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="1155"/>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="1189"/>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="1192"/>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="1195"/>
         <location filename="../views/dialogs/update_prior_dialog.py" line="1198"/>
-        <location filename="../views/dialogs/update_prior_dialog.py" line="1202"/>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="1248"/>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="1252"/>
         <source>警告</source>
         <translation>Warning</translation>
     </message>
     <message>
-        <location filename="../views/dialogs/update_prior_dialog.py" line="1105"/>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="1155"/>
         <source>请先选择文件！</source>
         <translation>Please select the file first!</translation>
     </message>
     <message>
-        <location filename="../views/dialogs/update_prior_dialog.py" line="1114"/>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="1164"/>
         <source>节点</source>
         <translation>Node</translation>
     </message>
     <message>
-        <location filename="../views/dialogs/update_prior_dialog.py" line="1117"/>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="1167"/>
         <source>未能在上传文件中找到问卷数据标题行 &apos;节点&apos;</source>
         <translation>Failed to find questionnaire data header line &apos;node&apos; in uploaded file</translation>
     </message>
     <message>
-        <location filename="../views/dialogs/update_prior_dialog.py" line="1139"/>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="1189"/>
         <source>个人信息：年龄答案不合法，必须是 A、B、C 或 D！</source>
         <translation>PERSONAL INFORMATION: Age answers are not legal and must be A, B, C or D!</translation>
     </message>
     <message>
-        <location filename="../views/dialogs/update_prior_dialog.py" line="1142"/>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="1192"/>
         <source>个人信息：教育水平答案不合法，必须是 A、B、C 或 D！</source>
         <translation>PERSONAL INFORMATION: Education level answers are not legitimate and must be A, B, C or D!</translation>
     </message>
     <message>
-        <location filename="../views/dialogs/update_prior_dialog.py" line="1145"/>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="1195"/>
         <source>个人信息：工作年限答案不合法，必须是 A、B、C 或 D！</source>
         <translation>PERSONAL INFORMATION: The years of service answer is not legitimate; it must be A, B, C or D!</translation>
     </message>
     <message>
-        <location filename="../views/dialogs/update_prior_dialog.py" line="1148"/>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="1198"/>
         <source>个人信息：工作职位答案不合法，必须是 A、B、C、D 或 E！</source>
         <translation>PERSONAL INFORMATION: Job title answers are not legitimate and must be A, B, C, D or E!</translation>
     </message>
     <message>
-        <location filename="../views/dialogs/update_prior_dialog.py" line="1168"/>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="1218"/>
         <source>评分</source>
         <translation>rate</translation>
     </message>
     <message>
-        <location filename="../views/dialogs/update_prior_dialog.py" line="1198"/>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="1248"/>
         <source>问卷题目 &apos;{0}&apos; 缺失评分，请补充完整！</source>
         <translation>Questionnaire title &apos;{0}&apos; is missing a rating, please complete it!</translation>
     </message>
     <message>
-        <location filename="../views/dialogs/update_prior_dialog.py" line="1203"/>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="1253"/>
         <source>问卷题目 &apos;{0}&apos; 的评分不合法（{1}），必须是 VL, L, M, H 或 VH！</source>
         <translation>Questionnaire title &apos;{0}&apos; is not legal for scoring ({1}) and must be VL, L, M, H or VH!</translation>
     </message>
     <message>
-        <location filename="../views/dialogs/update_prior_dialog.py" line="1215"/>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="1265"/>
         <source>警告：无法匹配题目文本: {0} 在节点 {1}</source>
         <translation>Warning: could not match title text: {0} at node {1}</translation>
     </message>
     <message>
-        <location filename="../views/dialogs/update_prior_dialog.py" line="1231"/>
-        <location filename="../views/dialogs/update_prior_dialog.py" line="1295"/>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="1281"/>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="1345"/>
         <source>错误</source>
         <translation>incorrect</translation>
     </message>
     <message>
-        <location filename="../views/dialogs/update_prior_dialog.py" line="1231"/>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="1281"/>
         <source>无法访问 expertInfo.xlsx，请关闭 Excel 后重试！</source>
         <translation>Unable to access expertInfo.xlsx, please close Excel and try again!</translation>
     </message>
     <message>
-        <location filename="../views/dialogs/update_prior_dialog.py" line="1285"/>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="1335"/>
         <source>未评估</source>
         <translation>Not evaluated</translation>
     </message>
     <message>
-        <location filename="../views/dialogs/update_prior_dialog.py" line="1291"/>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="1341"/>
         <source>成功</source>
         <translation>Success</translation>
     </message>
     <message>
-        <location filename="../views/dialogs/update_prior_dialog.py" line="1291"/>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="1341"/>
         <source>已成功获取个人信息与问卷评分。</source>
         <translation>Personal information and questionnaire scores have been successfully obtained.</translation>
     </message>
     <message>
-        <location filename="../views/dialogs/update_prior_dialog.py" line="1295"/>
+        <location filename="../views/dialogs/update_prior_dialog.py" line="1345"/>
         <source>处理上传文件时发生错误：{0}</source>
         <translation>An error occurred while processing the uploaded file: {0}</translation>
     </message>
@@ -2418,7 +2801,7 @@ Please select the corresponding behavior_code.</translation>
     <name>ZoomableLabel</name>
     <message>
         <location filename="../views/tabs/model_generation.py" line="36"/>
-        <location filename="../views/tabs/model_transformation.py" line="37"/>
+        <location filename="../views/tabs/model_transformation.py" line="38"/>
         <source>无法加载图像</source>
         <translation>Failed to load image</translation>
     </message>
