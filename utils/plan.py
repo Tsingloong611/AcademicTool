@@ -452,7 +452,7 @@ def get_driving_time(origin, destination, api_key):
 def get_coordinates_from_stake_by_file(stake_number):
     try:
         # 设置 Excel 文件路径
-        excel_path = os.path.join(os.path.dirname(__file__), '../data/required_information/01_上海路网_申字型_中环路桩号数据及关联关系(1).xlsx')
+        excel_path = os.path.join(os.path.dirname(__file__), '../data/required_information/road_position_information.xlsx')
 
         # 读取 Excel 文件中的数据，指定需要的列（桩号、经度、纬度）
         df = pd.read_excel(excel_path, header=0)

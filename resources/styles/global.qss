@@ -24,7 +24,7 @@ QComboBox::drop-down {
     width: 20px; /* 下拉按钮宽度 */
 }
 QComboBox::down-arrow {
-    image: url(edit.png); /* 自定义箭头路径 */
+    image: url(./resources/icons/edit.png); /* 自定义箭头路径 */
     width: 16px;
     height: 16px;
 }

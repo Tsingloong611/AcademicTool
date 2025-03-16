@@ -1,0 +1,42 @@
+package ResponsePlanElement{
+
+    part def ResponseAction{}
+    action def Firefighting{
+    }
+
+    action def PersonnalRescue{
+    }
+
+    action def VehicleTowing{
+    }
+
+    action def RoadCleaning{
+    }
+
+    action def RoadRepair{
+    }
+
+    action def RoadControl{
+    }
+
+    action def HazardousMaterialDisposal{
+    }
+
+    part 36-抢修 : ResponseAction{
+        attribute BehaviorType : Enum = "抢修";
+        attribute ImplementationCondition : Bool = false;
+        attribute Duration : Real = "0";
+
+        ref part 36-人员;
+
+        perform action Firefighting;
+        perform action PersonnalRescue;
+        perform action VehicleTowing;
+        perform action RoadCleaning;
+        perform action RoadRepair;
+        perform action RoadControl;
+        perform action HazardousMaterialDisposal;
+
+    }
+
+}

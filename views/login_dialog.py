@@ -6,7 +6,6 @@ from PySide6.QtCore import Qt, Signal
 from PySide6.QtWidgets import QMessageBox, QLineEdit, QHBoxLayout, QPushButton, QCheckBox, QDialog, QVBoxLayout, \
     QFormLayout, QListWidget, QLabel, QInputDialog, QListWidgetItem
 
-from controllers.server_manager import ServerManager
 
 
 
@@ -18,7 +17,7 @@ from PySide6.QtWidgets import (
 )
 from PySide6.QtCore import Signal, Qt
 from PySide6.QtGui import QIcon, QAction
-from controllers.server_manager import ServerManager
+
 import os
 
 from views.dialogs.custom_error_dialog import CustomErrorDialog

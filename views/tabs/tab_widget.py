@@ -15,12 +15,12 @@ from PySide6.QtWidgets import (
 from PySide6.QtCore import Qt, Signal
 from owlready2 import get_ontology, destroy_entity
 
-from test6 import convert_owl_to_svg
 from utils.bn_svg_update import NetworkVisualizer, ScenarioResilience, bn_svg_update, update_with_evidence
 from utils.combinesysml2 import combine_sysml2
 from utils.createowlfromoriginjson import ScenarioOntologyGenerator
 from utils.get_config import get_cfg
 from utils.json2owl import create_ontology, owl_excel_creator, Scenario_owl_creator, Emergency_owl_creator
+from utils.owl2svg import convert_owl_to_svg
 from utils.parserowl import parse_owl
 from utils.plan import PlanDataCollector, convert_to_evidence, PlanData
 

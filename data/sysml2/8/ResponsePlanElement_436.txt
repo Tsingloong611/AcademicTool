@@ -1,0 +1,14 @@
+package ResponsePlanElement{
+
+    part def ResponsePlanElement{
+
+    part 436 : ResponsePlanElement{
+        attribute PlanName : String = "436";
+
+        ref part 436-人员;
+        ref part 436-救助;
+
+
+    }
+
+}

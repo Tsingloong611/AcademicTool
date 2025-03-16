@@ -1,0 +1,15 @@
+package ResponsePlanElement{
+
+    part def ResponseResource{}
+    part 36-车辆 : ResponseResource{
+        attribute ResourceType : Enum = "牵引车";
+        attribute ResourceUsageCondition : Bool = "0";
+        attribute ResourceQuantityOrQuality : Real = "1";
+        attribute Location : String = "未知";
+
+        ref part 36-救助;
+
+
+    }
+
+}

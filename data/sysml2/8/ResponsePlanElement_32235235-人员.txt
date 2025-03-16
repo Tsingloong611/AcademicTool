@@ -1,0 +1,15 @@
+package ResponsePlanElement{
+
+    part def ResponseResource{}
+    part 32235235-人员 : ResponseResource{
+        attribute ResourceType : Enum = "牵引人员";
+        attribute ResourceUsageCondition : Bool = "0";
+        attribute ResourceQuantityOrQuality : Real = "1";
+        attribute Location : String = "32";
+
+        ref part 32235235-救助;
+
+
+    }
+
+}

@@ -328,7 +328,7 @@
     <message>
         <location filename="../views/tabs/condition_setting.py" line="1405"/>
         <source>&apos; 已保存并推演。</source>
-        <translation>&apos; has been saved and simulated.</translation>
+        <translation>&apos; has been saved and deducted.</translation>
     </message>
     <message>
         <location filename="../views/tabs/condition_setting.py" line="1410"/>
@@ -2050,17 +2050,17 @@ Type: {attr_type_name}</translation>
     <message>
         <location filename="../views/dialogs/update_prior_dialog.py" line="1360"/>
         <source>修改专家意见</source>
-        <translation>Modification of expert advice</translation>
+        <translation>Modify expert judgement</translation>
     </message>
     <message>
         <location filename="../views/dialogs/update_prior_dialog.py" line="1361"/>
         <source>增加专家意见</source>
-        <translation>Add expert opinion</translation>
+        <translation>Add expert judgement</translation>
     </message>
     <message>
         <location filename="../views/dialogs/update_prior_dialog.py" line="1362"/>
         <source>上传专家意见</source>
-        <translation>Uploading expert opinion</translation>
+        <translation>Upload expert judgement</translation>
     </message>
 </context>
 <context>
