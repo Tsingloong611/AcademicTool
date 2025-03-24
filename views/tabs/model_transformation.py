@@ -7,7 +7,7 @@ from PySide6.QtSvg import QSvgRenderer
 from PySide6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QGroupBox,
     QLabel, QScrollArea, QTableWidget, QTableWidgetItem, QPushButton,
-    QHeaderView, QSizePolicy, QMessageBox, QApplication, QDialog,
+    QHeaderView, QSizePolicy, QApplication, QDialog,
     QCheckBox, QGridLayout
 )
 from PySide6.QtCore import Qt, Signal, QSize

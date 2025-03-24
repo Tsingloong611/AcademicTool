@@ -850,207 +850,207 @@ class MainUpdateDialog(QDialog):
             btn_root.setFixedWidth(210)
             btn_nonroot.setFixedWidth(210)
 
-            self.NONROOT_PARENTS = {
-                "AbsorptionCapacity": ["roadPassibility", "roadLoss"],
-                "AdaptionCapacity": ["emergencyPeriod", "emergencyType", "casualties"],
-                "RecoveryCapacity": ["disposalDuration", "responseDuration",
-                                     "RescueResource", "FirefightingResource", "TowResource", "AidResource"],
-                "ScenarioResilience": ["RecoveryCapacity", "AdaptionCapacity", "AbsorptionCapacity"]
-            }
+        self.NONROOT_PARENTS = {
+            "AbsorptionCapacity": ["roadPassibility", "roadLoss"],
+            "AdaptionCapacity": ["emergencyPeriod", "emergencyType", "casualties"],
+            "RecoveryCapacity": ["disposalDuration", "responseDuration",
+                                 "RescueResource", "FirefightingResource", "TowResource", "AidResource"],
+            "ScenarioResilience": ["RecoveryCapacity", "AdaptionCapacity", "AbsorptionCapacity"]
+        }
 
-            self.STATE_OPTIONS = {
-                "roadPassibility": ["Impassable", "Passable"],
-                "emergencyType": ["Vehicle_Self_Accident", "Vehicle_to_Fixed_Object_Accident", "Collision_Acident"],
-                "roadLoss": ["Not_Loss", "Loss"],
-                "casualties": ["No_Casualties", "Casualties"],
-                "RescueResource": ["Not_Used", "Used"],
-                "FirefightingResource": ["Not_Used", "Used"],
-                "TowResource": ["Not_Used", "Used"],
-                "AidResource": ["Not_Used", "Used"],
-                "emergencyPeriod": ["Early_Morning", "Morning", "Afternoon", "Evening"],
-                "responseDuration": ["0-15min", "15-30min", "30-60min", "60min+"],
-                "disposalDuration": ["0-15min", "15-30min", "30-60min", "60min+"],
-                "RecoveryCapacity": ["Good", "Bad"],
-                "AdaptionCapacity": ["Good", "Bad"],
-                "AbsorptionCapacity": ["Good", "Bad"],
-            }
+        self.STATE_OPTIONS = {
+            "roadPassibility": ["Impassable", "Passable"],
+            "emergencyType": ["Vehicle_Self_Accident", "Vehicle_to_Fixed_Object_Accident", "Collision_Acident"],
+            "roadLoss": ["Not_Loss", "Loss"],
+            "casualties": ["No_Casualties", "Casualties"],
+            "RescueResource": ["Not_Used", "Used"],
+            "FirefightingResource": ["Not_Used", "Used"],
+            "TowResource": ["Not_Used", "Used"],
+            "AidResource": ["Not_Used", "Used"],
+            "emergencyPeriod": ["Early_Morning", "Morning", "Afternoon", "Evening"],
+            "responseDuration": ["0-15min", "15-30min", "30-60min", "60min+"],
+            "disposalDuration": ["0-15min", "15-30min", "30-60min", "60min+"],
+            "RecoveryCapacity": ["Good", "Bad"],
+            "AdaptionCapacity": ["Good", "Bad"],
+            "AbsorptionCapacity": ["Good", "Bad"],
+        }
 
-            # 原来的模糊选项 + “未评估”
-            self.EVAL_OPTIONS = [self.tr("未评估"), "VL", "L", "M", "H", "VH"]
+        # 原来的模糊选项 + “未评估”
+        self.EVAL_OPTIONS = [self.tr("未评估"), "VL", "L", "M", "H", "VH"]
 
-            # EXPERT_EXCEL_PATH = r"D:\PythonProjects\AcademicTool_PySide\data\expert estimation test.xlsx"
+        # EXPERT_EXCEL_PATH = r"D:\PythonProjects\AcademicTool_PySide\data\expert estimation test.xlsx"
 
-            self.QUESTION_TEXT = {}
+        self.QUESTION_TEXT = {}
 
-            # 1. AbsorptionCapacity
-            self.QUESTION_TEXT[("AbsorptionCapacity", 0)] = {
-                (1, 0): self.tr("道路可通行且不存在道路设施损失时，请评估道路具有较好吸收扰动的能力的可能性："),
-                (1, 1): self.tr("道路可通行且存在道路设施损失时，请评估道路具有较好吸收扰动的能力的可能性："),
-                (0, 1): self.tr("道路不可通行且存在道路设施损失时，请评估道路具有较好吸收扰动的能力的可能性："),
-                (0, 0): self.tr("道路不可通行且不存在道路设施损失时，请评估道路具有较好吸收扰动的能力的可能性："),
-            }
+        # 1. AbsorptionCapacity
+        self.QUESTION_TEXT[("AbsorptionCapacity", 0)] = {
+            (1, 0): self.tr("道路可通行且不存在道路设施损失时，请评估道路具有较好吸收扰动的能力的可能性："),
+            (1, 1): self.tr("道路可通行且存在道路设施损失时，请评估道路具有较好吸收扰动的能力的可能性："),
+            (0, 1): self.tr("道路不可通行且存在道路设施损失时，请评估道路具有较好吸收扰动的能力的可能性："),
+            (0, 0): self.tr("道路不可通行且不存在道路设施损失时，请评估道路具有较好吸收扰动的能力的可能性："),
+        }
 
-            # 2. AdaptionCapacity
-            self.QUESTION_TEXT[("AdaptionCapacity", 0)] = {
-                (0, 0, 0): self.tr(
-                    "突发事件发生于当天00:00至06:00，事件类型为车辆自身事故（侧翻、抛锚），没有造成人员伤亡，请评估具有较好适应扰动的能力的可能性："),
-                (0, 0, 1): self.tr(
-                    "突发事件发生于当天00:00至06:00，事件类型为车辆自身事故（侧翻、抛锚），发生人员伤亡，请评估具有较好适应扰动的能力的可能性："),
-                (0, 1, 0): self.tr(
-                    "突发事件发生于当天00:00至06:00，事件类型为车辆对固定物事故（撞到护栏、路墩等），没有造成人员伤亡，请评估具有较好适应扰动的能力的可能性："),
-                (0, 1, 1): self.tr(
-                    "突发事件发生于当天00:00至06:00，事件类型为车辆对固定物事故（撞到护栏、路墩等），发生人员伤亡，请评估具有较好适应扰动的能力的可能性："),
-                (0, 2, 0): self.tr(
-                    "突发事件发生于当天00:00至06:00，事件类型为车辆擦碰事故（指两辆或两辆以上的车辆发生意外碰撞），没有造成人员伤亡，请评估具有较好适应扰动的能力的可能性："),
-                (0, 2, 1): self.tr(
-                    "突发事件发生于当天00:00至06:00，事件类型为车辆擦碰事故（指两辆或两辆以上的车辆发生意外碰撞），发生人员伤亡，请评估具有较好适应扰动的能力的可能性："),
-                (1, 0, 0): self.tr(
-                    "突发事件发生于当天06:00至12:00，事件类型为车辆自身事故（侧翻、抛锚），没有造成人员伤亡，请评估具有较好适应扰动的能力的可能性："),
-                (1, 0, 1): self.tr(
-                    "突发事件发生于当天06:00至12:00，事件类型为车辆自身事故（侧翻、抛锚），发生人员伤亡，请评估具有较好适应扰动的能力的可能性："),
-                (1, 1, 0): self.tr(
-                    "突发事件发生于当天06:00至12:00，事件类型为车辆对固定物事故（撞到护栏、路墩等），没有造成人员伤亡，请评估具有较好适应扰动的能力的可能性："),
-                (1, 1, 1): self.tr(
-                    "突发事件发生于当天06:00至12:00，事件类型为车辆对固定物事故（撞到护栏、路墩等），发生人员伤亡，请评估具有较好适应扰动的能力的可能性："),
-                (1, 2, 0): self.tr(
-                    "突发事件发生于当天06:00至12:00，事件类型为车辆擦碰事故（指两辆或两辆以上的车辆发生意外碰撞），没有造成人员伤亡，请评估具有较好适应扰动的能力的可能性："),
-                (1, 2, 1): self.tr(
-                    "突发事件发生于当天06:00至12:00，事件类型为车辆擦碰事故（指两辆或两辆以上的车辆发生意外碰撞），发生人员伤亡，请评估具有较好适应扰动的能力的可能性："),
-                (2, 0, 0): self.tr(
-                    "突发事件发生于当天12:00至18:00，事件类型为车辆自身事故（侧翻、抛锚），没有造成人员伤亡，请评估具有较好适应扰动的能力的可能性："),
-                (2, 0, 1): self.tr(
-                    "突发事件发生于当天12:00至18:00，事件类型为车辆自身事故（侧翻、抛锚），发生人员伤亡，请评估具有较好适应扰动的能力的可能性："),
-                (2, 1, 0): self.tr(
-                    "突发事件发生于当天12:00至18:00，事件类型为车辆对固定物事故（撞到护栏、路墩等），没有造成人员伤亡，请评估具有较好适应扰动的能力的可能性："),
-                (2, 1, 1): self.tr(
-                    "突发事件发生于当天12:00至18:00，事件类型为车辆对固定物事故（撞到护栏、路墩等），发生人员伤亡，请评估具有较好适应扰动的能力的可能性："),
-                (2, 2, 0): self.tr(
-                    "突发事件发生于当天12:00至18:00，事件类型为车辆擦碰事故（指两辆或两辆以上的车辆发生意外碰撞），没有造成人员伤亡，请评估具有较好适应扰动的能力的可能性："),
-                (2, 2, 1): self.tr(
-                    "突发事件发生于当天12:00至18:00，事件类型为车辆擦碰事故（指两辆或两辆以上的车辆发生意外碰撞），发生人员伤亡，请评估具有较好适应扰动的能力的可能性："),
-                (3, 0, 0): self.tr(
-                    "突发事件发生于当天18:00至24:00，事件类型为车辆自身事故（侧翻、抛锚），没有造成人员伤亡，请评估具有较好适应扰动的能力的可能性："),
-                (3, 0, 1): self.tr(
-                    "突发事件发生于当天18:00至24:00，事件类型为车辆自身事故（侧翻、抛锚），发生人员伤亡，请评估具有较好适应扰动的能力的可能性："),
-                (3, 1, 0): self.tr(
-                    "突发事件发生于当天18:00至24:00，事件类型为车辆对固定物事故（撞到护栏、路墩等），没有造成人员伤亡，请评估具有较好适应扰动的能力的可能性："),
-                (3, 1, 1): self.tr(
-                    "突发事件发生于当天18:00至24:00，事件类型为车辆对固定物事故（撞到护栏、路墩等），发生人员伤亡，请评估具有较好适应扰动的能力的可能性："),
-                (3, 2, 0): self.tr(
-                    "突发事件发生于当天18:00至24:00，事件类型为车辆擦碰事故（指两辆或两辆以上的车辆发生意外碰撞），没有造成人员伤亡，请评估具有较好适应扰动的能力的可能性："),
-                (3, 2, 1): self.tr(
-                    "突发事件发生于当天18:00至24:00，事件类型为车辆擦碰事故（指两辆或两辆以上的车辆发生意外碰撞），发生人员伤亡，请评估具有较好适应扰动的能力的可能性：")
-            }
+        # 2. AdaptionCapacity
+        self.QUESTION_TEXT[("AdaptionCapacity", 0)] = {
+            (0, 0, 0): self.tr(
+                "突发事件发生于当天00:00至06:00，事件类型为车辆自身事故（侧翻、抛锚），没有造成人员伤亡，请评估具有较好适应扰动的能力的可能性："),
+            (0, 0, 1): self.tr(
+                "突发事件发生于当天00:00至06:00，事件类型为车辆自身事故（侧翻、抛锚），发生人员伤亡，请评估具有较好适应扰动的能力的可能性："),
+            (0, 1, 0): self.tr(
+                "突发事件发生于当天00:00至06:00，事件类型为车辆对固定物事故（撞到护栏、路墩等），没有造成人员伤亡，请评估具有较好适应扰动的能力的可能性："),
+            (0, 1, 1): self.tr(
+                "突发事件发生于当天00:00至06:00，事件类型为车辆对固定物事故（撞到护栏、路墩等），发生人员伤亡，请评估具有较好适应扰动的能力的可能性："),
+            (0, 2, 0): self.tr(
+                "突发事件发生于当天00:00至06:00，事件类型为车辆擦碰事故（指两辆或两辆以上的车辆发生意外碰撞），没有造成人员伤亡，请评估具有较好适应扰动的能力的可能性："),
+            (0, 2, 1): self.tr(
+                "突发事件发生于当天00:00至06:00，事件类型为车辆擦碰事故（指两辆或两辆以上的车辆发生意外碰撞），发生人员伤亡，请评估具有较好适应扰动的能力的可能性："),
+            (1, 0, 0): self.tr(
+                "突发事件发生于当天06:00至12:00，事件类型为车辆自身事故（侧翻、抛锚），没有造成人员伤亡，请评估具有较好适应扰动的能力的可能性："),
+            (1, 0, 1): self.tr(
+                "突发事件发生于当天06:00至12:00，事件类型为车辆自身事故（侧翻、抛锚），发生人员伤亡，请评估具有较好适应扰动的能力的可能性："),
+            (1, 1, 0): self.tr(
+                "突发事件发生于当天06:00至12:00，事件类型为车辆对固定物事故（撞到护栏、路墩等），没有造成人员伤亡，请评估具有较好适应扰动的能力的可能性："),
+            (1, 1, 1): self.tr(
+                "突发事件发生于当天06:00至12:00，事件类型为车辆对固定物事故（撞到护栏、路墩等），发生人员伤亡，请评估具有较好适应扰动的能力的可能性："),
+            (1, 2, 0): self.tr(
+                "突发事件发生于当天06:00至12:00，事件类型为车辆擦碰事故（指两辆或两辆以上的车辆发生意外碰撞），没有造成人员伤亡，请评估具有较好适应扰动的能力的可能性："),
+            (1, 2, 1): self.tr(
+                "突发事件发生于当天06:00至12:00，事件类型为车辆擦碰事故（指两辆或两辆以上的车辆发生意外碰撞），发生人员伤亡，请评估具有较好适应扰动的能力的可能性："),
+            (2, 0, 0): self.tr(
+                "突发事件发生于当天12:00至18:00，事件类型为车辆自身事故（侧翻、抛锚），没有造成人员伤亡，请评估具有较好适应扰动的能力的可能性："),
+            (2, 0, 1): self.tr(
+                "突发事件发生于当天12:00至18:00，事件类型为车辆自身事故（侧翻、抛锚），发生人员伤亡，请评估具有较好适应扰动的能力的可能性："),
+            (2, 1, 0): self.tr(
+                "突发事件发生于当天12:00至18:00，事件类型为车辆对固定物事故（撞到护栏、路墩等），没有造成人员伤亡，请评估具有较好适应扰动的能力的可能性："),
+            (2, 1, 1): self.tr(
+                "突发事件发生于当天12:00至18:00，事件类型为车辆对固定物事故（撞到护栏、路墩等），发生人员伤亡，请评估具有较好适应扰动的能力的可能性："),
+            (2, 2, 0): self.tr(
+                "突发事件发生于当天12:00至18:00，事件类型为车辆擦碰事故（指两辆或两辆以上的车辆发生意外碰撞），没有造成人员伤亡，请评估具有较好适应扰动的能力的可能性："),
+            (2, 2, 1): self.tr(
+                "突发事件发生于当天12:00至18:00，事件类型为车辆擦碰事故（指两辆或两辆以上的车辆发生意外碰撞），发生人员伤亡，请评估具有较好适应扰动的能力的可能性："),
+            (3, 0, 0): self.tr(
+                "突发事件发生于当天18:00至24:00，事件类型为车辆自身事故（侧翻、抛锚），没有造成人员伤亡，请评估具有较好适应扰动的能力的可能性："),
+            (3, 0, 1): self.tr(
+                "突发事件发生于当天18:00至24:00，事件类型为车辆自身事故（侧翻、抛锚），发生人员伤亡，请评估具有较好适应扰动的能力的可能性："),
+            (3, 1, 0): self.tr(
+                "突发事件发生于当天18:00至24:00，事件类型为车辆对固定物事故（撞到护栏、路墩等），没有造成人员伤亡，请评估具有较好适应扰动的能力的可能性："),
+            (3, 1, 1): self.tr(
+                "突发事件发生于当天18:00至24:00，事件类型为车辆对固定物事故（撞到护栏、路墩等），发生人员伤亡，请评估具有较好适应扰动的能力的可能性："),
+            (3, 2, 0): self.tr(
+                "突发事件发生于当天18:00至24:00，事件类型为车辆擦碰事故（指两辆或两辆以上的车辆发生意外碰撞），没有造成人员伤亡，请评估具有较好适应扰动的能力的可能性："),
+            (3, 2, 1): self.tr(
+                "突发事件发生于当天18:00至24:00，事件类型为车辆擦碰事故（指两辆或两辆以上的车辆发生意外碰撞），发生人员伤亡，请评估具有较好适应扰动的能力的可能性：")
+        }
 
-            # 3. RecoveryCapacity
-            # 定义响应与处置时长的描述文本：
-            self.response_time_text = [self.tr("响应时长在15分钟以内"), self.tr("响应时长在15-30分钟"),
-                                       self.tr("响应时长在30-60分钟"), self.tr("响应时长在60分钟以上")]
-            self.disposal_time_text = [self.tr("处置时长在15分钟以内"), self.tr("处置时长在15-30分钟"),
-                                       self.tr("处置时长在30-60分钟"), self.tr("处置时长在60分钟以上")]
-            # casualties: 0 -> 无人员伤亡，1 -> 有人员伤亡
-            self.casualties_text = [self.tr("且无人员伤亡"), self.tr("且有人员伤亡")]
+        # 3. RecoveryCapacity
+        # 定义响应与处置时长的描述文本：
+        self.response_time_text = [self.tr("响应时长在15分钟以内"), self.tr("响应时长在15-30分钟"),
+                                   self.tr("响应时长在30-60分钟"), self.tr("响应时长在60分钟以上")]
+        self.disposal_time_text = [self.tr("处置时长在15分钟以内"), self.tr("处置时长在15-30分钟"),
+                                   self.tr("处置时长在30-60分钟"), self.tr("处置时长在60分钟以上")]
+        # casualties: 0 -> 无人员伤亡，1 -> 有人员伤亡
+        self.casualties_text = [self.tr("且无人员伤亡"), self.tr("且有人员伤亡")]
 
-            # 定义各应急资源对应的中文名称
-            self.resource_names = {
-                "RescueResource": "救助资源",
-                "FirefightingResource": "消防资源",
-                "TowResource": "牵引资源",
-                "AidResource": "抢修资源"
-            }
+        # 定义各应急资源对应的中文名称
+        self.resource_names = {
+            "RescueResource": "救助资源",
+            "FirefightingResource": "消防资源",
+            "TowResource": "牵引资源",
+            "AidResource": "抢修资源"
+        }
 
-            # 构造一个函数，根据 4 个应急资源的取值（0 或 1）生成资源部分的描述
+        # 构造一个函数，根据 4 个应急资源的取值（0 或 1）生成资源部分的描述
 
-            # 对 RecoveryCapacity 生成问题文本
-            self.QUESTION_TEXT[("RecoveryCapacity", 0)] = {}
-            self.resource_combinations = sorted(list(itertools.product(range(2), repeat=4)), key=lambda x: sum(x))
+        # 对 RecoveryCapacity 生成问题文本
+        self.QUESTION_TEXT[("RecoveryCapacity", 0)] = {}
+        self.resource_combinations = sorted(list(itertools.product(range(2), repeat=4)), key=lambda x: sum(x))
 
-            for rr, ff, tw, aid in self.resource_combinations:
-                for r in range(4):  # responseDuration: 0~3
-                    for d in range(4):  # disposalDuration: 0~3
-                        key = (d, r, rr, ff, tw, aid)
-                        resource_phrase = self.resources_used(rr, ff, tw, aid)
-                        question = self.tr(
-                            "在应急响应过程中{}，"
-                            "{}，"
-                            "{}，"
-                            "请评估道路具有较好从扰动中恢复的能力的可能性："
-                        ).format(resource_phrase, self.response_time_text[r], self.disposal_time_text[d])
-                        self.QUESTION_TEXT[("RecoveryCapacity", 0)][key] = question
-            # data = []
-            # for key, q in QUESTION_TEXT[("RecoveryCapacity", 0)].items():
-            #     d, r, rr, ff, tw, aid = key
-            #     data.append({
-            #          "处置时长": disposal_time_text[d],
-            #          "响应时长": response_time_text[r],
-            #          "救助资源": rr,
-            #          "消防资源": ff,
-            #          "牵引资源": tw,
-            #          "抢修资源": aid,
-            #          "问题": q
-            #     })
-            #
-            # # 转换为 DataFrame 并保存到 Excel 文件中
-            # df = pd.DataFrame(data)
-            # df.to_excel("RecoveryCapacity_questions.xlsx", index=False)
-            # print("问题文本已保存到 RecoveryCapacity_questions.xlsx 文件中。")
+        for rr, ff, tw, aid in self.resource_combinations:
+            for r in range(4):  # responseDuration: 0~3
+                for d in range(4):  # disposalDuration: 0~3
+                    key = (d, r, rr, ff, tw, aid)
+                    resource_phrase = self.resources_used(rr, ff, tw, aid)
+                    question = self.tr(
+                        "在应急响应过程中{}，"
+                        "{}，"
+                        "{}，"
+                        "请评估道路具有较好从扰动中恢复的能力的可能性："
+                    ).format(resource_phrase, self.response_time_text[r], self.disposal_time_text[d])
+                    self.QUESTION_TEXT[("RecoveryCapacity", 0)][key] = question
+        # data = []
+        # for key, q in QUESTION_TEXT[("RecoveryCapacity", 0)].items():
+        #     d, r, rr, ff, tw, aid = key
+        #     data.append({
+        #          "处置时长": disposal_time_text[d],
+        #          "响应时长": response_time_text[r],
+        #          "救助资源": rr,
+        #          "消防资源": ff,
+        #          "牵引资源": tw,
+        #          "抢修资源": aid,
+        #          "问题": q
+        #     })
+        #
+        # # 转换为 DataFrame 并保存到 Excel 文件中
+        # df = pd.DataFrame(data)
+        # df.to_excel("RecoveryCapacity_questions.xlsx", index=False)
+        # print("问题文本已保存到 RecoveryCapacity_questions.xlsx 文件中。")
 
-            self.QUESTION_TEXT[(("ScenarioResilience", 0))] = {
-                (0, 0, 0): self.tr(
-                    "在突发事件发生前城市道路系统能够自动吸收潜在的扰动并维持正常运行，在突发事件发生时城市道路系统能够在很少或完全不涉及外部快速恢复操作的情况下快速恢复损失的性能，在实施应急预案后城市道路系统能够快速恢复至正常运行状态，请评估道路具有较好韧性的可能性："),
-                (0, 0, 1): self.tr(
-                    "在突发事件发生前城市道路系统能够自动吸收潜在的扰动并维持正常运行，在突发事件发生时城市道路系统能够在很少或完全不涉及外部恢复操作的情况下难以快速恢复损失的性能，在实施应急预案后城市道路系统能够快速恢复至正常运行状态，请评估道路具有较好韧性的可能性："),
-                (0, 1, 0): self.tr(
-                    "在突发事件发生前城市道路系统能够自动吸收潜在的扰动并维持正常运行，在突发事件发生时城市道路系统能够在很少或完全不涉及外部快速恢复操作的情况下快速恢复损失的性能，在实施应急预案后城市道路系统难以快速恢复至正常运行状态，请评估道路具有较好韧性的可能性："),
-                (0, 1, 1): self.tr(
-                    "在突发事件发生前城市道路系统能够自动吸收潜在的扰动并维持正常运行，在突发事件发生时城市道路系统能够在很少或完全不涉及外部恢复操作的情况下难以快速恢复损失的性能，在实施应急预案后城市道路系统难以快速恢复至正常运行状态，请评估道路具有较好韧性的可能性："),
-                (1, 0, 0): self.tr(
-                    "在突发事件发生前城市道路系统难以自动吸收潜在的扰动并维持正常运行，在突发事件发生时城市道路系统能够在很少或完全不涉及外部快速恢复操作的情况下快速恢复损失的性能，在实施应急预案后城市道路系统能够快速恢复至正常运行状态，请评估道路具有较好韧性的可能性："),
-                (1, 0, 1): self.tr(
-                    "在突发事件发生前城市道路系统难以自动吸收潜在的扰动并维持正常运行，在突发事件发生时城市道路系统能够在很少或完全不涉及外部恢复操作的情况下难以快速恢复损失的性能，在实施应急预案后城市道路系统能够快速恢复至正常运行状态，请评估道路具有较好韧性的可能性："),
-                (1, 1, 0): self.tr(
-                    "在突发事件发生前城市道路系统难以自动吸收潜在的扰动并维持正常运行，在突发事件发生时城市道路系统能够在很少或完全不涉及外部快速恢复操作的情况下快速恢复损失的性能，在实施应急预案后城市道路系统难以快速恢复至正常运行状态，请评估道路具有较好韧性的可能性："),
-                (1, 1, 1): self.tr(
-                    "在突发事件发生前城市道路系统难以自动吸收潜在的扰动并维持正常运行，在突发事件发生时城市道路系统能够在很少或完全不涉及外部恢复操作的情况下难以快速恢复损失的性能，在实施应急预案后城市道路系统难以快速恢复至正常运行状态，请评估道路具有较好韧性的可能性：")
-            }
+        self.QUESTION_TEXT[(("ScenarioResilience", 0))] = {
+            (0, 0, 0): self.tr(
+                "在突发事件发生前城市道路系统能够自动吸收潜在的扰动并维持正常运行，在突发事件发生时城市道路系统能够在很少或完全不涉及外部快速恢复操作的情况下快速恢复损失的性能，在实施应急预案后城市道路系统能够快速恢复至正常运行状态，请评估道路具有较好韧性的可能性："),
+            (0, 0, 1): self.tr(
+                "在突发事件发生前城市道路系统能够自动吸收潜在的扰动并维持正常运行，在突发事件发生时城市道路系统能够在很少或完全不涉及外部恢复操作的情况下难以快速恢复损失的性能，在实施应急预案后城市道路系统能够快速恢复至正常运行状态，请评估道路具有较好韧性的可能性："),
+            (0, 1, 0): self.tr(
+                "在突发事件发生前城市道路系统能够自动吸收潜在的扰动并维持正常运行，在突发事件发生时城市道路系统能够在很少或完全不涉及外部快速恢复操作的情况下快速恢复损失的性能，在实施应急预案后城市道路系统难以快速恢复至正常运行状态，请评估道路具有较好韧性的可能性："),
+            (0, 1, 1): self.tr(
+                "在突发事件发生前城市道路系统能够自动吸收潜在的扰动并维持正常运行，在突发事件发生时城市道路系统能够在很少或完全不涉及外部恢复操作的情况下难以快速恢复损失的性能，在实施应急预案后城市道路系统难以快速恢复至正常运行状态，请评估道路具有较好韧性的可能性："),
+            (1, 0, 0): self.tr(
+                "在突发事件发生前城市道路系统难以自动吸收潜在的扰动并维持正常运行，在突发事件发生时城市道路系统能够在很少或完全不涉及外部快速恢复操作的情况下快速恢复损失的性能，在实施应急预案后城市道路系统能够快速恢复至正常运行状态，请评估道路具有较好韧性的可能性："),
+            (1, 0, 1): self.tr(
+                "在突发事件发生前城市道路系统难以自动吸收潜在的扰动并维持正常运行，在突发事件发生时城市道路系统能够在很少或完全不涉及外部恢复操作的情况下难以快速恢复损失的性能，在实施应急预案后城市道路系统能够快速恢复至正常运行状态，请评估道路具有较好韧性的可能性："),
+            (1, 1, 0): self.tr(
+                "在突发事件发生前城市道路系统难以自动吸收潜在的扰动并维持正常运行，在突发事件发生时城市道路系统能够在很少或完全不涉及外部快速恢复操作的情况下快速恢复损失的性能，在实施应急预案后城市道路系统难以快速恢复至正常运行状态，请评估道路具有较好韧性的可能性："),
+            (1, 1, 1): self.tr(
+                "在突发事件发生前城市道路系统难以自动吸收潜在的扰动并维持正常运行，在突发事件发生时城市道路系统能够在很少或完全不涉及外部恢复操作的情况下难以快速恢复损失的性能，在实施应急预案后城市道路系统难以快速恢复至正常运行状态，请评估道路具有较好韧性的可能性：")
+        }
 
-            self.AGE_OPTIONS = [self.tr("请选择您的年龄"), self.tr("A.30岁及以下"), self.tr("B.31-40岁"),
-                                self.tr("C.41-50岁"), self.tr("D.50岁以上")]
-            self.EDU_OPTIONS = [self.tr("请选择您的教育水平"), self.tr("A.大专及以下"), self.tr("B.本科"),
-                                self.tr("C.硕士"), self.tr("D.博士及以上")]
-            self.WORK_OPTIONS = [self.tr("请选择您的工作年限"), self.tr("A.5年及以下"), self.tr("B.6-10年"),
-                                 self.tr("C.11-19年"), self.tr("D.20年及以上")]
-            self.JOB_OPTIONS = [self.tr("请选择您的工作职位"), self.tr("A.工人"), self.tr("B.技术员"),
-                                self.tr("C.工程师"), self.tr("D.副教授"), self.tr("E.教授")]
+        self.AGE_OPTIONS = [self.tr("请选择您的年龄"), self.tr("A.30岁及以下"), self.tr("B.31-40岁"),
+                            self.tr("C.41-50岁"), self.tr("D.50岁以上")]
+        self.EDU_OPTIONS = [self.tr("请选择您的教育水平"), self.tr("A.大专及以下"), self.tr("B.本科"),
+                            self.tr("C.硕士"), self.tr("D.博士及以上")]
+        self.WORK_OPTIONS = [self.tr("请选择您的工作年限"), self.tr("A.5年及以下"), self.tr("B.6-10年"),
+                             self.tr("C.11-19年"), self.tr("D.20年及以上")]
+        self.JOB_OPTIONS = [self.tr("请选择您的工作职位"), self.tr("A.工人"), self.tr("B.技术员"),
+                            self.tr("C.工程师"), self.tr("D.副教授"), self.tr("E.教授")]
 
-            self.AGE_MAPPING = {
-                self.tr("A.30岁及以下"): 1,
-                self.tr("B.31-40岁"): 2,
-                self.tr("C.41-50岁"): 3,
-                self.tr("D.50岁以上"): 4
-            }
+        self.AGE_MAPPING = {
+            self.tr("A.30岁及以下"): 1,
+            self.tr("B.31-40岁"): 2,
+            self.tr("C.41-50岁"): 3,
+            self.tr("D.50岁以上"): 4
+        }
 
-            self.EDU_MAPPING = {
-                self.tr("A.大专及以下"): 1,
-                self.tr("B.本科"): 2,
-                self.tr("C.硕士"): 3,
-                self.tr("D.博士及以上"): 4
-            }
+        self.EDU_MAPPING = {
+            self.tr("A.大专及以下"): 1,
+            self.tr("B.本科"): 2,
+            self.tr("C.硕士"): 3,
+            self.tr("D.博士及以上"): 4
+        }
 
-            self.WORK_MAPPING = {
-                self.tr("A.5年及以下"): 1,
-                self.tr("B.6-10年"): 2,
-                self.tr("C.11-19年"): 3,
-                self.tr("D.20年及以上"): 4
-            }
+        self.WORK_MAPPING = {
+            self.tr("A.5年及以下"): 1,
+            self.tr("B.6-10年"): 2,
+            self.tr("C.11-19年"): 3,
+            self.tr("D.20年及以上"): 4
+        }
 
-            self.JOB_MAPPING = {
-                self.tr("A.工人"): 1,
-                self.tr("B.技术员"): 2,
-                self.tr("C.工程师"): 3,
-                self.tr("D.副教授"): 4,
-                self.tr("E.教授"): 5,
-            }
+        self.JOB_MAPPING = {
+            self.tr("A.工人"): 1,
+            self.tr("B.技术员"): 2,
+            self.tr("C.工程师"): 3,
+            self.tr("D.副教授"): 4,
+            self.tr("E.教授"): 5,
+        }
 
     def resources_used(self, rr, ff, tw, aid):
         used = []

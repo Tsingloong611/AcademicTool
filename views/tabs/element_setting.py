@@ -12,7 +12,7 @@ from typing import Dict, Any, List
 from PySide6.QtCore import Signal, Qt, QObject, QEvent, QTimer, QEventLoop
 from PySide6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QCheckBox, QLineEdit, QLabel, QPushButton, QGroupBox, QGridLayout,
-    QSizePolicy, QScrollArea, QMessageBox, QTableWidget, QTableWidgetItem, QHeaderView, QComboBox, QDialog,
+    QSizePolicy, QScrollArea, QTableWidget, QTableWidgetItem, QHeaderView, QComboBox, QDialog,
     QFileDialog, QFrame, QApplication, QTabWidget, QFormLayout, QTextEdit, QStackedLayout, QButtonGroup, QTextBrowser,
     QListWidget, QInputDialog, QProxyStyle, QStyle
 )
@@ -20,6 +20,7 @@ from PySide6.QtGui import QFont, QIntValidator, QDoubleValidator, QIcon, QColor
 from PySide6.QtWidgets import QStyledItemDelegate
 from attr import attributes
 from debugpy.common.timestamp import current
+from prompt_toolkit.shortcuts import input_dialog
 from pydot.dot_parser import add_elements
 from sqlalchemy import text
 from sqlalchemy.orm import Session
@@ -1195,7 +1196,8 @@ class EditRelatedObjectDialog(QDialog):
                 entity_types = self.parent.get_result_by_sql(
                     "SELECT entity_type_id, entity_type_name FROM entity_type WHERE is_item_type = 1")
                 if not entity_types:
-                    QMessageBox.warning(self, self.tr("警告"), self.tr("没有可用的实体类型。"))
+                    CustomWarningDialog(self.tr("警告"), self.tr("没有可用的实体类型。")).exec_()
+
                     raise ValueError("没有可用的实体类型")  # 抛出异常而不是直接关闭
 
                 dialog = EntityTypeDialog(entity_types, self)
@@ -1230,7 +1232,7 @@ class EditRelatedObjectDialog(QDialog):
                 entity_types = self.parent.get_result_by_sql(
                     "SELECT entity_type_id, entity_type_name FROM entity_type WHERE is_item_type = 0")
                 if not entity_types:
-                    QMessageBox.warning(self, self.tr("警告"), self.tr("没有可用的实体类型。"))
+                    CustomWarningDialog(self.tr("警告"), self.tr("没有可用的实体类型。")).exec_()
                     raise ValueError("没有可用的实体类型")
                 dialog = EntityTypeDialog(entity_types, self)
                 result = dialog.exec()
@@ -1532,17 +1534,20 @@ class EditRelatedObjectDialog(QDialog):
             self.edit_resource()
             self.is_add = False
 
-
     def add_resource(self):
         """增加新实体"""
         # 获取新建实体名字
-        name, ok = QInputDialog.getText(self, self.tr("输入名称"), self.tr("输入名称"))
-        if not ok:
-            return
+        input_dlg = CustomInputDialog(self.tr("要素实体名称设置"), self.tr("请输入要素实体名字:"), parent=self)
+        input_dlg.accepted_text.connect(self.on_entity_name_input)  # 连接到处理函数
+        input_dlg.open()  # 非阻塞显示对话框
+
+    def on_entity_name_input(self, name):
+        """处理用户输入的实体名称"""
         # 如果名字为空
-        if name == "":
+        if not name or name == "":
             CustomWarningDialog(self.tr("输入错误"), self.tr("名字不能为空")).exec_()
             return
+
         # 判断是属性还是行为
         if self.type == "attribute":
             # 判断属性类型
@@ -2311,6 +2316,25 @@ class ElementSettingTab(QWidget):
             QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
                 background: none;
             }
+            
+            QScrollBar:horizontal {
+            border: none;
+            background: #f1f1f1;
+            height: 8px;
+            margin: 0px;
+        }
+        QScrollBar::handle:horizontal {
+            background: #c1c1c1;
+            min-width: 20px;
+            border-radius: 4px;
+        }
+        QScrollBar::add-line:horizontal, QScrollBar::sub-line:horizontal {
+            width: 0px;
+            subcontrol-origin: margin;
+        }
+        QScrollBar::add-page:horizontal, QScrollBar::sub-page:horizontal {
+            background: none;
+        }
 
             QLabel#placeholder{
                 color: gray;

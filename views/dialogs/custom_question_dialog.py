@@ -4,7 +4,6 @@
 # @Software: PyCharm
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QDialog, QVBoxLayout, QLabel, QHBoxLayout, QPushButton
-from black.concurrency import cancel
 
 
 class CustomQuestionDialog(QDialog):

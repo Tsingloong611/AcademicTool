@@ -12,8 +12,7 @@ from PySide6.QtWidgets import (
     QApplication, QWidget, QLabel, QCheckBox, QHBoxLayout, QVBoxLayout,
     QGroupBox, QPushButton, QSizePolicy, QTableWidget, QTableWidgetItem,
     QDialog, QHeaderView, QStackedLayout, QSpinBox, QComboBox, QLineEdit,
-    QListWidget, QTextBrowser, QStyleOptionViewItem, QStyledItemDelegate,
-    QMessageBox
+    QListWidget, QTextBrowser, QStyleOptionViewItem, QStyledItemDelegate
 )
 from PySide6.QtCore import Qt, Signal, QEvent, QObject, Slot, QUrl
 from PySide6.QtGui import QFont, QPainter, QPen, QColor, QIcon
@@ -28,6 +27,7 @@ from views.dialogs.custom_information_dialog import CustomInformationDialog
 from views.dialogs.custom_input_dialog import CustomInputDialog
 from views.dialogs.custom_question_dialog import CustomQuestionDialog
 from views.dialogs.custom_warning_dialog import CustomWarningDialog
+from views.dialogs.llm_dialog import AskLLM
 
 ZH_TO_EN = {
     # Behaviors
@@ -377,9 +377,16 @@ class MapDialog(QDialog):
                         if (marker) {{
                             map.remove(marker);
                         }}
-                        marker = new AMap.Marker({{
-                            position: lnglat
-                        }});
+                    marker = new AMap.Marker({{
+                        position: lnglat,
+                        icon: new AMap.Icon({{
+                            // 使用高德地图内置图标
+                            image: 'https://webapi.amap.com/theme/v1.3/markers/n/mark_b.png',
+                            size: new AMap.Size(25, 34),
+                            imageSize: new AMap.Size(25, 34)
+                        }}),
+                        offset: new AMap.Pixel(-13, -34)
+                    }});
                         marker.setMap(map);
 
                         if (bridge) {{
@@ -404,14 +411,14 @@ class MapDialog(QDialog):
 
     def on_ok_clicked(self):
         if self.selected_lat == 0.0 and self.selected_lng == 0.0:
-            QMessageBox.warning(self, self.tr("未选择位置"), self.tr("请在地图上点击选择位置。"))
+            CustomWarningDialog(self.tr("未选择位置"), self.tr("请在地图上点击选择位置。"), self).exec()
             return
         self.accept()
 
     def get_selected_coordinates(self):
         return self.selected_lat, self.selected_lng
 
-    def get_current_location(self, default_lat=39.0, default_lng=116.0):
+    def get_current_location(self, default_lat=31.0, default_lng=121.0):
         web_service_key = get_config().get("gaode-map", {}).get("web_service_key", "")
         url = f"https://restapi.amap.com/v3/ip?key={web_service_key}"
         try:
@@ -709,13 +716,52 @@ class DetailsDialog(QDialog):
         layout.addWidget(self.browser)
         close_btn = QPushButton(self.tr("确定"))
         close_btn.clicked.connect(self.accept)
-        close_btn.setFixedWidth(50)
+        close_btn.setFixedWidth(110)
         h = QHBoxLayout()
         h.addStretch()
         h.addWidget(close_btn)
         h.addStretch()
         layout.addLayout(h)
         self.setLayout(layout)
+        # 设置滚动条样式
+        self.setStyleSheet("""
+        QScrollBar:horizontal {
+            border: none;
+            background: #f1f1f1;
+            height: 8px;
+            margin: 0px;
+        }
+        QScrollBar::handle:horizontal {
+            background: #c1c1c1;
+            min-width: 20px;
+            border-radius: 4px;
+        }
+        QScrollBar::add-line:horizontal, QScrollBar::sub-line:horizontal {
+            width: 0px;
+            subcontrol-origin: margin;
+        }
+        QScrollBar::add-page:horizontal, QScrollBar::sub-page:horizontal {
+            background: none;
+        }
+                QScrollBar:vertical {
+            border: none;
+            background: #f1f1f1;
+            width: 8px;
+            margin: 0px;
+        }
+        QScrollBar::handle:vertical {
+            background: #c1c1c1;
+            min-height: 20px;
+            border-radius: 4px;
+        }
+        QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
+            height: 0px;
+            subcontrol-origin: margin;
+        }
+        QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
+            background: none;
+        }
+    """)
 
 class SaveResultDialog(QDialog):
     """
@@ -867,6 +913,7 @@ class ConditionSettingTab(QWidget):
         self.edit_resource_btn = QPushButton(self.tr("修改"))
         self.delete_resource_btn = QPushButton(self.tr("删除"))
         self.execute_btn = QPushButton(self.tr("执行推演"))
+        self.ask_ai_btn = QPushButton(self.tr("智能问答"))
 
         self.add_resource_btn.setIcon(QIcon(os.path.join(os.path.dirname(os.path.abspath(__file__)), "../../resources/icons/add.png")))
         self.edit_resource_btn.setIcon(QIcon(os.path.join(os.path.dirname(os.path.abspath(__file__)), "../../resources/icons/edit.png")))
@@ -876,6 +923,7 @@ class ConditionSettingTab(QWidget):
         self.edit_resource_btn.setFixedWidth(110)
         self.delete_resource_btn.setFixedWidth(110)
         self.execute_btn.setFixedWidth(110)
+        self.ask_ai_btn.setFixedWidth(110)
         if get_cfg()["i18n"]["language"] == "en_US":
             self.execute_btn.setFixedWidth(160)
 
@@ -893,6 +941,13 @@ class ConditionSettingTab(QWidget):
         btn_hbox.addWidget(self.edit_resource_btn)
         btn_hbox.addWidget(self.delete_resource_btn)
         btn_hbox.addWidget(self.execute_btn)
+        btn_hbox.addWidget(self.ask_ai_btn)
+        self.ask_ai_btn.setToolTip(self.tr("智能问答功能"))
+        self.setStyleSheet("""
+            QPushButton:disabled {
+                background-color: #d3d3d3;
+            }
+        """)
 
         resource_layout.addLayout(btn_hbox)
         resource_layout.addWidget(self.resource_table)
@@ -957,8 +1012,14 @@ class ConditionSettingTab(QWidget):
         self.add_resource_btn.clicked.connect(self.add_resource)
         self.edit_resource_btn.clicked.connect(self.edit_resource)
         self.delete_resource_btn.clicked.connect(self.delete_resource)
+        self.ask_ai_btn.clicked.connect(self.ask_ai)
         self.simulation_table.itemDoubleClicked.connect(self.show_plan_details)
         self.simulation_table.itemClicked.connect(self.on_plan_selected)  # 新增单击事件
+
+        if not get_cfg()['llm']['enable']:
+            self.ask_ai_btn.setDisabled(True)
+            # 设置悬浮提示
+            self.ask_ai_btn.setToolTip(self.tr("智能问答功能未启用"))
 
     # 新增方法：处理预案选择事件
     def on_plan_selected(self, item):
@@ -1619,14 +1680,25 @@ class ConditionSettingTab(QWidget):
          .no-resource{color:red;font-style:italic;text-align:center}
         </style></head><body>
         """
-        info_html += f"<h2>{plan_data.get('plan_name','')}</h2>"
-        info_html += f"<div class='timestamp'>{self.tr('创建时间')}: {plan_data.get('timestamp','')}</div>"
+        info_html += f"<h2> {plan_data.get('plan_name','')}</h2>"
+        create_time_str = self.tr('创建时间') + ": " + plan_data.get('timestamp', '')
+        info_html += f"<div class='timestamp'>{create_time_str}</div>"
 
         for action in plan_data.get('emergency_actions', []):
             if action.get('implementation_status') == 'True':
-                title_str = f"<h3>{self.tr('应急行为')}: {action.get('action_type','')} (已实施)</h3>"
+                if get_cfg()['i18n']['language'] == 'en_US':
+                    title_str_raw = self.tr('应急行为') + ": " + to_display_text(action.get('action_type', '')) + " (" + self.tr('已实施') + ")"
+                    title_str = f"<h3>{title_str_raw}</h3>"
+                else:
+                    title_str_raw = self.tr('应急行为') + ": " + action.get('action_type', '') + " (" + self.tr('已实施') + ")"
+                    title_str = f"<h3>{title_str_raw}</h3>"
             else:
-                title_str = f"<h3>{self.tr('应急行为')}: {action.get('action_type', '')} (未实施)</h3>"
+                if get_cfg()['i18n']['language'] == 'en_US':
+                    title_str_raw = self.tr('应急行为') + ": " + to_display_text(action.get('action_type', '')) + " (" + self.tr('未实施') + ")"
+                    title_str = f"<h3>{title_str_raw}</h3>"
+                else:
+                    title_str_raw = self.tr('应急行为') + ": " + action.get('action_type', '') + " (" + self.tr('未实施') + ")"
+                    title_str = f"<h3>{title_str_raw}</h3>"
 
             info_html += f"{title_str}"
             info_html += f"<p><b>{self.tr('时长')}:</b> {action.get('duration','')}</p>"
@@ -1643,14 +1715,26 @@ class ConditionSettingTab(QWidget):
                 </tr>
                 """
                 for resource in action['resources']:
-                    info_html += f"""
-                    <tr>
-                        <td>{resource.get('resource_type','')}</td>
-                        <td>{resource.get('resource_category','')}</td>
-                        <td>{resource.get('quantity','')}</td>
-                        <td>{resource.get('location','')}</td>
-                    </tr>
-                    """
+                    if get_cfg()['i18n']['language'] == 'en_US':
+                        displayed_resource = to_display_text(resource.get('resource_type',''))
+                        displayed_res_type = to_display_text(resource.get('resource_category',''))
+                        info_html += f"""
+                        <tr>
+                            <td>{displayed_resource}</td>
+                            <td>{displayed_res_type}</td>
+                            <td>{resource.get('quantity','')}</td>
+                            <td>{resource.get('location','')}</td>
+                        </tr>
+                        """
+                    else:
+                        info_html += f"""
+                        <tr>
+                            <td>{resource.get('resource_type','')}</td>
+                            <td>{resource.get('resource_category','')}</td>
+                            <td>{resource.get('quantity','')}</td>
+                            <td>{resource.get('location','')}</td>
+                        </tr>
+                        """
                 info_html += "</table>"
             else:
                 info_html += f"<p class='no-resource'>{self.tr('无资源')}</p>"
@@ -1678,6 +1762,49 @@ class ConditionSettingTab(QWidget):
     def update_evidence_table(self):
         self.evidence_table.clearContents()
         self.evidence_table.setRowCount(0)
+        self.evidence_table.verticalScrollBar().setStyleSheet("""
+            QScrollBar:vertical {
+                border: none;
+                background: #f1f1f1;
+                width: 8px;
+                margin: 0px;
+            }
+            QScrollBar::handle:vertical {
+                background: #c1c1c1;
+                min-height: 20px;
+                border-radius: 4px;
+            }
+            QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
+                height: 0px;
+                subcontrol-origin: margin;
+            }
+            QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
+                background: none;
+            }
+        """)
+
+        # 水平滚动条样式（如果有的话）
+        self.evidence_table.horizontalScrollBar().setStyleSheet("""
+            QScrollBar:horizontal {
+                border: none;
+                background: #f1f1f1;
+                height: 8px;
+                margin: 0px;
+            }
+            QScrollBar::handle:horizontal {
+                background: #c1c1c1;
+                min-width: 20px;
+                border-radius: 4px;
+            }
+            QScrollBar::add-line:horizontal, QScrollBar::sub-line:horizontal {
+                width: 0px;
+                subcontrol-origin: margin;
+            }
+            QScrollBar::add-page:horizontal, QScrollBar::sub-page:horizontal {
+                background: none;
+            }
+        """)
+
         for d in self.posterior_probabilities:
             if d.get("要素节点") not in ["ScenarioResilience"]:
                 if get_cfg()["i18n"]["language"] == "en_US":
@@ -1698,6 +1825,7 @@ class ConditionSettingTab(QWidget):
                     for col in range(3):
                         self.evidence_table.item(rowpos, col).setTextAlignment(Qt.AlignCenter)
                         self.evidence_table.item(rowpos, col).setToolTip(self.evidence_table.item(rowpos, col).text())
+
 
     def set_stylesheet(self):
         self.setStyleSheet("""
@@ -1781,6 +1909,14 @@ class ConditionSettingTab(QWidget):
 
     def reset_inputs(self):
         pass
+
+    def ask_ai(self):
+        if self.plans_data:
+            ask_ai_dialog = AskLLM(self,self.plans_data)
+            ask_ai_dialog.exec_()
+        else:
+            ask_ai_dialog = AskLLM(self)
+            ask_ai_dialog.exec_()
 
 
 # ===== 测试入口，仅供本地运行时参考 =====

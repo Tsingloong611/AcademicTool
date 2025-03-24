@@ -7,13 +7,13 @@ from PySide6.QtWidgets import QDialog, QVBoxLayout, QLabel, QComboBox, QDialogBu
 class EntityTypeDialog(QDialog):
     def __init__(self, entity_types, parent=None):
         super().__init__(parent)
-        self.setWindowTitle("选择关联实体类型")
+        self.setWindowTitle(self.tr("选择关联实体类型"))
         self.setModal(True)
         self.selected_entity = None
 
         layout = QVBoxLayout()
 
-        label = QLabel("请选择一个实体类型:")
+        label = QLabel(self.tr("请选择一个实体类型:"))
         layout.addWidget(label)
 
         self.combo_box = QComboBox()

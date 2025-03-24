@@ -108,253 +108,422 @@
     </message>
 </context>
 <context>
+    <name>AskLLM</name>
+    <message>
+        <location filename="../views/dialogs/llm_dialog.py" line="121"/>
+        <source>AI 智能问答</source>
+        <translation>AI Intelligent Q&amp;A</translation>
+    </message>
+    <message>
+        <location filename="../views/dialogs/llm_dialog.py" line="247"/>
+        <source>选择智能模型:</source>
+        <translation>Selection of Intelligent Models:</translation>
+    </message>
+    <message>
+        <location filename="../views/dialogs/llm_dialog.py" line="262"/>
+        <source>无可用预案信息</source>
+        <translation>No available preplanning information</translation>
+    </message>
+    <message>
+        <location filename="../views/dialogs/llm_dialog.py" line="264"/>
+        <source>附带预案信息:</source>
+        <translation>Accompanying Advance Information:</translation>
+    </message>
+    <message>
+        <location filename="../views/dialogs/llm_dialog.py" line="313"/>
+        <source>对话内容将显示在这里...</source>
+        <translation>The dialog will be displayed here...</translation>
+    </message>
+    <message>
+        <location filename="../views/dialogs/llm_dialog.py" line="360"/>
+        <source>在此输入您的问题...</source>
+        <translation>Enter your question here...</translation>
+    </message>
+    <message>
+        <location filename="../views/dialogs/llm_dialog.py" line="382"/>
+        <source>发送</source>
+        <translation>Sent</translation>
+    </message>
+    <message>
+        <location filename="../views/dialogs/llm_dialog.py" line="388"/>
+        <source>清空</source>
+        <translation>Clear</translation>
+    </message>
+    <message>
+        <location filename="../views/dialogs/llm_dialog.py" line="433"/>
+        <source>已选择模型: </source>
+        <translation>Selected Models: </translation>
+    </message>
+    <message>
+        <location filename="../views/dialogs/llm_dialog.py" line="433"/>
+        <source>无可用模型</source>
+        <translation>No available models</translation>
+    </message>
+    <message>
+        <location filename="../views/dialogs/llm_dialog.py" line="439"/>
+        <source>提示: 按 Ctrl+Enter 快捷发送</source>
+        <translation>Tip: Press Ctrl+Enter to send a quick message.</translation>
+    </message>
+    <message>
+        <location filename="../views/dialogs/llm_dialog.py" line="613"/>
+        <source>正在处理请求... 使用模型: {0}</source>
+        <translation>Requests being processed... Using model: {0}</translation>
+    </message>
+    <message>
+        <location filename="../views/dialogs/llm_dialog.py" line="632"/>
+        <source>抱歉，无法获取AI响应。请检查网络连接或稍后再试。</source>
+        <translation>Sorry, could not get an AI response. Please check your internet connection or try again later.</translation>
+    </message>
+    <message>
+        <location filename="../views/dialogs/llm_dialog.py" line="633"/>
+        <source>请求失败</source>
+        <translation>Request Failed</translation>
+    </message>
+    <message>
+        <location filename="../views/dialogs/llm_dialog.py" line="638"/>
+        <source>无法获取AI响应。您可以尝试以下解决方法:
+
+1. 检查网络连接是否正常
+2. 确认API密钥是否有效
+3. 稍后再试，API服务可能暂时不可用</source>
+        <translation>Unable to get AI response. You can try the following solutions.
+
+1. Check if the network connection is normal
+2. Check if the API key is valid
+3. Try again later, the API service may be temporarily unavailable.</translation>
+    </message>
+    <message>
+        <location filename="../views/dialogs/llm_dialog.py" line="654"/>
+        <source>[使用备选模型</source>
+        <translation>[Use of alternative models</translation>
+    </message>
+    <message>
+        <location filename="../views/dialogs/llm_dialog.py" line="693"/>
+        <source>系统</source>
+        <translation>System</translation>
+    </message>
+    <message>
+        <location filename="../views/dialogs/llm_dialog.py" line="167"/>
+        <location filename="../views/dialogs/llm_dialog.py" line="449"/>
+        <location filename="../views/dialogs/llm_dialog.py" line="681"/>
+        <location filename="../views/dialogs/llm_dialog.py" line="700"/>
+        <source>已选择模型: {0}</source>
+        <translation>Selected models: {0}</translation>
+    </message>
+</context>
+<context>
     <name>ConditionSettingTab</name>
     <message>
-        <location filename="../views/tabs/condition_setting.py" line="795"/>
+        <location filename="../views/tabs/condition_setting.py" line="834"/>
         <source>应急预案设置</source>
         <translation>Emergency Plan Settings</translation>
     </message>
     <message>
-        <location filename="../views/tabs/condition_setting.py" line="820"/>
+        <location filename="../views/tabs/condition_setting.py" line="859"/>
         <source>应急行为设置</source>
         <translation>Response Action Settings</translation>
     </message>
     <message>
-        <location filename="../views/tabs/condition_setting.py" line="841"/>
+        <location filename="../views/tabs/condition_setting.py" line="880"/>
         <source>应急资源设置</source>
         <translation>Response Resource Settings</translation>
     </message>
     <message>
-        <location filename="../views/tabs/condition_setting.py" line="866"/>
+        <location filename="../views/tabs/condition_setting.py" line="905"/>
         <source>添加</source>
         <translation>Add</translation>
     </message>
     <message>
-        <location filename="../views/tabs/condition_setting.py" line="867"/>
+        <location filename="../views/tabs/condition_setting.py" line="906"/>
         <source>修改</source>
         <translation>Edit</translation>
     </message>
     <message>
-        <location filename="../views/tabs/condition_setting.py" line="868"/>
+        <location filename="../views/tabs/condition_setting.py" line="907"/>
         <source>删除</source>
         <translation>Delete</translation>
     </message>
     <message>
-        <location filename="../views/tabs/condition_setting.py" line="869"/>
+        <location filename="../views/tabs/condition_setting.py" line="908"/>
         <source>执行推演</source>
         <translation>Execute Deduction</translation>
     </message>
     <message>
-        <location filename="../views/tabs/condition_setting.py" line="884"/>
-        <location filename="../views/tabs/condition_setting.py" line="1239"/>
+        <location filename="../views/tabs/condition_setting.py" line="925"/>
+        <location filename="../views/tabs/condition_setting.py" line="1293"/>
         <source>请配置应急行为</source>
         <translation>Please configure emergency behavior</translation>
     </message>
     <message>
-        <location filename="../views/tabs/condition_setting.py" line="849"/>
+        <location filename="../views/tabs/condition_setting.py" line="888"/>
         <source>资源</source>
         <translation>Resource</translation>
     </message>
     <message>
-        <location filename="../views/tabs/condition_setting.py" line="850"/>
-        <location filename="../views/tabs/condition_setting.py" line="1343"/>
-        <location filename="../views/tabs/condition_setting.py" line="1640"/>
+        <location filename="../views/tabs/condition_setting.py" line="889"/>
+        <location filename="../views/tabs/condition_setting.py" line="1397"/>
+        <location filename="../views/tabs/condition_setting.py" line="1705"/>
         <source>类型</source>
         <translation>Type</translation>
     </message>
     <message>
-        <location filename="../views/tabs/condition_setting.py" line="851"/>
-        <location filename="../views/tabs/condition_setting.py" line="1343"/>
-        <location filename="../views/tabs/condition_setting.py" line="1641"/>
+        <location filename="../views/tabs/condition_setting.py" line="890"/>
+        <location filename="../views/tabs/condition_setting.py" line="1397"/>
+        <location filename="../views/tabs/condition_setting.py" line="1706"/>
         <source>数量</source>
         <translation>Quantity</translation>
     </message>
     <message>
-        <location filename="../views/tabs/condition_setting.py" line="853"/>
-        <location filename="../views/tabs/condition_setting.py" line="1343"/>
-        <location filename="../views/tabs/condition_setting.py" line="1642"/>
+        <location filename="../views/tabs/condition_setting.py" line="892"/>
+        <location filename="../views/tabs/condition_setting.py" line="1397"/>
+        <location filename="../views/tabs/condition_setting.py" line="1707"/>
         <source>位置</source>
         <translation>Location</translation>
     </message>
     <message>
-        <location filename="../views/tabs/condition_setting.py" line="908"/>
+        <location filename="../views/tabs/condition_setting.py" line="956"/>
         <source>证据更新</source>
         <translation>Evidence Update</translation>
     </message>
     <message>
-        <location filename="../views/tabs/condition_setting.py" line="914"/>
+        <location filename="../views/tabs/condition_setting.py" line="962"/>
         <source>要素节点</source>
         <translation>Node</translation>
     </message>
     <message>
-        <location filename="../views/tabs/condition_setting.py" line="914"/>
+        <location filename="../views/tabs/condition_setting.py" line="962"/>
         <source>状态</source>
         <translation>State</translation>
     </message>
     <message>
-        <location filename="../views/tabs/condition_setting.py" line="914"/>
+        <location filename="../views/tabs/condition_setting.py" line="962"/>
         <source>概率</source>
         <translation>Prob.</translation>
     </message>
     <message>
-        <location filename="../views/tabs/condition_setting.py" line="927"/>
+        <location filename="../views/tabs/condition_setting.py" line="975"/>
         <source>推演结果</source>
         <translation>Deduction Results</translation>
     </message>
     <message>
-        <location filename="../views/tabs/condition_setting.py" line="1152"/>
-        <location filename="../views/tabs/condition_setting.py" line="1208"/>
-        <location filename="../views/tabs/condition_setting.py" line="1367"/>
+        <location filename="../views/tabs/condition_setting.py" line="1206"/>
+        <location filename="../views/tabs/condition_setting.py" line="1262"/>
+        <location filename="../views/tabs/condition_setting.py" line="1421"/>
         <source>提示</source>
         <translation>Notice</translation>
     </message>
     <message>
-        <location filename="../views/tabs/condition_setting.py" line="1152"/>
+        <location filename="../views/tabs/condition_setting.py" line="1206"/>
         <source>请选择要修改的资源。</source>
         <translation>Please select a resource to edit.</translation>
     </message>
     <message>
-        <location filename="../views/tabs/condition_setting.py" line="1208"/>
+        <location filename="../views/tabs/condition_setting.py" line="1262"/>
         <source>请选择要删除的资源。</source>
         <translation>Please select a resource to delete.</translation>
     </message>
     <message>
-        <location filename="../views/tabs/condition_setting.py" line="1215"/>
+        <location filename="../views/tabs/condition_setting.py" line="1269"/>
         <source>确认删除</source>
         <translation>Confirm Deletion</translation>
     </message>
     <message>
-        <location filename="../views/tabs/condition_setting.py" line="1314"/>
+        <location filename="../views/tabs/condition_setting.py" line="1368"/>
         <source>时长</source>
         <translation>Duration</translation>
     </message>
     <message>
-        <location filename="../views/tabs/condition_setting.py" line="1279"/>
+        <location filename="../views/tabs/condition_setting.py" line="1333"/>
         <source>保存结果</source>
         <translation>Save Results</translation>
     </message>
     <message>
-        <location filename="../views/tabs/condition_setting.py" line="848"/>
+        <location filename="../views/tabs/condition_setting.py" line="887"/>
         <source>行为</source>
         <translation>Behavior</translation>
     </message>
     <message>
-        <location filename="../views/tabs/condition_setting.py" line="1216"/>
+        <location filename="../views/tabs/condition_setting.py" line="909"/>
+        <source>智能问答</source>
+        <translation>AI QA</translation>
+    </message>
+    <message>
+        <location filename="../views/tabs/condition_setting.py" line="938"/>
+        <source>智能问答功能</source>
+        <translation>intelligent question and answer function (Q&amp;A)</translation>
+    </message>
+    <message>
+        <location filename="../views/tabs/condition_setting.py" line="1015"/>
+        <source>智能问答功能未启用</source>
+        <translation>Smart Q&amp;A function is not enabled</translation>
+    </message>
+    <message>
+        <location filename="../views/tabs/condition_setting.py" line="1270"/>
         <source>确定要删除【</source>
         <translation>Confirm to delete</translation>
     </message>
     <message>
-        <location filename="../views/tabs/condition_setting.py" line="1216"/>
+        <location filename="../views/tabs/condition_setting.py" line="1270"/>
         <source>】行为下的资源：</source>
         <translation>Resources under Behavior:</translation>
     </message>
     <message>
-        <location filename="../views/tabs/condition_setting.py" line="1246"/>
+        <location filename="../views/tabs/condition_setting.py" line="1300"/>
         <source>请给已勾选的行为设置时长</source>
         <translation>Please set a duration for the selected actions</translation>
     </message>
     <message>
-        <location filename="../views/tabs/condition_setting.py" line="1264"/>
+        <location filename="../views/tabs/condition_setting.py" line="1318"/>
         <source>勾选行为需在表格中添加资源</source>
         <translation>Checking behavior requires adding resources to the form</translation>
     </message>
     <message>
-        <location filename="../views/tabs/condition_setting.py" line="1279"/>
+        <location filename="../views/tabs/condition_setting.py" line="1333"/>
         <source>没有要保存的应急行为。</source>
         <translation>No emergency behavior to save.</translation>
     </message>
     <message>
-        <location filename="../views/tabs/condition_setting.py" line="1327"/>
+        <location filename="../views/tabs/condition_setting.py" line="1381"/>
         <source>保存结果详情</source>
         <translation>Save Results Details</translation>
     </message>
     <message>
-        <location filename="../views/tabs/condition_setting.py" line="1332"/>
-        <location filename="../views/tabs/condition_setting.py" line="1334"/>
+        <location filename="../views/tabs/condition_setting.py" line="1386"/>
+        <location filename="../views/tabs/condition_setting.py" line="1388"/>
         <source>&lt;h3&gt;类别: </source>
         <translation>&lt;h3&gt;Category: </translation>
     </message>
     <message>
-        <location filename="../views/tabs/condition_setting.py" line="1335"/>
+        <location filename="../views/tabs/condition_setting.py" line="1389"/>
         <source>属性</source>
         <translation>Attributes</translation>
     </message>
     <message>
-        <location filename="../views/tabs/condition_setting.py" line="1336"/>
+        <location filename="../views/tabs/condition_setting.py" line="1390"/>
         <source>属性名称</source>
         <translation>Attribute Name</translation>
     </message>
     <message>
-        <location filename="../views/tabs/condition_setting.py" line="1336"/>
+        <location filename="../views/tabs/condition_setting.py" line="1390"/>
         <source>属性值</source>
         <translation>Attribute Value</translation>
     </message>
     <message>
-        <location filename="../views/tabs/condition_setting.py" line="1339"/>
+        <location filename="../views/tabs/condition_setting.py" line="1393"/>
         <source>资源列表</source>
         <translation>Resource List</translation>
     </message>
     <message>
-        <location filename="../views/tabs/condition_setting.py" line="1343"/>
-        <location filename="../views/tabs/condition_setting.py" line="1639"/>
+        <location filename="../views/tabs/condition_setting.py" line="1397"/>
+        <location filename="../views/tabs/condition_setting.py" line="1704"/>
         <source>资源名称</source>
         <translation>Resource Name</translation>
     </message>
     <message>
-        <location filename="../views/tabs/condition_setting.py" line="1349"/>
+        <location filename="../views/tabs/condition_setting.py" line="1403"/>
         <source>无资源</source>
         <translation>No Resource</translation>
     </message>
     <message>
-        <location filename="../views/tabs/condition_setting.py" line="1360"/>
+        <location filename="../views/tabs/condition_setting.py" line="1414"/>
         <source>预案名称设置</source>
         <translation>Set Plan Name</translation>
     </message>
     <message>
-        <location filename="../views/tabs/condition_setting.py" line="1360"/>
+        <location filename="../views/tabs/condition_setting.py" line="1414"/>
         <source>请输入预案名字:</source>
         <translation>Please enter the plan name:</translation>
     </message>
     <message>
-        <location filename="../views/tabs/condition_setting.py" line="1404"/>
+        <location filename="../views/tabs/condition_setting.py" line="1458"/>
         <source>成功</source>
         <translation>Success</translation>
     </message>
     <message>
-        <location filename="../views/tabs/condition_setting.py" line="1405"/>
+        <location filename="../views/tabs/condition_setting.py" line="1459"/>
         <source>预案 &apos;</source>
         <translation>Plan &apos;</translation>
     </message>
     <message>
-        <location filename="../views/tabs/condition_setting.py" line="1405"/>
+        <location filename="../views/tabs/condition_setting.py" line="1459"/>
         <source>&apos; 已保存并推演。</source>
         <translation>&apos; has been saved and deducted.</translation>
     </message>
     <message>
-        <location filename="../views/tabs/condition_setting.py" line="1410"/>
-        <location filename="../views/tabs/condition_setting.py" line="1534"/>
+        <location filename="../views/tabs/condition_setting.py" line="1464"/>
+        <location filename="../views/tabs/condition_setting.py" line="1588"/>
         <source>错误</source>
         <translation>Error</translation>
     </message>
     <message>
-        <location filename="../views/tabs/condition_setting.py" line="1411"/>
+        <location filename="../views/tabs/condition_setting.py" line="1465"/>
         <source>保存预案时出现错误。</source>
         <translation>There was an error when saving the profile.</translation>
     </message>
     <message>
-        <location filename="../views/tabs/condition_setting.py" line="1535"/>
+        <location filename="../views/tabs/condition_setting.py" line="1589"/>
         <source>加载预案数据时出现错误：</source>
         <translation>An error occurred while loading the profile data:</translation>
     </message>
     <message>
-        <location filename="../views/tabs/condition_setting.py" line="1606"/>
+        <location filename="../views/tabs/condition_setting.py" line="1660"/>
         <source>预案详情 - </source>
-        <translation>Plan Detail</translation>
+        <translation>Plan Detail - </translation>
     </message>
     <message>
-        <location filename="../views/tabs/condition_setting.py" line="1367"/>
+        <location filename="../views/tabs/condition_setting.py" line="1677"/>
+        <source>创建时间</source>
+        <translation>Creation time</translation>
+    </message>
+    <message>
+        <location filename="../views/tabs/condition_setting.py" line="1683"/>
+        <location filename="../views/tabs/condition_setting.py" line="1686"/>
+        <location filename="../views/tabs/condition_setting.py" line="1690"/>
+        <location filename="../views/tabs/condition_setting.py" line="1693"/>
+        <source>应急行为</source>
+        <translation>Emergency action</translation>
+    </message>
+    <message>
+        <location filename="../views/tabs/condition_setting.py" line="1683"/>
+        <location filename="../views/tabs/condition_setting.py" line="1686"/>
+        <source>已实施</source>
+        <translation>Implemented</translation>
+    </message>
+    <message>
+        <location filename="../views/tabs/condition_setting.py" line="1690"/>
+        <location filename="../views/tabs/condition_setting.py" line="1693"/>
+        <source>未实施</source>
+        <translation>Not implemented</translation>
+    </message>
+    <message>
+        <location filename="../views/tabs/condition_setting.py" line="1421"/>
         <source>预案名字不能为空。</source>
         <translation>The plan name cannot be empty.</translation>
+    </message>
+</context>
+<context>
+    <name>CreateDefinitionDialog</name>
+    <message>
+        <location filename="../views/dialogs/custom_select_dialog.py" line="91"/>
+        <location filename="../views/dialogs/custom_select_dialog.py" line="96"/>
+        <location filename="../views/dialogs/custom_select_dialog.py" line="143"/>
+        <source>错误</source>
+        <translation>Error</translation>
+    </message>
+    <message>
+        <location filename="../views/dialogs/custom_select_dialog.py" line="91"/>
+        <source>请选择属性类型</source>
+        <translation>Please select the property type</translation>
+    </message>
+    <message>
+        <location filename="../views/dialogs/custom_select_dialog.py" line="96"/>
+        <source>中文名与英文名不能为空</source>
+        <translation>Chinese name and English name can not be empty</translation>
+    </message>
+    <message>
+        <location filename="../views/dialogs/custom_select_dialog.py" line="143"/>
+        <source>新建 definition 失败</source>
+        <translation>New definition failed</translation>
     </message>
 </context>
 <context>
@@ -415,73 +584,73 @@
 <context>
     <name>CustomSelectDialog</name>
     <message>
-        <location filename="../views/dialogs/custom_select_dialog.py" line="243"/>
+        <location filename="../views/dialogs/custom_select_dialog.py" line="245"/>
         <source>实体管理</source>
         <translation>Entity management</translation>
     </message>
     <message>
-        <location filename="../views/dialogs/custom_select_dialog.py" line="271"/>
+        <location filename="../views/dialogs/custom_select_dialog.py" line="273"/>
         <source>新建</source>
         <translation>New</translation>
     </message>
     <message>
-        <location filename="../views/dialogs/custom_select_dialog.py" line="275"/>
+        <location filename="../views/dialogs/custom_select_dialog.py" line="278"/>
         <source>删除</source>
         <translation>Delete</translation>
     </message>
     <message>
-        <location filename="../views/dialogs/custom_select_dialog.py" line="279"/>
+        <location filename="../views/dialogs/custom_select_dialog.py" line="283"/>
         <source>读取</source>
         <translation>Read</translation>
     </message>
     <message>
-        <location filename="../views/dialogs/custom_select_dialog.py" line="381"/>
-        <location filename="../views/dialogs/custom_select_dialog.py" line="850"/>
+        <location filename="../views/dialogs/custom_select_dialog.py" line="386"/>
+        <location filename="../views/dialogs/custom_select_dialog.py" line="865"/>
         <source>新建实体</source>
         <translation>New Entities</translation>
     </message>
     <message>
-        <location filename="../views/dialogs/custom_select_dialog.py" line="385"/>
+        <location filename="../views/dialogs/custom_select_dialog.py" line="393"/>
         <source>从文件新建</source>
         <translation>New from file</translation>
     </message>
     <message>
-        <location filename="../views/dialogs/custom_select_dialog.py" line="389"/>
+        <location filename="../views/dialogs/custom_select_dialog.py" line="401"/>
         <source>从模板新建</source>
         <translation>New from template</translation>
     </message>
     <message>
-        <location filename="../views/dialogs/custom_select_dialog.py" line="851"/>
+        <location filename="../views/dialogs/custom_select_dialog.py" line="866"/>
         <source>请输入新建实体的名称</source>
         <translation>Please enter the name of the newly created entity</translation>
     </message>
     <message>
-        <location filename="../views/dialogs/custom_select_dialog.py" line="858"/>
-        <location filename="../views/dialogs/custom_select_dialog.py" line="885"/>
-        <location filename="../views/dialogs/custom_select_dialog.py" line="912"/>
+        <location filename="../views/dialogs/custom_select_dialog.py" line="873"/>
+        <location filename="../views/dialogs/custom_select_dialog.py" line="899"/>
+        <location filename="../views/dialogs/custom_select_dialog.py" line="927"/>
         <source>警告</source>
         <translation>Warning</translation>
     </message>
     <message>
-        <location filename="../views/dialogs/custom_select_dialog.py" line="858"/>
+        <location filename="../views/dialogs/custom_select_dialog.py" line="873"/>
         <source>实体名称不能为空</source>
         <translation>Entity name cannot be null</translation>
     </message>
     <message>
-        <location filename="../views/dialogs/custom_select_dialog.py" line="553"/>
-        <location filename="../views/dialogs/custom_select_dialog.py" line="875"/>
-        <location filename="../views/dialogs/custom_select_dialog.py" line="902"/>
-        <location filename="../views/dialogs/custom_select_dialog.py" line="953"/>
+        <location filename="../views/dialogs/custom_select_dialog.py" line="569"/>
+        <location filename="../views/dialogs/custom_select_dialog.py" line="890"/>
+        <location filename="../views/dialogs/custom_select_dialog.py" line="917"/>
+        <location filename="../views/dialogs/custom_select_dialog.py" line="970"/>
         <source>成功</source>
         <translation>Success</translation>
     </message>
     <message>
-        <location filename="../views/dialogs/custom_select_dialog.py" line="297"/>
+        <location filename="../views/dialogs/custom_select_dialog.py" line="302"/>
         <source>请新建实体</source>
         <translation>Please create a new entity</translation>
     </message>
     <message>
-        <location filename="../views/dialogs/custom_select_dialog.py" line="553"/>
+        <location filename="../views/dialogs/custom_select_dialog.py" line="569"/>
         <source>已成功从文件新建实体 &apos;{0}&apos;。</source>
         <translation>New entity &apos;{0}&apos; has been successfully created from the file.</translation>
     </message>
@@ -491,17 +660,18 @@
         <translation>Unmapped Attributes</translation>
     </message>
     <message>
-        <location filename="../views/dialogs/custom_select_dialog.py" line="608"/>
+        <location filename="../views/dialogs/custom_select_dialog.py" line="624"/>
         <source>文件属性 &apos;{0}&apos; 无法与任一 attribute_code 映射,已跳过.</source>
         <translation>The file attribute &apos;{0}&apos; cannot be mapped to any attribute_code, skipped.</translation>
     </message>
     <message>
-        <location filename="../views/dialogs/custom_select_dialog.py" line="645"/>
+        <location filename="../views/dialogs/custom_select_dialog.py" line="624"/>
+        <location filename="../views/dialogs/custom_select_dialog.py" line="661"/>
         <source>无法新建属性</source>
         <translation>Unable to create new properties</translation>
     </message>
     <message>
-        <location filename="../views/dialogs/custom_select_dialog.py" line="646"/>
+        <location filename="../views/dialogs/custom_select_dialog.py" line="661"/>
         <source>属性 &apos;{0}&apos; 无法在 code_id={code_id} 下创建 definition, 跳过.</source>
         <translation>Attribute &apos;{0}&apos; cannot create a definition under code_id={code_id}, skip.</translation>
     </message>
@@ -511,17 +681,17 @@
         <translation>Successfully created new entity “{name}” from template</translation>
     </message>
     <message>
-        <location filename="../views/dialogs/custom_select_dialog.py" line="885"/>
+        <location filename="../views/dialogs/custom_select_dialog.py" line="899"/>
         <source>请先选择要删除的实体。</source>
         <translation>Please select the entities to be deleted first.</translation>
     </message>
     <message>
-        <location filename="../views/dialogs/custom_select_dialog.py" line="894"/>
+        <location filename="../views/dialogs/custom_select_dialog.py" line="908"/>
         <source>确认删除</source>
         <translation>Confirm Deletion</translation>
     </message>
     <message>
-        <location filename="../views/dialogs/custom_select_dialog.py" line="895"/>
+        <location filename="../views/dialogs/custom_select_dialog.py" line="909"/>
         <source>确定要删除实体 &quot;{entity_name}&quot; 吗？</source>
         <translation>Are you sure you want to delete the entity “{entity_name}”?</translation>
     </message>
@@ -531,53 +701,63 @@
         <translation>Deleted entity “{entity_name}”</translation>
     </message>
     <message>
-        <location filename="../views/dialogs/custom_select_dialog.py" line="912"/>
+        <location filename="../views/dialogs/custom_select_dialog.py" line="890"/>
+        <source>已成功从模板新建实体 &apos;{0}&apos;。</source>
+        <translation>New entity &apos;{0}&apos; has been successfully created from the template.</translation>
+    </message>
+    <message>
+        <location filename="../views/dialogs/custom_select_dialog.py" line="917"/>
+        <source>已删除实体 &quot;{0}&quot;</source>
+        <translation>Deleted entity “{0}”</translation>
+    </message>
+    <message>
+        <location filename="../views/dialogs/custom_select_dialog.py" line="927"/>
         <source>请先选择要读取的实体。</source>
         <translation>Please select the entity you want to read first.</translation>
     </message>
     <message>
-        <location filename="../views/dialogs/custom_select_dialog.py" line="921"/>
+        <location filename="../views/dialogs/custom_select_dialog.py" line="936"/>
         <source>读取实体</source>
         <translation>Read Entity</translation>
     </message>
     <message>
-        <location filename="../views/dialogs/custom_select_dialog.py" line="925"/>
+        <location filename="../views/dialogs/custom_select_dialog.py" line="940"/>
         <source>读取至sysml2文件</source>
         <translation>Read to sysml2 file</translation>
     </message>
     <message>
-        <location filename="../views/dialogs/custom_select_dialog.py" line="926"/>
+        <location filename="../views/dialogs/custom_select_dialog.py" line="942"/>
         <source>sysml2文件</source>
         <translation>sysml2 file</translation>
     </message>
     <message>
-        <location filename="../views/dialogs/custom_select_dialog.py" line="929"/>
+        <location filename="../views/dialogs/custom_select_dialog.py" line="945"/>
         <source>读取至界面</source>
         <translation>Read to interface</translation>
     </message>
     <message>
-        <location filename="../views/dialogs/custom_select_dialog.py" line="930"/>
+        <location filename="../views/dialogs/custom_select_dialog.py" line="947"/>
         <source>界面</source>
         <translation>interfaces</translation>
     </message>
     <message>
-        <location filename="../views/dialogs/custom_select_dialog.py" line="953"/>
+        <location filename="../views/dialogs/custom_select_dialog.py" line="970"/>
         <source>已读取实体 &apos;{entity_name}&apos; 至{destination}。</source>
         <translation>Read entity &apos;{entity_name}&apos; to {destination}.</translation>
     </message>
     <message>
-        <location filename="../views/dialogs/custom_select_dialog.py" line="976"/>
-        <location filename="../views/dialogs/custom_select_dialog.py" line="1011"/>
+        <location filename="../views/dialogs/custom_select_dialog.py" line="994"/>
+        <location filename="../views/dialogs/custom_select_dialog.py" line="1029"/>
         <source>无可用Code</source>
         <translation>No Code available</translation>
     </message>
     <message>
-        <location filename="../views/dialogs/custom_select_dialog.py" line="976"/>
+        <location filename="../views/dialogs/custom_select_dialog.py" line="994"/>
         <source>数据库中无任何 attribute_code 记录。</source>
         <translation>There are no attribute_code records in the database.</translation>
     </message>
     <message>
-        <location filename="../views/dialogs/custom_select_dialog.py" line="1011"/>
+        <location filename="../views/dialogs/custom_select_dialog.py" line="1029"/>
         <source>数据库中无任何 behavior_code 记录。</source>
         <translation>There are no behavior_code records in the database.</translation>
     </message>
@@ -585,12 +765,12 @@
 <context>
     <name>CustomSelectionDialog</name>
     <message>
-        <location filename="../views/tabs/element_setting.py" line="2139"/>
+        <location filename="../views/tabs/element_setting.py" line="2140"/>
         <source>确认</source>
         <translation>Confirm</translation>
     </message>
     <message>
-        <location filename="../views/tabs/element_setting.py" line="2143"/>
+        <location filename="../views/tabs/element_setting.py" line="2144"/>
         <source>取消</source>
         <translation>Cancel</translation>
     </message>
@@ -730,6 +910,11 @@
         <translation>Model generation failed:{e}</translation>
     </message>
     <message>
+        <location filename="../views/tabs/tab_widget.py" line="516"/>
+        <source>模型生成失败:{0}</source>
+        <translation>Model generation failed:{0}</translation>
+    </message>
+    <message>
         <location filename="../views/tabs/tab_widget.py" line="525"/>
         <source>生成贝叶斯网络</source>
         <translation>Generating Bayesian networks</translation>
@@ -810,6 +995,7 @@
         <translation>Deduction model generated successfully.</translation>
     </message>
     <message>
+        <location filename="../views/tabs/tab_widget.py" line="516"/>
         <location filename="../views/tabs/tab_widget.py" line="703"/>
         <source>错误</source>
         <translation>incorrect</translation>
@@ -965,179 +1151,179 @@ Type: {attr_type_name}</translation>
     </message>
     <message>
         <location filename="../views/tabs/element_setting.py" line="1198"/>
-        <location filename="../views/tabs/element_setting.py" line="1233"/>
+        <location filename="../views/tabs/element_setting.py" line="1234"/>
         <source>警告</source>
         <translation>Warning</translation>
     </message>
     <message>
         <location filename="../views/tabs/element_setting.py" line="1198"/>
-        <location filename="../views/tabs/element_setting.py" line="1233"/>
+        <location filename="../views/tabs/element_setting.py" line="1234"/>
         <source>没有可用的实体类型。</source>
         <translation>There are no available entity types.</translation>
     </message>
     <message>
-        <location filename="../views/tabs/element_setting.py" line="1207"/>
-        <location filename="../views/tabs/element_setting.py" line="1243"/>
+        <location filename="../views/tabs/element_setting.py" line="1208"/>
+        <location filename="../views/tabs/element_setting.py" line="1244"/>
         <source>未选择任何实体类型</source>
         <translation>No entity type selected</translation>
     </message>
     <message>
-        <location filename="../views/tabs/element_setting.py" line="1207"/>
-        <location filename="../views/tabs/element_setting.py" line="1243"/>
+        <location filename="../views/tabs/element_setting.py" line="1208"/>
+        <location filename="../views/tabs/element_setting.py" line="1244"/>
         <source>未选择任何实体类型。</source>
         <translation>No entity type was selected.</translation>
     </message>
     <message>
-        <location filename="../views/tabs/element_setting.py" line="1263"/>
+        <location filename="../views/tabs/element_setting.py" line="1264"/>
         <source>当前正在编辑属性：{0}，属性类型：{1}, 实体类型：{2}</source>
         <translation>Currently editing attribute: {0}, attribute type: {1}, entity type: {2}</translation>
     </message>
     <message>
-        <location filename="../views/tabs/element_setting.py" line="1265"/>
+        <location filename="../views/tabs/element_setting.py" line="1266"/>
         <source>当前正在编辑复合属性：{0}，属性类型：{1}, 实体类型：{2}</source>
         <translation>Currently editing composite attribute: {0}, attribute type: {1}, entity type: {2}</translation>
     </message>
     <message>
-        <location filename="../views/tabs/element_setting.py" line="1274"/>
+        <location filename="../views/tabs/element_setting.py" line="1275"/>
         <source>选中</source>
         <translation>choose</translation>
     </message>
     <message>
-        <location filename="../views/tabs/element_setting.py" line="1274"/>
+        <location filename="../views/tabs/element_setting.py" line="1275"/>
         <source>实体名称</source>
         <translation>Name of entity</translation>
     </message>
     <message>
-        <location filename="../views/tabs/element_setting.py" line="1292"/>
+        <location filename="../views/tabs/element_setting.py" line="1293"/>
         <source>增加</source>
         <translation>Add</translation>
     </message>
     <message>
-        <location filename="../views/tabs/element_setting.py" line="1293"/>
+        <location filename="../views/tabs/element_setting.py" line="1294"/>
         <source>修改</source>
         <translation>Edit</translation>
     </message>
     <message>
-        <location filename="../views/tabs/element_setting.py" line="1294"/>
+        <location filename="../views/tabs/element_setting.py" line="1295"/>
         <source>删除</source>
         <translation>Delete</translation>
     </message>
     <message>
-        <location filename="../views/tabs/element_setting.py" line="1539"/>
+        <location filename="../views/tabs/element_setting.py" line="1540"/>
         <source>输入名称</source>
         <translation>Input Name</translation>
     </message>
     <message>
-        <location filename="../views/tabs/element_setting.py" line="1544"/>
+        <location filename="../views/tabs/element_setting.py" line="1545"/>
         <source>输入错误</source>
         <translation>Input Error</translation>
     </message>
     <message>
-        <location filename="../views/tabs/element_setting.py" line="1544"/>
+        <location filename="../views/tabs/element_setting.py" line="1545"/>
         <source>名字不能为空</source>
         <translation>The name cannot be empty</translation>
     </message>
     <message>
-        <location filename="../views/tabs/element_setting.py" line="1572"/>
-        <location filename="../views/tabs/element_setting.py" line="1632"/>
-        <location filename="../views/tabs/element_setting.py" line="1806"/>
-        <location filename="../views/tabs/element_setting.py" line="1822"/>
-        <location filename="../views/tabs/element_setting.py" line="1853"/>
+        <location filename="../views/tabs/element_setting.py" line="1573"/>
+        <location filename="../views/tabs/element_setting.py" line="1633"/>
+        <location filename="../views/tabs/element_setting.py" line="1807"/>
+        <location filename="../views/tabs/element_setting.py" line="1823"/>
+        <location filename="../views/tabs/element_setting.py" line="1854"/>
         <source>错误</source>
         <translation>Error</translation>
     </message>
     <message>
-        <location filename="../views/tabs/element_setting.py" line="1572"/>
-        <location filename="../views/tabs/element_setting.py" line="1632"/>
+        <location filename="../views/tabs/element_setting.py" line="1573"/>
+        <location filename="../views/tabs/element_setting.py" line="1633"/>
         <source>无法找到类别信息</source>
         <translation>Unable to find category information</translation>
     </message>
     <message>
-        <location filename="../views/tabs/element_setting.py" line="1588"/>
-        <location filename="../views/tabs/element_setting.py" line="1650"/>
+        <location filename="../views/tabs/element_setting.py" line="1589"/>
+        <location filename="../views/tabs/element_setting.py" line="1651"/>
         <source>选择类别</source>
         <translation>Select Category</translation>
     </message>
     <message>
-        <location filename="../views/tabs/element_setting.py" line="1806"/>
-        <location filename="../views/tabs/element_setting.py" line="1853"/>
+        <location filename="../views/tabs/element_setting.py" line="1807"/>
+        <location filename="../views/tabs/element_setting.py" line="1854"/>
         <source>无法获取选定实体的信息。</source>
         <translation>Information on the selected entity could not be obtained.</translation>
     </message>
     <message>
-        <location filename="../views/tabs/element_setting.py" line="1822"/>
+        <location filename="../views/tabs/element_setting.py" line="1823"/>
         <source>无法找到要编辑的实体。</source>
         <translation>The entity to be edited could not be found.</translation>
     </message>
     <message>
-        <location filename="../views/tabs/element_setting.py" line="1830"/>
+        <location filename="../views/tabs/element_setting.py" line="1831"/>
         <source>修改失败</source>
         <translation>Edit Failed</translation>
     </message>
     <message>
-        <location filename="../views/tabs/element_setting.py" line="1830"/>
+        <location filename="../views/tabs/element_setting.py" line="1831"/>
         <source>请先选择要修改的实体。</source>
         <translation>Please select the entity to be modified first.</translation>
     </message>
     <message>
-        <location filename="../views/tabs/element_setting.py" line="1838"/>
-        <location filename="../views/tabs/element_setting.py" line="1849"/>
-        <location filename="../views/tabs/element_setting.py" line="1857"/>
-        <location filename="../views/tabs/element_setting.py" line="1869"/>
-        <location filename="../views/tabs/element_setting.py" line="1883"/>
-        <location filename="../views/tabs/element_setting.py" line="1886"/>
-        <location filename="../views/tabs/element_setting.py" line="1903"/>
-        <location filename="../views/tabs/element_setting.py" line="1916"/>
+        <location filename="../views/tabs/element_setting.py" line="1839"/>
+        <location filename="../views/tabs/element_setting.py" line="1850"/>
+        <location filename="../views/tabs/element_setting.py" line="1858"/>
+        <location filename="../views/tabs/element_setting.py" line="1870"/>
+        <location filename="../views/tabs/element_setting.py" line="1884"/>
+        <location filename="../views/tabs/element_setting.py" line="1887"/>
+        <location filename="../views/tabs/element_setting.py" line="1904"/>
+        <location filename="../views/tabs/element_setting.py" line="1917"/>
         <source>删除失败</source>
         <translation>Deletion Failed</translation>
     </message>
     <message>
-        <location filename="../views/tabs/element_setting.py" line="1838"/>
+        <location filename="../views/tabs/element_setting.py" line="1839"/>
         <source>请选择要删除的实体。</source>
         <translation>Please select the entities to be deleted.</translation>
     </message>
     <message>
-        <location filename="../views/tabs/element_setting.py" line="1849"/>
+        <location filename="../views/tabs/element_setting.py" line="1850"/>
         <source>请不要删除最后一个实体。</source>
         <translation>Please do not delete the last entity.</translation>
     </message>
     <message>
-        <location filename="../views/tabs/element_setting.py" line="1857"/>
+        <location filename="../views/tabs/element_setting.py" line="1858"/>
         <source>请先取消选中实体后再删除。</source>
         <translation>请先取消选中实体后再删除。</translation>
     </message>
     <message>
-        <location filename="../views/tabs/element_setting.py" line="1869"/>
+        <location filename="../views/tabs/element_setting.py" line="1870"/>
         <source>核心要素不得删除。</source>
         <translation>Core elements shall not be deleted.</translation>
     </message>
     <message>
-        <location filename="../views/tabs/element_setting.py" line="1881"/>
+        <location filename="../views/tabs/element_setting.py" line="1882"/>
         <source>删除成功</source>
         <translation>Deletion Successful</translation>
     </message>
     <message>
-        <location filename="../views/tabs/element_setting.py" line="1881"/>
+        <location filename="../views/tabs/element_setting.py" line="1882"/>
         <source>实体 &apos;{0}&apos; 已删除。</source>
         <translation>Entity &apos;{0}&apos; has been deleted.</translation>
     </message>
     <message>
-        <location filename="../views/tabs/element_setting.py" line="1883"/>
+        <location filename="../views/tabs/element_setting.py" line="1884"/>
         <source>无法找到要删除的实体。</source>
         <translation>The entity to be deleted could not be found.</translation>
     </message>
     <message>
-        <location filename="../views/tabs/element_setting.py" line="1886"/>
+        <location filename="../views/tabs/element_setting.py" line="1887"/>
         <source>删除过程中发生错误：{0}</source>
         <translation>An error occurred during deletion: {0}</translation>
     </message>
     <message>
-        <location filename="../views/tabs/element_setting.py" line="1904"/>
+        <location filename="../views/tabs/element_setting.py" line="1905"/>
         <source>该实体被属性 &apos;{0}&apos; 使用，请先解除关联。</source>
         <translation>This entity is used by attribute &apos;{0}&apos;, please unassociate it first.</translation>
     </message>
     <message>
-        <location filename="../views/tabs/element_setting.py" line="1917"/>
+        <location filename="../views/tabs/element_setting.py" line="1918"/>
         <source>该实体被行为 &apos;{0}&apos; 使用，请先解除关联。</source>
         <translation>This entity is used by the behavior &apos;{0}&apos;, please unlink it first.</translation>
     </message>
@@ -1145,207 +1331,228 @@ Type: {attr_type_name}</translation>
 <context>
     <name>ElementSettingTab</name>
     <message>
-        <location filename="../views/tabs/element_setting.py" line="2404"/>
+        <location filename="../views/tabs/element_setting.py" line="2424"/>
         <source>涉及的情景要素</source>
         <translation>Involved Scenario Elements</translation>
     </message>
     <message>
-        <location filename="../views/tabs/element_setting.py" line="2475"/>
+        <location filename="../views/tabs/element_setting.py" line="2495"/>
         <source>属性模型</source>
         <translation>Attribute Model</translation>
     </message>
     <message>
-        <location filename="../views/tabs/element_setting.py" line="2483"/>
-        <location filename="../views/tabs/element_setting.py" line="3704"/>
+        <location filename="../views/tabs/element_setting.py" line="2503"/>
+        <location filename="../views/tabs/element_setting.py" line="3724"/>
         <source>行为模型</source>
         <translation>Behavior Model</translation>
     </message>
     <message>
-        <location filename="../views/tabs/element_setting.py" line="2510"/>
+        <location filename="../views/tabs/element_setting.py" line="2530"/>
         <source>请选择模型类别</source>
         <translation>Please select the model type</translation>
     </message>
     <message>
-        <location filename="../views/tabs/element_setting.py" line="2546"/>
-        <location filename="../views/tabs/element_setting.py" line="2594"/>
-        <location filename="../views/tabs/element_setting.py" line="2671"/>
-        <location filename="../views/tabs/element_setting.py" line="2771"/>
-        <location filename="../views/tabs/element_setting.py" line="3863"/>
+        <location filename="../views/tabs/element_setting.py" line="2566"/>
+        <location filename="../views/tabs/element_setting.py" line="2614"/>
+        <location filename="../views/tabs/element_setting.py" line="2691"/>
+        <location filename="../views/tabs/element_setting.py" line="2791"/>
+        <location filename="../views/tabs/element_setting.py" line="3883"/>
         <source>等待上传情景要素模型</source>
         <translation>Waiting for scenario element model upload</translation>
     </message>
     <message>
-        <location filename="../views/tabs/element_setting.py" line="2576"/>
-        <location filename="../views/tabs/element_setting.py" line="3709"/>
+        <location filename="../views/tabs/element_setting.py" line="2596"/>
+        <location filename="../views/tabs/element_setting.py" line="3729"/>
         <source>行为名称</source>
         <translation>Behavior Name</translation>
     </message>
     <message>
-        <location filename="../views/tabs/element_setting.py" line="2576"/>
-        <location filename="../views/tabs/element_setting.py" line="3710"/>
+        <location filename="../views/tabs/element_setting.py" line="2596"/>
+        <location filename="../views/tabs/element_setting.py" line="3730"/>
         <source>行为主体</source>
         <translation>Behavior Subject</translation>
     </message>
     <message>
-        <location filename="../views/tabs/element_setting.py" line="2576"/>
-        <location filename="../views/tabs/element_setting.py" line="3711"/>
+        <location filename="../views/tabs/element_setting.py" line="2596"/>
+        <location filename="../views/tabs/element_setting.py" line="3731"/>
         <source>行为对象</source>
         <translation>Behavior Object</translation>
     </message>
     <message>
-        <location filename="../views/tabs/element_setting.py" line="2615"/>
+        <location filename="../views/tabs/element_setting.py" line="2635"/>
         <source>保存</source>
         <translation>Save</translation>
     </message>
     <message>
-        <location filename="../views/tabs/element_setting.py" line="2618"/>
+        <location filename="../views/tabs/element_setting.py" line="2638"/>
         <source>点击保存当前配置的要素数据</source>
         <translation>Click to save the currently configured element data</translation>
     </message>
     <message>
-        <location filename="../views/tabs/element_setting.py" line="2621"/>
+        <location filename="../views/tabs/element_setting.py" line="2641"/>
         <source>生成情景模型</source>
         <translation>Generate Scenario Model</translation>
     </message>
     <message>
-        <location filename="../views/tabs/element_setting.py" line="2626"/>
+        <location filename="../views/tabs/element_setting.py" line="2646"/>
         <source>点击生成情景级孪生模型</source>
         <translation>Click to generate a scenario-level twin model</translation>
     </message>
     <message>
-        <location filename="../views/tabs/element_setting.py" line="2715"/>
+        <location filename="../views/tabs/element_setting.py" line="2735"/>
         <source>没有行为模型</source>
         <translation>No behavior model</translation>
     </message>
     <message>
-        <location filename="../views/tabs/element_setting.py" line="2917"/>
+        <location filename="../views/tabs/element_setting.py" line="2937"/>
         <source>编辑错误</source>
         <translation>Editorial Error</translation>
     </message>
     <message>
-        <location filename="../views/tabs/element_setting.py" line="2918"/>
+        <location filename="../views/tabs/element_setting.py" line="2938"/>
         <source>未选中要素。</source>
         <translation>Unchecked element.</translation>
     </message>
     <message>
-        <location filename="../views/tabs/element_setting.py" line="3629"/>
+        <location filename="../views/tabs/element_setting.py" line="3649"/>
         <source>保存过程中发生错误:
 {e}</source>
         <translation>An error occurred while saving: {e}
 {e}</translation>
     </message>
     <message>
-        <location filename="../views/tabs/element_setting.py" line="2832"/>
+        <location filename="../views/tabs/element_setting.py" line="2852"/>
         <source>没有属性模型</source>
         <translation>No attribute model</translation>
     </message>
     <message>
-        <location filename="../views/tabs/element_setting.py" line="3471"/>
+        <location filename="../views/tabs/element_setting.py" line="3491"/>
         <source>保存结果</source>
         <translation>Save Results</translation>
     </message>
     <message>
-        <location filename="../views/tabs/element_setting.py" line="3472"/>
+        <location filename="../views/tabs/element_setting.py" line="3492"/>
         <source>没有要保存的要素。</source>
         <translation>No elements to save.</translation>
     </message>
     <message>
-        <location filename="../views/tabs/element_setting.py" line="3527"/>
+        <location filename="../views/tabs/element_setting.py" line="3547"/>
         <source>缺失承灾要素</source>
         <translation>Missing elements of disaster preparedness</translation>
     </message>
     <message>
-        <location filename="../views/tabs/element_setting.py" line="3528"/>
+        <location filename="../views/tabs/element_setting.py" line="3548"/>
         <source>请选择补充要素的类别：</source>
         <translation>Please select the category of the supplementary element:</translation>
     </message>
     <message>
-        <location filename="../views/tabs/element_setting.py" line="3536"/>
         <location filename="../views/tabs/element_setting.py" line="3556"/>
-        <location filename="../views/tabs/element_setting.py" line="3628"/>
+        <location filename="../views/tabs/element_setting.py" line="3576"/>
+        <location filename="../views/tabs/element_setting.py" line="3648"/>
         <source>保存失败</source>
         <translation>Fail to save</translation>
     </message>
     <message>
-        <location filename="../views/tabs/element_setting.py" line="3537"/>
+        <location filename="../views/tabs/element_setting.py" line="3557"/>
         <source>未选择任何承灾要素类别，保存失败。</source>
         <translation>No disaster-bearing element category is selected and the save fails.</translation>
     </message>
     <message>
-        <location filename="../views/tabs/element_setting.py" line="3548"/>
+        <location filename="../views/tabs/element_setting.py" line="3568"/>
         <source>缺失 {element}，尝试从模板补充</source>
         <translation>Missing {element}, trying to add from template</translation>
     </message>
     <message>
-        <location filename="../views/tabs/element_setting.py" line="3549"/>
+        <location filename="../views/tabs/element_setting.py" line="3569"/>
         <source>请输入补充要素的名称</source>
         <translation>Please enter the name of the supplementary element</translation>
     </message>
     <message>
-        <location filename="../views/tabs/element_setting.py" line="3557"/>
+        <location filename="../views/tabs/element_setting.py" line="3577"/>
         <source>缺少 {element}，保存失败。</source>
         <translation>Missing {element}, trying to add from template</translation>
     </message>
     <message>
-        <location filename="../views/tabs/element_setting.py" line="3675"/>
+        <location filename="../views/tabs/element_setting.py" line="3695"/>
         <source>保存结果详情</source>
         <translation>Save Results Details</translation>
     </message>
     <message>
-        <location filename="../views/tabs/element_setting.py" line="3680"/>
+        <location filename="../views/tabs/element_setting.py" line="3700"/>
         <source>&lt;h3&gt;元素: </source>
         <translation>&lt;h3&gt;Element: </translation>
     </message>
     <message>
-        <location filename="../views/tabs/element_setting.py" line="3683"/>
+        <location filename="../views/tabs/element_setting.py" line="3703"/>
         <source>属性</source>
         <translation>Attributes</translation>
     </message>
     <message>
-        <location filename="../views/tabs/element_setting.py" line="3686"/>
+        <location filename="../views/tabs/element_setting.py" line="3706"/>
         <source>属性名称</source>
         <translation>Attribute Name</translation>
     </message>
     <message>
-        <location filename="../views/tabs/element_setting.py" line="3687"/>
+        <location filename="../views/tabs/element_setting.py" line="3707"/>
         <source>属性值</source>
         <translation>Attribute Value</translation>
     </message>
     <message>
-        <location filename="../views/tabs/element_setting.py" line="3688"/>
+        <location filename="../views/tabs/element_setting.py" line="3708"/>
         <source>属性类别</source>
         <translation>Attribute Category</translation>
     </message>
     <message>
-        <location filename="../views/tabs/element_setting.py" line="3695"/>
-        <location filename="../views/tabs/element_setting.py" line="3719"/>
+        <location filename="../views/tabs/element_setting.py" line="3715"/>
+        <location filename="../views/tabs/element_setting.py" line="3739"/>
         <source>无</source>
         <translation>None</translation>
     </message>
     <message>
-        <location filename="../views/tabs/element_setting.py" line="3728"/>
+        <location filename="../views/tabs/element_setting.py" line="3748"/>
         <source>无行为模型</source>
         <translation>No behavior model</translation>
     </message>
     <message>
-        <location filename="../views/tabs/element_setting.py" line="3739"/>
+        <location filename="../views/tabs/element_setting.py" line="3759"/>
         <source>保存并生成</source>
         <translation>Save and generate</translation>
     </message>
     <message>
-        <location filename="../views/tabs/element_setting.py" line="3740"/>
+        <location filename="../views/tabs/element_setting.py" line="3760"/>
         <source>是否保存当前修改后生成情景模型？</source>
         <translation>Does it save the current modifications to generate the scenario model?</translation>
     </message>
     <message>
-        <location filename="../views/tabs/element_setting.py" line="3823"/>
+        <location filename="../views/tabs/element_setting.py" line="3843"/>
         <source>生成失败</source>
         <translation>Generation Failure</translation>
     </message>
     <message>
-        <location filename="../views/tabs/element_setting.py" line="3824"/>
+        <location filename="../views/tabs/element_setting.py" line="3844"/>
         <source>缺少以下要素：{missing_elements}，请先补充并保存。</source>
         <translation>The following element is missing: {missing_elements}, please add it first and save it.</translation>
+    </message>
+</context>
+<context>
+    <name>EntityTypeDialog</name>
+    <message>
+        <location filename="../views/dialogs/entity_type_select.py" line="10"/>
+        <source>选择关联实体类型</source>
+        <translation>Select Associated Entity Type</translation>
+    </message>
+    <message>
+        <location filename="../views/dialogs/entity_type_select.py" line="16"/>
+        <source>请选择一个实体类型:</source>
+        <translation>Please select an entity type.</translation>
+    </message>
+</context>
+<context>
+    <name>FallbackManager</name>
+    <message>
+        <location filename="../utils/llm_client.py" line="307"/>
+        <source>抱歉，所有可用的AI模型当前都无法响应。请稍后再试。</source>
+        <translation>Sorry, all available AI models are currently unresponsive. Please try again later.</translation>
     </message>
 </context>
 <context>
@@ -1381,6 +1588,14 @@ Type: {attr_type_name}</translation>
         <location filename="../views/tabs/condition_setting.py" line="204"/>
         <source>较差</source>
         <translation>Bad</translation>
+    </message>
+</context>
+<context>
+    <name>LLMRequestThread</name>
+    <message>
+        <location filename="../views/dialogs/llm_dialog.py" line="43"/>
+        <source>[使用备选模型</source>
+        <translation>[Use of alternative models</translation>
     </message>
 </context>
 <context>
@@ -1796,12 +2011,12 @@ Type: {attr_type_name}</translation>
         <translation>Switch to tab {index}</translation>
     </message>
     <message>
-        <location filename="../views/tabs/element_setting.py" line="3902"/>
+        <location filename="../views/tabs/element_setting.py" line="3922"/>
         <source>情景要素设置</source>
         <translation>Scenario Element Settings</translation>
     </message>
     <message>
-        <location filename="../views/tabs/element_setting.py" line="3910"/>
+        <location filename="../views/tabs/element_setting.py" line="3930"/>
         <source>要素设置</source>
         <translation>Element Settings</translation>
     </message>
@@ -2218,23 +2433,23 @@ Type: {attr_type_name}</translation>
         <translation>Saved scenario elements.</translation>
     </message>
     <message>
-        <location filename="../views/tabs/condition_setting.py" line="726"/>
+        <location filename="../views/tabs/condition_setting.py" line="765"/>
         <source>实施结果</source>
         <translation>Results of implementation</translation>
     </message>
     <message>
-        <location filename="../views/tabs/condition_setting.py" line="730"/>
+        <location filename="../views/tabs/condition_setting.py" line="769"/>
         <source>已实施的应急行为:</source>
         <translation>Emergency Acts Implemented.</translation>
     </message>
     <message>
-        <location filename="../views/tabs/condition_setting.py" line="743"/>
+        <location filename="../views/tabs/condition_setting.py" line="782"/>
         <location filename="../views/tabs/element_setting.py" line="182"/>
         <source>查看详情</source>
         <translation>View Details</translation>
     </message>
     <message>
-        <location filename="../views/tabs/condition_setting.py" line="748"/>
+        <location filename="../views/tabs/condition_setting.py" line="787"/>
         <location filename="../views/tabs/element_setting.py" line="187"/>
         <source>确定</source>
         <translation>OK</translation>
@@ -2246,6 +2461,11 @@ Type: {attr_type_name}</translation>
         <location filename="../controllers/scenario_controller.py" line="84"/>
         <source>请添加情景</source>
         <translation>Please add a scenario</translation>
+    </message>
+    <message>
+        <location filename="../controllers/scenario_controller.py" line="93"/>
+        <source>获取情景列表失败: {0}</source>
+        <translation>Failed to get scenario list: {0}</translation>
     </message>
     <message>
         <location filename="../controllers/scenario_controller.py" line="113"/>
@@ -2310,6 +2530,7 @@ Type: {attr_type_name}</translation>
         <translation>Please select the scenario to be deleted.</translation>
     </message>
     <message>
+        <location filename="../controllers/scenario_controller.py" line="93"/>
         <location filename="../controllers/scenario_controller.py" line="673"/>
         <location filename="../controllers/scenario_controller.py" line="693"/>
         <location filename="../controllers/scenario_controller.py" line="708"/>
@@ -2494,28 +2715,38 @@ Type: {attr_type_name}</translation>
 <context>
     <name>SelectCodeDialog</name>
     <message>
-        <location filename="../views/dialogs/custom_select_dialog.py" line="171"/>
+        <location filename="../views/dialogs/custom_select_dialog.py" line="173"/>
         <source>选择 attribute_code</source>
         <translation>Select attribute_code</translation>
     </message>
     <message>
-        <location filename="../views/dialogs/custom_select_dialog.py" line="171"/>
+        <location filename="../views/dialogs/custom_select_dialog.py" line="173"/>
         <source>文件中出现属性名: &apos;{0}&apos;
 请选择对应的 attribute_code:</source>
         <translation>Attribute name appears in the file: &apos;{0}&apos;
 Please select the corresponding attribute_code.</translation>
     </message>
     <message>
-        <location filename="../views/dialogs/custom_select_dialog.py" line="174"/>
+        <location filename="../views/dialogs/custom_select_dialog.py" line="176"/>
         <source>选择 behavior_code</source>
         <translation>Select behavior_code</translation>
     </message>
     <message>
-        <location filename="../views/dialogs/custom_select_dialog.py" line="174"/>
+        <location filename="../views/dialogs/custom_select_dialog.py" line="176"/>
         <source>文件中出现行为名: &apos;{0}&apos;
 请选择对应的 behavior_code:</source>
         <translation>Behavior name: &apos;{0}&apos; appears in the file.
 Please select the corresponding behavior_code.</translation>
+    </message>
+    <message>
+        <location filename="../views/dialogs/custom_select_dialog.py" line="223"/>
+        <source>无可用Code</source>
+        <translation>No Code available</translation>
+    </message>
+    <message>
+        <location filename="../views/dialogs/custom_select_dialog.py" line="223"/>
+        <source>数据库中无任何 attribute_code 记录。</source>
+        <translation>There are no attribute_code records in the database.</translation>
     </message>
 </context>
 <context>

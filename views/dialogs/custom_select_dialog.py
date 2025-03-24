@@ -10,7 +10,7 @@ from typing import Dict, List
 from PySide6.QtCore import Signal, Qt
 from PySide6.QtWidgets import (
     QVBoxLayout, QDialog, QLabel, QLineEdit, QHBoxLayout,
-    QPushButton, QListWidget, QListWidgetItem, QMessageBox, QWidget, QStackedLayout, QFileDialog, QDialogButtonBox,
+    QPushButton, QListWidget, QListWidgetItem, QWidget, QStackedLayout, QFileDialog, QDialogButtonBox,
     QComboBox, QCheckBox
 )
 from PySide6.QtGui import QIcon, QColor, QPalette
@@ -24,7 +24,9 @@ from sqlalchemy import text
 
 from utils.get_config import get_cfg
 from utils.json2sysml import json_to_sysml2_txt
+from views.dialogs.custom_information_dialog import CustomInformationDialog
 from views.dialogs.custom_input_dialog import CustomInputDialog
+from views.dialogs.custom_question_dialog import CustomQuestionDialog
 from views.dialogs.custom_warning_dialog import CustomWarningDialog
 
 
@@ -86,12 +88,12 @@ class CreateDefinitionDialog(QDialog):
         is_req = self.req_checkbox.isChecked()
         idx = self.type_combo.currentIndex()
         if idx < 0:
-            QMessageBox.warning(self, "错误", "请选择属性类型")
+            CustomWarningDialog(self.tr("错误"), self.tr("请选择属性类型")).exec_()
             return
         sel_type_id = self.type_combo.itemData(idx)
 
         if not cn_name or not en_name:
-            QMessageBox.warning(self, "错误", "中文名与英文名不能为空")
+            CustomWarningDialog(self.tr("错误"), self.tr("中文名与英文名不能为空")).exec_()
             return
 
         # 插入 attribute_definition
@@ -138,7 +140,7 @@ class CreateDefinitionDialog(QDialog):
         """
         row = session.execute(sql_get, {"cn": cn_name, "en":en_name, "code_id": self.code_id}).fetchone()
         if not row:
-            QMessageBox.warning(self, "错误", "新建 definition 失败。")
+            CustomWarningDialog(self.tr("错误"), self.tr("新建 definition 失败")).exec_()
             self.reject()
             return
         self.created_definition_id = row[0]
@@ -218,7 +220,7 @@ class SelectCodeDialog(QDialog):
         codes = session.execute(code_sql).fetchall()  # List[(id, name)]
 
         if not codes:
-            QMessageBox.warning(None, "无可用Code", "数据库中无任何 attribute_code 记录。")
+            CustomWarningDialog(self.tr("无可用Code"), self.tr("数据库中无任何 attribute_code 记录。")).exec_()
             return None
 
         dlg = SelectCodeDialog(parent=None, codes=codes, file_attr_name=file_attr_name)
@@ -271,14 +273,17 @@ QListWidget {
         self.new_button = QPushButton(self.tr("新建"))
         self.new_button.clicked.connect(self.handle_new)
         button_layout.addWidget(self.new_button)
+        self.new_button.setFixedWidth(110)
 
         self.delete_button = QPushButton(self.tr("删除"))
         self.delete_button.clicked.connect(self.handle_delete)
         button_layout.addWidget(self.delete_button)
+        self.delete_button.setFixedWidth(110)
 
         self.read_button = QPushButton(self.tr("读取"))
         self.read_button.clicked.connect(self.handle_read)
         button_layout.addWidget(self.read_button)
+        self.read_button.setFixedWidth(110)
 
         main_layout.addLayout(button_layout)
 
@@ -379,14 +384,25 @@ QListWidget {
         # 创建一个子对话框，包含“从文件新建”和“从模板新建”按钮
         new_dialog = QDialog(self)
         new_dialog.setWindowTitle(self.tr("新建实体"))
-        new_dialog.setFixedSize(200, 100)
+        if get_cfg()["i18n"]["language"] == "en_US":
+            new_dialog.setFixedSize(180,100)
+        else:
+            new_dialog.setFixedSize(130, 100)
         layout = QVBoxLayout(new_dialog)
 
         from_file_button = QPushButton(self.tr("从文件新建"))
         from_file_button.clicked.connect(lambda: self.create_entity_from_file(new_dialog))
         layout.addWidget(from_file_button)
+        if get_cfg()["i18n"]["language"] == "en_US":
+            from_file_button.setFixedWidth(160)
+        else:
+            from_file_button.setFixedWidth(110)
 
         from_template_button = QPushButton(self.tr("从模板新建"))
+        if get_cfg()["i18n"]["language"] == "en_US":
+            from_template_button.setFixedWidth(160)
+        else:
+            from_template_button.setFixedWidth(110)
         from_template_button.clicked.connect(lambda: self.create_entity_from_template(new_dialog))
         layout.addWidget(from_template_button)
 
@@ -550,7 +566,8 @@ QListWidget {
             self.update_view()
 
             # 弹出成功消息
-            QMessageBox.information(self, self.tr("成功"), self.tr("已成功从文件新建实体 '{0}'。").format(name))
+            CustomInformationDialog(self, self.tr("成功"), self.tr("已成功从文件新建实体 '{0}'。").format(name))
+
 
             # 发射信号
             self.entity_created.emit(new_entity)
@@ -604,8 +621,7 @@ QListWidget {
                 # => 用户手动选择 code_id
                 code_id = self.ask_user_to_select_code_for_name(file_attr_name)
                 if code_id is None:
-                    QMessageBox.warning(None, self.tr("未映射属性"),
-                                        self.tr("文件属性 '{0}' 无法与任一 attribute_code 映射,已跳过.").format(file_attr_name))
+                    CustomWarningDialog(self.tr("无法新建属性"), self.tr("文件属性 '{0}' 无法与任一 attribute_code 映射,已跳过.").format(file_attr_name)).exec_()
                     continue
                 # 插入 attribute_code_name
                 insert_sql = text("""
@@ -642,8 +658,7 @@ QListWidget {
                 # => 用户手动创建 definition
                 definition_id = self.ask_user_create_definition_for_code(code_id, file_attr_name)
                 if not definition_id:
-                    QMessageBox.warning(None, self.tr("无法新建属性"),
-                                        self.tr("属性 '{0}' 无法在 code_id={code_id} 下创建 definition, 跳过.").format(file_attr_name))
+                    CustomWarningDialog(self.tr("无法新建属性"), self.tr("属性 '{0}' 无法在 code_id={code_id} 下创建 definition, 跳过.").format(file_attr_name)).exec_()
                     continue
                 # 再查
                 def_row = session.execute(def_sql, {"cid": code_id}).fetchone()
@@ -689,7 +704,7 @@ QListWidget {
                 entity_dict["attributes"].append(new_attr)
 
         # 3) 处理 items
-        map_dict = {'People': '人类', 'Road': '道路承灾要素'}
+        map_dict = {'People': '人类', 'Road': '道路承灾要素','Lane':'车道','Facility':'基础设施'}
         part_items = part_data.get("items", [])
         for item_obj in part_items:
             item_name = item_obj.get("item_name")
@@ -872,8 +887,7 @@ QListWidget {
         self.update_view()
 
         # 弹出成功消息
-        QMessageBox.information(self, self.tr("成功"), self.tr('已成功从模板新建实体 "{name}"').format(name = name))
-
+        CustomInformationDialog(self.tr("成功"), self.tr("已成功从模板新建实体 '{0}'。").format(name)).exec_()
         # 发射信号
         self.entity_created.emit(new_entity)
         return new_entity
@@ -882,7 +896,7 @@ QListWidget {
         """处理删除按钮点击"""
         selected_items = self.list_widget.selectedItems()
         if not selected_items:
-            QMessageBox.warning(self, self.tr("警告"), self.tr("请先选择要删除的实体。"))
+            CustomWarningDialog(self.tr("警告"), self.tr("请先选择要删除的实体。"), parent=self).exec()
             return
 
         item = selected_items[0]
@@ -890,16 +904,17 @@ QListWidget {
         entity_name = item.text()
 
         # 删除实体
-        confirm = QMessageBox.question(
-            self, self.tr("确认删除"),
+        confirm = CustomQuestionDialog(
+            self.tr("确认删除"),
             self.tr('确定要删除实体 "{entity_name}" 吗？').format(entity_name=entity_name),
-            QMessageBox.Yes | QMessageBox.No
-        )
-        if confirm == QMessageBox.Yes:
+            parent=self
+        ).ask()
+
+        if confirm:
             del self.parent.element_data[entity_id]
             self.populate_list()
             self.update_view()
-            QMessageBox.information(self, self.tr("成功"), self.tr('已删除实体 "{entity_name}"'.format(entity_name=entity_name)))
+            CustomInformationDialog(self.tr("成功"), self.tr('已删除实体 "{0}"').format(entity_name), parent=self).exec()
             print(f"after_delete_element_data: {self.parent.element_data}")
 
             # 发射信号
@@ -909,7 +924,7 @@ QListWidget {
         """处理读取按钮点击"""
         selected_items = self.list_widget.selectedItems()
         if not selected_items:
-            QMessageBox.warning(self, self.tr("警告"), self.tr("请先选择要读取的实体。"))
+            CustomWarningDialog(self.tr("警告"), self.tr("请先选择要读取的实体。"), parent=self).exec()
             return
 
         item = selected_items[0]
@@ -919,14 +934,16 @@ QListWidget {
         # 创建一个子对话框，包含“读取至sysml2文件”和“读取至界面”按钮
         read_dialog = QDialog(self)
         read_dialog.setWindowTitle(self.tr("读取实体"))
-        read_dialog.setFixedSize(250, 100)
+        read_dialog.setFixedSize(180, 100)
         layout = QVBoxLayout(read_dialog)
 
         to_sysml_button = QPushButton(self.tr("读取至sysml2文件"))
+        to_sysml_button.setFixedWidth(160)
         to_sysml_button.clicked.connect(lambda: self.read_entity(entity_id, self.tr("sysml2文件")))
         layout.addWidget(to_sysml_button)
 
         to_interface_button = QPushButton(self.tr("读取至界面"))
+        to_interface_button.setFixedWidth(160)
         to_interface_button.clicked.connect(lambda: self.read_entity(entity_id, self.tr("界面")))
         layout.addWidget(to_interface_button)
 
@@ -950,7 +967,8 @@ QListWidget {
         else:
             self.parent.current_selected_entity = entity_id
 
-        QMessageBox.information(self, self.tr("成功"), self.tr("已读取实体 '{entity_name}' 至{destination}。").format(entity_name = self.parent.element_data[entity_id]['entity_name'], destination = destination))
+        CustomInformationDialog(self.tr("成功"), self.tr("已读取实体 '{entity_name}' 至{destination}。").format(entity_name = self.parent.element_data[entity_id]['entity_name'], destination = destination), parent=self).exec()
+
 
         # 发射信号
         self.entity_read.emit(entity_id, destination)
@@ -973,7 +991,7 @@ QListWidget {
         codes = session.execute(code_sql).fetchall()
 
         if not codes:
-            QMessageBox.warning(self, self.tr("无可用Code"), self.tr("数据库中无任何 attribute_code 记录。"))
+            CustomWarningDialog(self.tr("无可用Code"), self.tr("数据库中无任何 attribute_code 记录。"), parent=self).exec_()
             return None
 
         dlg = SelectCodeDialog(parent=self, codes=codes, file_attr_name=file_attr_name)
@@ -1008,7 +1026,7 @@ QListWidget {
         codes = session.execute(code_sql).fetchall()
 
         if not codes:
-            QMessageBox.warning(self, self.tr("无可用Code"), self.tr("数据库中无任何 behavior_code 记录。"))
+            CustomWarningDialog(self.tr("无可用Code"), self.tr("数据库中无任何 behavior_code 记录。"), parent=self).exec_()
             return None
 
         dlg = SelectCodeDialog(parent=self, codes=codes, file_attr_name=perform_name,type='behavior')

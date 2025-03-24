@@ -11,7 +11,6 @@ from PySide6.QtWidgets import QApplication, QMessageBox, QDialog
 from views.dialogs.custom_error_dialog import CustomErrorDialog
 from views.dialogs.custom_information_dialog import CustomInformationDialog
 from views.main_window import MainWindow
-# from views.login_dialog import LoginDialog
 from database.db_config import DatabaseManager
 
 # 定义默认配置
@@ -32,7 +31,71 @@ DEFAULT_CONFIG = {
         "javascript_api_key": "",
         "web_service_key": ""
     },
-    "emergency_speed": 60
+    "action-def": {
+        "AffectedElement": "    action def Collide {\n        in CollideCondition = true;\n        out DamageCondition = true;\n        out Casualty = true;\n    }\n    action def Spill {\n        out SpillCondition = true;\n        out PullotedCondition = true;\n        out DetachedCondition = true;\n    }\n    action def Explode {\n        out ExplodeCondition = true;\n    }",
+        "EnvironmentElement": "",
+        "HazardElement": "    action def Collide{\n        in CollideCondition = true;\n        out DamageCondition = true;\n        out Casualty = true;\n    }\n    action def Spill{\n        out SpillCondition = true;\n        out PullotedCondition = true;\n        out DetachedCondition = true;\n    }\n    action def Explode{\n        out ExplodeCondition = true;\n    }",
+        "ResponsePlanElement": "    action def Action{\n        out implementationCondition;\n        out startTime;\n        out endTime;\n    }"
+
+    },
+    "state-def": {
+        "AffectedElement": "    state def AffectedStates{\n        entry; then DrivingState;\n        state DrivingState;\n        accept Collide\n            then CollidedState;\n        state CollidedState;\n        accept Explode\n            then ExplodeState;\n        state ExplodeState;\n    }",
+        "EnvironmentElement": "",
+        "HazardElement": "    state def HazardStates{\n        entry; then DriveState;\n        state DriveState;\n        accept Collide\n            then CollideState;\n        state CollideState;\n        accept Spill\n            then SpillState;\n        state SpillState;\n    }",
+        "ResponsePlanElement": "    state def aidStates{\n        entry; then idleState;\n        state idleState;\n        accept Aid:Action\n            then implementState;\n        state implementState;\n    }\n    state def firefightingStates{\n        entry; then idleState;\n        state idleState;\n        accept FireFighting:Action\n            then implementState;\n        state implementState;\n    }\n    state def towStates{\n        entry; then idleState;\n        state idleState;\n        accept Tow:Action\n            then implementState;\n        state implementState;\n    }\n    state def rescueStates{\n        entry; then idleState;\n        state idleState;\n        accept Rescue:Action\n            then implementState;\n        state implementState;\n    }"
+    },
+    "emergency_speed": 60,
+    "llm": {
+        "enable": False,
+        "default_model": "DeepSeek-V3",
+        "prompt_without_plan_data": "请回答以下应急管理相关问题。如果问题与应急管理无关，请礼貌说明问题不在应急管理领域，并建议用户提出相关问题。用户问题：{user_input}",
+        "prompt_with_plan_data": "你是一位应急管理专家。请基于以下信息完成两个任务：1. 首先，判断用户问题是否与应急预案和应急响应相关。如果不相关，请直接回复：'您的问题与应急预案和应急响应无关，请提出相关问题以便我提供专业帮助。'2. 如果相关，请提供两部分回答：- 第一部分：针对用户问题的直接回答 - 第二部分：基于所有预案信息的分析和优化建议当前可用的应急预案信息如下：{plan_data}用户问题：{user_input}请确保回答专业、实用且针对性强。",
+        "user_color": "",
+        "model_list": [
+            {
+                "model_name": "ChatGPT-4o",
+                "model_version": "gpt-4o",
+                "provider": "openai",
+                "model_color": "#27AE60",
+                "model_api_key": "",
+                "endpoint": "https://api.openai.com/v1/chat/completions",
+                "parameters": {
+                    "temperature": 0.7,
+                    "max_tokens": 2000,
+                    "top_p": 1
+                }
+            },
+            {
+                "model_name": "Claude-3.7-Sonnet",
+                "model_version": "claude-3-7-sonnet-20250219",
+                "provider": "anthropic",
+                "model_color": "#9B59B6",
+                "model_api_key": "",
+                "endpoint": "https://api.anthropic.com/v1/messages",
+                "parameters": {
+                    "temperature": 0.5,
+                    "max_tokens": 1500
+                }
+            },
+            {
+                "model_name": "DeepSeek-V3",
+                "model_version": "deepseek-chat",
+                "provider": "DeepSeek",
+                "model_color": "#5DADE2",
+                "model_api_key": "",
+                "endpoint": "https://api.deepseek.com/chat/completions",
+                "parameters": {
+                    "temperature": 0.5,
+                    "max_tokens": 1500
+                }
+            }
+        ],
+        "fallback_policy": "sequential",
+        "rate_limit": {
+            "requests_per_minute": 60,
+            "retry_attempts": 3
+        }
+    }
 }
 
 

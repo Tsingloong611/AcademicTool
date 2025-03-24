@@ -17,7 +17,7 @@ def get_cfg():
     # 获取配置文件的路径
     config_file_path = os.path.join(father_father_path, "config.json")
     # 读取配置文件
-    with open(config_file_path, "r") as f:
+    with open(config_file_path, "r", encoding='utf-8') as f:
         config = json.load(f)
     return config
 

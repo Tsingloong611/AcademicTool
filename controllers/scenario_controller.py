@@ -90,7 +90,7 @@ class ScenarioController(QObject):
             return scenarios
         except SQLAlchemyError as e:
             print(f"Error fetching scenarios: {e}")
-            QMessageBox.critical(None, "错误", f"获取情景列表失败: {e}")
+            CustomErrorDialog(self.tr("错误"), self.tr("获取情景列表失败: {0}").format(str(e))).exec()
             return []
 
     @Slot(int, str, str)

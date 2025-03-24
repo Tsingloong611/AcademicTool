@@ -331,7 +331,7 @@ class CustomTabWidget(QWidget):
 
     def generate_model(self):
         try:
-            from PySide6.QtWidgets import QProgressDialog, QMessageBox
+            from PySide6.QtWidgets import QProgressDialog
             from PySide6.QtCore import Qt, QTimer
             from PySide6.QtWidgets import QApplication
             import time
@@ -513,7 +513,7 @@ class CustomTabWidget(QWidget):
         except Exception as e:
             if 'progress' in locals():
                 progress.close()
-            QMessageBox.critical(None, "错误", self.tr('模型生成失败:{e}').format(e=str(e)))
+            CustomErrorDialog(self.tr("错误"), self.tr('模型生成失败:{0}').format(str(e)), parent=self).exec()
             print(f"Error: {str(e)}")
 
     def generate_bayes(self):
