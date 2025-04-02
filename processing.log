@@ -9478,3 +9478,1030 @@
 2025-03-24 13:52:51,193 - MainProcess [PID 10176] - INFO - 进程 Process-Emergency.owl 已完成。
 2025-03-24 13:52:51,193 - MainProcess [PID 10176] - INFO - 进程 Process-Merge.owl 已完成。
 2025-03-24 13:52:51,193 - MainProcess [PID 10176] - INFO - 所有文件处理完成.
+2025-03-30 16:08:23,457 - MainProcess [PID 11948] - DEBUG - 日志记录器已配置，日志文件: 'D:\PythonProjects\AcademicTool_PySide\processing.log'。
+2025-03-30 16:08:23,457 - MainProcess [PID 11948] - INFO - 开始处理 4 个文件，输出目录为 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl'。
+2025-03-30 16:08:23,457 - MainProcess [PID 11948] - INFO - 启动进程 Process-ScenarioElement.owl 处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.owl'。
+2025-03-30 16:08:23,462 - MainProcess [PID 11948] - INFO - 启动进程 Process-Scenario.owl 处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.owl'。
+2025-03-30 16:08:23,465 - MainProcess [PID 11948] - INFO - 启动进程 Process-Emergency.owl 处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.owl'。
+2025-03-30 16:08:23,467 - MainProcess [PID 11948] - INFO - 启动进程 Process-Merge.owl 处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.owl'。
+2025-03-30 16:08:26,775 - Process-ScenarioElement.owl [PID 23712] - DEBUG - 子进程日志记录器已配置，仅使用QueueHandler。
+2025-03-30 16:08:26,775 - Process-ScenarioElement.owl [PID 23712] - DEBUG - [Process-ScenarioElement.owl PID:23712] 开始处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.owl'.
+2025-03-30 16:08:26,775 - Process-ScenarioElement.owl [PID 23712] - INFO - [Process-ScenarioElement.owl PID:23712] 开始检查JSON-LD文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.owl'.
+2025-03-30 16:08:26,775 - Process-ScenarioElement.owl [PID 23712] - DEBUG - [Process-ScenarioElement.owl PID:23712] 检查文件是否为JSON-LD: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.owl'
+2025-03-30 16:08:26,776 - Process-ScenarioElement.owl [PID 23712] - WARNING - [Process-ScenarioElement.owl PID:23712] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.owl' 中的JSON无效: Expecting value: line 1 column 1 (char 0)
+2025-03-30 16:08:26,776 - Process-ScenarioElement.owl [PID 23712] - INFO - [Process-ScenarioElement.owl PID:23712] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.owl' 不是JSON-LD格式，跳过转换。
+2025-03-30 16:08:26,776 - Process-ScenarioElement.owl [PID 23712] - DEBUG - [Process-ScenarioElement.owl PID:23712] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.owl' 已处理为 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.owl'。
+2025-03-30 16:08:26,776 - Process-ScenarioElement.owl [PID 23712] - INFO - [Process-ScenarioElement.owl PID:23712] 开始处理OWL文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.owl'.
+2025-03-30 16:08:26,776 - Process-ScenarioElement.owl [PID 23712] - DEBUG - [Process-ScenarioElement.owl PID:23712] 加载OWL文件 'D:\PythonProjects\AcademicTool_PySide\data\sysml2\15\owl\ScenarioElement.owl'。
+2025-03-30 16:08:26,782 - Process-ScenarioElement.owl [PID 23712] - DEBUG - [Process-ScenarioElement.owl PID:23712] 成功加载本体 'D:\PythonProjects\AcademicTool_PySide\data\sysml2\15\owl\ScenarioElement.owl'。
+2025-03-30 16:08:26,782 - Process-ScenarioElement.owl [PID 23712] - DEBUG - [Process-ScenarioElement.owl PID:23712] 生成分类图。
+2025-03-30 16:08:26,783 - Process-ScenarioElement.owl [PID 23712] - DEBUG - [Process-ScenarioElement.owl PID:23712] 分类图生成成功。
+2025-03-30 16:08:26,783 - Process-ScenarioElement.owl [PID 23712] - DEBUG - [Process-ScenarioElement.owl PID:23712] 开始渲染SVG图形。
+2025-03-30 16:08:26,796 - Process-Scenario.owl [PID 21228] - DEBUG - 子进程日志记录器已配置，仅使用QueueHandler。
+2025-03-30 16:08:26,796 - Process-Scenario.owl [PID 21228] - DEBUG - [Process-Scenario.owl PID:21228] 开始处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.owl'.
+2025-03-30 16:08:26,796 - Process-Scenario.owl [PID 21228] - INFO - [Process-Scenario.owl PID:21228] 开始检查JSON-LD文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.owl'.
+2025-03-30 16:08:26,796 - Process-Scenario.owl [PID 21228] - DEBUG - [Process-Scenario.owl PID:21228] 检查文件是否为JSON-LD: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.owl'
+2025-03-30 16:08:26,796 - Process-Scenario.owl [PID 21228] - WARNING - [Process-Scenario.owl PID:21228] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.owl' 中的JSON无效: Expecting value: line 1 column 1 (char 0)
+2025-03-30 16:08:26,796 - Process-Scenario.owl [PID 21228] - INFO - [Process-Scenario.owl PID:21228] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.owl' 不是JSON-LD格式，跳过转换。
+2025-03-30 16:08:26,796 - Process-Scenario.owl [PID 21228] - DEBUG - [Process-Scenario.owl PID:21228] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.owl' 已处理为 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.owl'。
+2025-03-30 16:08:26,796 - Process-Scenario.owl [PID 21228] - INFO - [Process-Scenario.owl PID:21228] 开始处理OWL文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.owl'.
+2025-03-30 16:08:26,797 - Process-Scenario.owl [PID 21228] - DEBUG - [Process-Scenario.owl PID:21228] 加载OWL文件 'D:\PythonProjects\AcademicTool_PySide\data\sysml2\15\owl\Scenario.owl'。
+2025-03-30 16:08:26,799 - Process-Scenario.owl [PID 21228] - DEBUG - [Process-Scenario.owl PID:21228] 成功加载本体 'D:\PythonProjects\AcademicTool_PySide\data\sysml2\15\owl\Scenario.owl'。
+2025-03-30 16:08:26,799 - Process-Scenario.owl [PID 21228] - DEBUG - [Process-Scenario.owl PID:21228] 生成分类图。
+2025-03-30 16:08:26,799 - Process-Scenario.owl [PID 21228] - DEBUG - [Process-Scenario.owl PID:21228] 分类图生成成功。
+2025-03-30 16:08:26,799 - Process-Scenario.owl [PID 21228] - DEBUG - [Process-Scenario.owl PID:21228] 开始渲染SVG图形。
+2025-03-30 16:08:26,808 - Process-Emergency.owl [PID 26012] - DEBUG - 子进程日志记录器已配置，仅使用QueueHandler。
+2025-03-30 16:08:26,808 - Process-Emergency.owl [PID 26012] - DEBUG - [Process-Emergency.owl PID:26012] 开始处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.owl'.
+2025-03-30 16:08:26,808 - Process-Emergency.owl [PID 26012] - INFO - [Process-Emergency.owl PID:26012] 开始检查JSON-LD文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.owl'.
+2025-03-30 16:08:26,808 - Process-Emergency.owl [PID 26012] - DEBUG - [Process-Emergency.owl PID:26012] 检查文件是否为JSON-LD: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.owl'
+2025-03-30 16:08:26,808 - Process-Emergency.owl [PID 26012] - WARNING - [Process-Emergency.owl PID:26012] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.owl' 中的JSON无效: Expecting value: line 1 column 1 (char 0)
+2025-03-30 16:08:26,808 - Process-Emergency.owl [PID 26012] - INFO - [Process-Emergency.owl PID:26012] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.owl' 不是JSON-LD格式，跳过转换。
+2025-03-30 16:08:26,808 - Process-Emergency.owl [PID 26012] - DEBUG - [Process-Emergency.owl PID:26012] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.owl' 已处理为 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.owl'。
+2025-03-30 16:08:26,808 - Process-Emergency.owl [PID 26012] - INFO - [Process-Emergency.owl PID:26012] 开始处理OWL文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.owl'.
+2025-03-30 16:08:26,809 - Process-Emergency.owl [PID 26012] - DEBUG - [Process-Emergency.owl PID:26012] 加载OWL文件 'D:\PythonProjects\AcademicTool_PySide\data\sysml2\15\owl\Emergency.owl'。
+2025-03-30 16:08:26,810 - Process-Emergency.owl [PID 26012] - DEBUG - [Process-Emergency.owl PID:26012] 成功加载本体 'D:\PythonProjects\AcademicTool_PySide\data\sysml2\15\owl\Emergency.owl'。
+2025-03-30 16:08:26,810 - Process-Emergency.owl [PID 26012] - DEBUG - [Process-Emergency.owl PID:26012] 生成分类图。
+2025-03-30 16:08:26,810 - Process-Emergency.owl [PID 26012] - DEBUG - [Process-Emergency.owl PID:26012] 分类图生成成功。
+2025-03-30 16:08:26,810 - Process-Emergency.owl [PID 26012] - DEBUG - [Process-Emergency.owl PID:26012] 开始渲染SVG图形。
+2025-03-30 16:08:26,824 - Process-Merge.owl [PID 11940] - DEBUG - 子进程日志记录器已配置，仅使用QueueHandler。
+2025-03-30 16:08:26,824 - Process-Merge.owl [PID 11940] - DEBUG - [Process-Merge.owl PID:11940] 开始处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.owl'.
+2025-03-30 16:08:26,824 - Process-Merge.owl [PID 11940] - INFO - [Process-Merge.owl PID:11940] 开始检查JSON-LD文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.owl'.
+2025-03-30 16:08:26,824 - Process-Merge.owl [PID 11940] - DEBUG - [Process-Merge.owl PID:11940] 检查文件是否为JSON-LD: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.owl'
+2025-03-30 16:08:26,824 - Process-Merge.owl [PID 11940] - WARNING - [Process-Merge.owl PID:11940] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.owl' 中的JSON无效: Expecting value: line 1 column 1 (char 0)
+2025-03-30 16:08:26,824 - Process-Merge.owl [PID 11940] - INFO - [Process-Merge.owl PID:11940] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.owl' 不是JSON-LD格式，跳过转换。
+2025-03-30 16:08:26,824 - Process-Merge.owl [PID 11940] - DEBUG - [Process-Merge.owl PID:11940] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.owl' 已处理为 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.owl'。
+2025-03-30 16:08:26,824 - Process-Merge.owl [PID 11940] - INFO - [Process-Merge.owl PID:11940] 开始处理OWL文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.owl'.
+2025-03-30 16:08:26,824 - Process-Merge.owl [PID 11940] - DEBUG - [Process-Merge.owl PID:11940] 加载OWL文件 'D:\PythonProjects\AcademicTool_PySide\data\sysml2\15\owl\Merge.owl'。
+2025-03-30 16:08:26,832 - Process-Merge.owl [PID 11940] - DEBUG - [Process-Merge.owl PID:11940] 成功加载本体 'D:\PythonProjects\AcademicTool_PySide\data\sysml2\15\owl\Merge.owl'。
+2025-03-30 16:08:26,832 - Process-Merge.owl [PID 11940] - DEBUG - [Process-Merge.owl PID:11940] 生成分类图。
+2025-03-30 16:08:26,833 - Process-Merge.owl [PID 11940] - DEBUG - [Process-Merge.owl PID:11940] 分类图生成成功。
+2025-03-30 16:08:26,833 - Process-Merge.owl [PID 11940] - DEBUG - [Process-Merge.owl PID:11940] 开始渲染SVG图形。
+2025-03-30 16:08:27,544 - Process-Scenario.owl [PID 21228] - DEBUG - [Process-Scenario.owl PID:21228] SVG图形成功写入文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.svg'。
+2025-03-30 16:08:27,544 - Process-Scenario.owl [PID 21228] - INFO - [Process-Scenario.owl PID:21228] 成功生成SVG文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.svg'，耗时 0:00:00.748196.
+2025-03-30 16:08:27,544 - Process-Scenario.owl [PID 21228] - DEBUG - [Process-Scenario.owl PID:21228] 完成文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.owl' 的处理，输出: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.svg'。
+2025-03-30 16:08:27,544 - Process-Emergency.owl [PID 26012] - DEBUG - [Process-Emergency.owl PID:26012] SVG图形成功写入文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.svg'。
+2025-03-30 16:08:27,544 - Process-Scenario.owl [PID 21228] - INFO - [Process-Scenario.owl PID:21228] 完成处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.owl'。
+2025-03-30 16:08:27,544 - Process-Emergency.owl [PID 26012] - INFO - [Process-Emergency.owl PID:26012] 成功生成SVG文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.svg'，耗时 0:00:00.736175.
+2025-03-30 16:08:27,544 - Process-Emergency.owl [PID 26012] - DEBUG - [Process-Emergency.owl PID:26012] 完成文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.owl' 的处理，输出: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.svg'。
+2025-03-30 16:08:27,544 - Process-Emergency.owl [PID 26012] - INFO - [Process-Emergency.owl PID:26012] 完成处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.owl'。
+2025-03-30 16:08:27,547 - Process-ScenarioElement.owl [PID 23712] - DEBUG - [Process-ScenarioElement.owl PID:23712] SVG图形成功写入文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.svg'。
+2025-03-30 16:08:27,547 - Process-ScenarioElement.owl [PID 23712] - INFO - [Process-ScenarioElement.owl PID:23712] 成功生成SVG文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.svg'，耗时 0:00:00.771198.
+2025-03-30 16:08:27,547 - Process-ScenarioElement.owl [PID 23712] - DEBUG - [Process-ScenarioElement.owl PID:23712] 完成文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.owl' 的处理，输出: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.svg'。
+2025-03-30 16:08:27,547 - Process-ScenarioElement.owl [PID 23712] - INFO - [Process-ScenarioElement.owl PID:23712] 完成处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.owl'。
+2025-03-30 16:08:27,547 - Process-Merge.owl [PID 11940] - DEBUG - [Process-Merge.owl PID:11940] SVG图形成功写入文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.svg'。
+2025-03-30 16:08:27,547 - Process-Merge.owl [PID 11940] - INFO - [Process-Merge.owl PID:11940] 成功生成SVG文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.svg'，耗时 0:00:00.723183.
+2025-03-30 16:08:27,547 - Process-Merge.owl [PID 11940] - DEBUG - [Process-Merge.owl PID:11940] 完成文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.owl' 的处理，输出: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.svg'。
+2025-03-30 16:08:27,547 - Process-Merge.owl [PID 11940] - INFO - [Process-Merge.owl PID:11940] 完成处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.owl'。
+2025-03-30 16:08:27,944 - MainProcess [PID 11948] - INFO - 进程 Process-ScenarioElement.owl 已完成。
+2025-03-30 16:08:27,944 - MainProcess [PID 11948] - INFO - 进程 Process-Scenario.owl 已完成。
+2025-03-30 16:08:27,944 - MainProcess [PID 11948] - INFO - 进程 Process-Emergency.owl 已完成。
+2025-03-30 16:08:27,944 - MainProcess [PID 11948] - INFO - 进程 Process-Merge.owl 已完成。
+2025-03-30 16:08:27,944 - MainProcess [PID 11948] - INFO - 所有文件处理完成.
+2025-03-30 16:11:21,773 - MainProcess [PID 25632] - DEBUG - 日志记录器已配置，日志文件: 'D:\PythonProjects\AcademicTool_PySide\processing.log'。
+2025-03-30 16:11:21,774 - MainProcess [PID 25632] - INFO - 开始处理 4 个文件，输出目录为 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl'。
+2025-03-30 16:11:21,774 - MainProcess [PID 25632] - INFO - 启动进程 Process-ScenarioElement.owl 处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.owl'。
+2025-03-30 16:11:21,778 - MainProcess [PID 25632] - INFO - 启动进程 Process-Scenario.owl 处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.owl'。
+2025-03-30 16:11:21,781 - MainProcess [PID 25632] - INFO - 启动进程 Process-Emergency.owl 处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.owl'。
+2025-03-30 16:11:21,783 - MainProcess [PID 25632] - INFO - 启动进程 Process-Merge.owl 处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.owl'。
+2025-03-30 16:11:24,390 - Process-ScenarioElement.owl [PID 13592] - DEBUG - 子进程日志记录器已配置，仅使用QueueHandler。
+2025-03-30 16:11:24,391 - Process-ScenarioElement.owl [PID 13592] - DEBUG - [Process-ScenarioElement.owl PID:13592] 开始处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.owl'.
+2025-03-30 16:11:24,391 - Process-ScenarioElement.owl [PID 13592] - INFO - [Process-ScenarioElement.owl PID:13592] 开始检查JSON-LD文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.owl'.
+2025-03-30 16:11:24,391 - Process-ScenarioElement.owl [PID 13592] - DEBUG - [Process-ScenarioElement.owl PID:13592] 检查文件是否为JSON-LD: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.owl'
+2025-03-30 16:11:24,391 - Process-ScenarioElement.owl [PID 13592] - WARNING - [Process-ScenarioElement.owl PID:13592] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.owl' 中的JSON无效: Expecting value: line 1 column 1 (char 0)
+2025-03-30 16:11:24,391 - Process-ScenarioElement.owl [PID 13592] - INFO - [Process-ScenarioElement.owl PID:13592] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.owl' 不是JSON-LD格式，跳过转换。
+2025-03-30 16:11:24,391 - Process-ScenarioElement.owl [PID 13592] - DEBUG - [Process-ScenarioElement.owl PID:13592] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.owl' 已处理为 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.owl'。
+2025-03-30 16:11:24,391 - Process-ScenarioElement.owl [PID 13592] - INFO - [Process-ScenarioElement.owl PID:13592] 开始处理OWL文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.owl'.
+2025-03-30 16:11:24,391 - Process-ScenarioElement.owl [PID 13592] - DEBUG - [Process-ScenarioElement.owl PID:13592] 加载OWL文件 'D:\PythonProjects\AcademicTool_PySide\data\sysml2\15\owl\ScenarioElement.owl'。
+2025-03-30 16:11:24,398 - Process-ScenarioElement.owl [PID 13592] - DEBUG - [Process-ScenarioElement.owl PID:13592] 成功加载本体 'D:\PythonProjects\AcademicTool_PySide\data\sysml2\15\owl\ScenarioElement.owl'。
+2025-03-30 16:11:24,398 - Process-ScenarioElement.owl [PID 13592] - DEBUG - [Process-ScenarioElement.owl PID:13592] 生成分类图。
+2025-03-30 16:11:24,399 - Process-ScenarioElement.owl [PID 13592] - DEBUG - [Process-ScenarioElement.owl PID:13592] 分类图生成成功。
+2025-03-30 16:11:24,399 - Process-ScenarioElement.owl [PID 13592] - DEBUG - [Process-ScenarioElement.owl PID:13592] 开始渲染SVG图形。
+2025-03-30 16:11:24,449 - Process-Scenario.owl [PID 19188] - DEBUG - 子进程日志记录器已配置，仅使用QueueHandler。
+2025-03-30 16:11:24,449 - Process-Scenario.owl [PID 19188] - DEBUG - [Process-Scenario.owl PID:19188] 开始处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.owl'.
+2025-03-30 16:11:24,449 - Process-Scenario.owl [PID 19188] - INFO - [Process-Scenario.owl PID:19188] 开始检查JSON-LD文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.owl'.
+2025-03-30 16:11:24,449 - Process-Scenario.owl [PID 19188] - DEBUG - [Process-Scenario.owl PID:19188] 检查文件是否为JSON-LD: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.owl'
+2025-03-30 16:11:24,450 - Process-Scenario.owl [PID 19188] - WARNING - [Process-Scenario.owl PID:19188] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.owl' 中的JSON无效: Expecting value: line 1 column 1 (char 0)
+2025-03-30 16:11:24,450 - Process-Scenario.owl [PID 19188] - INFO - [Process-Scenario.owl PID:19188] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.owl' 不是JSON-LD格式，跳过转换。
+2025-03-30 16:11:24,450 - Process-Scenario.owl [PID 19188] - DEBUG - [Process-Scenario.owl PID:19188] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.owl' 已处理为 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.owl'。
+2025-03-30 16:11:24,450 - Process-Scenario.owl [PID 19188] - INFO - [Process-Scenario.owl PID:19188] 开始处理OWL文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.owl'.
+2025-03-30 16:11:24,450 - Process-Scenario.owl [PID 19188] - DEBUG - [Process-Scenario.owl PID:19188] 加载OWL文件 'D:\PythonProjects\AcademicTool_PySide\data\sysml2\15\owl\Scenario.owl'。
+2025-03-30 16:11:24,452 - Process-Scenario.owl [PID 19188] - DEBUG - [Process-Scenario.owl PID:19188] 成功加载本体 'D:\PythonProjects\AcademicTool_PySide\data\sysml2\15\owl\Scenario.owl'。
+2025-03-30 16:11:24,452 - Process-Scenario.owl [PID 19188] - DEBUG - [Process-Scenario.owl PID:19188] 生成分类图。
+2025-03-30 16:11:24,453 - Process-Scenario.owl [PID 19188] - DEBUG - [Process-Scenario.owl PID:19188] 分类图生成成功。
+2025-03-30 16:11:24,453 - Process-Scenario.owl [PID 19188] - DEBUG - [Process-Scenario.owl PID:19188] 开始渲染SVG图形。
+2025-03-30 16:11:24,535 - Process-Emergency.owl [PID 25772] - DEBUG - 子进程日志记录器已配置，仅使用QueueHandler。
+2025-03-30 16:11:24,536 - Process-Emergency.owl [PID 25772] - DEBUG - [Process-Emergency.owl PID:25772] 开始处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.owl'.
+2025-03-30 16:11:24,536 - Process-Emergency.owl [PID 25772] - INFO - [Process-Emergency.owl PID:25772] 开始检查JSON-LD文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.owl'.
+2025-03-30 16:11:24,536 - Process-Emergency.owl [PID 25772] - DEBUG - [Process-Emergency.owl PID:25772] 检查文件是否为JSON-LD: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.owl'
+2025-03-30 16:11:24,536 - Process-Emergency.owl [PID 25772] - WARNING - [Process-Emergency.owl PID:25772] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.owl' 中的JSON无效: Expecting value: line 1 column 1 (char 0)
+2025-03-30 16:11:24,536 - Process-Emergency.owl [PID 25772] - INFO - [Process-Emergency.owl PID:25772] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.owl' 不是JSON-LD格式，跳过转换。
+2025-03-30 16:11:24,536 - Process-Emergency.owl [PID 25772] - DEBUG - [Process-Emergency.owl PID:25772] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.owl' 已处理为 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.owl'。
+2025-03-30 16:11:24,536 - Process-Emergency.owl [PID 25772] - INFO - [Process-Emergency.owl PID:25772] 开始处理OWL文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.owl'.
+2025-03-30 16:11:24,536 - Process-Emergency.owl [PID 25772] - DEBUG - [Process-Emergency.owl PID:25772] 加载OWL文件 'D:\PythonProjects\AcademicTool_PySide\data\sysml2\15\owl\Emergency.owl'。
+2025-03-30 16:11:24,538 - Process-Emergency.owl [PID 25772] - DEBUG - [Process-Emergency.owl PID:25772] 成功加载本体 'D:\PythonProjects\AcademicTool_PySide\data\sysml2\15\owl\Emergency.owl'。
+2025-03-30 16:11:24,538 - Process-Emergency.owl [PID 25772] - DEBUG - [Process-Emergency.owl PID:25772] 生成分类图。
+2025-03-30 16:11:24,538 - Process-Emergency.owl [PID 25772] - DEBUG - [Process-Emergency.owl PID:25772] 分类图生成成功。
+2025-03-30 16:11:24,538 - Process-Emergency.owl [PID 25772] - DEBUG - [Process-Emergency.owl PID:25772] 开始渲染SVG图形。
+2025-03-30 16:11:24,559 - Process-Merge.owl [PID 5600] - DEBUG - 子进程日志记录器已配置，仅使用QueueHandler。
+2025-03-30 16:11:24,559 - Process-Merge.owl [PID 5600] - DEBUG - [Process-Merge.owl PID:5600] 开始处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.owl'.
+2025-03-30 16:11:24,560 - Process-Merge.owl [PID 5600] - INFO - [Process-Merge.owl PID:5600] 开始检查JSON-LD文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.owl'.
+2025-03-30 16:11:24,560 - Process-Merge.owl [PID 5600] - DEBUG - [Process-Merge.owl PID:5600] 检查文件是否为JSON-LD: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.owl'
+2025-03-30 16:11:24,560 - Process-Merge.owl [PID 5600] - WARNING - [Process-Merge.owl PID:5600] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.owl' 中的JSON无效: Expecting value: line 1 column 1 (char 0)
+2025-03-30 16:11:24,560 - Process-Merge.owl [PID 5600] - INFO - [Process-Merge.owl PID:5600] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.owl' 不是JSON-LD格式，跳过转换。
+2025-03-30 16:11:24,560 - Process-Merge.owl [PID 5600] - DEBUG - [Process-Merge.owl PID:5600] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.owl' 已处理为 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.owl'。
+2025-03-30 16:11:24,560 - Process-Merge.owl [PID 5600] - INFO - [Process-Merge.owl PID:5600] 开始处理OWL文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.owl'.
+2025-03-30 16:11:24,560 - Process-Merge.owl [PID 5600] - DEBUG - [Process-Merge.owl PID:5600] 加载OWL文件 'D:\PythonProjects\AcademicTool_PySide\data\sysml2\15\owl\Merge.owl'。
+2025-03-30 16:11:24,568 - Process-Merge.owl [PID 5600] - DEBUG - [Process-Merge.owl PID:5600] 成功加载本体 'D:\PythonProjects\AcademicTool_PySide\data\sysml2\15\owl\Merge.owl'。
+2025-03-30 16:11:24,568 - Process-Merge.owl [PID 5600] - DEBUG - [Process-Merge.owl PID:5600] 生成分类图。
+2025-03-30 16:11:24,569 - Process-Merge.owl [PID 5600] - DEBUG - [Process-Merge.owl PID:5600] 分类图生成成功。
+2025-03-30 16:11:24,569 - Process-Merge.owl [PID 5600] - DEBUG - [Process-Merge.owl PID:5600] 开始渲染SVG图形。
+2025-03-30 16:11:24,822 - Process-ScenarioElement.owl [PID 13592] - DEBUG - [Process-ScenarioElement.owl PID:13592] SVG图形成功写入文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.svg'。
+2025-03-30 16:11:24,822 - Process-ScenarioElement.owl [PID 13592] - INFO - [Process-ScenarioElement.owl PID:13592] 成功生成SVG文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.svg'，耗时 0:00:00.430378.
+2025-03-30 16:11:24,822 - Process-ScenarioElement.owl [PID 13592] - DEBUG - [Process-ScenarioElement.owl PID:13592] 完成文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.owl' 的处理，输出: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.svg'。
+2025-03-30 16:11:24,822 - Process-ScenarioElement.owl [PID 13592] - INFO - [Process-ScenarioElement.owl PID:13592] 完成处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.owl'。
+2025-03-30 16:11:24,833 - Process-Scenario.owl [PID 19188] - DEBUG - [Process-Scenario.owl PID:19188] SVG图形成功写入文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.svg'。
+2025-03-30 16:11:24,833 - Process-Scenario.owl [PID 19188] - INFO - [Process-Scenario.owl PID:19188] 成功生成SVG文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.svg'，耗时 0:00:00.382335.
+2025-03-30 16:11:24,833 - Process-Scenario.owl [PID 19188] - DEBUG - [Process-Scenario.owl PID:19188] 完成文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.owl' 的处理，输出: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.svg'。
+2025-03-30 16:11:24,833 - Process-Scenario.owl [PID 19188] - INFO - [Process-Scenario.owl PID:19188] 完成处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.owl'。
+2025-03-30 16:11:25,120 - Process-Emergency.owl [PID 25772] - DEBUG - [Process-Emergency.owl PID:25772] SVG图形成功写入文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.svg'。
+2025-03-30 16:11:25,121 - Process-Emergency.owl [PID 25772] - INFO - [Process-Emergency.owl PID:25772] 成功生成SVG文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.svg'，耗时 0:00:00.584860.
+2025-03-30 16:11:25,121 - Process-Emergency.owl [PID 25772] - DEBUG - [Process-Emergency.owl PID:25772] 完成文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.owl' 的处理，输出: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.svg'。
+2025-03-30 16:11:25,121 - Process-Emergency.owl [PID 25772] - INFO - [Process-Emergency.owl PID:25772] 完成处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.owl'。
+2025-03-30 16:11:25,125 - Process-Merge.owl [PID 5600] - DEBUG - [Process-Merge.owl PID:5600] SVG图形成功写入文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.svg'。
+2025-03-30 16:11:25,126 - Process-Merge.owl [PID 5600] - INFO - [Process-Merge.owl PID:5600] 成功生成SVG文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.svg'，耗时 0:00:00.565699.
+2025-03-30 16:11:25,126 - Process-Merge.owl [PID 5600] - DEBUG - [Process-Merge.owl PID:5600] 完成文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.owl' 的处理，输出: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.svg'。
+2025-03-30 16:11:25,126 - Process-Merge.owl [PID 5600] - INFO - [Process-Merge.owl PID:5600] 完成处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.owl'。
+2025-03-30 16:11:25,145 - MainProcess [PID 25632] - INFO - 进程 Process-ScenarioElement.owl 已完成。
+2025-03-30 16:11:25,165 - MainProcess [PID 25632] - INFO - 进程 Process-Scenario.owl 已完成。
+2025-03-30 16:11:25,433 - MainProcess [PID 25632] - INFO - 进程 Process-Emergency.owl 已完成。
+2025-03-30 16:11:25,439 - MainProcess [PID 25632] - INFO - 进程 Process-Merge.owl 已完成。
+2025-03-30 16:11:25,439 - MainProcess [PID 25632] - INFO - 所有文件处理完成.
+2025-03-30 16:32:44,513 - MainProcess [PID 28224] - DEBUG - 日志记录器已配置，日志文件: 'D:\PythonProjects\AcademicTool_PySide\processing.log'。
+2025-03-30 16:32:44,514 - MainProcess [PID 28224] - INFO - 开始处理 4 个文件，输出目录为 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl'。
+2025-03-30 16:32:44,514 - MainProcess [PID 28224] - INFO - 启动进程 Process-ScenarioElement.owl 处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.owl'。
+2025-03-30 16:32:44,518 - MainProcess [PID 28224] - INFO - 启动进程 Process-Scenario.owl 处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.owl'。
+2025-03-30 16:32:44,520 - MainProcess [PID 28224] - INFO - 启动进程 Process-Emergency.owl 处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.owl'。
+2025-03-30 16:32:44,523 - MainProcess [PID 28224] - INFO - 启动进程 Process-Merge.owl 处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.owl'。
+2025-03-30 16:32:47,287 - Process-Merge.owl [PID 27908] - DEBUG - 子进程日志记录器已配置，仅使用QueueHandler。
+2025-03-30 16:32:47,288 - Process-Merge.owl [PID 27908] - DEBUG - [Process-Merge.owl PID:27908] 开始处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.owl'.
+2025-03-30 16:32:47,288 - Process-Merge.owl [PID 27908] - INFO - [Process-Merge.owl PID:27908] 开始检查JSON-LD文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.owl'.
+2025-03-30 16:32:47,288 - Process-Merge.owl [PID 27908] - DEBUG - [Process-Merge.owl PID:27908] 检查文件是否为JSON-LD: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.owl'
+2025-03-30 16:32:47,289 - Process-Merge.owl [PID 27908] - WARNING - [Process-Merge.owl PID:27908] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.owl' 中的JSON无效: Expecting value: line 1 column 1 (char 0)
+2025-03-30 16:32:47,289 - Process-Merge.owl [PID 27908] - INFO - [Process-Merge.owl PID:27908] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.owl' 不是JSON-LD格式，跳过转换。
+2025-03-30 16:32:47,289 - Process-Merge.owl [PID 27908] - DEBUG - [Process-Merge.owl PID:27908] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.owl' 已处理为 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.owl'。
+2025-03-30 16:32:47,289 - Process-Merge.owl [PID 27908] - INFO - [Process-Merge.owl PID:27908] 开始处理OWL文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.owl'.
+2025-03-30 16:32:47,289 - Process-Merge.owl [PID 27908] - DEBUG - [Process-Merge.owl PID:27908] 加载OWL文件 'D:\PythonProjects\AcademicTool_PySide\data\sysml2\15\owl\Merge.owl'。
+2025-03-30 16:32:47,298 - Process-Merge.owl [PID 27908] - DEBUG - [Process-Merge.owl PID:27908] 成功加载本体 'D:\PythonProjects\AcademicTool_PySide\data\sysml2\15\owl\Merge.owl'。
+2025-03-30 16:32:47,298 - Process-Merge.owl [PID 27908] - DEBUG - [Process-Merge.owl PID:27908] 生成分类图。
+2025-03-30 16:32:47,300 - Process-Merge.owl [PID 27908] - DEBUG - [Process-Merge.owl PID:27908] 分类图生成成功。
+2025-03-30 16:32:47,300 - Process-Merge.owl [PID 27908] - DEBUG - [Process-Merge.owl PID:27908] 开始渲染SVG图形。
+2025-03-30 16:32:47,304 - Process-Emergency.owl [PID 27176] - DEBUG - 子进程日志记录器已配置，仅使用QueueHandler。
+2025-03-30 16:32:47,305 - Process-Emergency.owl [PID 27176] - DEBUG - [Process-Emergency.owl PID:27176] 开始处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.owl'.
+2025-03-30 16:32:47,305 - Process-Emergency.owl [PID 27176] - INFO - [Process-Emergency.owl PID:27176] 开始检查JSON-LD文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.owl'.
+2025-03-30 16:32:47,305 - Process-Emergency.owl [PID 27176] - DEBUG - [Process-Emergency.owl PID:27176] 检查文件是否为JSON-LD: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.owl'
+2025-03-30 16:32:47,305 - Process-Emergency.owl [PID 27176] - WARNING - [Process-Emergency.owl PID:27176] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.owl' 中的JSON无效: Expecting value: line 1 column 1 (char 0)
+2025-03-30 16:32:47,306 - Process-Emergency.owl [PID 27176] - INFO - [Process-Emergency.owl PID:27176] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.owl' 不是JSON-LD格式，跳过转换。
+2025-03-30 16:32:47,306 - Process-Emergency.owl [PID 27176] - DEBUG - [Process-Emergency.owl PID:27176] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.owl' 已处理为 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.owl'。
+2025-03-30 16:32:47,306 - Process-Emergency.owl [PID 27176] - INFO - [Process-Emergency.owl PID:27176] 开始处理OWL文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.owl'.
+2025-03-30 16:32:47,306 - Process-Emergency.owl [PID 27176] - DEBUG - [Process-Emergency.owl PID:27176] 加载OWL文件 'D:\PythonProjects\AcademicTool_PySide\data\sysml2\15\owl\Emergency.owl'。
+2025-03-30 16:32:47,307 - Process-Emergency.owl [PID 27176] - DEBUG - [Process-Emergency.owl PID:27176] 成功加载本体 'D:\PythonProjects\AcademicTool_PySide\data\sysml2\15\owl\Emergency.owl'。
+2025-03-30 16:32:47,307 - Process-Emergency.owl [PID 27176] - DEBUG - [Process-Emergency.owl PID:27176] 生成分类图。
+2025-03-30 16:32:47,307 - Process-Emergency.owl [PID 27176] - DEBUG - [Process-Emergency.owl PID:27176] 分类图生成成功。
+2025-03-30 16:32:47,307 - Process-Emergency.owl [PID 27176] - DEBUG - [Process-Emergency.owl PID:27176] 开始渲染SVG图形。
+2025-03-30 16:32:47,322 - Process-ScenarioElement.owl [PID 15340] - DEBUG - 子进程日志记录器已配置，仅使用QueueHandler。
+2025-03-30 16:32:47,322 - Process-ScenarioElement.owl [PID 15340] - DEBUG - [Process-ScenarioElement.owl PID:15340] 开始处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.owl'.
+2025-03-30 16:32:47,322 - Process-ScenarioElement.owl [PID 15340] - INFO - [Process-ScenarioElement.owl PID:15340] 开始检查JSON-LD文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.owl'.
+2025-03-30 16:32:47,322 - Process-ScenarioElement.owl [PID 15340] - DEBUG - [Process-ScenarioElement.owl PID:15340] 检查文件是否为JSON-LD: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.owl'
+2025-03-30 16:32:47,323 - Process-ScenarioElement.owl [PID 15340] - WARNING - [Process-ScenarioElement.owl PID:15340] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.owl' 中的JSON无效: Expecting value: line 1 column 1 (char 0)
+2025-03-30 16:32:47,323 - Process-ScenarioElement.owl [PID 15340] - INFO - [Process-ScenarioElement.owl PID:15340] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.owl' 不是JSON-LD格式，跳过转换。
+2025-03-30 16:32:47,323 - Process-ScenarioElement.owl [PID 15340] - DEBUG - [Process-ScenarioElement.owl PID:15340] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.owl' 已处理为 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.owl'。
+2025-03-30 16:32:47,323 - Process-ScenarioElement.owl [PID 15340] - INFO - [Process-ScenarioElement.owl PID:15340] 开始处理OWL文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.owl'.
+2025-03-30 16:32:47,323 - Process-ScenarioElement.owl [PID 15340] - DEBUG - [Process-ScenarioElement.owl PID:15340] 加载OWL文件 'D:\PythonProjects\AcademicTool_PySide\data\sysml2\15\owl\ScenarioElement.owl'。
+2025-03-30 16:32:47,332 - Process-ScenarioElement.owl [PID 15340] - DEBUG - [Process-ScenarioElement.owl PID:15340] 成功加载本体 'D:\PythonProjects\AcademicTool_PySide\data\sysml2\15\owl\ScenarioElement.owl'。
+2025-03-30 16:32:47,332 - Process-ScenarioElement.owl [PID 15340] - DEBUG - [Process-ScenarioElement.owl PID:15340] 生成分类图。
+2025-03-30 16:32:47,333 - Process-ScenarioElement.owl [PID 15340] - DEBUG - [Process-ScenarioElement.owl PID:15340] 分类图生成成功。
+2025-03-30 16:32:47,333 - Process-ScenarioElement.owl [PID 15340] - DEBUG - [Process-ScenarioElement.owl PID:15340] 开始渲染SVG图形。
+2025-03-30 16:32:47,335 - Process-Scenario.owl [PID 28112] - DEBUG - 子进程日志记录器已配置，仅使用QueueHandler。
+2025-03-30 16:32:47,335 - Process-Scenario.owl [PID 28112] - DEBUG - [Process-Scenario.owl PID:28112] 开始处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.owl'.
+2025-03-30 16:32:47,335 - Process-Scenario.owl [PID 28112] - INFO - [Process-Scenario.owl PID:28112] 开始检查JSON-LD文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.owl'.
+2025-03-30 16:32:47,335 - Process-Scenario.owl [PID 28112] - DEBUG - [Process-Scenario.owl PID:28112] 检查文件是否为JSON-LD: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.owl'
+2025-03-30 16:32:47,335 - Process-Scenario.owl [PID 28112] - WARNING - [Process-Scenario.owl PID:28112] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.owl' 中的JSON无效: Expecting value: line 1 column 1 (char 0)
+2025-03-30 16:32:47,335 - Process-Scenario.owl [PID 28112] - INFO - [Process-Scenario.owl PID:28112] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.owl' 不是JSON-LD格式，跳过转换。
+2025-03-30 16:32:47,335 - Process-Scenario.owl [PID 28112] - DEBUG - [Process-Scenario.owl PID:28112] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.owl' 已处理为 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.owl'。
+2025-03-30 16:32:47,335 - Process-Scenario.owl [PID 28112] - INFO - [Process-Scenario.owl PID:28112] 开始处理OWL文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.owl'.
+2025-03-30 16:32:47,336 - Process-Scenario.owl [PID 28112] - DEBUG - [Process-Scenario.owl PID:28112] 加载OWL文件 'D:\PythonProjects\AcademicTool_PySide\data\sysml2\15\owl\Scenario.owl'。
+2025-03-30 16:32:47,337 - Process-Scenario.owl [PID 28112] - DEBUG - [Process-Scenario.owl PID:28112] 成功加载本体 'D:\PythonProjects\AcademicTool_PySide\data\sysml2\15\owl\Scenario.owl'。
+2025-03-30 16:32:47,337 - Process-Scenario.owl [PID 28112] - DEBUG - [Process-Scenario.owl PID:28112] 生成分类图。
+2025-03-30 16:32:47,338 - Process-Scenario.owl [PID 28112] - DEBUG - [Process-Scenario.owl PID:28112] 分类图生成成功。
+2025-03-30 16:32:47,338 - Process-Scenario.owl [PID 28112] - DEBUG - [Process-Scenario.owl PID:28112] 开始渲染SVG图形。
+2025-03-30 16:32:47,828 - Process-Scenario.owl [PID 28112] - DEBUG - [Process-Scenario.owl PID:28112] SVG图形成功写入文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.svg'。
+2025-03-30 16:32:47,828 - Process-Scenario.owl [PID 28112] - INFO - [Process-Scenario.owl PID:28112] 成功生成SVG文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.svg'，耗时 0:00:00.492820.
+2025-03-30 16:32:47,828 - Process-Scenario.owl [PID 28112] - DEBUG - [Process-Scenario.owl PID:28112] 完成文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.owl' 的处理，输出: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.svg'。
+2025-03-30 16:32:47,828 - Process-Scenario.owl [PID 28112] - INFO - [Process-Scenario.owl PID:28112] 完成处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.owl'。
+2025-03-30 16:32:47,828 - Process-Emergency.owl [PID 27176] - DEBUG - [Process-Emergency.owl PID:27176] SVG图形成功写入文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.svg'。
+2025-03-30 16:32:47,828 - Process-Emergency.owl [PID 27176] - INFO - [Process-Emergency.owl PID:27176] 成功生成SVG文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.svg'，耗时 0:00:00.521819.
+2025-03-30 16:32:47,828 - Process-Emergency.owl [PID 27176] - DEBUG - [Process-Emergency.owl PID:27176] 完成文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.owl' 的处理，输出: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.svg'。
+2025-03-30 16:32:47,828 - Process-Emergency.owl [PID 27176] - INFO - [Process-Emergency.owl PID:27176] 完成处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.owl'。
+2025-03-30 16:32:47,829 - Process-Merge.owl [PID 27908] - DEBUG - [Process-Merge.owl PID:27908] SVG图形成功写入文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.svg'。
+2025-03-30 16:32:47,830 - Process-Merge.owl [PID 27908] - INFO - [Process-Merge.owl PID:27908] 成功生成SVG文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.svg'，耗时 0:00:00.540152.
+2025-03-30 16:32:47,830 - Process-Merge.owl [PID 27908] - DEBUG - [Process-Merge.owl PID:27908] 完成文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.owl' 的处理，输出: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.svg'。
+2025-03-30 16:32:47,830 - Process-Merge.owl [PID 27908] - INFO - [Process-Merge.owl PID:27908] 完成处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.owl'。
+2025-03-30 16:32:47,844 - Process-ScenarioElement.owl [PID 15340] - DEBUG - [Process-ScenarioElement.owl PID:15340] SVG图形成功写入文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.svg'。
+2025-03-30 16:32:47,844 - Process-ScenarioElement.owl [PID 15340] - INFO - [Process-ScenarioElement.owl PID:15340] 成功生成SVG文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.svg'，耗时 0:00:00.520886.
+2025-03-30 16:32:47,844 - Process-ScenarioElement.owl [PID 15340] - DEBUG - [Process-ScenarioElement.owl PID:15340] 完成文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.owl' 的处理，输出: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.svg'。
+2025-03-30 16:32:47,844 - Process-ScenarioElement.owl [PID 15340] - INFO - [Process-ScenarioElement.owl PID:15340] 完成处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.owl'。
+2025-03-30 16:32:48,210 - MainProcess [PID 28224] - INFO - 进程 Process-ScenarioElement.owl 已完成。
+2025-03-30 16:32:48,210 - MainProcess [PID 28224] - INFO - 进程 Process-Scenario.owl 已完成。
+2025-03-30 16:32:48,241 - MainProcess [PID 28224] - INFO - 进程 Process-Emergency.owl 已完成。
+2025-03-30 16:32:48,241 - MainProcess [PID 28224] - INFO - 进程 Process-Merge.owl 已完成。
+2025-03-30 16:32:48,241 - MainProcess [PID 28224] - INFO - 所有文件处理完成.
+2025-03-30 16:40:09,975 - MainProcess [PID 17448] - DEBUG - 日志记录器已配置，日志文件: 'D:\PythonProjects\AcademicTool_PySide\processing.log'。
+2025-03-30 16:40:09,976 - MainProcess [PID 17448] - INFO - 开始处理 4 个文件，输出目录为 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl'。
+2025-03-30 16:40:09,976 - MainProcess [PID 17448] - INFO - 启动进程 Process-ScenarioElement.owl 处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.owl'。
+2025-03-30 16:40:09,979 - MainProcess [PID 17448] - INFO - 启动进程 Process-Scenario.owl 处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.owl'。
+2025-03-30 16:40:09,982 - MainProcess [PID 17448] - INFO - 启动进程 Process-Emergency.owl 处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.owl'。
+2025-03-30 16:40:09,984 - MainProcess [PID 17448] - INFO - 启动进程 Process-Merge.owl 处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.owl'。
+2025-03-30 16:40:12,965 - Process-ScenarioElement.owl [PID 29024] - DEBUG - 子进程日志记录器已配置，仅使用QueueHandler。
+2025-03-30 16:40:12,965 - Process-ScenarioElement.owl [PID 29024] - DEBUG - [Process-ScenarioElement.owl PID:29024] 开始处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.owl'.
+2025-03-30 16:40:12,965 - Process-ScenarioElement.owl [PID 29024] - INFO - [Process-ScenarioElement.owl PID:29024] 开始检查JSON-LD文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.owl'.
+2025-03-30 16:40:12,965 - Process-ScenarioElement.owl [PID 29024] - DEBUG - [Process-ScenarioElement.owl PID:29024] 检查文件是否为JSON-LD: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.owl'
+2025-03-30 16:40:12,965 - Process-ScenarioElement.owl [PID 29024] - WARNING - [Process-ScenarioElement.owl PID:29024] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.owl' 中的JSON无效: Expecting value: line 1 column 1 (char 0)
+2025-03-30 16:40:12,965 - Process-ScenarioElement.owl [PID 29024] - INFO - [Process-ScenarioElement.owl PID:29024] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.owl' 不是JSON-LD格式，跳过转换。
+2025-03-30 16:40:12,967 - Process-ScenarioElement.owl [PID 29024] - DEBUG - [Process-ScenarioElement.owl PID:29024] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.owl' 已处理为 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.owl'。
+2025-03-30 16:40:12,967 - Process-ScenarioElement.owl [PID 29024] - INFO - [Process-ScenarioElement.owl PID:29024] 开始处理OWL文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.owl'.
+2025-03-30 16:40:12,967 - Process-ScenarioElement.owl [PID 29024] - DEBUG - [Process-ScenarioElement.owl PID:29024] 加载OWL文件 'D:\PythonProjects\AcademicTool_PySide\data\sysml2\15\owl\ScenarioElement.owl'。
+2025-03-30 16:40:12,981 - Process-ScenarioElement.owl [PID 29024] - DEBUG - [Process-ScenarioElement.owl PID:29024] 成功加载本体 'D:\PythonProjects\AcademicTool_PySide\data\sysml2\15\owl\ScenarioElement.owl'。
+2025-03-30 16:40:12,981 - Process-ScenarioElement.owl [PID 29024] - DEBUG - [Process-ScenarioElement.owl PID:29024] 生成分类图。
+2025-03-30 16:40:12,983 - Process-ScenarioElement.owl [PID 29024] - DEBUG - [Process-ScenarioElement.owl PID:29024] 分类图生成成功。
+2025-03-30 16:40:12,983 - Process-ScenarioElement.owl [PID 29024] - DEBUG - [Process-ScenarioElement.owl PID:29024] 开始渲染SVG图形。
+2025-03-30 16:40:13,079 - Process-Emergency.owl [PID 28796] - DEBUG - 子进程日志记录器已配置，仅使用QueueHandler。
+2025-03-30 16:40:13,080 - Process-Emergency.owl [PID 28796] - DEBUG - [Process-Emergency.owl PID:28796] 开始处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.owl'.
+2025-03-30 16:40:13,080 - Process-Emergency.owl [PID 28796] - INFO - [Process-Emergency.owl PID:28796] 开始检查JSON-LD文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.owl'.
+2025-03-30 16:40:13,080 - Process-Emergency.owl [PID 28796] - DEBUG - [Process-Emergency.owl PID:28796] 检查文件是否为JSON-LD: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.owl'
+2025-03-30 16:40:13,080 - Process-Emergency.owl [PID 28796] - WARNING - [Process-Emergency.owl PID:28796] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.owl' 中的JSON无效: Expecting value: line 1 column 1 (char 0)
+2025-03-30 16:40:13,080 - Process-Emergency.owl [PID 28796] - INFO - [Process-Emergency.owl PID:28796] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.owl' 不是JSON-LD格式，跳过转换。
+2025-03-30 16:40:13,080 - Process-Emergency.owl [PID 28796] - DEBUG - [Process-Emergency.owl PID:28796] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.owl' 已处理为 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.owl'。
+2025-03-30 16:40:13,080 - Process-Emergency.owl [PID 28796] - INFO - [Process-Emergency.owl PID:28796] 开始处理OWL文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.owl'.
+2025-03-30 16:40:13,080 - Process-Emergency.owl [PID 28796] - DEBUG - [Process-Emergency.owl PID:28796] 加载OWL文件 'D:\PythonProjects\AcademicTool_PySide\data\sysml2\15\owl\Emergency.owl'。
+2025-03-30 16:40:13,082 - Process-Emergency.owl [PID 28796] - DEBUG - [Process-Emergency.owl PID:28796] 成功加载本体 'D:\PythonProjects\AcademicTool_PySide\data\sysml2\15\owl\Emergency.owl'。
+2025-03-30 16:40:13,082 - Process-Emergency.owl [PID 28796] - DEBUG - [Process-Emergency.owl PID:28796] 生成分类图。
+2025-03-30 16:40:13,082 - Process-Emergency.owl [PID 28796] - DEBUG - [Process-Emergency.owl PID:28796] 分类图生成成功。
+2025-03-30 16:40:13,082 - Process-Emergency.owl [PID 28796] - DEBUG - [Process-Emergency.owl PID:28796] 开始渲染SVG图形。
+2025-03-30 16:40:13,091 - Process-Scenario.owl [PID 29020] - DEBUG - 子进程日志记录器已配置，仅使用QueueHandler。
+2025-03-30 16:40:13,091 - Process-Scenario.owl [PID 29020] - DEBUG - [Process-Scenario.owl PID:29020] 开始处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.owl'.
+2025-03-30 16:40:13,091 - Process-Scenario.owl [PID 29020] - INFO - [Process-Scenario.owl PID:29020] 开始检查JSON-LD文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.owl'.
+2025-03-30 16:40:13,091 - Process-Scenario.owl [PID 29020] - DEBUG - [Process-Scenario.owl PID:29020] 检查文件是否为JSON-LD: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.owl'
+2025-03-30 16:40:13,091 - Process-Scenario.owl [PID 29020] - WARNING - [Process-Scenario.owl PID:29020] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.owl' 中的JSON无效: Expecting value: line 1 column 1 (char 0)
+2025-03-30 16:40:13,091 - Process-Scenario.owl [PID 29020] - INFO - [Process-Scenario.owl PID:29020] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.owl' 不是JSON-LD格式，跳过转换。
+2025-03-30 16:40:13,091 - Process-Scenario.owl [PID 29020] - DEBUG - [Process-Scenario.owl PID:29020] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.owl' 已处理为 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.owl'。
+2025-03-30 16:40:13,091 - Process-Scenario.owl [PID 29020] - INFO - [Process-Scenario.owl PID:29020] 开始处理OWL文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.owl'.
+2025-03-30 16:40:13,092 - Process-Scenario.owl [PID 29020] - DEBUG - [Process-Scenario.owl PID:29020] 加载OWL文件 'D:\PythonProjects\AcademicTool_PySide\data\sysml2\15\owl\Scenario.owl'。
+2025-03-30 16:40:13,093 - Process-Scenario.owl [PID 29020] - DEBUG - [Process-Scenario.owl PID:29020] 成功加载本体 'D:\PythonProjects\AcademicTool_PySide\data\sysml2\15\owl\Scenario.owl'。
+2025-03-30 16:40:13,094 - Process-Scenario.owl [PID 29020] - DEBUG - [Process-Scenario.owl PID:29020] 生成分类图。
+2025-03-30 16:40:13,094 - Process-Scenario.owl [PID 29020] - DEBUG - [Process-Scenario.owl PID:29020] 分类图生成成功。
+2025-03-30 16:40:13,094 - Process-Scenario.owl [PID 29020] - DEBUG - [Process-Scenario.owl PID:29020] 开始渲染SVG图形。
+2025-03-30 16:40:13,117 - Process-Merge.owl [PID 26824] - DEBUG - 子进程日志记录器已配置，仅使用QueueHandler。
+2025-03-30 16:40:13,117 - Process-Merge.owl [PID 26824] - DEBUG - [Process-Merge.owl PID:26824] 开始处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.owl'.
+2025-03-30 16:40:13,117 - Process-Merge.owl [PID 26824] - INFO - [Process-Merge.owl PID:26824] 开始检查JSON-LD文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.owl'.
+2025-03-30 16:40:13,117 - Process-Merge.owl [PID 26824] - DEBUG - [Process-Merge.owl PID:26824] 检查文件是否为JSON-LD: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.owl'
+2025-03-30 16:40:13,118 - Process-Merge.owl [PID 26824] - WARNING - [Process-Merge.owl PID:26824] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.owl' 中的JSON无效: Expecting value: line 1 column 1 (char 0)
+2025-03-30 16:40:13,118 - Process-Merge.owl [PID 26824] - INFO - [Process-Merge.owl PID:26824] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.owl' 不是JSON-LD格式，跳过转换。
+2025-03-30 16:40:13,118 - Process-Merge.owl [PID 26824] - DEBUG - [Process-Merge.owl PID:26824] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.owl' 已处理为 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.owl'。
+2025-03-30 16:40:13,118 - Process-Merge.owl [PID 26824] - INFO - [Process-Merge.owl PID:26824] 开始处理OWL文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.owl'.
+2025-03-30 16:40:13,118 - Process-Merge.owl [PID 26824] - DEBUG - [Process-Merge.owl PID:26824] 加载OWL文件 'D:\PythonProjects\AcademicTool_PySide\data\sysml2\15\owl\Merge.owl'。
+2025-03-30 16:40:13,129 - Process-Merge.owl [PID 26824] - DEBUG - [Process-Merge.owl PID:26824] 成功加载本体 'D:\PythonProjects\AcademicTool_PySide\data\sysml2\15\owl\Merge.owl'。
+2025-03-30 16:40:13,129 - Process-Merge.owl [PID 26824] - DEBUG - [Process-Merge.owl PID:26824] 生成分类图。
+2025-03-30 16:40:13,131 - Process-Merge.owl [PID 26824] - DEBUG - [Process-Merge.owl PID:26824] 分类图生成成功。
+2025-03-30 16:40:13,131 - Process-Merge.owl [PID 26824] - DEBUG - [Process-Merge.owl PID:26824] 开始渲染SVG图形。
+2025-03-30 16:40:13,345 - Process-Scenario.owl [PID 29020] - DEBUG - [Process-Scenario.owl PID:29020] SVG图形成功写入文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.svg'。
+2025-03-30 16:40:13,345 - Process-Scenario.owl [PID 29020] - INFO - [Process-Scenario.owl PID:29020] 成功生成SVG文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.svg'，耗时 0:00:00.253943.
+2025-03-30 16:40:13,345 - Process-Scenario.owl [PID 29020] - DEBUG - [Process-Scenario.owl PID:29020] 完成文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.owl' 的处理，输出: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.svg'。
+2025-03-30 16:40:13,345 - Process-Scenario.owl [PID 29020] - INFO - [Process-Scenario.owl PID:29020] 完成处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.owl'。
+2025-03-30 16:40:13,349 - Process-Merge.owl [PID 26824] - DEBUG - [Process-Merge.owl PID:26824] SVG图形成功写入文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.svg'。
+2025-03-30 16:40:13,349 - Process-Merge.owl [PID 26824] - INFO - [Process-Merge.owl PID:26824] 成功生成SVG文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.svg'，耗时 0:00:00.230939.
+2025-03-30 16:40:13,349 - Process-Merge.owl [PID 26824] - DEBUG - [Process-Merge.owl PID:26824] 完成文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.owl' 的处理，输出: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.svg'。
+2025-03-30 16:40:13,349 - Process-Merge.owl [PID 26824] - INFO - [Process-Merge.owl PID:26824] 完成处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.owl'。
+2025-03-30 16:40:13,350 - Process-Emergency.owl [PID 28796] - DEBUG - [Process-Emergency.owl PID:28796] SVG图形成功写入文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.svg'。
+2025-03-30 16:40:13,350 - Process-Emergency.owl [PID 28796] - INFO - [Process-Emergency.owl PID:28796] 成功生成SVG文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.svg'，耗时 0:00:00.269951.
+2025-03-30 16:40:13,350 - Process-Emergency.owl [PID 28796] - DEBUG - [Process-Emergency.owl PID:28796] 完成文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.owl' 的处理，输出: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.svg'。
+2025-03-30 16:40:13,350 - Process-Emergency.owl [PID 28796] - INFO - [Process-Emergency.owl PID:28796] 完成处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.owl'。
+2025-03-30 16:40:13,352 - Process-ScenarioElement.owl [PID 29024] - DEBUG - [Process-ScenarioElement.owl PID:29024] SVG图形成功写入文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.svg'。
+2025-03-30 16:40:13,352 - Process-ScenarioElement.owl [PID 29024] - INFO - [Process-ScenarioElement.owl PID:29024] 成功生成SVG文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.svg'，耗时 0:00:00.385825.
+2025-03-30 16:40:13,352 - Process-ScenarioElement.owl [PID 29024] - DEBUG - [Process-ScenarioElement.owl PID:29024] 完成文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.owl' 的处理，输出: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.svg'。
+2025-03-30 16:40:13,352 - Process-ScenarioElement.owl [PID 29024] - INFO - [Process-ScenarioElement.owl PID:29024] 完成处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.owl'。
+2025-03-30 16:40:13,755 - MainProcess [PID 17448] - INFO - 进程 Process-ScenarioElement.owl 已完成。
+2025-03-30 16:40:13,755 - MainProcess [PID 17448] - INFO - 进程 Process-Scenario.owl 已完成。
+2025-03-30 16:40:13,756 - MainProcess [PID 17448] - INFO - 进程 Process-Emergency.owl 已完成。
+2025-03-30 16:40:13,756 - MainProcess [PID 17448] - INFO - 进程 Process-Merge.owl 已完成。
+2025-03-30 16:40:13,756 - MainProcess [PID 17448] - INFO - 所有文件处理完成.
+2025-03-30 16:41:05,672 - MainProcess [PID 17448] - DEBUG - 日志记录器已配置，日志文件: 'D:\PythonProjects\AcademicTool_PySide\processing.log'。
+2025-03-30 16:41:05,673 - MainProcess [PID 17448] - INFO - 开始处理 4 个文件，输出目录为 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl'。
+2025-03-30 16:41:05,673 - MainProcess [PID 17448] - INFO - 启动进程 Process-ScenarioElement.owl 处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.owl'。
+2025-03-30 16:41:05,676 - MainProcess [PID 17448] - INFO - 启动进程 Process-Scenario.owl 处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.owl'。
+2025-03-30 16:41:05,679 - MainProcess [PID 17448] - INFO - 启动进程 Process-Emergency.owl 处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.owl'。
+2025-03-30 16:41:05,681 - MainProcess [PID 17448] - INFO - 启动进程 Process-Merge.owl 处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.owl'。
+2025-03-30 16:41:08,311 - Process-Scenario.owl [PID 5564] - DEBUG - 子进程日志记录器已配置，仅使用QueueHandler。
+2025-03-30 16:41:08,311 - Process-Scenario.owl [PID 5564] - DEBUG - [Process-Scenario.owl PID:5564] 开始处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.owl'.
+2025-03-30 16:41:08,311 - Process-Scenario.owl [PID 5564] - INFO - [Process-Scenario.owl PID:5564] 开始检查JSON-LD文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.owl'.
+2025-03-30 16:41:08,312 - Process-Scenario.owl [PID 5564] - DEBUG - [Process-Scenario.owl PID:5564] 检查文件是否为JSON-LD: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.owl'
+2025-03-30 16:41:08,312 - Process-Scenario.owl [PID 5564] - WARNING - [Process-Scenario.owl PID:5564] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.owl' 中的JSON无效: Expecting value: line 1 column 1 (char 0)
+2025-03-30 16:41:08,312 - Process-Scenario.owl [PID 5564] - INFO - [Process-Scenario.owl PID:5564] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.owl' 不是JSON-LD格式，跳过转换。
+2025-03-30 16:41:08,312 - Process-Scenario.owl [PID 5564] - DEBUG - [Process-Scenario.owl PID:5564] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.owl' 已处理为 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.owl'。
+2025-03-30 16:41:08,312 - Process-Scenario.owl [PID 5564] - INFO - [Process-Scenario.owl PID:5564] 开始处理OWL文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.owl'.
+2025-03-30 16:41:08,312 - Process-Scenario.owl [PID 5564] - DEBUG - [Process-Scenario.owl PID:5564] 加载OWL文件 'D:\PythonProjects\AcademicTool_PySide\data\sysml2\15\owl\Scenario.owl'。
+2025-03-30 16:41:08,314 - Process-Scenario.owl [PID 5564] - DEBUG - [Process-Scenario.owl PID:5564] 成功加载本体 'D:\PythonProjects\AcademicTool_PySide\data\sysml2\15\owl\Scenario.owl'。
+2025-03-30 16:41:08,314 - Process-Scenario.owl [PID 5564] - DEBUG - [Process-Scenario.owl PID:5564] 生成分类图。
+2025-03-30 16:41:08,315 - Process-Scenario.owl [PID 5564] - DEBUG - [Process-Scenario.owl PID:5564] 分类图生成成功。
+2025-03-30 16:41:08,315 - Process-Scenario.owl [PID 5564] - DEBUG - [Process-Scenario.owl PID:5564] 开始渲染SVG图形。
+2025-03-30 16:41:08,371 - Process-Merge.owl [PID 24552] - DEBUG - 子进程日志记录器已配置，仅使用QueueHandler。
+2025-03-30 16:41:08,372 - Process-Merge.owl [PID 24552] - DEBUG - [Process-Merge.owl PID:24552] 开始处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.owl'.
+2025-03-30 16:41:08,372 - Process-Merge.owl [PID 24552] - INFO - [Process-Merge.owl PID:24552] 开始检查JSON-LD文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.owl'.
+2025-03-30 16:41:08,372 - Process-Merge.owl [PID 24552] - DEBUG - [Process-Merge.owl PID:24552] 检查文件是否为JSON-LD: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.owl'
+2025-03-30 16:41:08,372 - Process-Merge.owl [PID 24552] - WARNING - [Process-Merge.owl PID:24552] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.owl' 中的JSON无效: Expecting value: line 1 column 1 (char 0)
+2025-03-30 16:41:08,372 - Process-Merge.owl [PID 24552] - INFO - [Process-Merge.owl PID:24552] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.owl' 不是JSON-LD格式，跳过转换。
+2025-03-30 16:41:08,372 - Process-Merge.owl [PID 24552] - DEBUG - [Process-Merge.owl PID:24552] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.owl' 已处理为 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.owl'。
+2025-03-30 16:41:08,372 - Process-Merge.owl [PID 24552] - INFO - [Process-Merge.owl PID:24552] 开始处理OWL文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.owl'.
+2025-03-30 16:41:08,372 - Process-Merge.owl [PID 24552] - DEBUG - [Process-Merge.owl PID:24552] 加载OWL文件 'D:\PythonProjects\AcademicTool_PySide\data\sysml2\15\owl\Merge.owl'。
+2025-03-30 16:41:08,382 - Process-Merge.owl [PID 24552] - DEBUG - [Process-Merge.owl PID:24552] 成功加载本体 'D:\PythonProjects\AcademicTool_PySide\data\sysml2\15\owl\Merge.owl'。
+2025-03-30 16:41:08,382 - Process-Merge.owl [PID 24552] - DEBUG - [Process-Merge.owl PID:24552] 生成分类图。
+2025-03-30 16:41:08,384 - Process-Merge.owl [PID 24552] - DEBUG - [Process-Merge.owl PID:24552] 分类图生成成功。
+2025-03-30 16:41:08,384 - Process-Merge.owl [PID 24552] - DEBUG - [Process-Merge.owl PID:24552] 开始渲染SVG图形。
+2025-03-30 16:41:08,464 - Process-Emergency.owl [PID 14644] - DEBUG - 子进程日志记录器已配置，仅使用QueueHandler。
+2025-03-30 16:41:08,465 - Process-Emergency.owl [PID 14644] - DEBUG - [Process-Emergency.owl PID:14644] 开始处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.owl'.
+2025-03-30 16:41:08,465 - Process-Emergency.owl [PID 14644] - INFO - [Process-Emergency.owl PID:14644] 开始检查JSON-LD文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.owl'.
+2025-03-30 16:41:08,465 - Process-Emergency.owl [PID 14644] - DEBUG - [Process-Emergency.owl PID:14644] 检查文件是否为JSON-LD: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.owl'
+2025-03-30 16:41:08,465 - Process-Emergency.owl [PID 14644] - WARNING - [Process-Emergency.owl PID:14644] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.owl' 中的JSON无效: Expecting value: line 1 column 1 (char 0)
+2025-03-30 16:41:08,465 - Process-Emergency.owl [PID 14644] - INFO - [Process-Emergency.owl PID:14644] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.owl' 不是JSON-LD格式，跳过转换。
+2025-03-30 16:41:08,465 - Process-Emergency.owl [PID 14644] - DEBUG - [Process-Emergency.owl PID:14644] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.owl' 已处理为 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.owl'。
+2025-03-30 16:41:08,465 - Process-Emergency.owl [PID 14644] - INFO - [Process-Emergency.owl PID:14644] 开始处理OWL文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.owl'.
+2025-03-30 16:41:08,466 - Process-Emergency.owl [PID 14644] - DEBUG - [Process-Emergency.owl PID:14644] 加载OWL文件 'D:\PythonProjects\AcademicTool_PySide\data\sysml2\15\owl\Emergency.owl'。
+2025-03-30 16:41:08,467 - Process-Emergency.owl [PID 14644] - DEBUG - [Process-Emergency.owl PID:14644] 成功加载本体 'D:\PythonProjects\AcademicTool_PySide\data\sysml2\15\owl\Emergency.owl'。
+2025-03-30 16:41:08,467 - Process-Emergency.owl [PID 14644] - DEBUG - [Process-Emergency.owl PID:14644] 生成分类图。
+2025-03-30 16:41:08,467 - Process-Emergency.owl [PID 14644] - DEBUG - [Process-Emergency.owl PID:14644] 分类图生成成功。
+2025-03-30 16:41:08,467 - Process-Emergency.owl [PID 14644] - DEBUG - [Process-Emergency.owl PID:14644] 开始渲染SVG图形。
+2025-03-30 16:41:08,483 - Process-ScenarioElement.owl [PID 29604] - DEBUG - 子进程日志记录器已配置，仅使用QueueHandler。
+2025-03-30 16:41:08,484 - Process-ScenarioElement.owl [PID 29604] - DEBUG - [Process-ScenarioElement.owl PID:29604] 开始处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.owl'.
+2025-03-30 16:41:08,484 - Process-ScenarioElement.owl [PID 29604] - INFO - [Process-ScenarioElement.owl PID:29604] 开始检查JSON-LD文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.owl'.
+2025-03-30 16:41:08,484 - Process-ScenarioElement.owl [PID 29604] - DEBUG - [Process-ScenarioElement.owl PID:29604] 检查文件是否为JSON-LD: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.owl'
+2025-03-30 16:41:08,485 - Process-ScenarioElement.owl [PID 29604] - WARNING - [Process-ScenarioElement.owl PID:29604] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.owl' 中的JSON无效: Expecting value: line 1 column 1 (char 0)
+2025-03-30 16:41:08,485 - Process-ScenarioElement.owl [PID 29604] - INFO - [Process-ScenarioElement.owl PID:29604] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.owl' 不是JSON-LD格式，跳过转换。
+2025-03-30 16:41:08,485 - Process-ScenarioElement.owl [PID 29604] - DEBUG - [Process-ScenarioElement.owl PID:29604] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.owl' 已处理为 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.owl'。
+2025-03-30 16:41:08,485 - Process-ScenarioElement.owl [PID 29604] - INFO - [Process-ScenarioElement.owl PID:29604] 开始处理OWL文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.owl'.
+2025-03-30 16:41:08,485 - Process-ScenarioElement.owl [PID 29604] - DEBUG - [Process-ScenarioElement.owl PID:29604] 加载OWL文件 'D:\PythonProjects\AcademicTool_PySide\data\sysml2\15\owl\ScenarioElement.owl'。
+2025-03-30 16:41:08,494 - Process-ScenarioElement.owl [PID 29604] - DEBUG - [Process-ScenarioElement.owl PID:29604] 成功加载本体 'D:\PythonProjects\AcademicTool_PySide\data\sysml2\15\owl\ScenarioElement.owl'。
+2025-03-30 16:41:08,494 - Process-ScenarioElement.owl [PID 29604] - DEBUG - [Process-ScenarioElement.owl PID:29604] 生成分类图。
+2025-03-30 16:41:08,496 - Process-ScenarioElement.owl [PID 29604] - DEBUG - [Process-ScenarioElement.owl PID:29604] 分类图生成成功。
+2025-03-30 16:41:08,496 - Process-ScenarioElement.owl [PID 29604] - DEBUG - [Process-ScenarioElement.owl PID:29604] 开始渲染SVG图形。
+2025-03-30 16:41:08,677 - Process-Merge.owl [PID 24552] - DEBUG - [Process-Merge.owl PID:24552] SVG图形成功写入文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.svg'。
+2025-03-30 16:41:08,677 - Process-Scenario.owl [PID 5564] - DEBUG - [Process-Scenario.owl PID:5564] SVG图形成功写入文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.svg'。
+2025-03-30 16:41:08,677 - Process-Merge.owl [PID 24552] - INFO - [Process-Merge.owl PID:24552] 成功生成SVG文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.svg'，耗时 0:00:00.304826.
+2025-03-30 16:41:08,677 - Process-Merge.owl [PID 24552] - DEBUG - [Process-Merge.owl PID:24552] 完成文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.owl' 的处理，输出: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.svg'。
+2025-03-30 16:41:08,677 - Process-Scenario.owl [PID 5564] - INFO - [Process-Scenario.owl PID:5564] 成功生成SVG文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.svg'，耗时 0:00:00.364360.
+2025-03-30 16:41:08,677 - Process-Merge.owl [PID 24552] - INFO - [Process-Merge.owl PID:24552] 完成处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.owl'。
+2025-03-30 16:41:08,677 - Process-Scenario.owl [PID 5564] - DEBUG - [Process-Scenario.owl PID:5564] 完成文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.owl' 的处理，输出: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.svg'。
+2025-03-30 16:41:08,677 - Process-Scenario.owl [PID 5564] - INFO - [Process-Scenario.owl PID:5564] 完成处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.owl'。
+2025-03-30 16:41:08,767 - Process-Emergency.owl [PID 14644] - DEBUG - [Process-Emergency.owl PID:14644] SVG图形成功写入文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.svg'。
+2025-03-30 16:41:08,767 - Process-Emergency.owl [PID 14644] - INFO - [Process-Emergency.owl PID:14644] 成功生成SVG文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.svg'，耗时 0:00:00.302472.
+2025-03-30 16:41:08,767 - Process-Emergency.owl [PID 14644] - DEBUG - [Process-Emergency.owl PID:14644] 完成文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.owl' 的处理，输出: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.svg'。
+2025-03-30 16:41:08,767 - Process-Emergency.owl [PID 14644] - INFO - [Process-Emergency.owl PID:14644] 完成处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.owl'。
+2025-03-30 16:41:08,853 - Process-ScenarioElement.owl [PID 29604] - DEBUG - [Process-ScenarioElement.owl PID:29604] SVG图形成功写入文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.svg'。
+2025-03-30 16:41:08,854 - Process-ScenarioElement.owl [PID 29604] - INFO - [Process-ScenarioElement.owl PID:29604] 成功生成SVG文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.svg'，耗时 0:00:00.368021.
+2025-03-30 16:41:08,854 - Process-ScenarioElement.owl [PID 29604] - DEBUG - [Process-ScenarioElement.owl PID:29604] 完成文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.owl' 的处理，输出: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.svg'。
+2025-03-30 16:41:08,854 - Process-ScenarioElement.owl [PID 29604] - INFO - [Process-ScenarioElement.owl PID:29604] 完成处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.owl'。
+2025-03-30 16:41:09,174 - MainProcess [PID 17448] - INFO - 进程 Process-ScenarioElement.owl 已完成。
+2025-03-30 16:41:09,174 - MainProcess [PID 17448] - INFO - 进程 Process-Scenario.owl 已完成。
+2025-03-30 16:41:09,174 - MainProcess [PID 17448] - INFO - 进程 Process-Emergency.owl 已完成。
+2025-03-30 16:41:09,174 - MainProcess [PID 17448] - INFO - 进程 Process-Merge.owl 已完成。
+2025-03-30 16:41:09,174 - MainProcess [PID 17448] - INFO - 所有文件处理完成.
+2025-03-30 16:41:50,143 - MainProcess [PID 17448] - DEBUG - 日志记录器已配置，日志文件: 'D:\PythonProjects\AcademicTool_PySide\processing.log'。
+2025-03-30 16:41:50,143 - MainProcess [PID 17448] - INFO - 开始处理 4 个文件，输出目录为 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl'。
+2025-03-30 16:41:50,144 - MainProcess [PID 17448] - INFO - 启动进程 Process-ScenarioElement.owl 处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.owl'。
+2025-03-30 16:41:50,147 - MainProcess [PID 17448] - INFO - 启动进程 Process-Scenario.owl 处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.owl'。
+2025-03-30 16:41:50,149 - MainProcess [PID 17448] - INFO - 启动进程 Process-Emergency.owl 处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.owl'。
+2025-03-30 16:41:50,151 - MainProcess [PID 17448] - INFO - 启动进程 Process-Merge.owl 处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.owl'。
+2025-03-30 16:41:52,958 - Process-Merge.owl [PID 25504] - DEBUG - 子进程日志记录器已配置，仅使用QueueHandler。
+2025-03-30 16:41:52,959 - Process-Merge.owl [PID 25504] - DEBUG - [Process-Merge.owl PID:25504] 开始处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.owl'.
+2025-03-30 16:41:52,959 - Process-Merge.owl [PID 25504] - INFO - [Process-Merge.owl PID:25504] 开始检查JSON-LD文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.owl'.
+2025-03-30 16:41:52,959 - Process-Merge.owl [PID 25504] - DEBUG - [Process-Merge.owl PID:25504] 检查文件是否为JSON-LD: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.owl'
+2025-03-30 16:41:52,959 - Process-Merge.owl [PID 25504] - WARNING - [Process-Merge.owl PID:25504] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.owl' 中的JSON无效: Expecting value: line 1 column 1 (char 0)
+2025-03-30 16:41:52,960 - Process-Merge.owl [PID 25504] - INFO - [Process-Merge.owl PID:25504] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.owl' 不是JSON-LD格式，跳过转换。
+2025-03-30 16:41:52,960 - Process-Merge.owl [PID 25504] - DEBUG - [Process-Merge.owl PID:25504] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.owl' 已处理为 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.owl'。
+2025-03-30 16:41:52,960 - Process-Merge.owl [PID 25504] - INFO - [Process-Merge.owl PID:25504] 开始处理OWL文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.owl'.
+2025-03-30 16:41:52,960 - Process-Merge.owl [PID 25504] - DEBUG - [Process-Merge.owl PID:25504] 加载OWL文件 'D:\PythonProjects\AcademicTool_PySide\data\sysml2\15\owl\Merge.owl'。
+2025-03-30 16:41:52,971 - Process-Merge.owl [PID 25504] - DEBUG - [Process-Merge.owl PID:25504] 成功加载本体 'D:\PythonProjects\AcademicTool_PySide\data\sysml2\15\owl\Merge.owl'。
+2025-03-30 16:41:52,971 - Process-Merge.owl [PID 25504] - DEBUG - [Process-Merge.owl PID:25504] 生成分类图。
+2025-03-30 16:41:52,973 - Process-Merge.owl [PID 25504] - DEBUG - [Process-Merge.owl PID:25504] 分类图生成成功。
+2025-03-30 16:41:52,973 - Process-Merge.owl [PID 25504] - DEBUG - [Process-Merge.owl PID:25504] 开始渲染SVG图形。
+2025-03-30 16:41:53,125 - Process-ScenarioElement.owl [PID 26572] - DEBUG - 子进程日志记录器已配置，仅使用QueueHandler。
+2025-03-30 16:41:53,126 - Process-ScenarioElement.owl [PID 26572] - DEBUG - [Process-ScenarioElement.owl PID:26572] 开始处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.owl'.
+2025-03-30 16:41:53,126 - Process-ScenarioElement.owl [PID 26572] - INFO - [Process-ScenarioElement.owl PID:26572] 开始检查JSON-LD文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.owl'.
+2025-03-30 16:41:53,126 - Process-ScenarioElement.owl [PID 26572] - DEBUG - [Process-ScenarioElement.owl PID:26572] 检查文件是否为JSON-LD: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.owl'
+2025-03-30 16:41:53,126 - Process-ScenarioElement.owl [PID 26572] - WARNING - [Process-ScenarioElement.owl PID:26572] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.owl' 中的JSON无效: Expecting value: line 1 column 1 (char 0)
+2025-03-30 16:41:53,126 - Process-ScenarioElement.owl [PID 26572] - INFO - [Process-ScenarioElement.owl PID:26572] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.owl' 不是JSON-LD格式，跳过转换。
+2025-03-30 16:41:53,126 - Process-ScenarioElement.owl [PID 26572] - DEBUG - [Process-ScenarioElement.owl PID:26572] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.owl' 已处理为 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.owl'。
+2025-03-30 16:41:53,126 - Process-ScenarioElement.owl [PID 26572] - INFO - [Process-ScenarioElement.owl PID:26572] 开始处理OWL文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.owl'.
+2025-03-30 16:41:53,127 - Process-ScenarioElement.owl [PID 26572] - DEBUG - [Process-ScenarioElement.owl PID:26572] 加载OWL文件 'D:\PythonProjects\AcademicTool_PySide\data\sysml2\15\owl\ScenarioElement.owl'。
+2025-03-30 16:41:53,135 - Process-ScenarioElement.owl [PID 26572] - DEBUG - [Process-ScenarioElement.owl PID:26572] 成功加载本体 'D:\PythonProjects\AcademicTool_PySide\data\sysml2\15\owl\ScenarioElement.owl'。
+2025-03-30 16:41:53,136 - Process-ScenarioElement.owl [PID 26572] - DEBUG - [Process-ScenarioElement.owl PID:26572] 生成分类图。
+2025-03-30 16:41:53,137 - Process-ScenarioElement.owl [PID 26572] - DEBUG - [Process-ScenarioElement.owl PID:26572] 分类图生成成功。
+2025-03-30 16:41:53,137 - Process-Emergency.owl [PID 26716] - DEBUG - 子进程日志记录器已配置，仅使用QueueHandler。
+2025-03-30 16:41:53,137 - Process-ScenarioElement.owl [PID 26572] - DEBUG - [Process-ScenarioElement.owl PID:26572] 开始渲染SVG图形。
+2025-03-30 16:41:53,137 - Process-Emergency.owl [PID 26716] - DEBUG - [Process-Emergency.owl PID:26716] 开始处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.owl'.
+2025-03-30 16:41:53,137 - Process-Emergency.owl [PID 26716] - INFO - [Process-Emergency.owl PID:26716] 开始检查JSON-LD文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.owl'.
+2025-03-30 16:41:53,137 - Process-Emergency.owl [PID 26716] - DEBUG - [Process-Emergency.owl PID:26716] 检查文件是否为JSON-LD: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.owl'
+2025-03-30 16:41:53,137 - Process-Emergency.owl [PID 26716] - WARNING - [Process-Emergency.owl PID:26716] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.owl' 中的JSON无效: Expecting value: line 1 column 1 (char 0)
+2025-03-30 16:41:53,137 - Process-Emergency.owl [PID 26716] - INFO - [Process-Emergency.owl PID:26716] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.owl' 不是JSON-LD格式，跳过转换。
+2025-03-30 16:41:53,137 - Process-Emergency.owl [PID 26716] - DEBUG - [Process-Emergency.owl PID:26716] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.owl' 已处理为 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.owl'。
+2025-03-30 16:41:53,137 - Process-Emergency.owl [PID 26716] - INFO - [Process-Emergency.owl PID:26716] 开始处理OWL文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.owl'.
+2025-03-30 16:41:53,138 - Process-Emergency.owl [PID 26716] - DEBUG - [Process-Emergency.owl PID:26716] 加载OWL文件 'D:\PythonProjects\AcademicTool_PySide\data\sysml2\15\owl\Emergency.owl'。
+2025-03-30 16:41:53,139 - Process-Emergency.owl [PID 26716] - DEBUG - [Process-Emergency.owl PID:26716] 成功加载本体 'D:\PythonProjects\AcademicTool_PySide\data\sysml2\15\owl\Emergency.owl'。
+2025-03-30 16:41:53,139 - Process-Emergency.owl [PID 26716] - DEBUG - [Process-Emergency.owl PID:26716] 生成分类图。
+2025-03-30 16:41:53,139 - Process-Emergency.owl [PID 26716] - DEBUG - [Process-Emergency.owl PID:26716] 分类图生成成功。
+2025-03-30 16:41:53,139 - Process-Emergency.owl [PID 26716] - DEBUG - [Process-Emergency.owl PID:26716] 开始渲染SVG图形。
+2025-03-30 16:41:53,156 - Process-Scenario.owl [PID 28816] - DEBUG - 子进程日志记录器已配置，仅使用QueueHandler。
+2025-03-30 16:41:53,157 - Process-Scenario.owl [PID 28816] - DEBUG - [Process-Scenario.owl PID:28816] 开始处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.owl'.
+2025-03-30 16:41:53,157 - Process-Scenario.owl [PID 28816] - INFO - [Process-Scenario.owl PID:28816] 开始检查JSON-LD文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.owl'.
+2025-03-30 16:41:53,157 - Process-Scenario.owl [PID 28816] - DEBUG - [Process-Scenario.owl PID:28816] 检查文件是否为JSON-LD: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.owl'
+2025-03-30 16:41:53,157 - Process-Scenario.owl [PID 28816] - WARNING - [Process-Scenario.owl PID:28816] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.owl' 中的JSON无效: Expecting value: line 1 column 1 (char 0)
+2025-03-30 16:41:53,157 - Process-Scenario.owl [PID 28816] - INFO - [Process-Scenario.owl PID:28816] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.owl' 不是JSON-LD格式，跳过转换。
+2025-03-30 16:41:53,157 - Process-Scenario.owl [PID 28816] - DEBUG - [Process-Scenario.owl PID:28816] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.owl' 已处理为 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.owl'。
+2025-03-30 16:41:53,157 - Process-Scenario.owl [PID 28816] - INFO - [Process-Scenario.owl PID:28816] 开始处理OWL文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.owl'.
+2025-03-30 16:41:53,157 - Process-Scenario.owl [PID 28816] - DEBUG - [Process-Scenario.owl PID:28816] 加载OWL文件 'D:\PythonProjects\AcademicTool_PySide\data\sysml2\15\owl\Scenario.owl'。
+2025-03-30 16:41:53,159 - Process-Scenario.owl [PID 28816] - DEBUG - [Process-Scenario.owl PID:28816] 成功加载本体 'D:\PythonProjects\AcademicTool_PySide\data\sysml2\15\owl\Scenario.owl'。
+2025-03-30 16:41:53,159 - Process-Scenario.owl [PID 28816] - DEBUG - [Process-Scenario.owl PID:28816] 生成分类图。
+2025-03-30 16:41:53,160 - Process-Scenario.owl [PID 28816] - DEBUG - [Process-Scenario.owl PID:28816] 分类图生成成功。
+2025-03-30 16:41:53,160 - Process-Scenario.owl [PID 28816] - DEBUG - [Process-Scenario.owl PID:28816] 开始渲染SVG图形。
+2025-03-30 16:41:53,329 - Process-Merge.owl [PID 25504] - DEBUG - [Process-Merge.owl PID:25504] SVG图形成功写入文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.svg'。
+2025-03-30 16:41:53,329 - Process-Merge.owl [PID 25504] - INFO - [Process-Merge.owl PID:25504] 成功生成SVG文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.svg'，耗时 0:00:00.369145.
+2025-03-30 16:41:53,329 - Process-Merge.owl [PID 25504] - DEBUG - [Process-Merge.owl PID:25504] 完成文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.owl' 的处理，输出: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.svg'。
+2025-03-30 16:41:53,329 - Process-Merge.owl [PID 25504] - INFO - [Process-Merge.owl PID:25504] 完成处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.owl'。
+2025-03-30 16:41:53,534 - Process-Scenario.owl [PID 28816] - DEBUG - [Process-Scenario.owl PID:28816] SVG图形成功写入文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.svg'。
+2025-03-30 16:41:53,534 - Process-Scenario.owl [PID 28816] - INFO - [Process-Scenario.owl PID:28816] 成功生成SVG文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.svg'，耗时 0:00:00.377563.
+2025-03-30 16:41:53,534 - Process-Scenario.owl [PID 28816] - DEBUG - [Process-Scenario.owl PID:28816] 完成文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.owl' 的处理，输出: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.svg'。
+2025-03-30 16:41:53,534 - Process-Scenario.owl [PID 28816] - INFO - [Process-Scenario.owl PID:28816] 完成处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.owl'。
+2025-03-30 16:41:53,542 - Process-Emergency.owl [PID 26716] - DEBUG - [Process-Emergency.owl PID:26716] SVG图形成功写入文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.svg'。
+2025-03-30 16:41:53,542 - Process-Emergency.owl [PID 26716] - INFO - [Process-Emergency.owl PID:26716] 成功生成SVG文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.svg'，耗时 0:00:00.405783.
+2025-03-30 16:41:53,542 - Process-Emergency.owl [PID 26716] - DEBUG - [Process-Emergency.owl PID:26716] 完成文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.owl' 的处理，输出: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.svg'。
+2025-03-30 16:41:53,542 - Process-Emergency.owl [PID 26716] - INFO - [Process-Emergency.owl PID:26716] 完成处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.owl'。
+2025-03-30 16:41:53,547 - Process-ScenarioElement.owl [PID 26572] - DEBUG - [Process-ScenarioElement.owl PID:26572] SVG图形成功写入文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.svg'。
+2025-03-30 16:41:53,547 - Process-ScenarioElement.owl [PID 26572] - INFO - [Process-ScenarioElement.owl PID:26572] 成功生成SVG文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.svg'，耗时 0:00:00.421781.
+2025-03-30 16:41:53,547 - Process-ScenarioElement.owl [PID 26572] - DEBUG - [Process-ScenarioElement.owl PID:26572] 完成文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.owl' 的处理，输出: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.svg'。
+2025-03-30 16:41:53,547 - Process-ScenarioElement.owl [PID 26572] - INFO - [Process-ScenarioElement.owl PID:26572] 完成处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.owl'。
+2025-03-30 16:41:53,899 - MainProcess [PID 17448] - INFO - 进程 Process-ScenarioElement.owl 已完成。
+2025-03-30 16:41:53,899 - MainProcess [PID 17448] - INFO - 进程 Process-Scenario.owl 已完成。
+2025-03-30 16:41:53,899 - MainProcess [PID 17448] - INFO - 进程 Process-Emergency.owl 已完成。
+2025-03-30 16:41:53,899 - MainProcess [PID 17448] - INFO - 进程 Process-Merge.owl 已完成。
+2025-03-30 16:41:53,900 - MainProcess [PID 17448] - INFO - 所有文件处理完成.
+2025-03-30 16:46:28,396 - MainProcess [PID 29592] - DEBUG - 日志记录器已配置，日志文件: 'D:\PythonProjects\AcademicTool_PySide\processing.log'。
+2025-03-30 16:46:28,396 - MainProcess [PID 29592] - INFO - 开始处理 4 个文件，输出目录为 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl'。
+2025-03-30 16:46:28,397 - MainProcess [PID 29592] - INFO - 启动进程 Process-ScenarioElement.owl 处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.owl'。
+2025-03-30 16:46:28,401 - MainProcess [PID 29592] - INFO - 启动进程 Process-Scenario.owl 处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.owl'。
+2025-03-30 16:46:28,403 - MainProcess [PID 29592] - INFO - 启动进程 Process-Emergency.owl 处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.owl'。
+2025-03-30 16:46:28,406 - MainProcess [PID 29592] - INFO - 启动进程 Process-Merge.owl 处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.owl'。
+2025-03-30 16:46:30,994 - Process-Scenario.owl [PID 29640] - DEBUG - 子进程日志记录器已配置，仅使用QueueHandler。
+2025-03-30 16:46:30,994 - Process-Scenario.owl [PID 29640] - DEBUG - [Process-Scenario.owl PID:29640] 开始处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.owl'.
+2025-03-30 16:46:30,995 - Process-Scenario.owl [PID 29640] - INFO - [Process-Scenario.owl PID:29640] 开始检查JSON-LD文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.owl'.
+2025-03-30 16:46:30,995 - Process-Scenario.owl [PID 29640] - DEBUG - [Process-Scenario.owl PID:29640] 检查文件是否为JSON-LD: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.owl'
+2025-03-30 16:46:30,995 - Process-Scenario.owl [PID 29640] - WARNING - [Process-Scenario.owl PID:29640] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.owl' 中的JSON无效: Expecting value: line 1 column 1 (char 0)
+2025-03-30 16:46:30,995 - Process-Scenario.owl [PID 29640] - INFO - [Process-Scenario.owl PID:29640] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.owl' 不是JSON-LD格式，跳过转换。
+2025-03-30 16:46:30,995 - Process-Scenario.owl [PID 29640] - DEBUG - [Process-Scenario.owl PID:29640] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.owl' 已处理为 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.owl'。
+2025-03-30 16:46:30,995 - Process-Scenario.owl [PID 29640] - INFO - [Process-Scenario.owl PID:29640] 开始处理OWL文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.owl'.
+2025-03-30 16:46:30,995 - Process-Scenario.owl [PID 29640] - DEBUG - [Process-Scenario.owl PID:29640] 加载OWL文件 'D:\PythonProjects\AcademicTool_PySide\data\sysml2\15\owl\Scenario.owl'。
+2025-03-30 16:46:30,996 - Process-Scenario.owl [PID 29640] - DEBUG - [Process-Scenario.owl PID:29640] 成功加载本体 'D:\PythonProjects\AcademicTool_PySide\data\sysml2\15\owl\Scenario.owl'。
+2025-03-30 16:46:30,996 - Process-Scenario.owl [PID 29640] - DEBUG - [Process-Scenario.owl PID:29640] 生成分类图。
+2025-03-30 16:46:30,997 - Process-Scenario.owl [PID 29640] - DEBUG - [Process-Scenario.owl PID:29640] 分类图生成成功。
+2025-03-30 16:46:30,997 - Process-Scenario.owl [PID 29640] - DEBUG - [Process-Scenario.owl PID:29640] 开始渲染SVG图形。
+2025-03-30 16:46:31,093 - Process-Emergency.owl [PID 25428] - DEBUG - 子进程日志记录器已配置，仅使用QueueHandler。
+2025-03-30 16:46:31,094 - Process-Emergency.owl [PID 25428] - DEBUG - [Process-Emergency.owl PID:25428] 开始处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.owl'.
+2025-03-30 16:46:31,094 - Process-Emergency.owl [PID 25428] - INFO - [Process-Emergency.owl PID:25428] 开始检查JSON-LD文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.owl'.
+2025-03-30 16:46:31,094 - Process-Emergency.owl [PID 25428] - DEBUG - [Process-Emergency.owl PID:25428] 检查文件是否为JSON-LD: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.owl'
+2025-03-30 16:46:31,094 - Process-Emergency.owl [PID 25428] - WARNING - [Process-Emergency.owl PID:25428] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.owl' 中的JSON无效: Expecting value: line 1 column 1 (char 0)
+2025-03-30 16:46:31,094 - Process-Emergency.owl [PID 25428] - INFO - [Process-Emergency.owl PID:25428] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.owl' 不是JSON-LD格式，跳过转换。
+2025-03-30 16:46:31,094 - Process-Emergency.owl [PID 25428] - DEBUG - [Process-Emergency.owl PID:25428] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.owl' 已处理为 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.owl'。
+2025-03-30 16:46:31,094 - Process-Emergency.owl [PID 25428] - INFO - [Process-Emergency.owl PID:25428] 开始处理OWL文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.owl'.
+2025-03-30 16:46:31,095 - Process-Emergency.owl [PID 25428] - DEBUG - [Process-Emergency.owl PID:25428] 加载OWL文件 'D:\PythonProjects\AcademicTool_PySide\data\sysml2\15\owl\Emergency.owl'。
+2025-03-30 16:46:31,096 - Process-Emergency.owl [PID 25428] - DEBUG - [Process-Emergency.owl PID:25428] 成功加载本体 'D:\PythonProjects\AcademicTool_PySide\data\sysml2\15\owl\Emergency.owl'。
+2025-03-30 16:46:31,096 - Process-Emergency.owl [PID 25428] - DEBUG - [Process-Emergency.owl PID:25428] 生成分类图。
+2025-03-30 16:46:31,097 - Process-Emergency.owl [PID 25428] - DEBUG - [Process-Emergency.owl PID:25428] 分类图生成成功。
+2025-03-30 16:46:31,097 - Process-Emergency.owl [PID 25428] - DEBUG - [Process-Emergency.owl PID:25428] 开始渲染SVG图形。
+2025-03-30 16:46:31,152 - Process-Merge.owl [PID 29752] - DEBUG - 子进程日志记录器已配置，仅使用QueueHandler。
+2025-03-30 16:46:31,153 - Process-Merge.owl [PID 29752] - DEBUG - [Process-Merge.owl PID:29752] 开始处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.owl'.
+2025-03-30 16:46:31,153 - Process-Merge.owl [PID 29752] - INFO - [Process-Merge.owl PID:29752] 开始检查JSON-LD文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.owl'.
+2025-03-30 16:46:31,153 - Process-Merge.owl [PID 29752] - DEBUG - [Process-Merge.owl PID:29752] 检查文件是否为JSON-LD: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.owl'
+2025-03-30 16:46:31,153 - Process-Merge.owl [PID 29752] - WARNING - [Process-Merge.owl PID:29752] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.owl' 中的JSON无效: Expecting value: line 1 column 1 (char 0)
+2025-03-30 16:46:31,153 - Process-Merge.owl [PID 29752] - INFO - [Process-Merge.owl PID:29752] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.owl' 不是JSON-LD格式，跳过转换。
+2025-03-30 16:46:31,153 - Process-Merge.owl [PID 29752] - DEBUG - [Process-Merge.owl PID:29752] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.owl' 已处理为 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.owl'。
+2025-03-30 16:46:31,153 - Process-Merge.owl [PID 29752] - INFO - [Process-Merge.owl PID:29752] 开始处理OWL文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.owl'.
+2025-03-30 16:46:31,153 - Process-Merge.owl [PID 29752] - DEBUG - [Process-Merge.owl PID:29752] 加载OWL文件 'D:\PythonProjects\AcademicTool_PySide\data\sysml2\15\owl\Merge.owl'。
+2025-03-30 16:46:31,163 - Process-Merge.owl [PID 29752] - DEBUG - [Process-Merge.owl PID:29752] 成功加载本体 'D:\PythonProjects\AcademicTool_PySide\data\sysml2\15\owl\Merge.owl'。
+2025-03-30 16:46:31,163 - Process-Merge.owl [PID 29752] - DEBUG - [Process-Merge.owl PID:29752] 生成分类图。
+2025-03-30 16:46:31,164 - Process-Merge.owl [PID 29752] - DEBUG - [Process-Merge.owl PID:29752] 分类图生成成功。
+2025-03-30 16:46:31,165 - Process-Merge.owl [PID 29752] - DEBUG - [Process-Merge.owl PID:29752] 开始渲染SVG图形。
+2025-03-30 16:46:31,168 - Process-ScenarioElement.owl [PID 15684] - DEBUG - 子进程日志记录器已配置，仅使用QueueHandler。
+2025-03-30 16:46:31,168 - Process-ScenarioElement.owl [PID 15684] - DEBUG - [Process-ScenarioElement.owl PID:15684] 开始处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.owl'.
+2025-03-30 16:46:31,168 - Process-ScenarioElement.owl [PID 15684] - INFO - [Process-ScenarioElement.owl PID:15684] 开始检查JSON-LD文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.owl'.
+2025-03-30 16:46:31,168 - Process-ScenarioElement.owl [PID 15684] - DEBUG - [Process-ScenarioElement.owl PID:15684] 检查文件是否为JSON-LD: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.owl'
+2025-03-30 16:46:31,168 - Process-ScenarioElement.owl [PID 15684] - WARNING - [Process-ScenarioElement.owl PID:15684] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.owl' 中的JSON无效: Expecting value: line 1 column 1 (char 0)
+2025-03-30 16:46:31,168 - Process-ScenarioElement.owl [PID 15684] - INFO - [Process-ScenarioElement.owl PID:15684] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.owl' 不是JSON-LD格式，跳过转换。
+2025-03-30 16:46:31,168 - Process-ScenarioElement.owl [PID 15684] - DEBUG - [Process-ScenarioElement.owl PID:15684] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.owl' 已处理为 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.owl'。
+2025-03-30 16:46:31,168 - Process-ScenarioElement.owl [PID 15684] - INFO - [Process-ScenarioElement.owl PID:15684] 开始处理OWL文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.owl'.
+2025-03-30 16:46:31,168 - Process-ScenarioElement.owl [PID 15684] - DEBUG - [Process-ScenarioElement.owl PID:15684] 加载OWL文件 'D:\PythonProjects\AcademicTool_PySide\data\sysml2\15\owl\ScenarioElement.owl'。
+2025-03-30 16:46:31,177 - Process-ScenarioElement.owl [PID 15684] - DEBUG - [Process-ScenarioElement.owl PID:15684] 成功加载本体 'D:\PythonProjects\AcademicTool_PySide\data\sysml2\15\owl\ScenarioElement.owl'。
+2025-03-30 16:46:31,177 - Process-ScenarioElement.owl [PID 15684] - DEBUG - [Process-ScenarioElement.owl PID:15684] 生成分类图。
+2025-03-30 16:46:31,178 - Process-ScenarioElement.owl [PID 15684] - DEBUG - [Process-ScenarioElement.owl PID:15684] 分类图生成成功。
+2025-03-30 16:46:31,178 - Process-ScenarioElement.owl [PID 15684] - DEBUG - [Process-ScenarioElement.owl PID:15684] 开始渲染SVG图形。
+2025-03-30 16:46:31,274 - Process-Scenario.owl [PID 29640] - DEBUG - [Process-Scenario.owl PID:29640] SVG图形成功写入文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.svg'。
+2025-03-30 16:46:31,275 - Process-Scenario.owl [PID 29640] - INFO - [Process-Scenario.owl PID:29640] 成功生成SVG文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.svg'，耗时 0:00:00.280694.
+2025-03-30 16:46:31,275 - Process-Scenario.owl [PID 29640] - DEBUG - [Process-Scenario.owl PID:29640] 完成文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.owl' 的处理，输出: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.svg'。
+2025-03-30 16:46:31,275 - Process-Scenario.owl [PID 29640] - INFO - [Process-Scenario.owl PID:29640] 完成处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.owl'。
+2025-03-30 16:46:31,447 - Process-Emergency.owl [PID 25428] - DEBUG - [Process-Emergency.owl PID:25428] SVG图形成功写入文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.svg'。
+2025-03-30 16:46:31,447 - Process-Emergency.owl [PID 25428] - INFO - [Process-Emergency.owl PID:25428] 成功生成SVG文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.svg'，耗时 0:00:00.353007.
+2025-03-30 16:46:31,447 - Process-Emergency.owl [PID 25428] - DEBUG - [Process-Emergency.owl PID:25428] 完成文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.owl' 的处理，输出: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.svg'。
+2025-03-30 16:46:31,447 - Process-Emergency.owl [PID 25428] - INFO - [Process-Emergency.owl PID:25428] 完成处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.owl'。
+2025-03-30 16:46:31,661 - Process-ScenarioElement.owl [PID 15684] - DEBUG - [Process-ScenarioElement.owl PID:15684] SVG图形成功写入文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.svg'。
+2025-03-30 16:46:31,661 - Process-ScenarioElement.owl [PID 15684] - INFO - [Process-ScenarioElement.owl PID:15684] 成功生成SVG文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.svg'，耗时 0:00:00.493303.
+2025-03-30 16:46:31,661 - Process-ScenarioElement.owl [PID 15684] - DEBUG - [Process-ScenarioElement.owl PID:15684] 完成文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.owl' 的处理，输出: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.svg'。
+2025-03-30 16:46:31,661 - Process-ScenarioElement.owl [PID 15684] - INFO - [Process-ScenarioElement.owl PID:15684] 完成处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.owl'。
+2025-03-30 16:46:31,665 - Process-Merge.owl [PID 29752] - DEBUG - [Process-Merge.owl PID:29752] SVG图形成功写入文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.svg'。
+2025-03-30 16:46:31,665 - Process-Merge.owl [PID 29752] - INFO - [Process-Merge.owl PID:29752] 成功生成SVG文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.svg'，耗时 0:00:00.512239.
+2025-03-30 16:46:31,665 - Process-Merge.owl [PID 29752] - DEBUG - [Process-Merge.owl PID:29752] 完成文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.owl' 的处理，输出: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.svg'。
+2025-03-30 16:46:31,665 - Process-Merge.owl [PID 29752] - INFO - [Process-Merge.owl PID:29752] 完成处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.owl'。
+2025-03-30 16:46:31,970 - MainProcess [PID 29592] - INFO - 进程 Process-ScenarioElement.owl 已完成。
+2025-03-30 16:46:31,970 - MainProcess [PID 29592] - INFO - 进程 Process-Scenario.owl 已完成。
+2025-03-30 16:46:31,970 - MainProcess [PID 29592] - INFO - 进程 Process-Emergency.owl 已完成。
+2025-03-30 16:46:31,978 - MainProcess [PID 29592] - INFO - 进程 Process-Merge.owl 已完成。
+2025-03-30 16:46:31,978 - MainProcess [PID 29592] - INFO - 所有文件处理完成.
+2025-03-30 16:54:20,586 - MainProcess [PID 22700] - DEBUG - 日志记录器已配置，日志文件: 'D:\PythonProjects\AcademicTool_PySide\processing.log'。
+2025-03-30 16:54:20,587 - MainProcess [PID 22700] - INFO - 开始处理 4 个文件，输出目录为 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl'。
+2025-03-30 16:54:20,587 - MainProcess [PID 22700] - INFO - 启动进程 Process-ScenarioElement.owl 处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.owl'。
+2025-03-30 16:54:20,591 - MainProcess [PID 22700] - INFO - 启动进程 Process-Scenario.owl 处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.owl'。
+2025-03-30 16:54:20,593 - MainProcess [PID 22700] - INFO - 启动进程 Process-Emergency.owl 处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.owl'。
+2025-03-30 16:54:20,596 - MainProcess [PID 22700] - INFO - 启动进程 Process-Merge.owl 处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.owl'。
+2025-03-30 16:54:23,472 - Process-Scenario.owl [PID 4348] - DEBUG - 子进程日志记录器已配置，仅使用QueueHandler。
+2025-03-30 16:54:23,472 - Process-Scenario.owl [PID 4348] - DEBUG - [Process-Scenario.owl PID:4348] 开始处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.owl'.
+2025-03-30 16:54:23,473 - Process-Scenario.owl [PID 4348] - INFO - [Process-Scenario.owl PID:4348] 开始检查JSON-LD文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.owl'.
+2025-03-30 16:54:23,473 - Process-Scenario.owl [PID 4348] - DEBUG - [Process-Scenario.owl PID:4348] 检查文件是否为JSON-LD: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.owl'
+2025-03-30 16:54:23,473 - Process-Scenario.owl [PID 4348] - WARNING - [Process-Scenario.owl PID:4348] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.owl' 中的JSON无效: Expecting value: line 1 column 1 (char 0)
+2025-03-30 16:54:23,473 - Process-Scenario.owl [PID 4348] - INFO - [Process-Scenario.owl PID:4348] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.owl' 不是JSON-LD格式，跳过转换。
+2025-03-30 16:54:23,473 - Process-Scenario.owl [PID 4348] - DEBUG - [Process-Scenario.owl PID:4348] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.owl' 已处理为 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.owl'。
+2025-03-30 16:54:23,473 - Process-Scenario.owl [PID 4348] - INFO - [Process-Scenario.owl PID:4348] 开始处理OWL文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.owl'.
+2025-03-30 16:54:23,473 - Process-Scenario.owl [PID 4348] - DEBUG - [Process-Scenario.owl PID:4348] 加载OWL文件 'D:\PythonProjects\AcademicTool_PySide\data\sysml2\15\owl\Scenario.owl'。
+2025-03-30 16:54:23,476 - Process-Scenario.owl [PID 4348] - DEBUG - [Process-Scenario.owl PID:4348] 成功加载本体 'D:\PythonProjects\AcademicTool_PySide\data\sysml2\15\owl\Scenario.owl'。
+2025-03-30 16:54:23,476 - Process-Scenario.owl [PID 4348] - DEBUG - [Process-Scenario.owl PID:4348] 生成分类图。
+2025-03-30 16:54:23,477 - Process-Scenario.owl [PID 4348] - DEBUG - [Process-Scenario.owl PID:4348] 分类图生成成功。
+2025-03-30 16:54:23,477 - Process-Scenario.owl [PID 4348] - DEBUG - [Process-Scenario.owl PID:4348] 开始渲染SVG图形。
+2025-03-30 16:54:23,509 - Process-Merge.owl [PID 26308] - DEBUG - 子进程日志记录器已配置，仅使用QueueHandler。
+2025-03-30 16:54:23,509 - Process-Merge.owl [PID 26308] - DEBUG - [Process-Merge.owl PID:26308] 开始处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.owl'.
+2025-03-30 16:54:23,509 - Process-Merge.owl [PID 26308] - INFO - [Process-Merge.owl PID:26308] 开始检查JSON-LD文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.owl'.
+2025-03-30 16:54:23,509 - Process-Merge.owl [PID 26308] - DEBUG - [Process-Merge.owl PID:26308] 检查文件是否为JSON-LD: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.owl'
+2025-03-30 16:54:23,510 - Process-Merge.owl [PID 26308] - WARNING - [Process-Merge.owl PID:26308] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.owl' 中的JSON无效: Expecting value: line 1 column 1 (char 0)
+2025-03-30 16:54:23,510 - Process-Merge.owl [PID 26308] - INFO - [Process-Merge.owl PID:26308] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.owl' 不是JSON-LD格式，跳过转换。
+2025-03-30 16:54:23,510 - Process-Merge.owl [PID 26308] - DEBUG - [Process-Merge.owl PID:26308] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.owl' 已处理为 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.owl'。
+2025-03-30 16:54:23,510 - Process-Merge.owl [PID 26308] - INFO - [Process-Merge.owl PID:26308] 开始处理OWL文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.owl'.
+2025-03-30 16:54:23,510 - Process-Merge.owl [PID 26308] - DEBUG - [Process-Merge.owl PID:26308] 加载OWL文件 'D:\PythonProjects\AcademicTool_PySide\data\sysml2\15\owl\Merge.owl'。
+2025-03-30 16:54:23,520 - Process-Merge.owl [PID 26308] - DEBUG - [Process-Merge.owl PID:26308] 成功加载本体 'D:\PythonProjects\AcademicTool_PySide\data\sysml2\15\owl\Merge.owl'。
+2025-03-30 16:54:23,520 - Process-Merge.owl [PID 26308] - DEBUG - [Process-Merge.owl PID:26308] 生成分类图。
+2025-03-30 16:54:23,522 - Process-ScenarioElement.owl [PID 19060] - DEBUG - 子进程日志记录器已配置，仅使用QueueHandler。
+2025-03-30 16:54:23,522 - Process-ScenarioElement.owl [PID 19060] - DEBUG - [Process-ScenarioElement.owl PID:19060] 开始处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.owl'.
+2025-03-30 16:54:23,522 - Process-ScenarioElement.owl [PID 19060] - INFO - [Process-ScenarioElement.owl PID:19060] 开始检查JSON-LD文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.owl'.
+2025-03-30 16:54:23,522 - Process-ScenarioElement.owl [PID 19060] - DEBUG - [Process-ScenarioElement.owl PID:19060] 检查文件是否为JSON-LD: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.owl'
+2025-03-30 16:54:23,522 - Process-Merge.owl [PID 26308] - DEBUG - [Process-Merge.owl PID:26308] 分类图生成成功。
+2025-03-30 16:54:23,523 - Process-ScenarioElement.owl [PID 19060] - WARNING - [Process-ScenarioElement.owl PID:19060] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.owl' 中的JSON无效: Expecting value: line 1 column 1 (char 0)
+2025-03-30 16:54:23,523 - Process-ScenarioElement.owl [PID 19060] - INFO - [Process-ScenarioElement.owl PID:19060] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.owl' 不是JSON-LD格式，跳过转换。
+2025-03-30 16:54:23,522 - Process-Merge.owl [PID 26308] - DEBUG - [Process-Merge.owl PID:26308] 开始渲染SVG图形。
+2025-03-30 16:54:23,523 - Process-ScenarioElement.owl [PID 19060] - DEBUG - [Process-ScenarioElement.owl PID:19060] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.owl' 已处理为 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.owl'。
+2025-03-30 16:54:23,523 - Process-ScenarioElement.owl [PID 19060] - INFO - [Process-ScenarioElement.owl PID:19060] 开始处理OWL文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.owl'.
+2025-03-30 16:54:23,523 - Process-ScenarioElement.owl [PID 19060] - DEBUG - [Process-ScenarioElement.owl PID:19060] 加载OWL文件 'D:\PythonProjects\AcademicTool_PySide\data\sysml2\15\owl\ScenarioElement.owl'。
+2025-03-30 16:54:23,532 - Process-ScenarioElement.owl [PID 19060] - DEBUG - [Process-ScenarioElement.owl PID:19060] 成功加载本体 'D:\PythonProjects\AcademicTool_PySide\data\sysml2\15\owl\ScenarioElement.owl'。
+2025-03-30 16:54:23,532 - Process-ScenarioElement.owl [PID 19060] - DEBUG - [Process-ScenarioElement.owl PID:19060] 生成分类图。
+2025-03-30 16:54:23,534 - Process-ScenarioElement.owl [PID 19060] - DEBUG - [Process-ScenarioElement.owl PID:19060] 分类图生成成功。
+2025-03-30 16:54:23,534 - Process-ScenarioElement.owl [PID 19060] - DEBUG - [Process-ScenarioElement.owl PID:19060] 开始渲染SVG图形。
+2025-03-30 16:54:23,541 - Process-Emergency.owl [PID 9728] - DEBUG - 子进程日志记录器已配置，仅使用QueueHandler。
+2025-03-30 16:54:23,541 - Process-Emergency.owl [PID 9728] - DEBUG - [Process-Emergency.owl PID:9728] 开始处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.owl'.
+2025-03-30 16:54:23,541 - Process-Emergency.owl [PID 9728] - INFO - [Process-Emergency.owl PID:9728] 开始检查JSON-LD文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.owl'.
+2025-03-30 16:54:23,541 - Process-Emergency.owl [PID 9728] - DEBUG - [Process-Emergency.owl PID:9728] 检查文件是否为JSON-LD: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.owl'
+2025-03-30 16:54:23,542 - Process-Emergency.owl [PID 9728] - WARNING - [Process-Emergency.owl PID:9728] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.owl' 中的JSON无效: Expecting value: line 1 column 1 (char 0)
+2025-03-30 16:54:23,542 - Process-Emergency.owl [PID 9728] - INFO - [Process-Emergency.owl PID:9728] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.owl' 不是JSON-LD格式，跳过转换。
+2025-03-30 16:54:23,542 - Process-Emergency.owl [PID 9728] - DEBUG - [Process-Emergency.owl PID:9728] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.owl' 已处理为 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.owl'。
+2025-03-30 16:54:23,542 - Process-Emergency.owl [PID 9728] - INFO - [Process-Emergency.owl PID:9728] 开始处理OWL文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.owl'.
+2025-03-30 16:54:23,542 - Process-Emergency.owl [PID 9728] - DEBUG - [Process-Emergency.owl PID:9728] 加载OWL文件 'D:\PythonProjects\AcademicTool_PySide\data\sysml2\15\owl\Emergency.owl'。
+2025-03-30 16:54:23,543 - Process-Emergency.owl [PID 9728] - DEBUG - [Process-Emergency.owl PID:9728] 成功加载本体 'D:\PythonProjects\AcademicTool_PySide\data\sysml2\15\owl\Emergency.owl'。
+2025-03-30 16:54:23,543 - Process-Emergency.owl [PID 9728] - DEBUG - [Process-Emergency.owl PID:9728] 生成分类图。
+2025-03-30 16:54:23,543 - Process-Emergency.owl [PID 9728] - DEBUG - [Process-Emergency.owl PID:9728] 分类图生成成功。
+2025-03-30 16:54:23,543 - Process-Emergency.owl [PID 9728] - DEBUG - [Process-Emergency.owl PID:9728] 开始渲染SVG图形。
+2025-03-30 16:54:23,830 - Process-Scenario.owl [PID 4348] - DEBUG - [Process-Scenario.owl PID:4348] SVG图形成功写入文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.svg'。
+2025-03-30 16:54:23,830 - Process-Scenario.owl [PID 4348] - INFO - [Process-Scenario.owl PID:4348] 成功生成SVG文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.svg'，耗时 0:00:00.357191.
+2025-03-30 16:54:23,830 - Process-Scenario.owl [PID 4348] - DEBUG - [Process-Scenario.owl PID:4348] 完成文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.owl' 的处理，输出: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.svg'。
+2025-03-30 16:54:23,830 - Process-Scenario.owl [PID 4348] - INFO - [Process-Scenario.owl PID:4348] 完成处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.owl'。
+2025-03-30 16:54:23,834 - Process-Emergency.owl [PID 9728] - DEBUG - [Process-Emergency.owl PID:9728] SVG图形成功写入文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.svg'。
+2025-03-30 16:54:23,834 - Process-Emergency.owl [PID 9728] - INFO - [Process-Emergency.owl PID:9728] 成功生成SVG文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.svg'，耗时 0:00:00.292425.
+2025-03-30 16:54:23,834 - Process-Emergency.owl [PID 9728] - DEBUG - [Process-Emergency.owl PID:9728] 完成文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.owl' 的处理，输出: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.svg'。
+2025-03-30 16:54:23,834 - Process-Emergency.owl [PID 9728] - INFO - [Process-Emergency.owl PID:9728] 完成处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.owl'。
+2025-03-30 16:54:23,835 - Process-ScenarioElement.owl [PID 19060] - DEBUG - [Process-ScenarioElement.owl PID:19060] SVG图形成功写入文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.svg'。
+2025-03-30 16:54:23,835 - Process-ScenarioElement.owl [PID 19060] - INFO - [Process-ScenarioElement.owl PID:19060] 成功生成SVG文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.svg'，耗时 0:00:00.311671.
+2025-03-30 16:54:23,835 - Process-ScenarioElement.owl [PID 19060] - DEBUG - [Process-ScenarioElement.owl PID:19060] 完成文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.owl' 的处理，输出: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.svg'。
+2025-03-30 16:54:23,835 - Process-ScenarioElement.owl [PID 19060] - INFO - [Process-ScenarioElement.owl PID:19060] 完成处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.owl'。
+2025-03-30 16:54:23,938 - Process-Merge.owl [PID 26308] - DEBUG - [Process-Merge.owl PID:26308] SVG图形成功写入文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.svg'。
+2025-03-30 16:54:23,938 - Process-Merge.owl [PID 26308] - INFO - [Process-Merge.owl PID:26308] 成功生成SVG文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.svg'，耗时 0:00:00.427551.
+2025-03-30 16:54:23,938 - Process-Merge.owl [PID 26308] - DEBUG - [Process-Merge.owl PID:26308] 完成文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.owl' 的处理，输出: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.svg'。
+2025-03-30 16:54:23,938 - Process-Merge.owl [PID 26308] - INFO - [Process-Merge.owl PID:26308] 完成处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.owl'。
+2025-03-30 16:54:24,210 - MainProcess [PID 22700] - INFO - 进程 Process-ScenarioElement.owl 已完成。
+2025-03-30 16:54:24,211 - MainProcess [PID 22700] - INFO - 进程 Process-Scenario.owl 已完成。
+2025-03-30 16:54:24,219 - MainProcess [PID 22700] - INFO - 进程 Process-Emergency.owl 已完成。
+2025-03-30 16:54:24,268 - MainProcess [PID 22700] - INFO - 进程 Process-Merge.owl 已完成。
+2025-03-30 16:54:24,268 - MainProcess [PID 22700] - INFO - 所有文件处理完成.
+2025-03-30 16:57:12,051 - MainProcess [PID 8724] - DEBUG - 日志记录器已配置，日志文件: 'D:\PythonProjects\AcademicTool_PySide\processing.log'。
+2025-03-30 16:57:12,051 - MainProcess [PID 8724] - INFO - 开始处理 4 个文件，输出目录为 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl'。
+2025-03-30 16:57:12,051 - MainProcess [PID 8724] - INFO - 启动进程 Process-ScenarioElement.owl 处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.owl'。
+2025-03-30 16:57:12,055 - MainProcess [PID 8724] - INFO - 启动进程 Process-Scenario.owl 处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.owl'。
+2025-03-30 16:57:12,057 - MainProcess [PID 8724] - INFO - 启动进程 Process-Emergency.owl 处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.owl'。
+2025-03-30 16:57:12,059 - MainProcess [PID 8724] - INFO - 启动进程 Process-Merge.owl 处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.owl'。
+2025-03-30 16:57:14,693 - Process-Merge.owl [PID 30312] - DEBUG - 子进程日志记录器已配置，仅使用QueueHandler。
+2025-03-30 16:57:14,693 - Process-Merge.owl [PID 30312] - DEBUG - [Process-Merge.owl PID:30312] 开始处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.owl'.
+2025-03-30 16:57:14,693 - Process-Merge.owl [PID 30312] - INFO - [Process-Merge.owl PID:30312] 开始检查JSON-LD文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.owl'.
+2025-03-30 16:57:14,693 - Process-Merge.owl [PID 30312] - DEBUG - [Process-Merge.owl PID:30312] 检查文件是否为JSON-LD: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.owl'
+2025-03-30 16:57:14,694 - Process-Merge.owl [PID 30312] - WARNING - [Process-Merge.owl PID:30312] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.owl' 中的JSON无效: Expecting value: line 1 column 1 (char 0)
+2025-03-30 16:57:14,694 - Process-Merge.owl [PID 30312] - INFO - [Process-Merge.owl PID:30312] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.owl' 不是JSON-LD格式，跳过转换。
+2025-03-30 16:57:14,694 - Process-Merge.owl [PID 30312] - DEBUG - [Process-Merge.owl PID:30312] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.owl' 已处理为 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.owl'。
+2025-03-30 16:57:14,694 - Process-Merge.owl [PID 30312] - INFO - [Process-Merge.owl PID:30312] 开始处理OWL文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.owl'.
+2025-03-30 16:57:14,694 - Process-Merge.owl [PID 30312] - DEBUG - [Process-Merge.owl PID:30312] 加载OWL文件 'D:\PythonProjects\AcademicTool_PySide\data\sysml2\15\owl\Merge.owl'。
+2025-03-30 16:57:14,705 - Process-Merge.owl [PID 30312] - DEBUG - [Process-Merge.owl PID:30312] 成功加载本体 'D:\PythonProjects\AcademicTool_PySide\data\sysml2\15\owl\Merge.owl'。
+2025-03-30 16:57:14,705 - Process-Merge.owl [PID 30312] - DEBUG - [Process-Merge.owl PID:30312] 生成分类图。
+2025-03-30 16:57:14,706 - Process-Merge.owl [PID 30312] - DEBUG - [Process-Merge.owl PID:30312] 分类图生成成功。
+2025-03-30 16:57:14,706 - Process-Merge.owl [PID 30312] - DEBUG - [Process-Merge.owl PID:30312] 开始渲染SVG图形。
+2025-03-30 16:57:14,718 - Process-Scenario.owl [PID 30680] - DEBUG - 子进程日志记录器已配置，仅使用QueueHandler。
+2025-03-30 16:57:14,719 - Process-Scenario.owl [PID 30680] - DEBUG - [Process-Scenario.owl PID:30680] 开始处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.owl'.
+2025-03-30 16:57:14,719 - Process-Scenario.owl [PID 30680] - INFO - [Process-Scenario.owl PID:30680] 开始检查JSON-LD文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.owl'.
+2025-03-30 16:57:14,719 - Process-Scenario.owl [PID 30680] - DEBUG - [Process-Scenario.owl PID:30680] 检查文件是否为JSON-LD: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.owl'
+2025-03-30 16:57:14,719 - Process-Scenario.owl [PID 30680] - WARNING - [Process-Scenario.owl PID:30680] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.owl' 中的JSON无效: Expecting value: line 1 column 1 (char 0)
+2025-03-30 16:57:14,719 - Process-Scenario.owl [PID 30680] - INFO - [Process-Scenario.owl PID:30680] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.owl' 不是JSON-LD格式，跳过转换。
+2025-03-30 16:57:14,719 - Process-Scenario.owl [PID 30680] - DEBUG - [Process-Scenario.owl PID:30680] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.owl' 已处理为 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.owl'。
+2025-03-30 16:57:14,719 - Process-Scenario.owl [PID 30680] - INFO - [Process-Scenario.owl PID:30680] 开始处理OWL文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.owl'.
+2025-03-30 16:57:14,719 - Process-Scenario.owl [PID 30680] - DEBUG - [Process-Scenario.owl PID:30680] 加载OWL文件 'D:\PythonProjects\AcademicTool_PySide\data\sysml2\15\owl\Scenario.owl'。
+2025-03-30 16:57:14,723 - Process-Scenario.owl [PID 30680] - DEBUG - [Process-Scenario.owl PID:30680] 成功加载本体 'D:\PythonProjects\AcademicTool_PySide\data\sysml2\15\owl\Scenario.owl'。
+2025-03-30 16:57:14,723 - Process-Scenario.owl [PID 30680] - DEBUG - [Process-Scenario.owl PID:30680] 生成分类图。
+2025-03-30 16:57:14,723 - Process-Scenario.owl [PID 30680] - DEBUG - [Process-Scenario.owl PID:30680] 分类图生成成功。
+2025-03-30 16:57:14,723 - Process-Scenario.owl [PID 30680] - DEBUG - [Process-Scenario.owl PID:30680] 开始渲染SVG图形。
+2025-03-30 16:57:14,826 - Process-ScenarioElement.owl [PID 1348] - DEBUG - 子进程日志记录器已配置，仅使用QueueHandler。
+2025-03-30 16:57:14,827 - Process-ScenarioElement.owl [PID 1348] - DEBUG - [Process-ScenarioElement.owl PID:1348] 开始处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.owl'.
+2025-03-30 16:57:14,827 - Process-ScenarioElement.owl [PID 1348] - INFO - [Process-ScenarioElement.owl PID:1348] 开始检查JSON-LD文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.owl'.
+2025-03-30 16:57:14,827 - Process-ScenarioElement.owl [PID 1348] - DEBUG - [Process-ScenarioElement.owl PID:1348] 检查文件是否为JSON-LD: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.owl'
+2025-03-30 16:57:14,827 - Process-ScenarioElement.owl [PID 1348] - WARNING - [Process-ScenarioElement.owl PID:1348] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.owl' 中的JSON无效: Expecting value: line 1 column 1 (char 0)
+2025-03-30 16:57:14,827 - Process-ScenarioElement.owl [PID 1348] - INFO - [Process-ScenarioElement.owl PID:1348] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.owl' 不是JSON-LD格式，跳过转换。
+2025-03-30 16:57:14,827 - Process-ScenarioElement.owl [PID 1348] - DEBUG - [Process-ScenarioElement.owl PID:1348] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.owl' 已处理为 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.owl'。
+2025-03-30 16:57:14,827 - Process-ScenarioElement.owl [PID 1348] - INFO - [Process-ScenarioElement.owl PID:1348] 开始处理OWL文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.owl'.
+2025-03-30 16:57:14,827 - Process-ScenarioElement.owl [PID 1348] - DEBUG - [Process-ScenarioElement.owl PID:1348] 加载OWL文件 'D:\PythonProjects\AcademicTool_PySide\data\sysml2\15\owl\ScenarioElement.owl'。
+2025-03-30 16:57:14,838 - Process-ScenarioElement.owl [PID 1348] - DEBUG - [Process-ScenarioElement.owl PID:1348] 成功加载本体 'D:\PythonProjects\AcademicTool_PySide\data\sysml2\15\owl\ScenarioElement.owl'。
+2025-03-30 16:57:14,838 - Process-ScenarioElement.owl [PID 1348] - DEBUG - [Process-ScenarioElement.owl PID:1348] 生成分类图。
+2025-03-30 16:57:14,839 - Process-ScenarioElement.owl [PID 1348] - DEBUG - [Process-ScenarioElement.owl PID:1348] 分类图生成成功。
+2025-03-30 16:57:14,839 - Process-ScenarioElement.owl [PID 1348] - DEBUG - [Process-ScenarioElement.owl PID:1348] 开始渲染SVG图形。
+2025-03-30 16:57:14,839 - Process-Emergency.owl [PID 9212] - DEBUG - 子进程日志记录器已配置，仅使用QueueHandler。
+2025-03-30 16:57:14,839 - Process-Emergency.owl [PID 9212] - DEBUG - [Process-Emergency.owl PID:9212] 开始处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.owl'.
+2025-03-30 16:57:14,840 - Process-Emergency.owl [PID 9212] - INFO - [Process-Emergency.owl PID:9212] 开始检查JSON-LD文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.owl'.
+2025-03-30 16:57:14,840 - Process-Emergency.owl [PID 9212] - DEBUG - [Process-Emergency.owl PID:9212] 检查文件是否为JSON-LD: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.owl'
+2025-03-30 16:57:14,840 - Process-Emergency.owl [PID 9212] - WARNING - [Process-Emergency.owl PID:9212] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.owl' 中的JSON无效: Expecting value: line 1 column 1 (char 0)
+2025-03-30 16:57:14,840 - Process-Emergency.owl [PID 9212] - INFO - [Process-Emergency.owl PID:9212] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.owl' 不是JSON-LD格式，跳过转换。
+2025-03-30 16:57:14,840 - Process-Emergency.owl [PID 9212] - DEBUG - [Process-Emergency.owl PID:9212] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.owl' 已处理为 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.owl'。
+2025-03-30 16:57:14,840 - Process-Emergency.owl [PID 9212] - INFO - [Process-Emergency.owl PID:9212] 开始处理OWL文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.owl'.
+2025-03-30 16:57:14,840 - Process-Emergency.owl [PID 9212] - DEBUG - [Process-Emergency.owl PID:9212] 加载OWL文件 'D:\PythonProjects\AcademicTool_PySide\data\sysml2\15\owl\Emergency.owl'。
+2025-03-30 16:57:14,841 - Process-Emergency.owl [PID 9212] - DEBUG - [Process-Emergency.owl PID:9212] 成功加载本体 'D:\PythonProjects\AcademicTool_PySide\data\sysml2\15\owl\Emergency.owl'。
+2025-03-30 16:57:14,841 - Process-Emergency.owl [PID 9212] - DEBUG - [Process-Emergency.owl PID:9212] 生成分类图。
+2025-03-30 16:57:14,842 - Process-Emergency.owl [PID 9212] - DEBUG - [Process-Emergency.owl PID:9212] 分类图生成成功。
+2025-03-30 16:57:14,842 - Process-Emergency.owl [PID 9212] - DEBUG - [Process-Emergency.owl PID:9212] 开始渲染SVG图形。
+2025-03-30 16:57:15,134 - Process-Scenario.owl [PID 30680] - DEBUG - [Process-Scenario.owl PID:30680] SVG图形成功写入文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.svg'。
+2025-03-30 16:57:15,134 - Process-Scenario.owl [PID 30680] - INFO - [Process-Scenario.owl PID:30680] 成功生成SVG文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.svg'，耗时 0:00:00.415310.
+2025-03-30 16:57:15,134 - Process-Scenario.owl [PID 30680] - DEBUG - [Process-Scenario.owl PID:30680] 完成文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.owl' 的处理，输出: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.svg'。
+2025-03-30 16:57:15,134 - Process-Scenario.owl [PID 30680] - INFO - [Process-Scenario.owl PID:30680] 完成处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.owl'。
+2025-03-30 16:57:15,138 - Process-Emergency.owl [PID 9212] - DEBUG - [Process-Emergency.owl PID:9212] SVG图形成功写入文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.svg'。
+2025-03-30 16:57:15,138 - Process-Emergency.owl [PID 9212] - INFO - [Process-Emergency.owl PID:9212] 成功生成SVG文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.svg'，耗时 0:00:00.297302.
+2025-03-30 16:57:15,138 - Process-Emergency.owl [PID 9212] - DEBUG - [Process-Emergency.owl PID:9212] 完成文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.owl' 的处理，输出: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.svg'。
+2025-03-30 16:57:15,138 - Process-Emergency.owl [PID 9212] - INFO - [Process-Emergency.owl PID:9212] 完成处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.owl'。
+2025-03-30 16:57:15,139 - Process-Merge.owl [PID 30312] - DEBUG - [Process-Merge.owl PID:30312] SVG图形成功写入文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.svg'。
+2025-03-30 16:57:15,139 - Process-Merge.owl [PID 30312] - INFO - [Process-Merge.owl PID:30312] 成功生成SVG文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.svg'，耗时 0:00:00.444330.
+2025-03-30 16:57:15,139 - Process-Merge.owl [PID 30312] - DEBUG - [Process-Merge.owl PID:30312] 完成文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.owl' 的处理，输出: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.svg'。
+2025-03-30 16:57:15,139 - Process-Merge.owl [PID 30312] - INFO - [Process-Merge.owl PID:30312] 完成处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.owl'。
+2025-03-30 16:57:15,141 - Process-ScenarioElement.owl [PID 1348] - DEBUG - [Process-ScenarioElement.owl PID:1348] SVG图形成功写入文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.svg'。
+2025-03-30 16:57:15,141 - Process-ScenarioElement.owl [PID 1348] - INFO - [Process-ScenarioElement.owl PID:1348] 成功生成SVG文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.svg'，耗时 0:00:00.313975.
+2025-03-30 16:57:15,141 - Process-ScenarioElement.owl [PID 1348] - DEBUG - [Process-ScenarioElement.owl PID:1348] 完成文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.owl' 的处理，输出: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.svg'。
+2025-03-30 16:57:15,141 - Process-ScenarioElement.owl [PID 1348] - INFO - [Process-ScenarioElement.owl PID:1348] 完成处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.owl'。
+2025-03-30 16:57:15,528 - MainProcess [PID 8724] - INFO - 进程 Process-ScenarioElement.owl 已完成。
+2025-03-30 16:57:15,528 - MainProcess [PID 8724] - INFO - 进程 Process-Scenario.owl 已完成。
+2025-03-30 16:57:15,528 - MainProcess [PID 8724] - INFO - 进程 Process-Emergency.owl 已完成。
+2025-03-30 16:57:15,530 - MainProcess [PID 8724] - INFO - 进程 Process-Merge.owl 已完成。
+2025-03-30 16:57:15,530 - MainProcess [PID 8724] - INFO - 所有文件处理完成.
+2025-03-31 18:50:04,460 - MainProcess [PID 29456] - DEBUG - 日志记录器已配置，日志文件: 'D:\PythonProjects\AcademicTool_PySide\processing.log'。
+2025-03-31 18:50:04,461 - MainProcess [PID 29456] - INFO - 开始处理 4 个文件，输出目录为 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl'。
+2025-03-31 18:50:04,461 - MainProcess [PID 29456] - INFO - 启动进程 Process-ScenarioElement.owl 处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.owl'。
+2025-03-31 18:50:04,465 - MainProcess [PID 29456] - INFO - 启动进程 Process-Scenario.owl 处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.owl'。
+2025-03-31 18:50:04,467 - MainProcess [PID 29456] - INFO - 启动进程 Process-Emergency.owl 处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.owl'。
+2025-03-31 18:50:04,469 - MainProcess [PID 29456] - INFO - 启动进程 Process-Merge.owl 处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.owl'。
+2025-03-31 18:50:07,347 - Process-ScenarioElement.owl [PID 29192] - DEBUG - 子进程日志记录器已配置，仅使用QueueHandler。
+2025-03-31 18:50:07,347 - Process-ScenarioElement.owl [PID 29192] - DEBUG - [Process-ScenarioElement.owl PID:29192] 开始处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.owl'.
+2025-03-31 18:50:07,348 - Process-ScenarioElement.owl [PID 29192] - INFO - [Process-ScenarioElement.owl PID:29192] 开始检查JSON-LD文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.owl'.
+2025-03-31 18:50:07,348 - Process-ScenarioElement.owl [PID 29192] - DEBUG - [Process-ScenarioElement.owl PID:29192] 检查文件是否为JSON-LD: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.owl'
+2025-03-31 18:50:07,348 - Process-ScenarioElement.owl [PID 29192] - WARNING - [Process-ScenarioElement.owl PID:29192] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.owl' 中的JSON无效: Expecting value: line 1 column 1 (char 0)
+2025-03-31 18:50:07,348 - Process-ScenarioElement.owl [PID 29192] - INFO - [Process-ScenarioElement.owl PID:29192] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.owl' 不是JSON-LD格式，跳过转换。
+2025-03-31 18:50:07,348 - Process-ScenarioElement.owl [PID 29192] - DEBUG - [Process-ScenarioElement.owl PID:29192] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.owl' 已处理为 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.owl'。
+2025-03-31 18:50:07,348 - Process-ScenarioElement.owl [PID 29192] - INFO - [Process-ScenarioElement.owl PID:29192] 开始处理OWL文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.owl'.
+2025-03-31 18:50:07,348 - Process-ScenarioElement.owl [PID 29192] - DEBUG - [Process-ScenarioElement.owl PID:29192] 加载OWL文件 'D:\PythonProjects\AcademicTool_PySide\data\sysml2\15\owl\ScenarioElement.owl'。
+2025-03-31 18:50:07,357 - Process-ScenarioElement.owl [PID 29192] - DEBUG - [Process-ScenarioElement.owl PID:29192] 成功加载本体 'D:\PythonProjects\AcademicTool_PySide\data\sysml2\15\owl\ScenarioElement.owl'。
+2025-03-31 18:50:07,357 - Process-ScenarioElement.owl [PID 29192] - DEBUG - [Process-ScenarioElement.owl PID:29192] 生成分类图。
+2025-03-31 18:50:07,358 - Process-ScenarioElement.owl [PID 29192] - DEBUG - [Process-ScenarioElement.owl PID:29192] 分类图生成成功。
+2025-03-31 18:50:07,358 - Process-ScenarioElement.owl [PID 29192] - DEBUG - [Process-ScenarioElement.owl PID:29192] 开始渲染SVG图形。
+2025-03-31 18:50:07,410 - Process-Emergency.owl [PID 29652] - DEBUG - 子进程日志记录器已配置，仅使用QueueHandler。
+2025-03-31 18:50:07,411 - Process-Emergency.owl [PID 29652] - DEBUG - [Process-Emergency.owl PID:29652] 开始处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.owl'.
+2025-03-31 18:50:07,411 - Process-Emergency.owl [PID 29652] - INFO - [Process-Emergency.owl PID:29652] 开始检查JSON-LD文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.owl'.
+2025-03-31 18:50:07,411 - Process-Emergency.owl [PID 29652] - DEBUG - [Process-Emergency.owl PID:29652] 检查文件是否为JSON-LD: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.owl'
+2025-03-31 18:50:07,411 - Process-Emergency.owl [PID 29652] - WARNING - [Process-Emergency.owl PID:29652] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.owl' 中的JSON无效: Expecting value: line 1 column 1 (char 0)
+2025-03-31 18:50:07,411 - Process-Emergency.owl [PID 29652] - INFO - [Process-Emergency.owl PID:29652] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.owl' 不是JSON-LD格式，跳过转换。
+2025-03-31 18:50:07,411 - Process-Emergency.owl [PID 29652] - DEBUG - [Process-Emergency.owl PID:29652] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.owl' 已处理为 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.owl'。
+2025-03-31 18:50:07,411 - Process-Emergency.owl [PID 29652] - INFO - [Process-Emergency.owl PID:29652] 开始处理OWL文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.owl'.
+2025-03-31 18:50:07,411 - Process-Emergency.owl [PID 29652] - DEBUG - [Process-Emergency.owl PID:29652] 加载OWL文件 'D:\PythonProjects\AcademicTool_PySide\data\sysml2\15\owl\Emergency.owl'。
+2025-03-31 18:50:07,413 - Process-Emergency.owl [PID 29652] - DEBUG - [Process-Emergency.owl PID:29652] 成功加载本体 'D:\PythonProjects\AcademicTool_PySide\data\sysml2\15\owl\Emergency.owl'。
+2025-03-31 18:50:07,413 - Process-Emergency.owl [PID 29652] - DEBUG - [Process-Emergency.owl PID:29652] 生成分类图。
+2025-03-31 18:50:07,413 - Process-Emergency.owl [PID 29652] - DEBUG - [Process-Emergency.owl PID:29652] 分类图生成成功。
+2025-03-31 18:50:07,413 - Process-Emergency.owl [PID 29652] - DEBUG - [Process-Emergency.owl PID:29652] 开始渲染SVG图形。
+2025-03-31 18:50:07,420 - Process-Merge.owl [PID 29220] - DEBUG - 子进程日志记录器已配置，仅使用QueueHandler。
+2025-03-31 18:50:07,421 - Process-Merge.owl [PID 29220] - DEBUG - [Process-Merge.owl PID:29220] 开始处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.owl'.
+2025-03-31 18:50:07,421 - Process-Merge.owl [PID 29220] - INFO - [Process-Merge.owl PID:29220] 开始检查JSON-LD文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.owl'.
+2025-03-31 18:50:07,421 - Process-Merge.owl [PID 29220] - DEBUG - [Process-Merge.owl PID:29220] 检查文件是否为JSON-LD: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.owl'
+2025-03-31 18:50:07,422 - Process-Merge.owl [PID 29220] - WARNING - [Process-Merge.owl PID:29220] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.owl' 中的JSON无效: Expecting value: line 1 column 1 (char 0)
+2025-03-31 18:50:07,422 - Process-Merge.owl [PID 29220] - INFO - [Process-Merge.owl PID:29220] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.owl' 不是JSON-LD格式，跳过转换。
+2025-03-31 18:50:07,422 - Process-Merge.owl [PID 29220] - DEBUG - [Process-Merge.owl PID:29220] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.owl' 已处理为 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.owl'。
+2025-03-31 18:50:07,422 - Process-Merge.owl [PID 29220] - INFO - [Process-Merge.owl PID:29220] 开始处理OWL文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.owl'.
+2025-03-31 18:50:07,422 - Process-Merge.owl [PID 29220] - DEBUG - [Process-Merge.owl PID:29220] 加载OWL文件 'D:\PythonProjects\AcademicTool_PySide\data\sysml2\15\owl\Merge.owl'。
+2025-03-31 18:50:07,434 - Process-Merge.owl [PID 29220] - DEBUG - [Process-Merge.owl PID:29220] 成功加载本体 'D:\PythonProjects\AcademicTool_PySide\data\sysml2\15\owl\Merge.owl'。
+2025-03-31 18:50:07,434 - Process-Merge.owl [PID 29220] - DEBUG - [Process-Merge.owl PID:29220] 生成分类图。
+2025-03-31 18:50:07,436 - Process-Merge.owl [PID 29220] - DEBUG - [Process-Merge.owl PID:29220] 分类图生成成功。
+2025-03-31 18:50:07,436 - Process-Merge.owl [PID 29220] - DEBUG - [Process-Merge.owl PID:29220] 开始渲染SVG图形。
+2025-03-31 18:50:07,437 - Process-Scenario.owl [PID 29500] - DEBUG - 子进程日志记录器已配置，仅使用QueueHandler。
+2025-03-31 18:50:07,437 - Process-Scenario.owl [PID 29500] - DEBUG - [Process-Scenario.owl PID:29500] 开始处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.owl'.
+2025-03-31 18:50:07,437 - Process-Scenario.owl [PID 29500] - INFO - [Process-Scenario.owl PID:29500] 开始检查JSON-LD文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.owl'.
+2025-03-31 18:50:07,438 - Process-Scenario.owl [PID 29500] - DEBUG - [Process-Scenario.owl PID:29500] 检查文件是否为JSON-LD: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.owl'
+2025-03-31 18:50:07,438 - Process-Scenario.owl [PID 29500] - WARNING - [Process-Scenario.owl PID:29500] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.owl' 中的JSON无效: Expecting value: line 1 column 1 (char 0)
+2025-03-31 18:50:07,438 - Process-Scenario.owl [PID 29500] - INFO - [Process-Scenario.owl PID:29500] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.owl' 不是JSON-LD格式，跳过转换。
+2025-03-31 18:50:07,438 - Process-Scenario.owl [PID 29500] - DEBUG - [Process-Scenario.owl PID:29500] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.owl' 已处理为 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.owl'。
+2025-03-31 18:50:07,438 - Process-Scenario.owl [PID 29500] - INFO - [Process-Scenario.owl PID:29500] 开始处理OWL文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.owl'.
+2025-03-31 18:50:07,438 - Process-Scenario.owl [PID 29500] - DEBUG - [Process-Scenario.owl PID:29500] 加载OWL文件 'D:\PythonProjects\AcademicTool_PySide\data\sysml2\15\owl\Scenario.owl'。
+2025-03-31 18:50:07,441 - Process-Scenario.owl [PID 29500] - DEBUG - [Process-Scenario.owl PID:29500] 成功加载本体 'D:\PythonProjects\AcademicTool_PySide\data\sysml2\15\owl\Scenario.owl'。
+2025-03-31 18:50:07,441 - Process-Scenario.owl [PID 29500] - DEBUG - [Process-Scenario.owl PID:29500] 生成分类图。
+2025-03-31 18:50:07,443 - Process-Scenario.owl [PID 29500] - DEBUG - [Process-Scenario.owl PID:29500] 分类图生成成功。
+2025-03-31 18:50:07,443 - Process-Scenario.owl [PID 29500] - DEBUG - [Process-Scenario.owl PID:29500] 开始渲染SVG图形。
+2025-03-31 18:50:07,849 - Process-Scenario.owl [PID 29500] - DEBUG - [Process-Scenario.owl PID:29500] SVG图形成功写入文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.svg'。
+2025-03-31 18:50:07,849 - Process-Scenario.owl [PID 29500] - INFO - [Process-Scenario.owl PID:29500] 成功生成SVG文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.svg'，耗时 0:00:00.411770.
+2025-03-31 18:50:07,849 - Process-Scenario.owl [PID 29500] - DEBUG - [Process-Scenario.owl PID:29500] 完成文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.owl' 的处理，输出: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.svg'。
+2025-03-31 18:50:07,849 - Process-Scenario.owl [PID 29500] - INFO - [Process-Scenario.owl PID:29500] 完成处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Scenario.owl'。
+2025-03-31 18:50:07,850 - Process-Emergency.owl [PID 29652] - DEBUG - [Process-Emergency.owl PID:29652] SVG图形成功写入文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.svg'。
+2025-03-31 18:50:07,850 - Process-Emergency.owl [PID 29652] - INFO - [Process-Emergency.owl PID:29652] 成功生成SVG文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.svg'，耗时 0:00:00.439001.
+2025-03-31 18:50:07,850 - Process-Emergency.owl [PID 29652] - DEBUG - [Process-Emergency.owl PID:29652] 完成文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.owl' 的处理，输出: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.svg'。
+2025-03-31 18:50:07,850 - Process-Emergency.owl [PID 29652] - INFO - [Process-Emergency.owl PID:29652] 完成处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Emergency.owl'。
+2025-03-31 18:50:07,850 - Process-Merge.owl [PID 29220] - DEBUG - [Process-Merge.owl PID:29220] SVG图形成功写入文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.svg'。
+2025-03-31 18:50:07,850 - Process-Merge.owl [PID 29220] - INFO - [Process-Merge.owl PID:29220] 成功生成SVG文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.svg'，耗时 0:00:00.427982.
+2025-03-31 18:50:07,850 - Process-Merge.owl [PID 29220] - DEBUG - [Process-Merge.owl PID:29220] 完成文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.owl' 的处理，输出: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.svg'。
+2025-03-31 18:50:07,850 - Process-Merge.owl [PID 29220] - INFO - [Process-Merge.owl PID:29220] 完成处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\Merge.owl'。
+2025-03-31 18:50:07,850 - Process-ScenarioElement.owl [PID 29192] - DEBUG - [Process-ScenarioElement.owl PID:29192] SVG图形成功写入文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.svg'。
+2025-03-31 18:50:07,850 - Process-ScenarioElement.owl [PID 29192] - INFO - [Process-ScenarioElement.owl PID:29192] 成功生成SVG文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.svg'，耗时 0:00:00.502838.
+2025-03-31 18:50:07,850 - Process-ScenarioElement.owl [PID 29192] - DEBUG - [Process-ScenarioElement.owl PID:29192] 完成文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.owl' 的处理，输出: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.svg'。
+2025-03-31 18:50:07,850 - Process-ScenarioElement.owl [PID 29192] - INFO - [Process-ScenarioElement.owl PID:29192] 完成处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/15/owl\ScenarioElement.owl'。
+2025-03-31 18:50:08,347 - MainProcess [PID 29456] - INFO - 进程 Process-ScenarioElement.owl 已完成。
+2025-03-31 18:50:08,347 - MainProcess [PID 29456] - INFO - 进程 Process-Scenario.owl 已完成。
+2025-03-31 18:50:08,347 - MainProcess [PID 29456] - INFO - 进程 Process-Emergency.owl 已完成。
+2025-03-31 18:50:08,347 - MainProcess [PID 29456] - INFO - 进程 Process-Merge.owl 已完成。
+2025-03-31 18:50:08,347 - MainProcess [PID 29456] - INFO - 所有文件处理完成.
+2025-03-31 18:58:30,576 - MainProcess [PID 27532] - DEBUG - 日志记录器已配置，日志文件: 'D:\PythonProjects\AcademicTool_PySide\processing.log'。
+2025-03-31 18:58:30,577 - MainProcess [PID 27532] - INFO - 开始处理 4 个文件，输出目录为 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/16/owl'。
+2025-03-31 18:58:30,577 - MainProcess [PID 27532] - INFO - 启动进程 Process-ScenarioElement.owl 处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/16/owl\ScenarioElement.owl'。
+2025-03-31 18:58:30,581 - MainProcess [PID 27532] - INFO - 启动进程 Process-Scenario.owl 处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/16/owl\Scenario.owl'。
+2025-03-31 18:58:30,583 - MainProcess [PID 27532] - INFO - 启动进程 Process-Emergency.owl 处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/16/owl\Emergency.owl'。
+2025-03-31 18:58:30,584 - MainProcess [PID 27532] - INFO - 启动进程 Process-Merge.owl 处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/16/owl\Merge.owl'。
+2025-03-31 18:58:33,492 - Process-Scenario.owl [PID 29936] - DEBUG - 子进程日志记录器已配置，仅使用QueueHandler。
+2025-03-31 18:58:33,493 - Process-Scenario.owl [PID 29936] - DEBUG - [Process-Scenario.owl PID:29936] 开始处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/16/owl\Scenario.owl'.
+2025-03-31 18:58:33,493 - Process-Scenario.owl [PID 29936] - INFO - [Process-Scenario.owl PID:29936] 开始检查JSON-LD文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/16/owl\Scenario.owl'.
+2025-03-31 18:58:33,493 - Process-Scenario.owl [PID 29936] - DEBUG - [Process-Scenario.owl PID:29936] 检查文件是否为JSON-LD: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/16/owl\Scenario.owl'
+2025-03-31 18:58:33,493 - Process-Scenario.owl [PID 29936] - WARNING - [Process-Scenario.owl PID:29936] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/16/owl\Scenario.owl' 中的JSON无效: Expecting value: line 1 column 1 (char 0)
+2025-03-31 18:58:33,493 - Process-Scenario.owl [PID 29936] - INFO - [Process-Scenario.owl PID:29936] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/16/owl\Scenario.owl' 不是JSON-LD格式，跳过转换。
+2025-03-31 18:58:33,493 - Process-Scenario.owl [PID 29936] - DEBUG - [Process-Scenario.owl PID:29936] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/16/owl\Scenario.owl' 已处理为 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/16/owl\Scenario.owl'。
+2025-03-31 18:58:33,493 - Process-Scenario.owl [PID 29936] - INFO - [Process-Scenario.owl PID:29936] 开始处理OWL文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/16/owl\Scenario.owl'.
+2025-03-31 18:58:33,493 - Process-Scenario.owl [PID 29936] - DEBUG - [Process-Scenario.owl PID:29936] 加载OWL文件 'D:\PythonProjects\AcademicTool_PySide\data\sysml2\16\owl\Scenario.owl'。
+2025-03-31 18:58:33,496 - Process-Scenario.owl [PID 29936] - DEBUG - [Process-Scenario.owl PID:29936] 成功加载本体 'D:\PythonProjects\AcademicTool_PySide\data\sysml2\16\owl\Scenario.owl'。
+2025-03-31 18:58:33,496 - Process-Scenario.owl [PID 29936] - DEBUG - [Process-Scenario.owl PID:29936] 生成分类图。
+2025-03-31 18:58:33,497 - Process-Scenario.owl [PID 29936] - DEBUG - [Process-Scenario.owl PID:29936] 分类图生成成功。
+2025-03-31 18:58:33,497 - Process-Scenario.owl [PID 29936] - DEBUG - [Process-Scenario.owl PID:29936] 开始渲染SVG图形。
+2025-03-31 18:58:33,553 - Process-Merge.owl [PID 27272] - DEBUG - 子进程日志记录器已配置，仅使用QueueHandler。
+2025-03-31 18:58:33,554 - Process-Merge.owl [PID 27272] - DEBUG - [Process-Merge.owl PID:27272] 开始处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/16/owl\Merge.owl'.
+2025-03-31 18:58:33,554 - Process-Merge.owl [PID 27272] - INFO - [Process-Merge.owl PID:27272] 开始检查JSON-LD文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/16/owl\Merge.owl'.
+2025-03-31 18:58:33,554 - Process-Merge.owl [PID 27272] - DEBUG - [Process-Merge.owl PID:27272] 检查文件是否为JSON-LD: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/16/owl\Merge.owl'
+2025-03-31 18:58:33,554 - Process-Merge.owl [PID 27272] - WARNING - [Process-Merge.owl PID:27272] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/16/owl\Merge.owl' 中的JSON无效: Expecting value: line 1 column 1 (char 0)
+2025-03-31 18:58:33,554 - Process-Merge.owl [PID 27272] - INFO - [Process-Merge.owl PID:27272] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/16/owl\Merge.owl' 不是JSON-LD格式，跳过转换。
+2025-03-31 18:58:33,554 - Process-Merge.owl [PID 27272] - DEBUG - [Process-Merge.owl PID:27272] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/16/owl\Merge.owl' 已处理为 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/16/owl\Merge.owl'。
+2025-03-31 18:58:33,554 - Process-Merge.owl [PID 27272] - INFO - [Process-Merge.owl PID:27272] 开始处理OWL文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/16/owl\Merge.owl'.
+2025-03-31 18:58:33,555 - Process-Merge.owl [PID 27272] - DEBUG - [Process-Merge.owl PID:27272] 加载OWL文件 'D:\PythonProjects\AcademicTool_PySide\data\sysml2\16\owl\Merge.owl'。
+2025-03-31 18:58:33,564 - Process-Merge.owl [PID 27272] - DEBUG - [Process-Merge.owl PID:27272] 成功加载本体 'D:\PythonProjects\AcademicTool_PySide\data\sysml2\16\owl\Merge.owl'。
+2025-03-31 18:58:33,564 - Process-Merge.owl [PID 27272] - DEBUG - [Process-Merge.owl PID:27272] 生成分类图。
+2025-03-31 18:58:33,565 - Process-Merge.owl [PID 27272] - DEBUG - [Process-Merge.owl PID:27272] 分类图生成成功。
+2025-03-31 18:58:33,565 - Process-Merge.owl [PID 27272] - DEBUG - [Process-Merge.owl PID:27272] 开始渲染SVG图形。
+2025-03-31 18:58:33,576 - Process-Emergency.owl [PID 31356] - DEBUG - 子进程日志记录器已配置，仅使用QueueHandler。
+2025-03-31 18:58:33,576 - Process-Emergency.owl [PID 31356] - DEBUG - [Process-Emergency.owl PID:31356] 开始处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/16/owl\Emergency.owl'.
+2025-03-31 18:58:33,576 - Process-Emergency.owl [PID 31356] - INFO - [Process-Emergency.owl PID:31356] 开始检查JSON-LD文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/16/owl\Emergency.owl'.
+2025-03-31 18:58:33,576 - Process-Emergency.owl [PID 31356] - DEBUG - [Process-Emergency.owl PID:31356] 检查文件是否为JSON-LD: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/16/owl\Emergency.owl'
+2025-03-31 18:58:33,577 - Process-Emergency.owl [PID 31356] - WARNING - [Process-Emergency.owl PID:31356] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/16/owl\Emergency.owl' 中的JSON无效: Expecting value: line 1 column 1 (char 0)
+2025-03-31 18:58:33,577 - Process-Emergency.owl [PID 31356] - INFO - [Process-Emergency.owl PID:31356] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/16/owl\Emergency.owl' 不是JSON-LD格式，跳过转换。
+2025-03-31 18:58:33,577 - Process-Emergency.owl [PID 31356] - DEBUG - [Process-Emergency.owl PID:31356] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/16/owl\Emergency.owl' 已处理为 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/16/owl\Emergency.owl'。
+2025-03-31 18:58:33,577 - Process-Emergency.owl [PID 31356] - INFO - [Process-Emergency.owl PID:31356] 开始处理OWL文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/16/owl\Emergency.owl'.
+2025-03-31 18:58:33,577 - Process-Emergency.owl [PID 31356] - DEBUG - [Process-Emergency.owl PID:31356] 加载OWL文件 'D:\PythonProjects\AcademicTool_PySide\data\sysml2\16\owl\Emergency.owl'。
+2025-03-31 18:58:33,579 - Process-Emergency.owl [PID 31356] - DEBUG - [Process-Emergency.owl PID:31356] 成功加载本体 'D:\PythonProjects\AcademicTool_PySide\data\sysml2\16\owl\Emergency.owl'。
+2025-03-31 18:58:33,579 - Process-Emergency.owl [PID 31356] - DEBUG - [Process-Emergency.owl PID:31356] 生成分类图。
+2025-03-31 18:58:33,580 - Process-Emergency.owl [PID 31356] - DEBUG - [Process-Emergency.owl PID:31356] 分类图生成成功。
+2025-03-31 18:58:33,580 - Process-Emergency.owl [PID 31356] - DEBUG - [Process-Emergency.owl PID:31356] 开始渲染SVG图形。
+2025-03-31 18:58:33,596 - Process-ScenarioElement.owl [PID 28904] - DEBUG - 子进程日志记录器已配置，仅使用QueueHandler。
+2025-03-31 18:58:33,596 - Process-ScenarioElement.owl [PID 28904] - DEBUG - [Process-ScenarioElement.owl PID:28904] 开始处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/16/owl\ScenarioElement.owl'.
+2025-03-31 18:58:33,596 - Process-ScenarioElement.owl [PID 28904] - INFO - [Process-ScenarioElement.owl PID:28904] 开始检查JSON-LD文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/16/owl\ScenarioElement.owl'.
+2025-03-31 18:58:33,596 - Process-ScenarioElement.owl [PID 28904] - DEBUG - [Process-ScenarioElement.owl PID:28904] 检查文件是否为JSON-LD: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/16/owl\ScenarioElement.owl'
+2025-03-31 18:58:33,597 - Process-ScenarioElement.owl [PID 28904] - WARNING - [Process-ScenarioElement.owl PID:28904] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/16/owl\ScenarioElement.owl' 中的JSON无效: Expecting value: line 1 column 1 (char 0)
+2025-03-31 18:58:33,597 - Process-ScenarioElement.owl [PID 28904] - INFO - [Process-ScenarioElement.owl PID:28904] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/16/owl\ScenarioElement.owl' 不是JSON-LD格式，跳过转换。
+2025-03-31 18:58:33,597 - Process-ScenarioElement.owl [PID 28904] - DEBUG - [Process-ScenarioElement.owl PID:28904] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/16/owl\ScenarioElement.owl' 已处理为 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/16/owl\ScenarioElement.owl'。
+2025-03-31 18:58:33,597 - Process-ScenarioElement.owl [PID 28904] - INFO - [Process-ScenarioElement.owl PID:28904] 开始处理OWL文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/16/owl\ScenarioElement.owl'.
+2025-03-31 18:58:33,597 - Process-ScenarioElement.owl [PID 28904] - DEBUG - [Process-ScenarioElement.owl PID:28904] 加载OWL文件 'D:\PythonProjects\AcademicTool_PySide\data\sysml2\16\owl\ScenarioElement.owl'。
+2025-03-31 18:58:33,602 - Process-ScenarioElement.owl [PID 28904] - DEBUG - [Process-ScenarioElement.owl PID:28904] 成功加载本体 'D:\PythonProjects\AcademicTool_PySide\data\sysml2\16\owl\ScenarioElement.owl'。
+2025-03-31 18:58:33,602 - Process-ScenarioElement.owl [PID 28904] - DEBUG - [Process-ScenarioElement.owl PID:28904] 生成分类图。
+2025-03-31 18:58:33,602 - Process-ScenarioElement.owl [PID 28904] - DEBUG - [Process-ScenarioElement.owl PID:28904] 分类图生成成功。
+2025-03-31 18:58:33,603 - Process-ScenarioElement.owl [PID 28904] - DEBUG - [Process-ScenarioElement.owl PID:28904] 开始渲染SVG图形。
+2025-03-31 18:58:34,013 - Process-Scenario.owl [PID 29936] - DEBUG - [Process-Scenario.owl PID:29936] SVG图形成功写入文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/16/owl\Scenario.svg'。
+2025-03-31 18:58:34,013 - Process-Scenario.owl [PID 29936] - INFO - [Process-Scenario.owl PID:29936] 成功生成SVG文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/16/owl\Scenario.svg'，耗时 0:00:00.519373.
+2025-03-31 18:58:34,013 - Process-Merge.owl [PID 27272] - DEBUG - [Process-Merge.owl PID:27272] SVG图形成功写入文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/16/owl\Merge.svg'。
+2025-03-31 18:58:34,013 - Process-Scenario.owl [PID 29936] - DEBUG - [Process-Scenario.owl PID:29936] 完成文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/16/owl\Scenario.owl' 的处理，输出: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/16/owl\Scenario.svg'。
+2025-03-31 18:58:34,013 - Process-Scenario.owl [PID 29936] - INFO - [Process-Scenario.owl PID:29936] 完成处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/16/owl\Scenario.owl'。
+2025-03-31 18:58:34,013 - Process-Merge.owl [PID 27272] - INFO - [Process-Merge.owl PID:27272] 成功生成SVG文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/16/owl\Merge.svg'，耗时 0:00:00.459103.
+2025-03-31 18:58:34,013 - Process-Merge.owl [PID 27272] - DEBUG - [Process-Merge.owl PID:27272] 完成文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/16/owl\Merge.owl' 的处理，输出: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/16/owl\Merge.svg'。
+2025-03-31 18:58:34,013 - Process-Merge.owl [PID 27272] - INFO - [Process-Merge.owl PID:27272] 完成处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/16/owl\Merge.owl'。
+2025-03-31 18:58:34,013 - Process-Emergency.owl [PID 31356] - DEBUG - [Process-Emergency.owl PID:31356] SVG图形成功写入文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/16/owl\Emergency.svg'。
+2025-03-31 18:58:34,013 - Process-Emergency.owl [PID 31356] - INFO - [Process-Emergency.owl PID:31356] 成功生成SVG文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/16/owl\Emergency.svg'，耗时 0:00:00.435679.
+2025-03-31 18:58:34,013 - Process-Emergency.owl [PID 31356] - DEBUG - [Process-Emergency.owl PID:31356] 完成文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/16/owl\Emergency.owl' 的处理，输出: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/16/owl\Emergency.svg'。
+2025-03-31 18:58:34,013 - Process-Emergency.owl [PID 31356] - INFO - [Process-Emergency.owl PID:31356] 完成处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/16/owl\Emergency.owl'。
+2025-03-31 18:58:34,013 - Process-ScenarioElement.owl [PID 28904] - DEBUG - [Process-ScenarioElement.owl PID:28904] SVG图形成功写入文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/16/owl\ScenarioElement.svg'。
+2025-03-31 18:58:34,014 - Process-ScenarioElement.owl [PID 28904] - INFO - [Process-ScenarioElement.owl PID:28904] 成功生成SVG文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/16/owl\ScenarioElement.svg'，耗时 0:00:00.417567.
+2025-03-31 18:58:34,014 - Process-ScenarioElement.owl [PID 28904] - DEBUG - [Process-ScenarioElement.owl PID:28904] 完成文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/16/owl\ScenarioElement.owl' 的处理，输出: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/16/owl\ScenarioElement.svg'。
+2025-03-31 18:58:34,014 - Process-ScenarioElement.owl [PID 28904] - INFO - [Process-ScenarioElement.owl PID:28904] 完成处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/16/owl\ScenarioElement.owl'。
+2025-03-31 18:58:34,560 - MainProcess [PID 27532] - INFO - 进程 Process-ScenarioElement.owl 已完成。
+2025-03-31 18:58:34,563 - MainProcess [PID 27532] - INFO - 进程 Process-Scenario.owl 已完成。
+2025-03-31 18:58:34,563 - MainProcess [PID 27532] - INFO - 进程 Process-Emergency.owl 已完成。
+2025-03-31 18:58:34,563 - MainProcess [PID 27532] - INFO - 进程 Process-Merge.owl 已完成。
+2025-03-31 18:58:34,563 - MainProcess [PID 27532] - INFO - 所有文件处理完成.
+2025-03-31 19:15:56,472 - MainProcess [PID 15816] - DEBUG - 日志记录器已配置，日志文件: 'D:\PythonProjects\AcademicTool_PySide\processing.log'。
+2025-03-31 19:15:56,473 - MainProcess [PID 15816] - INFO - 开始处理 4 个文件，输出目录为 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/22/owl'。
+2025-03-31 19:15:56,473 - MainProcess [PID 15816] - INFO - 启动进程 Process-ScenarioElement.owl 处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/22/owl\ScenarioElement.owl'。
+2025-03-31 19:15:56,476 - MainProcess [PID 15816] - INFO - 启动进程 Process-Scenario.owl 处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/22/owl\Scenario.owl'。
+2025-03-31 19:15:56,478 - MainProcess [PID 15816] - INFO - 启动进程 Process-Emergency.owl 处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/22/owl\Emergency.owl'。
+2025-03-31 19:15:56,479 - MainProcess [PID 15816] - INFO - 启动进程 Process-Merge.owl 处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/22/owl\Merge.owl'。
+2025-03-31 19:15:59,374 - Process-Scenario.owl [PID 30100] - DEBUG - 子进程日志记录器已配置，仅使用QueueHandler。
+2025-03-31 19:15:59,375 - Process-Scenario.owl [PID 30100] - DEBUG - [Process-Scenario.owl PID:30100] 开始处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/22/owl\Scenario.owl'.
+2025-03-31 19:15:59,375 - Process-Scenario.owl [PID 30100] - INFO - [Process-Scenario.owl PID:30100] 开始检查JSON-LD文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/22/owl\Scenario.owl'.
+2025-03-31 19:15:59,375 - Process-Scenario.owl [PID 30100] - DEBUG - [Process-Scenario.owl PID:30100] 检查文件是否为JSON-LD: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/22/owl\Scenario.owl'
+2025-03-31 19:15:59,375 - Process-Scenario.owl [PID 30100] - WARNING - [Process-Scenario.owl PID:30100] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/22/owl\Scenario.owl' 中的JSON无效: Expecting value: line 1 column 1 (char 0)
+2025-03-31 19:15:59,375 - Process-Scenario.owl [PID 30100] - INFO - [Process-Scenario.owl PID:30100] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/22/owl\Scenario.owl' 不是JSON-LD格式，跳过转换。
+2025-03-31 19:15:59,375 - Process-Scenario.owl [PID 30100] - DEBUG - [Process-Scenario.owl PID:30100] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/22/owl\Scenario.owl' 已处理为 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/22/owl\Scenario.owl'。
+2025-03-31 19:15:59,375 - Process-Scenario.owl [PID 30100] - INFO - [Process-Scenario.owl PID:30100] 开始处理OWL文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/22/owl\Scenario.owl'.
+2025-03-31 19:15:59,375 - Process-Scenario.owl [PID 30100] - DEBUG - [Process-Scenario.owl PID:30100] 加载OWL文件 'D:\PythonProjects\AcademicTool_PySide\data\sysml2\22\owl\Scenario.owl'。
+2025-03-31 19:15:59,377 - Process-Scenario.owl [PID 30100] - DEBUG - [Process-Scenario.owl PID:30100] 成功加载本体 'D:\PythonProjects\AcademicTool_PySide\data\sysml2\22\owl\Scenario.owl'。
+2025-03-31 19:15:59,377 - Process-Scenario.owl [PID 30100] - DEBUG - [Process-Scenario.owl PID:30100] 生成分类图。
+2025-03-31 19:15:59,378 - Process-Scenario.owl [PID 30100] - DEBUG - [Process-Scenario.owl PID:30100] 分类图生成成功。
+2025-03-31 19:15:59,378 - Process-Scenario.owl [PID 30100] - DEBUG - [Process-Scenario.owl PID:30100] 开始渲染SVG图形。
+2025-03-31 19:15:59,495 - Process-Emergency.owl [PID 29496] - DEBUG - 子进程日志记录器已配置，仅使用QueueHandler。
+2025-03-31 19:15:59,496 - Process-Emergency.owl [PID 29496] - DEBUG - [Process-Emergency.owl PID:29496] 开始处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/22/owl\Emergency.owl'.
+2025-03-31 19:15:59,496 - Process-Emergency.owl [PID 29496] - INFO - [Process-Emergency.owl PID:29496] 开始检查JSON-LD文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/22/owl\Emergency.owl'.
+2025-03-31 19:15:59,496 - Process-Emergency.owl [PID 29496] - DEBUG - [Process-Emergency.owl PID:29496] 检查文件是否为JSON-LD: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/22/owl\Emergency.owl'
+2025-03-31 19:15:59,497 - Process-Emergency.owl [PID 29496] - WARNING - [Process-Emergency.owl PID:29496] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/22/owl\Emergency.owl' 中的JSON无效: Expecting value: line 1 column 1 (char 0)
+2025-03-31 19:15:59,497 - Process-Emergency.owl [PID 29496] - INFO - [Process-Emergency.owl PID:29496] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/22/owl\Emergency.owl' 不是JSON-LD格式，跳过转换。
+2025-03-31 19:15:59,497 - Process-Emergency.owl [PID 29496] - DEBUG - [Process-Emergency.owl PID:29496] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/22/owl\Emergency.owl' 已处理为 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/22/owl\Emergency.owl'。
+2025-03-31 19:15:59,497 - Process-Emergency.owl [PID 29496] - INFO - [Process-Emergency.owl PID:29496] 开始处理OWL文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/22/owl\Emergency.owl'.
+2025-03-31 19:15:59,497 - Process-Emergency.owl [PID 29496] - DEBUG - [Process-Emergency.owl PID:29496] 加载OWL文件 'D:\PythonProjects\AcademicTool_PySide\data\sysml2\22\owl\Emergency.owl'。
+2025-03-31 19:15:59,499 - Process-Emergency.owl [PID 29496] - DEBUG - [Process-Emergency.owl PID:29496] 成功加载本体 'D:\PythonProjects\AcademicTool_PySide\data\sysml2\22\owl\Emergency.owl'。
+2025-03-31 19:15:59,499 - Process-Emergency.owl [PID 29496] - DEBUG - [Process-Emergency.owl PID:29496] 生成分类图。
+2025-03-31 19:15:59,499 - Process-Emergency.owl [PID 29496] - DEBUG - [Process-Emergency.owl PID:29496] 分类图生成成功。
+2025-03-31 19:15:59,499 - Process-Emergency.owl [PID 29496] - DEBUG - [Process-Emergency.owl PID:29496] 开始渲染SVG图形。
+2025-03-31 19:15:59,517 - Process-ScenarioElement.owl [PID 25944] - DEBUG - 子进程日志记录器已配置，仅使用QueueHandler。
+2025-03-31 19:15:59,517 - Process-ScenarioElement.owl [PID 25944] - DEBUG - [Process-ScenarioElement.owl PID:25944] 开始处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/22/owl\ScenarioElement.owl'.
+2025-03-31 19:15:59,517 - Process-ScenarioElement.owl [PID 25944] - INFO - [Process-ScenarioElement.owl PID:25944] 开始检查JSON-LD文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/22/owl\ScenarioElement.owl'.
+2025-03-31 19:15:59,517 - Process-ScenarioElement.owl [PID 25944] - DEBUG - [Process-ScenarioElement.owl PID:25944] 检查文件是否为JSON-LD: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/22/owl\ScenarioElement.owl'
+2025-03-31 19:15:59,517 - Process-ScenarioElement.owl [PID 25944] - WARNING - [Process-ScenarioElement.owl PID:25944] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/22/owl\ScenarioElement.owl' 中的JSON无效: Expecting value: line 1 column 1 (char 0)
+2025-03-31 19:15:59,518 - Process-ScenarioElement.owl [PID 25944] - INFO - [Process-ScenarioElement.owl PID:25944] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/22/owl\ScenarioElement.owl' 不是JSON-LD格式，跳过转换。
+2025-03-31 19:15:59,518 - Process-ScenarioElement.owl [PID 25944] - DEBUG - [Process-ScenarioElement.owl PID:25944] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/22/owl\ScenarioElement.owl' 已处理为 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/22/owl\ScenarioElement.owl'。
+2025-03-31 19:15:59,518 - Process-ScenarioElement.owl [PID 25944] - INFO - [Process-ScenarioElement.owl PID:25944] 开始处理OWL文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/22/owl\ScenarioElement.owl'.
+2025-03-31 19:15:59,518 - Process-ScenarioElement.owl [PID 25944] - DEBUG - [Process-ScenarioElement.owl PID:25944] 加载OWL文件 'D:\PythonProjects\AcademicTool_PySide\data\sysml2\22\owl\ScenarioElement.owl'。
+2025-03-31 19:15:59,523 - Process-ScenarioElement.owl [PID 25944] - DEBUG - [Process-ScenarioElement.owl PID:25944] 成功加载本体 'D:\PythonProjects\AcademicTool_PySide\data\sysml2\22\owl\ScenarioElement.owl'。
+2025-03-31 19:15:59,523 - Process-ScenarioElement.owl [PID 25944] - DEBUG - [Process-ScenarioElement.owl PID:25944] 生成分类图。
+2025-03-31 19:15:59,524 - Process-ScenarioElement.owl [PID 25944] - DEBUG - [Process-ScenarioElement.owl PID:25944] 分类图生成成功。
+2025-03-31 19:15:59,524 - Process-ScenarioElement.owl [PID 25944] - DEBUG - [Process-ScenarioElement.owl PID:25944] 开始渲染SVG图形。
+2025-03-31 19:15:59,526 - Process-Merge.owl [PID 33252] - DEBUG - 子进程日志记录器已配置，仅使用QueueHandler。
+2025-03-31 19:15:59,527 - Process-Merge.owl [PID 33252] - DEBUG - [Process-Merge.owl PID:33252] 开始处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/22/owl\Merge.owl'.
+2025-03-31 19:15:59,527 - Process-Merge.owl [PID 33252] - INFO - [Process-Merge.owl PID:33252] 开始检查JSON-LD文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/22/owl\Merge.owl'.
+2025-03-31 19:15:59,527 - Process-Merge.owl [PID 33252] - DEBUG - [Process-Merge.owl PID:33252] 检查文件是否为JSON-LD: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/22/owl\Merge.owl'
+2025-03-31 19:15:59,527 - Process-Merge.owl [PID 33252] - WARNING - [Process-Merge.owl PID:33252] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/22/owl\Merge.owl' 中的JSON无效: Expecting value: line 1 column 1 (char 0)
+2025-03-31 19:15:59,527 - Process-Merge.owl [PID 33252] - INFO - [Process-Merge.owl PID:33252] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/22/owl\Merge.owl' 不是JSON-LD格式，跳过转换。
+2025-03-31 19:15:59,527 - Process-Merge.owl [PID 33252] - DEBUG - [Process-Merge.owl PID:33252] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/22/owl\Merge.owl' 已处理为 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/22/owl\Merge.owl'。
+2025-03-31 19:15:59,527 - Process-Merge.owl [PID 33252] - INFO - [Process-Merge.owl PID:33252] 开始处理OWL文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/22/owl\Merge.owl'.
+2025-03-31 19:15:59,527 - Process-Merge.owl [PID 33252] - DEBUG - [Process-Merge.owl PID:33252] 加载OWL文件 'D:\PythonProjects\AcademicTool_PySide\data\sysml2\22\owl\Merge.owl'。
+2025-03-31 19:15:59,534 - Process-Merge.owl [PID 33252] - DEBUG - [Process-Merge.owl PID:33252] 成功加载本体 'D:\PythonProjects\AcademicTool_PySide\data\sysml2\22\owl\Merge.owl'。
+2025-03-31 19:15:59,534 - Process-Merge.owl [PID 33252] - DEBUG - [Process-Merge.owl PID:33252] 生成分类图。
+2025-03-31 19:15:59,536 - Process-Merge.owl [PID 33252] - DEBUG - [Process-Merge.owl PID:33252] 分类图生成成功。
+2025-03-31 19:15:59,536 - Process-Merge.owl [PID 33252] - DEBUG - [Process-Merge.owl PID:33252] 开始渲染SVG图形。
+2025-03-31 19:15:59,681 - Process-Scenario.owl [PID 30100] - DEBUG - [Process-Scenario.owl PID:30100] SVG图形成功写入文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/22/owl\Scenario.svg'。
+2025-03-31 19:15:59,681 - Process-Scenario.owl [PID 30100] - INFO - [Process-Scenario.owl PID:30100] 成功生成SVG文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/22/owl\Scenario.svg'，耗时 0:00:00.306363.
+2025-03-31 19:15:59,681 - Process-Scenario.owl [PID 30100] - DEBUG - [Process-Scenario.owl PID:30100] 完成文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/22/owl\Scenario.owl' 的处理，输出: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/22/owl\Scenario.svg'。
+2025-03-31 19:15:59,681 - Process-Scenario.owl [PID 30100] - INFO - [Process-Scenario.owl PID:30100] 完成处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/22/owl\Scenario.owl'。
+2025-03-31 19:15:59,688 - Process-Emergency.owl [PID 29496] - DEBUG - [Process-Emergency.owl PID:29496] SVG图形成功写入文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/22/owl\Emergency.svg'。
+2025-03-31 19:15:59,688 - Process-Emergency.owl [PID 29496] - INFO - [Process-Emergency.owl PID:29496] 成功生成SVG文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/22/owl\Emergency.svg'，耗时 0:00:00.191804.
+2025-03-31 19:15:59,688 - Process-Emergency.owl [PID 29496] - DEBUG - [Process-Emergency.owl PID:29496] 完成文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/22/owl\Emergency.owl' 的处理，输出: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/22/owl\Emergency.svg'。
+2025-03-31 19:15:59,688 - Process-Emergency.owl [PID 29496] - INFO - [Process-Emergency.owl PID:29496] 完成处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/22/owl\Emergency.owl'。
+2025-03-31 19:15:59,921 - Process-ScenarioElement.owl [PID 25944] - DEBUG - [Process-ScenarioElement.owl PID:25944] SVG图形成功写入文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/22/owl\ScenarioElement.svg'。
+2025-03-31 19:15:59,921 - Process-ScenarioElement.owl [PID 25944] - INFO - [Process-ScenarioElement.owl PID:25944] 成功生成SVG文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/22/owl\ScenarioElement.svg'，耗时 0:00:00.402895.
+2025-03-31 19:15:59,921 - Process-Merge.owl [PID 33252] - DEBUG - [Process-Merge.owl PID:33252] SVG图形成功写入文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/22/owl\Merge.svg'。
+2025-03-31 19:15:59,923 - Process-ScenarioElement.owl [PID 25944] - DEBUG - [Process-ScenarioElement.owl PID:25944] 完成文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/22/owl\ScenarioElement.owl' 的处理，输出: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/22/owl\ScenarioElement.svg'。
+2025-03-31 19:15:59,923 - Process-Merge.owl [PID 33252] - INFO - [Process-Merge.owl PID:33252] 成功生成SVG文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/22/owl\Merge.svg'，耗时 0:00:00.395236.
+2025-03-31 19:15:59,923 - Process-ScenarioElement.owl [PID 25944] - INFO - [Process-ScenarioElement.owl PID:25944] 完成处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/22/owl\ScenarioElement.owl'。
+2025-03-31 19:15:59,923 - Process-Merge.owl [PID 33252] - DEBUG - [Process-Merge.owl PID:33252] 完成文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/22/owl\Merge.owl' 的处理，输出: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/22/owl\Merge.svg'。
+2025-03-31 19:15:59,923 - Process-Merge.owl [PID 33252] - INFO - [Process-Merge.owl PID:33252] 完成处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/22/owl\Merge.owl'。
+2025-03-31 19:16:00,276 - MainProcess [PID 15816] - INFO - 进程 Process-ScenarioElement.owl 已完成。
+2025-03-31 19:16:00,276 - MainProcess [PID 15816] - INFO - 进程 Process-Scenario.owl 已完成。
+2025-03-31 19:16:00,276 - MainProcess [PID 15816] - INFO - 进程 Process-Emergency.owl 已完成。
+2025-03-31 19:16:00,276 - MainProcess [PID 15816] - INFO - 进程 Process-Merge.owl 已完成。
+2025-03-31 19:16:00,276 - MainProcess [PID 15816] - INFO - 所有文件处理完成.
+2025-03-31 20:14:58,215 - MainProcess [PID 4144] - DEBUG - 日志记录器已配置，日志文件: 'D:\PythonProjects\AcademicTool_PySide\processing.log'。
+2025-03-31 20:14:58,215 - MainProcess [PID 4144] - INFO - 开始处理 4 个文件，输出目录为 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/22/owl'。
+2025-03-31 20:14:58,216 - MainProcess [PID 4144] - INFO - 启动进程 Process-ScenarioElement.owl 处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/22/owl\ScenarioElement.owl'。
+2025-03-31 20:14:58,219 - MainProcess [PID 4144] - INFO - 启动进程 Process-Scenario.owl 处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/22/owl\Scenario.owl'。
+2025-03-31 20:14:58,221 - MainProcess [PID 4144] - INFO - 启动进程 Process-Emergency.owl 处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/22/owl\Emergency.owl'。
+2025-03-31 20:14:58,222 - MainProcess [PID 4144] - INFO - 启动进程 Process-Merge.owl 处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/22/owl\Merge.owl'。
+2025-03-31 20:15:00,932 - Process-ScenarioElement.owl [PID 33244] - DEBUG - 子进程日志记录器已配置，仅使用QueueHandler。
+2025-03-31 20:15:00,932 - Process-ScenarioElement.owl [PID 33244] - DEBUG - [Process-ScenarioElement.owl PID:33244] 开始处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/22/owl\ScenarioElement.owl'.
+2025-03-31 20:15:00,933 - Process-ScenarioElement.owl [PID 33244] - INFO - [Process-ScenarioElement.owl PID:33244] 开始检查JSON-LD文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/22/owl\ScenarioElement.owl'.
+2025-03-31 20:15:00,933 - Process-ScenarioElement.owl [PID 33244] - DEBUG - [Process-ScenarioElement.owl PID:33244] 检查文件是否为JSON-LD: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/22/owl\ScenarioElement.owl'
+2025-03-31 20:15:00,933 - Process-ScenarioElement.owl [PID 33244] - WARNING - [Process-ScenarioElement.owl PID:33244] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/22/owl\ScenarioElement.owl' 中的JSON无效: Expecting value: line 1 column 1 (char 0)
+2025-03-31 20:15:00,933 - Process-ScenarioElement.owl [PID 33244] - INFO - [Process-ScenarioElement.owl PID:33244] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/22/owl\ScenarioElement.owl' 不是JSON-LD格式，跳过转换。
+2025-03-31 20:15:00,933 - Process-ScenarioElement.owl [PID 33244] - DEBUG - [Process-ScenarioElement.owl PID:33244] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/22/owl\ScenarioElement.owl' 已处理为 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/22/owl\ScenarioElement.owl'。
+2025-03-31 20:15:00,933 - Process-ScenarioElement.owl [PID 33244] - INFO - [Process-ScenarioElement.owl PID:33244] 开始处理OWL文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/22/owl\ScenarioElement.owl'.
+2025-03-31 20:15:00,933 - Process-ScenarioElement.owl [PID 33244] - DEBUG - [Process-ScenarioElement.owl PID:33244] 加载OWL文件 'D:\PythonProjects\AcademicTool_PySide\data\sysml2\22\owl\ScenarioElement.owl'。
+2025-03-31 20:15:00,940 - Process-ScenarioElement.owl [PID 33244] - DEBUG - [Process-ScenarioElement.owl PID:33244] 成功加载本体 'D:\PythonProjects\AcademicTool_PySide\data\sysml2\22\owl\ScenarioElement.owl'。
+2025-03-31 20:15:00,940 - Process-ScenarioElement.owl [PID 33244] - DEBUG - [Process-ScenarioElement.owl PID:33244] 生成分类图。
+2025-03-31 20:15:00,941 - Process-ScenarioElement.owl [PID 33244] - DEBUG - [Process-ScenarioElement.owl PID:33244] 分类图生成成功。
+2025-03-31 20:15:00,941 - Process-ScenarioElement.owl [PID 33244] - DEBUG - [Process-ScenarioElement.owl PID:33244] 开始渲染SVG图形。
+2025-03-31 20:15:01,044 - Process-Emergency.owl [PID 35196] - DEBUG - 子进程日志记录器已配置，仅使用QueueHandler。
+2025-03-31 20:15:01,044 - Process-Emergency.owl [PID 35196] - DEBUG - [Process-Emergency.owl PID:35196] 开始处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/22/owl\Emergency.owl'.
+2025-03-31 20:15:01,044 - Process-Emergency.owl [PID 35196] - INFO - [Process-Emergency.owl PID:35196] 开始检查JSON-LD文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/22/owl\Emergency.owl'.
+2025-03-31 20:15:01,044 - Process-Emergency.owl [PID 35196] - DEBUG - [Process-Emergency.owl PID:35196] 检查文件是否为JSON-LD: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/22/owl\Emergency.owl'
+2025-03-31 20:15:01,044 - Process-Emergency.owl [PID 35196] - WARNING - [Process-Emergency.owl PID:35196] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/22/owl\Emergency.owl' 中的JSON无效: Expecting value: line 1 column 1 (char 0)
+2025-03-31 20:15:01,044 - Process-Emergency.owl [PID 35196] - INFO - [Process-Emergency.owl PID:35196] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/22/owl\Emergency.owl' 不是JSON-LD格式，跳过转换。
+2025-03-31 20:15:01,044 - Process-Emergency.owl [PID 35196] - DEBUG - [Process-Emergency.owl PID:35196] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/22/owl\Emergency.owl' 已处理为 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/22/owl\Emergency.owl'。
+2025-03-31 20:15:01,044 - Process-Emergency.owl [PID 35196] - INFO - [Process-Emergency.owl PID:35196] 开始处理OWL文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/22/owl\Emergency.owl'.
+2025-03-31 20:15:01,045 - Process-Emergency.owl [PID 35196] - DEBUG - [Process-Emergency.owl PID:35196] 加载OWL文件 'D:\PythonProjects\AcademicTool_PySide\data\sysml2\22\owl\Emergency.owl'。
+2025-03-31 20:15:01,046 - Process-Emergency.owl [PID 35196] - DEBUG - [Process-Emergency.owl PID:35196] 成功加载本体 'D:\PythonProjects\AcademicTool_PySide\data\sysml2\22\owl\Emergency.owl'。
+2025-03-31 20:15:01,046 - Process-Emergency.owl [PID 35196] - DEBUG - [Process-Emergency.owl PID:35196] 生成分类图。
+2025-03-31 20:15:01,047 - Process-Emergency.owl [PID 35196] - DEBUG - [Process-Emergency.owl PID:35196] 分类图生成成功。
+2025-03-31 20:15:01,047 - Process-Emergency.owl [PID 35196] - DEBUG - [Process-Emergency.owl PID:35196] 开始渲染SVG图形。
+2025-03-31 20:15:01,059 - Process-Scenario.owl [PID 25868] - DEBUG - 子进程日志记录器已配置，仅使用QueueHandler。
+2025-03-31 20:15:01,059 - Process-Scenario.owl [PID 25868] - DEBUG - [Process-Scenario.owl PID:25868] 开始处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/22/owl\Scenario.owl'.
+2025-03-31 20:15:01,059 - Process-Scenario.owl [PID 25868] - INFO - [Process-Scenario.owl PID:25868] 开始检查JSON-LD文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/22/owl\Scenario.owl'.
+2025-03-31 20:15:01,059 - Process-Scenario.owl [PID 25868] - DEBUG - [Process-Scenario.owl PID:25868] 检查文件是否为JSON-LD: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/22/owl\Scenario.owl'
+2025-03-31 20:15:01,059 - Process-Scenario.owl [PID 25868] - WARNING - [Process-Scenario.owl PID:25868] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/22/owl\Scenario.owl' 中的JSON无效: Expecting value: line 1 column 1 (char 0)
+2025-03-31 20:15:01,059 - Process-Scenario.owl [PID 25868] - INFO - [Process-Scenario.owl PID:25868] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/22/owl\Scenario.owl' 不是JSON-LD格式，跳过转换。
+2025-03-31 20:15:01,059 - Process-Scenario.owl [PID 25868] - DEBUG - [Process-Scenario.owl PID:25868] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/22/owl\Scenario.owl' 已处理为 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/22/owl\Scenario.owl'。
+2025-03-31 20:15:01,059 - Process-Scenario.owl [PID 25868] - INFO - [Process-Scenario.owl PID:25868] 开始处理OWL文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/22/owl\Scenario.owl'.
+2025-03-31 20:15:01,059 - Process-Scenario.owl [PID 25868] - DEBUG - [Process-Scenario.owl PID:25868] 加载OWL文件 'D:\PythonProjects\AcademicTool_PySide\data\sysml2\22\owl\Scenario.owl'。
+2025-03-31 20:15:01,061 - Process-Scenario.owl [PID 25868] - DEBUG - [Process-Scenario.owl PID:25868] 成功加载本体 'D:\PythonProjects\AcademicTool_PySide\data\sysml2\22\owl\Scenario.owl'。
+2025-03-31 20:15:01,061 - Process-Scenario.owl [PID 25868] - DEBUG - [Process-Scenario.owl PID:25868] 生成分类图。
+2025-03-31 20:15:01,062 - Process-Scenario.owl [PID 25868] - DEBUG - [Process-Scenario.owl PID:25868] 分类图生成成功。
+2025-03-31 20:15:01,062 - Process-Scenario.owl [PID 25868] - DEBUG - [Process-Scenario.owl PID:25868] 开始渲染SVG图形。
+2025-03-31 20:15:01,072 - Process-Merge.owl [PID 8780] - DEBUG - 子进程日志记录器已配置，仅使用QueueHandler。
+2025-03-31 20:15:01,073 - Process-Merge.owl [PID 8780] - DEBUG - [Process-Merge.owl PID:8780] 开始处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/22/owl\Merge.owl'.
+2025-03-31 20:15:01,073 - Process-Merge.owl [PID 8780] - INFO - [Process-Merge.owl PID:8780] 开始检查JSON-LD文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/22/owl\Merge.owl'.
+2025-03-31 20:15:01,073 - Process-Merge.owl [PID 8780] - DEBUG - [Process-Merge.owl PID:8780] 检查文件是否为JSON-LD: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/22/owl\Merge.owl'
+2025-03-31 20:15:01,073 - Process-Merge.owl [PID 8780] - WARNING - [Process-Merge.owl PID:8780] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/22/owl\Merge.owl' 中的JSON无效: Expecting value: line 1 column 1 (char 0)
+2025-03-31 20:15:01,073 - Process-Merge.owl [PID 8780] - INFO - [Process-Merge.owl PID:8780] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/22/owl\Merge.owl' 不是JSON-LD格式，跳过转换。
+2025-03-31 20:15:01,073 - Process-Merge.owl [PID 8780] - DEBUG - [Process-Merge.owl PID:8780] 文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/22/owl\Merge.owl' 已处理为 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/22/owl\Merge.owl'。
+2025-03-31 20:15:01,073 - Process-Merge.owl [PID 8780] - INFO - [Process-Merge.owl PID:8780] 开始处理OWL文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/22/owl\Merge.owl'.
+2025-03-31 20:15:01,073 - Process-Merge.owl [PID 8780] - DEBUG - [Process-Merge.owl PID:8780] 加载OWL文件 'D:\PythonProjects\AcademicTool_PySide\data\sysml2\22\owl\Merge.owl'。
+2025-03-31 20:15:01,081 - Process-Merge.owl [PID 8780] - DEBUG - [Process-Merge.owl PID:8780] 成功加载本体 'D:\PythonProjects\AcademicTool_PySide\data\sysml2\22\owl\Merge.owl'。
+2025-03-31 20:15:01,081 - Process-Merge.owl [PID 8780] - DEBUG - [Process-Merge.owl PID:8780] 生成分类图。
+2025-03-31 20:15:01,082 - Process-Merge.owl [PID 8780] - DEBUG - [Process-Merge.owl PID:8780] 分类图生成成功。
+2025-03-31 20:15:01,082 - Process-Merge.owl [PID 8780] - DEBUG - [Process-Merge.owl PID:8780] 开始渲染SVG图形。
+2025-03-31 20:15:01,277 - Process-ScenarioElement.owl [PID 33244] - DEBUG - [Process-ScenarioElement.owl PID:33244] SVG图形成功写入文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/22/owl\ScenarioElement.svg'。
+2025-03-31 20:15:01,277 - Process-ScenarioElement.owl [PID 33244] - INFO - [Process-ScenarioElement.owl PID:33244] 成功生成SVG文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/22/owl\ScenarioElement.svg'，耗时 0:00:00.343774.
+2025-03-31 20:15:01,277 - Process-ScenarioElement.owl [PID 33244] - DEBUG - [Process-ScenarioElement.owl PID:33244] 完成文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/22/owl\ScenarioElement.owl' 的处理，输出: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/22/owl\ScenarioElement.svg'。
+2025-03-31 20:15:01,277 - Process-ScenarioElement.owl [PID 33244] - INFO - [Process-ScenarioElement.owl PID:33244] 完成处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/22/owl\ScenarioElement.owl'。
+2025-03-31 20:15:01,284 - Process-Merge.owl [PID 8780] - DEBUG - [Process-Merge.owl PID:8780] SVG图形成功写入文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/22/owl\Merge.svg'。
+2025-03-31 20:15:01,284 - Process-Merge.owl [PID 8780] - INFO - [Process-Merge.owl PID:8780] 成功生成SVG文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/22/owl\Merge.svg'，耗时 0:00:00.210142.
+2025-03-31 20:15:01,284 - Process-Merge.owl [PID 8780] - DEBUG - [Process-Merge.owl PID:8780] 完成文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/22/owl\Merge.owl' 的处理，输出: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/22/owl\Merge.svg'。
+2025-03-31 20:15:01,284 - Process-Merge.owl [PID 8780] - INFO - [Process-Merge.owl PID:8780] 完成处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/22/owl\Merge.owl'。
+2025-03-31 20:15:01,296 - Process-Scenario.owl [PID 25868] - DEBUG - [Process-Scenario.owl PID:25868] SVG图形成功写入文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/22/owl\Scenario.svg'。
+2025-03-31 20:15:01,296 - Process-Scenario.owl [PID 25868] - INFO - [Process-Scenario.owl PID:25868] 成功生成SVG文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/22/owl\Scenario.svg'，耗时 0:00:00.237229.
+2025-03-31 20:15:01,296 - Process-Scenario.owl [PID 25868] - DEBUG - [Process-Scenario.owl PID:25868] 完成文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/22/owl\Scenario.owl' 的处理，输出: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/22/owl\Scenario.svg'。
+2025-03-31 20:15:01,296 - Process-Scenario.owl [PID 25868] - INFO - [Process-Scenario.owl PID:25868] 完成处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/22/owl\Scenario.owl'。
+2025-03-31 20:15:01,302 - Process-Emergency.owl [PID 35196] - DEBUG - [Process-Emergency.owl PID:35196] SVG图形成功写入文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/22/owl\Emergency.svg'。
+2025-03-31 20:15:01,304 - Process-Emergency.owl [PID 35196] - INFO - [Process-Emergency.owl PID:35196] 成功生成SVG文件: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/22/owl\Emergency.svg'，耗时 0:00:00.259815.
+2025-03-31 20:15:01,304 - Process-Emergency.owl [PID 35196] - DEBUG - [Process-Emergency.owl PID:35196] 完成文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/22/owl\Emergency.owl' 的处理，输出: 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/22/owl\Emergency.svg'。
+2025-03-31 20:15:01,304 - Process-Emergency.owl [PID 35196] - INFO - [Process-Emergency.owl PID:35196] 完成处理文件 'D:\PythonProjects\AcademicTool_PySide\views\tabs\../../data/sysml2/22/owl\Emergency.owl'。
+2025-03-31 20:15:01,665 - MainProcess [PID 4144] - INFO - 进程 Process-ScenarioElement.owl 已完成。
+2025-03-31 20:15:01,666 - MainProcess [PID 4144] - INFO - 进程 Process-Scenario.owl 已完成。
+2025-03-31 20:15:01,709 - MainProcess [PID 4144] - INFO - 进程 Process-Emergency.owl 已完成。
+2025-03-31 20:15:01,709 - MainProcess [PID 4144] - INFO - 进程 Process-Merge.owl 已完成。
+2025-03-31 20:15:01,709 - MainProcess [PID 4144] - INFO - 所有文件处理完成.

@@ -916,7 +916,7 @@ class ScenarioController(QObject):
 
                         elif prop['property_type'].lower() == 'objectproperty':
                             # Add behavior
-                            value = str(prop['property_range'])
+                            value = str(prop['property_value'])
                             behavior = OwlClassBehavior(
                                 owl_class_behavior_name=prop['property_name'].split('_')[0],
                                 owl_class_behavior_range=prop['property_domain'][0],

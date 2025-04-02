@@ -792,7 +792,7 @@ class SaveResultDialog(QDialog):
             self.btn_detail.setFixedWidth(120)
         self.btn_detail.clicked.connect(lambda: self.open_detail_dialog(info_html))
         self.btn_ok = QPushButton(self.tr("确定"))
-        self.btn_ok.setFixedWidth(50)
+        self.btn_ok.setFixedWidth(85)
         self.btn_ok.clicked.connect(self.accept)
         btn_h.addWidget(self.btn_detail)
         btn_h.addWidget(self.btn_ok)

@@ -91,6 +91,8 @@ class XMLOWLParser:
                         pass
                 elif data_type == 'string':
                     value = value_text
+                else:
+                    value = value_text
 
         # Handle description
         desc_elem = prop_elem.find("hasDescription", None)
