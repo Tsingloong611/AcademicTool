@@ -156,14 +156,29 @@ class MainWindow(QMainWindow):
         ])  # 确保样式表文件位于正确路径
 
     def load_stylesheets(self, filepaths):
-        """加载多个样式表文件"""
+        """加载多个样式表文件，并动态修改图标路径"""
         combined_styles = ""
         for filepath in filepaths:
             if os.path.exists(filepath):
                 with open(filepath, "r", encoding="utf-8") as f:
-                    combined_styles += f.read() + "\n"
+                    style = f.read()
+
+                    # 获取资源路径：区分打包和非打包环境
+                    if getattr(sys, 'frozen', False):  # 如果在打包后环境中
+                        icon_path = os.path.join(sys._MEIPASS, "resources", "icons")
+                    else:  # 本地开发环境
+                        icon_path = os.path.join("resources", "icons")
+
+                    # 确保路径格式正确
+                    icon_path = icon_path.replace("\\", "/")  # 处理 Windows 路径分隔符
+
+                    # 替换样式表中的图标路径
+                    style = style.replace("./resources/icons", icon_path)
+
+                    combined_styles += style + "\n"
             else:
                 print(f"样式表文件未找到: {filepath}")
+
         self.setStyleSheet(combined_styles)
 
     def on_tab_changed(self, index):

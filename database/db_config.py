@@ -19,11 +19,19 @@ class DatabaseManager:
         try:
             connection_string = f"mysql+mysqlconnector://{username}:{password}@{host}:{port}/{database}?charset=utf8mb4"
             self.engine = create_engine(connection_string, echo=True)
+
+            # ✅ 设置 lc_messages
+            with self.engine.connect() as connection:
+                connection.execute(text("SET lc_messages = 'en_US'"))
+
             self.SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=self.engine)
+
             # 创建所有表（如果尚未创建）
             Base.metadata.create_all(bind=self.engine)
+
             # 添加种子数据
             seed_data.seed_all(self.get_session())
+
             print("数据库连接成功")
             return True, "连接成功"
         except Exception as e:

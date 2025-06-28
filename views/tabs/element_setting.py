@@ -18,8 +18,8 @@ from PySide6.QtWidgets import (
 )
 from PySide6.QtGui import QFont, QIntValidator, QDoubleValidator, QIcon, QColor
 from PySide6.QtWidgets import QStyledItemDelegate
-from attr import attributes
-from debugpy.common.timestamp import current
+
+
 from prompt_toolkit.shortcuts import input_dialog
 from pydot.dot_parser import add_elements
 from sqlalchemy import text
@@ -1295,9 +1295,14 @@ class EditRelatedObjectDialog(QDialog):
         self.edit_resource_btn = QPushButton(self.tr("修改"))
         self.delete_resource_btn = QPushButton(self.tr("删除"))
 
-        self.add_resource_btn.setIcon(QIcon(os.path.join(os.path.dirname(os.path.abspath(__file__)), "../../resources/icons/add.png")))
-        self.edit_resource_btn.setIcon(QIcon(os.path.join(os.path.dirname(os.path.abspath(__file__)), "../../resources/icons/edit.png")))
-        self.delete_resource_btn.setIcon(QIcon(os.path.join(os.path.dirname(os.path.abspath(__file__)), "../../resources/icons/delete.png")))
+        if getattr(sys, 'frozen', False):
+            base_path = sys._MEIPASS
+        else:
+            base_path = os.path.abspath(".")
+
+        self.add_resource_btn.setIcon(QIcon(os.path.join(base_path, "resources", "icons", "add.png")))
+        self.edit_resource_btn.setIcon(QIcon(os.path.join(base_path, "resources", "icons", "edit.png")))
+        self.delete_resource_btn.setIcon(QIcon(os.path.join(base_path, "resources", "icons", "delete.png")))
 
         self.add_resource_btn.setFixedWidth(110)
         self.edit_resource_btn.setFixedWidth(110)

@@ -175,11 +175,21 @@ QToolTip {
         parent_layout.addLayout(button_layout)
 
     def create_button(self, text, icon_name, callback):
+        # 判断是否是打包后的环境
+        import sys
+        if getattr(sys, 'frozen', False):
+            # 打包后的环境使用 _MEIPASS 来获取路径
+            icon_path = os.path.join(sys._MEIPASS, "resources", "icons", icon_name)
+        else:
+            # 本地开发环境使用相对路径
+            icon_path = os.path.join("resources", "icons", icon_name)
+
+        # 创建按钮并设置图标、名称和提示
         button = QPushButton(text)
         button.setObjectName(f"{text}Button")
-        button.setIcon(QIcon(os.path.join("resources", "icons", icon_name)))
-        button.setToolTip(self.tr(f"{text}情景"))
-        button.clicked.connect(callback)
+        button.setIcon(QIcon(icon_path))  # 设置按钮图标
+        button.setToolTip(self.tr(f"{text}情景"))  # 设置按钮的提示文本
+        button.clicked.connect(callback)  # 连接点击事件
         return button
 
     def init_list_widget(self, parent_layout):

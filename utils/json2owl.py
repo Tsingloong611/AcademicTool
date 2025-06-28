@@ -5,8 +5,6 @@ from openpyxl import Workbook
 import datetime
 import os
 from rdflib import URIRef, RDF, OWL
-
-
 import types
 from owlready2 import *
 import json
@@ -652,7 +650,6 @@ if __name__ == '__main__':
     5) 创建 Scenario.owl 并导出
     6) 创建 Emergency.owl 并导出
     """
-    # 假设你的工程目录结构和原先一致
     input_dir = os.path.join(os.path.dirname(__file__), '../data/sysml2/result')
     output_dir = os.path.join(os.path.dirname(__file__), '../data/sysml2/owl')
 

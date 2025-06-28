@@ -19,9 +19,14 @@ from views.dialogs.update_prior_dialog import *
 from views.tabs.condition_setting import CustomTableWidget
 
 
-# Constants Definition
-ZOOM_IN_ICON = "resources/icons/zoom_in.png"
-ZOOM_OUT_ICON = "resources/icons/zoom_out.png"
+if getattr(sys, 'frozen', False):
+    base_path = sys._MEIPASS
+else:
+    base_path = os.path.abspath(".")
+
+# 图标常量定义
+ZOOM_IN_ICON = os.path.join(base_path, "resources", "icons", "zoom_in.png")
+ZOOM_OUT_ICON = os.path.join(base_path, "resources", "icons", "zoom_out.png")
 
 class ZoomableLabel(QLabel):
     """Label supporting zoom functionality for displaying SVG images."""

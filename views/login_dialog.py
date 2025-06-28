@@ -403,8 +403,16 @@ class ManualConnectDialog(QDialog):
 
         # 添加眼睛图标按钮用于显示/隐藏密码
         self.toggle_password_action = QAction(self)
-        eye_open_icon_path = os.path.join(os.path.dirname(__file__), '..', 'resources', 'icons', 'eye.png')
-        eye_closed_icon_path = os.path.join(os.path.dirname(__file__), '..', 'resources', 'icons', 'eye_off.png')
+
+        import sys
+
+        if getattr(sys, 'frozen', False):
+            base_path = sys._MEIPASS
+        else:
+            base_path = os.path.abspath(".")
+
+        eye_open_icon_path = os.path.join(base_path, 'resources', 'icons', 'eye.png')
+        eye_closed_icon_path = os.path.join(base_path, 'resources', 'icons', 'eye_off.png')
 
         # 确保图标文件存在
         if os.path.exists(eye_open_icon_path) and os.path.exists(eye_closed_icon_path):
