@@ -541,7 +541,13 @@ class SingleResourceDialog(QDialog):
         loc_h_layout.addWidget(self.location_input)
 
         self.map_button = QPushButton()
-        self.map_button.setIcon(QIcon(os.path.join(os.path.dirname(os.path.abspath(__file__)), "../../resources/icons/location.png")))
+        # 兼容打包后路径（_MEIPASS）或开发路径
+        if getattr(sys, 'frozen', False):
+            base_path = sys._MEIPASS
+        else:
+            base_path = os.path.abspath(".")
+        self.map_button.setIcon(QIcon(os.path.join(base_path, "resources", "icons", "location.png")))
+
         self.map_button.setStyleSheet("")
         if self.online_map_mode:
             self.map_button.setToolTip(self.tr("点击选择位置"))
@@ -915,9 +921,15 @@ class ConditionSettingTab(QWidget):
         self.execute_btn = QPushButton(self.tr("执行推演"))
         self.ask_ai_btn = QPushButton(self.tr("智能问答"))
 
-        self.add_resource_btn.setIcon(QIcon(os.path.join(os.path.dirname(os.path.abspath(__file__)), "../../resources/icons/add.png")))
-        self.edit_resource_btn.setIcon(QIcon(os.path.join(os.path.dirname(os.path.abspath(__file__)), "../../resources/icons/edit.png")))
-        self.delete_resource_btn.setIcon(QIcon(os.path.join(os.path.dirname(os.path.abspath(__file__)), "../../resources/icons/delete.png")))
+        # 兼容打包后路径（_MEIPASS）或开发路径
+        if getattr(sys, 'frozen', False):
+            base_path = sys._MEIPASS
+        else:
+            base_path = os.path.abspath(".")
+
+        self.add_resource_btn.setIcon(QIcon(os.path.join(base_path, "resources", "icons", "add.png")))
+        self.edit_resource_btn.setIcon(QIcon(os.path.join(base_path, "resources", "icons", "edit.png")))
+        self.delete_resource_btn.setIcon(QIcon(os.path.join(base_path, "resources", "icons", "delete.png")))
 
         self.add_resource_btn.setFixedWidth(110)
         self.edit_resource_btn.setFixedWidth(110)
@@ -1632,20 +1644,20 @@ class ConditionSettingTab(QWidget):
         """
         row = item.row()
         plan_name = self.simulation_table.item(row, 0).text()
-        collector = PlanDataCollector(self.session, scenario_id=self.scenario_id)
-
-        print(f"[DEBUG] Collecting data for plan: {plan_name}")
-        plan_data = collector.collect_all_data(plan_name=plan_name)
-        print(f"[DEBUG] Plan data: {plan_data}")
-
-        evidence = convert_to_evidence(plan_data)
-        print(f"[DEBUG] Evidence: {evidence}")
-
+        # collector = PlanDataCollector(self.session, scenario_id=self.scenario_id)
+        #
+        # print(f"[DEBUG] Collecting data for plan: {plan_name}")
+        # plan_data = collector.collect_all_data(plan_name=plan_name)
+        # print(f"[DEBUG] Plan data: {plan_data}")
+        #
+        # evidence = convert_to_evidence(plan_data)
+        # print(f"[DEBUG] Evidence: {evidence}")
+        #
         output_dir = os.path.abspath(os.path.join(
             os.path.dirname(os.path.abspath(__file__)), f"../../data/bn/{self.scenario_id}/plans/{plan_name}"
         ))
-        print(f"[DEBUG] Output directory: {output_dir}")
-        update_with_evidence(self.analyzer, evidence, output_dir)
+        # print(f"[DEBUG] Output directory: {output_dir}")
+        # update_with_evidence(self.analyzer, evidence, output_dir)
 
         posteriors_file = os.path.join(output_dir, "posterior_probabilities.json")
         posterior_probabilities = {}
@@ -1654,7 +1666,7 @@ class ConditionSettingTab(QWidget):
                 posterior_probabilities = json.load(f)
         print(f"[DEBUG] Posterior probabilities: {posterior_probabilities}")
 
-        self.new_plan_generator.upsert_posterior_probability(plan_name, posterior_probabilities)
+        # self.new_plan_generator.upsert_posterior_probability(plan_name, posterior_probabilities)
         self.posterior_probabilities = self.convert_json_to_posterior_probabilities(posterior_probabilities)
         print(f"[DEBUG] Posterior probabilities: {self.posterior_probabilities}")
 

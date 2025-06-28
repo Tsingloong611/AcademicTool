@@ -16,10 +16,14 @@ from utils.get_config import get_cfg
 from views.dialogs.custom_information_dialog import CustomInformationDialog
 from views.dialogs.custom_warning_dialog import CustomWarningDialog
 
-# Constants Definition
-ZOOM_IN_ICON = "resources/icons/zoom_in.png"
-ZOOM_OUT_ICON = "resources/icons/zoom_out.png"
+if getattr(sys, 'frozen', False):
+    base_path = sys._MEIPASS
+else:
+    base_path = os.path.abspath(".")
 
+# 图标常量定义
+ZOOM_IN_ICON = os.path.join(base_path, "resources", "icons", "zoom_in.png")
+ZOOM_OUT_ICON = os.path.join(base_path, "resources", "icons", "zoom_out.png")
 
 class ZoomableLabel(QLabel):
     """Label supporting zoom functionality for displaying SVG images."""

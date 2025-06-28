@@ -10,9 +10,8 @@ from PySide6.QtGui import QFont, QTextCursor
 import sys
 import datetime
 import re
-import markdown2  # 需要安装: pip install markdown2
+import markdown2
 
-from click import prompt
 
 from utils.get_config import get_cfg
 from utils.llm_client import FallbackManager

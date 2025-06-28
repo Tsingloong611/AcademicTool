@@ -1,5 +1,5 @@
 # main.py
-
+import multiprocessing
 import sys
 import json
 import os
@@ -195,6 +195,7 @@ def main(app):
         window = MainWindow(db_manager)
         window.showMaximized()
     else:
+        print(f"未发现 config.json，准备创建默认配置文件")
         CustomErrorDialog("错误", f"无法连接到数据库：{message}", parent=None).show_dialog()
         sys.exit(1)
 
@@ -202,10 +203,21 @@ def main(app):
     sys.exit(app.exec())
 
 
-if __name__ == '__main__':
-    # 创建 QApplication 实例
-    app = QApplication(sys.argv)
-    app.setStyle("Fusion")  # 设置全局样式
+if __name__ == "__main__":
+    multiprocessing.freeze_support()
 
-    # 调用主函数，并传递 QApplication 实例
+    if sys.platform.startswith('win'):
+        # On Windows, use 'spawn' which is the default anyway
+        multiprocessing.set_start_method('spawn', force=True)
+    if sys.platform.startswith('win'):
+        # This helps hide console windows in subprocesses
+        import subprocess
+        startupinfo = subprocess.STARTUPINFO()
+        startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+        startupinfo.wShowWindow = 0  # SW_HIDE
+
+    from PySide6.QtWidgets import QApplication
+    app = QApplication(sys.argv)
+    app.setStyle("Fusion")
     main(app)
+
