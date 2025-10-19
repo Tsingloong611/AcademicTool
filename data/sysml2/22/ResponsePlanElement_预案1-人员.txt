@@ -1,0 +1,15 @@
+package ResponsePlanElement{
+
+    part def ResponseResource{}
+    part 预案1-人员 : ResponseResource{
+        attribute ResourceType : Enum = "医生";
+        attribute ResourceUsageCondition : Bool = "0";
+        attribute ResourceQuantityOrQuality : Real = "1";
+        attribute Location : String = "上海市青浦区练塘镇上海泖河水产品专业合作社 (31.003531,121.008755)";
+
+        ref part 预案1-救助;
+
+
+    }
+
+}

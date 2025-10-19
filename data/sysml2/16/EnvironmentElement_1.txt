@@ -1,0 +1,32 @@
+package EnvironmentElement{
+
+    part def EnvironmentElement{
+
+    item def Facility{
+    }
+
+    item def Lane{
+    }
+
+    part 1 : EnvironmentElement{
+        attribute RoadName : String = null;
+        attribute RoadType : Enum = "主路";
+        attribute NumberOfLanes : Real = null;
+        attribute TrafficVolume : Real = null;
+        attribute SegmentStartStakeNumber : String = null;
+        attribute SegmentEndStakeNumber : String = null;
+        attribute DesignSpeed : Real = null;
+        attribute ClosureCondition : Bool = "0";
+        attribute RoadDamageCondition : Bool = "0";
+        attribute PollutionCondition : Bool = "0";
+        attribute RoadMaintenanceConditon : Bool = "0";
+        attribute RoadConstrucetionCondition : Bool = "0";
+        attribute TravelTime : Real = null;
+        attribute TrafficCapacity : Real = null;
+        attribute SpeedLimit : Real = null;
+
+
+
+    }
+
+}

@@ -1,0 +1,15 @@
+package ResponsePlanElement{
+
+    part def ResponseResource{}
+    part plan286-人员 : ResponseResource{
+        attribute ResourceType : Enum = "牵引人员";
+        attribute ResourceUsageCondition : Bool = "0";
+        attribute ResourceQuantityOrQuality : Real = "1";
+        attribute Location : String = "上海市黄浦区老西门街道中华路复兴珑御南区 (31.217156,121.485851)";
+
+        ref part plan286-抢修;
+
+
+    }
+
+}

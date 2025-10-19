@@ -1,0 +1,170 @@
+package ResponsePlanElement{
+
+    part def ResponsePlanElement{}
+
+    action def RoadRepair{
+        }
+
+    action def RoadControl{
+        }
+
+    action def VehicleTowing{
+        }
+
+    action def Firefighting{
+        }
+
+    action def RoadCleaning{
+        }
+
+    action def HazardousMaterialDisposal{
+        }
+
+    action def Action{
+            out implementationCondition;
+            out startTime;
+            out endTime;
+        }
+
+    action def PersonnalRescue{
+        }
+
+    state def towStates{
+            entry; then idleState;
+            state idleState;
+            accept Tow:Action
+                then implementState;
+            state implementState;
+        }
+
+    state def firefightingStates{
+            entry; then idleState;
+            state idleState;
+            accept FireFighting:Action
+                then implementState;
+            state implementState;
+        }
+
+    state def rescueStates{
+            entry; then idleState;
+            state idleState;
+            accept Rescue:Action
+                then implementState;
+            state implementState;
+        }
+
+    state def aidStates{
+            entry; then idleState;
+            state idleState;
+            accept Aid:Action
+                then implementState;
+            state implementState;
+        }
+
+    part plan1-人员 : ResponseResource{
+            attribute ResourceType : Enum = "医生";
+            attribute ResourceUsageCondition : Bool = "0";
+            attribute ResourceQuantityOrQuality : Real = "1";
+            attribute Location : String = "上海市黄浦区老西门街道老西门地铁站2号口复兴珑御北区 (31.218477,121.483619)";
+
+            ref part plan1-救助;
+
+
+        }
+
+    part plan2-车辆 : ResponseResource{
+            attribute ResourceType : Enum = "牵引车";
+            attribute ResourceUsageCondition : Bool = "0";
+            attribute ResourceQuantityOrQuality : Real = "1";
+            attribute Location : String = "上海市黄浦区淮海中路街道丰裕里 (31.217449,121.472461)";
+
+            ref part plan2-牵引;
+
+
+        }
+
+    part plan1-救助 : ResponseAction{
+            attribute BehaviorType : Enum = "救助";
+            attribute ImplementationCondition : Bool = true;
+            attribute Duration : Real = "4";
+
+
+            perform action Firefighting;
+            perform action PersonnalRescue;
+            perform action VehicleTowing;
+            perform action RoadCleaning;
+            perform action RoadRepair;
+            perform action RoadControl;
+            perform action HazardousMaterialDisposal;
+
+        }
+
+    part plan2 : ResponsePlanElement{
+            attribute PlanName : String = "plan2";
+
+            ref part plan2-人员;
+            ref part plan2-车辆;
+            ref part plan2-救助;
+            ref part plan2-牵引;
+
+
+        }
+
+    part plan1 : ResponsePlanElement{
+            attribute PlanName : String = "plan1";
+
+            ref part plan1-人员;
+            ref part plan1-救助;
+
+
+        }
+
+    part def ResponseAction{}
+
+    part plan2-人员 : ResponseResource{
+            attribute ResourceType : Enum = "医生";
+            attribute ResourceUsageCondition : Bool = "0";
+            attribute ResourceQuantityOrQuality : Real = "1";
+            attribute Location : String = "上海市黄浦区淮海中路街道兴业路222号黄浦区人大常委会 (31.219505,121.472805)";
+
+            ref part plan2-救助;
+
+
+        }
+
+    part def ResponseResource{}
+
+    part plan2-救助 : ResponseAction{
+            attribute BehaviorType : Enum = "救助";
+            attribute ImplementationCondition : Bool = true;
+            attribute Duration : Real = "12";
+
+
+            perform action Firefighting;
+            perform action PersonnalRescue;
+            perform action VehicleTowing;
+            perform action RoadCleaning;
+            perform action RoadRepair;
+            perform action RoadControl;
+            perform action HazardousMaterialDisposal;
+
+        }
+
+    part plan2-牵引 : ResponseAction{
+            attribute BehaviorType : Enum = "牵引";
+            attribute ImplementationCondition : Bool = true;
+            attribute Duration : Real = "8";
+
+            ref part plan2-车辆;
+
+            perform action Firefighting;
+            perform action PersonnalRescue;
+            perform action VehicleTowing;
+            perform action RoadCleaning;
+            perform action RoadRepair;
+            perform action RoadControl;
+            perform action HazardousMaterialDisposal;
+
+        }
+
+}

@@ -1,0 +1,42 @@
+package ResponsePlanElement{
+
+    part def ResponseAction{}
+    action def Firefighting{
+    }
+
+    action def PersonnalRescue{
+    }
+
+    action def VehicleTowing{
+    }
+
+    action def RoadCleaning{
+    }
+
+    action def RoadRepair{
+    }
+
+    action def RoadControl{
+    }
+
+    action def HazardousMaterialDisposal{
+    }
+
+    part 测试2-牵引 : ResponseAction{
+        attribute BehaviorType : Enum = "牵引";
+        attribute ImplementationCondition : Bool = true;
+        attribute Duration : Real = "15";
+
+        ref part 测试2-车辆;
+
+        perform action Firefighting;
+        perform action PersonnalRescue;
+        perform action VehicleTowing;
+        perform action RoadCleaning;
+        perform action RoadRepair;
+        perform action RoadControl;
+        perform action HazardousMaterialDisposal;
+
+    }
+
+}

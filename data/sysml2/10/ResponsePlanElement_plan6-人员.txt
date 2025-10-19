@@ -1,0 +1,15 @@
+package ResponsePlanElement{
+
+    part def ResponseResource{}
+    part plan6-人员 : ResponseResource{
+        attribute ResourceType : Enum = "牵引人员";
+        attribute ResourceUsageCondition : Bool = "0";
+        attribute ResourceQuantityOrQuality : Real = "1";
+        attribute Location : String = "河北省保定市容城县平王乡地面停车场(出入口) (39.010302,116.011516)";
+
+        ref part plan6-牵引;
+
+
+    }
+
+}

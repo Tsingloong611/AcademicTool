@@ -1,0 +1,36 @@
+package EnvironmentElement{
+
+    part def EnvironmentElement{
+
+    item def Facility{
+    }
+
+    item def Lane{
+    }
+
+    part Road : EnvironmentElement{
+        attribute RoadName : String = "South-North Viaduct";
+        attribute RoadType : Enum = "匝道";
+        attribute NumberOfLanes : Real = "3";
+        attribute TrafficVolume : Real = "120";
+        attribute SegmentStartStakeNumber : String = "ND569";
+        attribute SegmentEndStakeNumber : String = "ND569";
+        attribute DesignSpeed : Real = "120";
+        attribute ClosureCondition : Bool = true;
+        attribute RoadDamageCondition : Bool = "0";
+        attribute PollutionCondition : Bool = "0";
+        attribute RoadMaintenanceConditon : Bool = "0";
+        attribute RoadConstrucetionCondition : Bool = "0";
+        attribute TravelTime : Real = null;
+        attribute TrafficCapacity : Real = null;
+        attribute SpeedLimit : Real = null;
+
+        item Facility1 : Facility;
+        item Lane1 : Lane;
+        ref part HazardVehicle;
+        ref part AffectedVehicle;
+
+
+    }
+
+}

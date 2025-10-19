@@ -1,0 +1,3335 @@
+<?xml version="1.0" ?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1878.0 1019.0" width="100%" height="100%" preserveAspectRatio="xMidYMid meet">
+	<style type="text/css">
+            .title { font-family: Arial; font-size: 12pt; font-weight: bold; }
+            @media (max-width: 1200px) { .title { font-size: 10pt; } }
+            @media (max-width: 800px) { .title { font-size: 8pt; } }
+        </style>
+	<text x="190.5" y="25.0" text-anchor="middle" class="title">Network Structure</text>
+	<g transform="translate(25.0,30)">
+		<ns0:g xmlns:ns0="http://www.w3.org/2000/svg" id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(3.6 355.6)">
+			
+
+			<ns0:polygon fill="white" stroke="none" points="-3.6,3.6 -3.6,-355.6 327.1,-355.6 327.1,3.6 -3.6,3.6"/>
+			
+
+
+			<ns0:g id="node1" class="node">
+				
+
+				<ns0:title>roadPassibility</ns0:title>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="13.12,-330 13.12,-352 88.88,-352 88.88,-330 13.12,-330"/>
+				
+
+				<ns0:text text-anchor="start" x="19.12" y="-337.5" font-family="Arial" font-size="10.00">roadPassibility</ns0:text>
+				
+
+			</ns0:g>
+			
+
+
+			<ns0:g id="node12" class="node">
+				
+
+				<ns0:title>AbsorptionCapacity</ns0:title>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="116,-297 116,-319 213.5,-319 213.5,-297 116,-297"/>
+				
+
+				<ns0:text text-anchor="start" x="122" y="-304.5" font-family="Arial" font-size="10.00">AbsorptionCapacity</ns0:text>
+				
+
+			</ns0:g>
+			
+
+
+			<ns0:g id="edge8" class="edge">
+				
+
+				<ns0:title>roadPassibility-&gt;AbsorptionCapacity</ns0:title>
+				
+
+				<ns0:path fill="none" stroke="#64748b" stroke-width="0.8" d="M82.88,-330.08C82.88,-321.74 82.88,-311.67 82.88,-311.67 82.88,-311.67 104.97,-311.67 104.97,-311.67"/>
+				
+
+				<ns0:polygon fill="#64748b" stroke="#64748b" stroke-width="0.8" points="104.97,-315.17 114.97,-311.67 104.97,-308.17 104.97,-315.17"/>
+				
+
+			</ns0:g>
+			
+
+
+			<ns0:g id="node2" class="node">
+				
+
+				<ns0:title>emergencyType</ns0:title>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="10.5,-264 10.5,-286 91.5,-286 91.5,-264 10.5,-264"/>
+				
+
+				<ns0:text text-anchor="start" x="16.5" y="-271.5" font-family="Arial" font-size="10.00">emergencyType</ns0:text>
+				
+
+			</ns0:g>
+			
+
+
+			<ns0:g id="node13" class="node">
+				
+
+				<ns0:title>AdaptionCapacity</ns0:title>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="120.12,-231 120.12,-253 209.38,-253 209.38,-231 120.12,-231"/>
+				
+
+				<ns0:text text-anchor="start" x="126.12" y="-238.5" font-family="Arial" font-size="10.00">AdaptionCapacity</ns0:text>
+				
+
+			</ns0:g>
+			
+
+
+			<ns0:g id="edge1" class="edge">
+				
+
+				<ns0:title>emergencyType-&gt;AdaptionCapacity</ns0:title>
+				
+
+				<ns0:path fill="none" stroke="#64748b" stroke-width="0.8" d="M87.38,-264.13C87.38,-256.44 87.38,-247.5 87.38,-247.5 87.38,-247.5 108.98,-247.5 108.98,-247.5"/>
+				
+
+				<ns0:polygon fill="#64748b" stroke="#64748b" stroke-width="0.8" points="108.98,-251 118.98,-247.5 108.98,-244 108.98,-251"/>
+				
+
+			</ns0:g>
+			
+
+
+			<ns0:g id="node3" class="node">
+				
+
+				<ns0:title>roadLoss</ns0:title>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="25.12,-297 25.12,-319 76.88,-319 76.88,-297 25.12,-297"/>
+				
+
+				<ns0:text text-anchor="start" x="31.12" y="-304.5" font-family="Arial" font-size="10.00">roadLoss</ns0:text>
+				
+
+			</ns0:g>
+			
+
+
+			<ns0:g id="edge13" class="edge">
+				
+
+				<ns0:title>roadLoss-&gt;AbsorptionCapacity</ns0:title>
+				
+
+				<ns0:path fill="none" stroke="#64748b" stroke-width="0.8" d="M76.81,-304.33C76.81,-304.33 104.99,-304.33 104.99,-304.33"/>
+				
+
+				<ns0:polygon fill="#64748b" stroke="#64748b" stroke-width="0.8" points="104.99,-307.83 114.99,-304.33 104.99,-300.83 104.99,-307.83"/>
+				
+
+			</ns0:g>
+			
+
+
+			<ns0:g id="node4" class="node">
+				
+
+				<ns0:title>casualties</ns0:title>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="22.88,-231 22.88,-253 79.12,-253 79.12,-231 22.88,-231"/>
+				
+
+				<ns0:text text-anchor="start" x="28.88" y="-238.5" font-family="Arial" font-size="10.00">casualties</ns0:text>
+				
+
+			</ns0:g>
+			
+
+
+			<ns0:g id="edge11" class="edge">
+				
+
+				<ns0:title>casualties-&gt;AdaptionCapacity</ns0:title>
+				
+
+				<ns0:path fill="none" stroke="#64748b" stroke-width="0.8" d="M79.12,-242C79.12,-242 108.92,-242 108.92,-242"/>
+				
+
+				<ns0:polygon fill="#64748b" stroke="#64748b" stroke-width="0.8" points="108.92,-245.5 118.92,-242 108.92,-238.5 108.92,-245.5"/>
+				
+
+			</ns0:g>
+			
+
+
+			<ns0:g id="node5" class="node">
+				
+
+				<ns0:title>AidResource</ns0:title>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="16.88,-165 16.88,-187 85.12,-187 85.12,-165 16.88,-165"/>
+				
+
+				<ns0:text text-anchor="start" x="22.88" y="-172.5" font-family="Arial" font-size="10.00">AidResource</ns0:text>
+				
+
+			</ns0:g>
+			
+
+
+			<ns0:g id="node14" class="node">
+				
+
+				<ns0:title>RecoveryCapacity</ns0:title>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="118.25,-99 118.25,-121 211.25,-121 211.25,-99 118.25,-99"/>
+				
+
+				<ns0:text text-anchor="start" x="124.25" y="-106.5" font-family="Arial" font-size="10.00">RecoveryCapacity</ns0:text>
+				
+
+			</ns0:g>
+			
+
+
+			<ns0:g id="edge4" class="edge">
+				
+
+				<ns0:title>AidResource-&gt;RecoveryCapacity</ns0:title>
+				
+
+				<ns0:path fill="none" stroke="#64748b" stroke-width="0.8" d="M84.79,-176C122.9,-176 179.62,-176 179.62,-176 179.62,-176 179.62,-132.11 179.62,-132.11"/>
+				
+
+				<ns0:polygon fill="#64748b" stroke="#64748b" stroke-width="0.8" points="183.13,-132.11 179.63,-122.11 176.13,-132.11 183.13,-132.11"/>
+				
+
+			</ns0:g>
+			
+
+
+			<ns0:g id="node6" class="node">
+				
+
+				<ns0:title>TowResource</ns0:title>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="15,-132 15,-154 87,-154 87,-132 15,-132"/>
+				
+
+				<ns0:text text-anchor="start" x="21" y="-139.5" font-family="Arial" font-size="10.00">TowResource</ns0:text>
+				
+
+			</ns0:g>
+			
+
+
+			<ns0:g id="edge7" class="edge">
+				
+
+				<ns0:title>TowResource-&gt;RecoveryCapacity</ns0:title>
+				
+
+				<ns0:path fill="none" stroke="#64748b" stroke-width="0.8" d="M86.98,-143C115.25,-143 149.88,-143 149.88,-143 149.88,-143 149.88,-132.02 149.88,-132.02"/>
+				
+
+				<ns0:polygon fill="#64748b" stroke="#64748b" stroke-width="0.8" points="153.38,-132.02 149.88,-122.02 146.38,-132.02 153.38,-132.02"/>
+				
+
+			</ns0:g>
+			
+
+
+			<ns0:g id="node7" class="node">
+				
+
+				<ns0:title>FirefightingResource</ns0:title>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="0,-99 0,-121 102,-121 102,-99 0,-99"/>
+				
+
+				<ns0:text text-anchor="start" x="6" y="-106.5" font-family="Arial" font-size="10.00">FirefightingResource</ns0:text>
+				
+
+			</ns0:g>
+			
+
+
+			<ns0:g id="edge9" class="edge">
+				
+
+				<ns0:title>FirefightingResource-&gt;RecoveryCapacity</ns0:title>
+				
+
+				<ns0:path fill="none" stroke="#64748b" stroke-width="0.8" d="M101.89,-110C101.89,-110 107.37,-110 107.37,-110"/>
+				
+
+				<ns0:polygon fill="#64748b" stroke="#64748b" stroke-width="0.8" points="107.37,-113.5 117.37,-110 107.37,-106.5 107.37,-113.5"/>
+				
+
+			</ns0:g>
+			
+
+
+			<ns0:g id="node8" class="node">
+				
+
+				<ns0:title>RescueResource</ns0:title>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="7.12,-66 7.12,-88 94.88,-88 94.88,-66 7.12,-66"/>
+				
+
+				<ns0:text text-anchor="start" x="13.12" y="-73.5" font-family="Arial" font-size="10.00">RescueResource</ns0:text>
+				
+
+			</ns0:g>
+			
+
+
+			<ns0:g id="edge5" class="edge">
+				
+
+				<ns0:title>RescueResource-&gt;RecoveryCapacity</ns0:title>
+				
+
+				<ns0:path fill="none" stroke="#64748b" stroke-width="0.8" d="M94.66,-77C117.8,-77 141.5,-77 141.5,-77 141.5,-77 141.5,-87.98 141.5,-87.98"/>
+				
+
+				<ns0:polygon fill="#64748b" stroke="#64748b" stroke-width="0.8" points="138,-87.98 141.5,-97.98 145,-87.98 138,-87.98"/>
+				
+
+			</ns0:g>
+			
+
+
+			<ns0:g id="node9" class="node">
+				
+
+				<ns0:title>emergencyPeriod</ns0:title>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="7.12,-198 7.12,-220 94.88,-220 94.88,-198 7.12,-198"/>
+				
+
+				<ns0:text text-anchor="start" x="13.12" y="-205.5" font-family="Arial" font-size="10.00">emergencyPeriod</ns0:text>
+				
+
+			</ns0:g>
+			
+
+
+			<ns0:g id="edge10" class="edge">
+				
+
+				<ns0:title>emergencyPeriod-&gt;AdaptionCapacity</ns0:title>
+				
+
+				<ns0:path fill="none" stroke="#64748b" stroke-width="0.8" d="M83.25,-219.87C83.25,-227.56 83.25,-236.5 83.25,-236.5 83.25,-236.5 108.97,-236.5 108.97,-236.5"/>
+				
+
+				<ns0:polygon fill="#64748b" stroke="#64748b" stroke-width="0.8" points="108.97,-240 118.97,-236.5 108.97,-233 108.97,-240"/>
+				
+
+			</ns0:g>
+			
+
+
+			<ns0:g id="node10" class="node">
+				
+
+				<ns0:title>responseDuration</ns0:title>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="6.75,-33 6.75,-55 95.25,-55 95.25,-33 6.75,-33"/>
+				
+
+				<ns0:text text-anchor="start" x="12.75" y="-40.5" font-family="Arial" font-size="10.00">responseDuration</ns0:text>
+				
+
+			</ns0:g>
+			
+
+
+			<ns0:g id="edge3" class="edge">
+				
+
+				<ns0:title>responseDuration-&gt;RecoveryCapacity</ns0:title>
+				
+
+				<ns0:path fill="none" stroke="#64748b" stroke-width="0.8" d="M94.98,-44C126.99,-44 164.75,-44 164.75,-44 164.75,-44 164.75,-87.89 164.75,-87.89"/>
+				
+
+				<ns0:polygon fill="#64748b" stroke="#64748b" stroke-width="0.8" points="161.25,-87.89 164.75,-97.89 168.25,-87.89 161.25,-87.89"/>
+				
+
+			</ns0:g>
+			
+
+
+			<ns0:g id="node11" class="node">
+				
+
+				<ns0:title>disposalDuration</ns0:title>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="8.62,0 8.62,-22 93.38,-22 93.38,0 8.62,0"/>
+				
+
+				<ns0:text text-anchor="start" x="14.62" y="-7.5" font-family="Arial" font-size="10.00">disposalDuration</ns0:text>
+				
+
+			</ns0:g>
+			
+
+
+			<ns0:g id="edge6" class="edge">
+				
+
+				<ns0:title>disposalDuration-&gt;RecoveryCapacity</ns0:title>
+				
+
+				<ns0:path fill="none" stroke="#64748b" stroke-width="0.8" d="M93.22,-11C133.48,-11 188,-11 188,-11 188,-11 188,-87.82 188,-87.82"/>
+				
+
+				<ns0:polygon fill="#64748b" stroke="#64748b" stroke-width="0.8" points="184.5,-87.82 188,-97.82 191.5,-87.82 184.5,-87.82"/>
+				
+
+			</ns0:g>
+			
+
+
+			<ns0:g id="node15" class="node">
+				
+
+				<ns0:title>ScenarioResilience</ns0:title>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="227.5,-231 227.5,-253 323.5,-253 323.5,-231 227.5,-231"/>
+				
+
+				<ns0:text text-anchor="start" x="233.5" y="-238.5" font-family="Arial" font-size="10.00">ScenarioResilience</ns0:text>
+				
+
+			</ns0:g>
+			
+
+
+			<ns0:g id="edge12" class="edge">
+				
+
+				<ns0:title>AbsorptionCapacity-&gt;ScenarioResilience</ns0:title>
+				
+
+				<ns0:path fill="none" stroke="#64748b" stroke-width="0.8" d="M213.33,-308C243.08,-308 275.5,-308 275.5,-308 275.5,-308 275.5,-264.11 275.5,-264.11"/>
+				
+
+				<ns0:polygon fill="#64748b" stroke="#64748b" stroke-width="0.8" points="279,-264.11 275.5,-254.11 272,-264.11 279,-264.11"/>
+				
+
+			</ns0:g>
+			
+
+
+			<ns0:g id="edge14" class="edge">
+				
+
+				<ns0:title>AdaptionCapacity-&gt;ScenarioResilience</ns0:title>
+				
+
+				<ns0:path fill="none" stroke="#64748b" stroke-width="0.8" d="M209.16,-242C209.16,-242 216.61,-242 216.61,-242"/>
+				
+
+				<ns0:polygon fill="#64748b" stroke="#64748b" stroke-width="0.8" points="216.61,-245.5 226.61,-242 216.61,-238.5 216.61,-245.5"/>
+				
+
+			</ns0:g>
+			
+
+
+			<ns0:g id="edge2" class="edge">
+				
+
+				<ns0:title>RecoveryCapacity-&gt;ScenarioResilience</ns0:title>
+				
+
+				<ns0:path fill="none" stroke="#64748b" stroke-width="0.8" d="M211.08,-110C241.42,-110 275.5,-110 275.5,-110 275.5,-110 275.5,-219.99 275.5,-219.99"/>
+				
+
+				<ns0:polygon fill="#64748b" stroke="#64748b" stroke-width="0.8" points="272,-219.99 275.5,-229.99 279,-219.99 272,-219.99"/>
+				
+
+			</ns0:g>
+			
+
+		</ns0:g>
+	</g>
+	<text x="754.0" y="25.0" text-anchor="middle" class="title">Prior Possibility</text>
+	<g transform="translate(406.0,30)">
+		<ns0:g xmlns:ns0="http://www.w3.org/2000/svg" id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(3.6 935.6)">
+			
+
+			<ns0:polygon fill="white" stroke="none" points="-3.6,3.6 -3.6,-935.6 692.6,-935.6 692.6,3.6 -3.6,3.6"/>
+			
+
+
+			<ns0:g id="node1" class="node">
+				
+
+				<ns0:title>roadPassibility</ns0:title>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="45,-910 45,-932 236,-932 236,-910 45,-910"/>
+				
+
+				<ns0:text text-anchor="start" x="108.62" y="-917.5" font-family="Arial" font-size="10.00">roadPassibility</ns0:text>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="45,-890 45,-910 105,-910 105,-890 45,-890"/>
+				
+
+				<ns0:text text-anchor="start" x="53.75" y="-896.7" font-family="Arial" font-size="9.00">Impassable</ns0:text>
+				
+
+				<ns0:polygon fill="white" stroke="none" points="105,-890 105,-910 197,-910 197,-890 105,-890"/>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="105,-890 105,-910 197,-910 197,-890 105,-890"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="109,-894 109,-906 193,-906 193,-894 109,-894"/>
+				
+
+				<ns0:polygon fill="#4ade80" stroke="none" points="111,-896 111,-904 112,-904 112,-896 111,-896"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="112,-896 112,-904 191,-904 191,-896 112,-896"/>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="197,-890 197,-910 236,-910 236,-890 197,-890"/>
+				
+
+				<ns0:text text-anchor="start" x="205.75" y="-896.7" font-family="Arial" font-size="9.00">0.50%</ns0:text>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="45,-870 45,-890 105,-890 105,-870 45,-870"/>
+				
+
+				<ns0:text text-anchor="start" x="62.75" y="-876.7" font-family="Arial" font-size="9.00">Passable</ns0:text>
+				
+
+				<ns0:polygon fill="white" stroke="none" points="105,-870 105,-890 197,-890 197,-870 105,-870"/>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="105,-870 105,-890 197,-890 197,-870 105,-870"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="109,-874 109,-886 193,-886 193,-874 109,-874"/>
+				
+
+				<ns0:polygon fill="#4ade80" stroke="none" points="111,-876 111,-884 190,-884 190,-876 111,-876"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="190,-876 190,-884 191,-884 191,-876 190,-876"/>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="197,-870 197,-890 236,-890 236,-870 197,-870"/>
+				
+
+				<ns0:text text-anchor="start" x="200.75" y="-876.7" font-family="Arial" font-size="9.00">99.50%</ns0:text>
+				
+
+			</ns0:g>
+			
+
+
+			<ns0:g id="node12" class="node">
+				
+
+				<ns0:title>AbsorptionCapacity</ns0:title>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="295,-837 295,-859 485,-859 485,-837 295,-837"/>
+				
+
+				<ns0:text text-anchor="start" x="347.25" y="-844.5" font-family="Arial" font-size="10.00">AbsorptionCapacity</ns0:text>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="295,-817 295,-837 355,-837 355,-817 295,-817"/>
+				
+
+				<ns0:text text-anchor="start" x="328.5" y="-823.7" font-family="Arial" font-size="9.00">Good</ns0:text>
+				
+
+				<ns0:polygon fill="white" stroke="none" points="355,-817 355,-837 446,-837 446,-817 355,-817"/>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="355,-817 355,-837 446,-837 446,-817 355,-817"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="359,-821 359,-833 442,-833 442,-821 359,-821"/>
+				
+
+				<ns0:polygon fill="#4ade80" stroke="none" points="361,-823 361,-831 433,-831 433,-823 361,-823"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="433,-823 433,-831 440,-831 440,-823 433,-823"/>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="446,-817 446,-837 485,-837 485,-817 446,-817"/>
+				
+
+				<ns0:text text-anchor="start" x="449.75" y="-823.7" font-family="Arial" font-size="9.00">90.87%</ns0:text>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="295,-797 295,-817 355,-817 355,-797 295,-797"/>
+				
+
+				<ns0:text text-anchor="start" x="334.5" y="-803.7" font-family="Arial" font-size="9.00">Bad</ns0:text>
+				
+
+				<ns0:polygon fill="white" stroke="none" points="355,-797 355,-817 446,-817 446,-797 355,-797"/>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="355,-797 355,-817 446,-817 446,-797 355,-797"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="359,-801 359,-813 442,-813 442,-801 359,-801"/>
+				
+
+				<ns0:polygon fill="#4ade80" stroke="none" points="361,-803 361,-811 368,-811 368,-803 361,-803"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="368,-803 368,-811 440,-811 440,-803 368,-803"/>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="446,-797 446,-817 485,-817 485,-797 446,-797"/>
+				
+
+				<ns0:text text-anchor="start" x="454.75" y="-803.7" font-family="Arial" font-size="9.00">9.13%</ns0:text>
+				
+
+			</ns0:g>
+			
+
+
+			<ns0:g id="edge8" class="edge">
+				
+
+				<ns0:title>roadPassibility-&gt;AbsorptionCapacity</ns0:title>
+				
+
+				<ns0:path fill="none" stroke="#64748b" stroke-width="0.8" d="M235.89,-901C306.33,-901 390,-901 390,-901 390,-901 390,-870.17 390,-870.17"/>
+				
+
+				<ns0:polygon fill="#64748b" stroke="#64748b" stroke-width="0.8" points="393.5,-870.17 390,-860.17 386.5,-870.17 393.5,-870.17"/>
+				
+
+			</ns0:g>
+			
+
+
+			<ns0:g id="node2" class="node">
+				
+
+				<ns0:title>emergencyType</ns0:title>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="0,-764 0,-786 281,-786 281,-764 0,-764"/>
+				
+
+				<ns0:text text-anchor="start" x="106" y="-771.5" font-family="Arial" font-size="10.00">emergencyType</ns0:text>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="0,-744 0,-764 150,-764 150,-744 0,-744"/>
+				
+
+				<ns0:text text-anchor="start" x="54.5" y="-750.7" font-family="Arial" font-size="9.00">Vehicle_Self_Accident</ns0:text>
+				
+
+				<ns0:polygon fill="white" stroke="none" points="150,-744 150,-764 242,-764 242,-744 150,-744"/>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="150,-744 150,-764 242,-764 242,-744 150,-744"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="154,-748 154,-760 238,-760 238,-748 154,-748"/>
+				
+
+				<ns0:polygon fill="#4ade80" stroke="none" points="156,-750 156,-758 186.5,-758 186.5,-750 156,-750"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="186.5,-750 186.5,-758 236,-758 236,-750 186.5,-750"/>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="242,-744 242,-764 281,-764 281,-744 242,-744"/>
+				
+
+				<ns0:text text-anchor="start" x="245.75" y="-750.7" font-family="Arial" font-size="9.00">38.02%</ns0:text>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="0,-724 0,-744 150,-744 150,-724 0,-724"/>
+				
+
+				<ns0:text text-anchor="start" x="3.75" y="-730.7" font-family="Arial" font-size="9.00">Vehicle_to_Fixed_Object_Accident</ns0:text>
+				
+
+				<ns0:polygon fill="white" stroke="none" points="150,-724 150,-744 242,-744 242,-724 150,-724"/>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="150,-724 150,-744 242,-744 242,-724 150,-724"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="154,-728 154,-740 238,-740 238,-728 154,-728"/>
+				
+
+				<ns0:polygon fill="#4ade80" stroke="none" points="156,-730 156,-738 157,-738 157,-730 156,-730"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="157,-730 157,-738 236,-738 236,-730 157,-730"/>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="242,-724 242,-744 281,-744 281,-724 242,-724"/>
+				
+
+				<ns0:text text-anchor="start" x="250.75" y="-730.7" font-family="Arial" font-size="9.00">0.99%</ns0:text>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="0,-704 0,-724 150,-724 150,-704 0,-704"/>
+				
+
+				<ns0:text text-anchor="start" x="69.5" y="-710.7" font-family="Arial" font-size="9.00">Collision_Accident</ns0:text>
+				
+
+				<ns0:polygon fill="white" stroke="none" points="150,-704 150,-724 242,-724 242,-704 150,-704"/>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="150,-704 150,-724 242,-724 242,-704 150,-704"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="154,-708 154,-720 238,-720 238,-708 154,-708"/>
+				
+
+				<ns0:polygon fill="#4ade80" stroke="none" points="156,-710 156,-718 204.5,-718 204.5,-710 156,-710"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="204.5,-710 204.5,-718 236,-718 236,-710 204.5,-710"/>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="242,-704 242,-724 281,-724 281,-704 242,-704"/>
+				
+
+				<ns0:text text-anchor="start" x="245.75" y="-710.7" font-family="Arial" font-size="9.00">60.99%</ns0:text>
+				
+
+			</ns0:g>
+			
+
+
+			<ns0:g id="node13" class="node">
+				
+
+				<ns0:title>AdaptionCapacity</ns0:title>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="295,-671 295,-693 485,-693 485,-671 295,-671"/>
+				
+
+				<ns0:text text-anchor="start" x="351.38" y="-678.5" font-family="Arial" font-size="10.00">AdaptionCapacity</ns0:text>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="295,-651 295,-671 355,-671 355,-651 295,-651"/>
+				
+
+				<ns0:text text-anchor="start" x="328.5" y="-657.7" font-family="Arial" font-size="9.00">Good</ns0:text>
+				
+
+				<ns0:polygon fill="white" stroke="none" points="355,-651 355,-671 446,-671 446,-651 355,-651"/>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="355,-651 355,-671 446,-671 446,-651 355,-651"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="359,-655 359,-667 442,-667 442,-655 359,-655"/>
+				
+
+				<ns0:polygon fill="#4ade80" stroke="none" points="361,-657 361,-665 382,-665 382,-657 361,-657"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="382,-657 382,-665 440,-665 440,-657 382,-657"/>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="446,-651 446,-671 485,-671 485,-651 446,-651"/>
+				
+
+				<ns0:text text-anchor="start" x="449.75" y="-657.7" font-family="Arial" font-size="9.00">26.84%</ns0:text>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="295,-631 295,-651 355,-651 355,-631 295,-631"/>
+				
+
+				<ns0:text text-anchor="start" x="334.5" y="-637.7" font-family="Arial" font-size="9.00">Bad</ns0:text>
+				
+
+				<ns0:polygon fill="white" stroke="none" points="355,-631 355,-651 446,-651 446,-631 355,-631"/>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="355,-631 355,-651 446,-651 446,-631 355,-631"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="359,-635 359,-647 442,-647 442,-635 359,-635"/>
+				
+
+				<ns0:polygon fill="#4ade80" stroke="none" points="361,-637 361,-645 419,-645 419,-637 361,-637"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="419,-637 419,-645 440,-645 440,-637 419,-637"/>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="446,-631 446,-651 485,-651 485,-631 446,-631"/>
+				
+
+				<ns0:text text-anchor="start" x="449.75" y="-637.7" font-family="Arial" font-size="9.00">73.16%</ns0:text>
+				
+
+			</ns0:g>
+			
+
+
+			<ns0:g id="edge1" class="edge">
+				
+
+				<ns0:title>emergencyType-&gt;AdaptionCapacity</ns0:title>
+				
+
+				<ns0:path fill="none" stroke="#64748b" stroke-width="0.8" d="M260.25,-704.42C260.25,-687.77 260.25,-672.33 260.25,-672.33 260.25,-672.33 283.81,-672.33 283.81,-672.33"/>
+				
+
+				<ns0:polygon fill="#64748b" stroke="#64748b" stroke-width="0.8" points="283.81,-675.83 293.81,-672.33 283.81,-668.83 283.81,-675.83"/>
+				
+
+			</ns0:g>
+			
+
+
+			<ns0:g id="node3" class="node">
+				
+
+				<ns0:title>roadLoss</ns0:title>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="45.5,-837 45.5,-859 235.5,-859 235.5,-837 45.5,-837"/>
+				
+
+				<ns0:text text-anchor="start" x="120.62" y="-844.5" font-family="Arial" font-size="10.00">roadLoss</ns0:text>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="45.5,-817 45.5,-837 105.5,-837 105.5,-817 45.5,-817"/>
+				
+
+				<ns0:text text-anchor="start" x="62.5" y="-823.7" font-family="Arial" font-size="9.00">Not_Loss</ns0:text>
+				
+
+				<ns0:polygon fill="white" stroke="none" points="105.5,-817 105.5,-837 196.5,-837 196.5,-817 105.5,-817"/>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="105.5,-817 105.5,-837 196.5,-837 196.5,-817 105.5,-817"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="109.5,-821 109.5,-833 192.5,-833 192.5,-821 109.5,-821"/>
+				
+
+				<ns0:polygon fill="#4ade80" stroke="none" points="111.5,-823 111.5,-831 187.5,-831 187.5,-823 111.5,-823"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="187.5,-823 187.5,-831 190.5,-831 190.5,-823 187.5,-823"/>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="196.5,-817 196.5,-837 235.5,-837 235.5,-817 196.5,-817"/>
+				
+
+				<ns0:text text-anchor="start" x="200.25" y="-823.7" font-family="Arial" font-size="9.00">95.35%</ns0:text>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="45.5,-797 45.5,-817 105.5,-817 105.5,-797 45.5,-797"/>
+				
+
+				<ns0:text text-anchor="start" x="82" y="-803.7" font-family="Arial" font-size="9.00">Loss</ns0:text>
+				
+
+				<ns0:polygon fill="white" stroke="none" points="105.5,-797 105.5,-817 196.5,-817 196.5,-797 105.5,-797"/>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="105.5,-797 105.5,-817 196.5,-817 196.5,-797 105.5,-797"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="109.5,-801 109.5,-813 192.5,-813 192.5,-801 109.5,-801"/>
+				
+
+				<ns0:polygon fill="#4ade80" stroke="none" points="111.5,-803 111.5,-811 114.5,-811 114.5,-803 111.5,-803"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="114.5,-803 114.5,-811 190.5,-811 190.5,-803 114.5,-803"/>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="196.5,-797 196.5,-817 235.5,-817 235.5,-797 196.5,-797"/>
+				
+
+				<ns0:text text-anchor="start" x="205.25" y="-803.7" font-family="Arial" font-size="9.00">4.65%</ns0:text>
+				
+
+			</ns0:g>
+			
+
+
+			<ns0:g id="edge13" class="edge">
+				
+
+				<ns0:title>roadLoss-&gt;AbsorptionCapacity</ns0:title>
+				
+
+				<ns0:path fill="none" stroke="#64748b" stroke-width="0.8" d="M235.18,-828C235.18,-828 284.17,-828 284.17,-828"/>
+				
+
+				<ns0:polygon fill="#64748b" stroke="#64748b" stroke-width="0.8" points="284.17,-831.5 294.17,-828 284.17,-824.5 284.17,-831.5"/>
+				
+
+			</ns0:g>
+			
+
+
+			<ns0:g id="node4" class="node">
+				
+
+				<ns0:title>casualties</ns0:title>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="41.5,-671 41.5,-693 239.5,-693 239.5,-671 41.5,-671"/>
+				
+
+				<ns0:text text-anchor="start" x="118.38" y="-678.5" font-family="Arial" font-size="10.00">casualties</ns0:text>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="41.5,-651 41.5,-671 109.5,-671 109.5,-651 41.5,-651"/>
+				
+
+				<ns0:text text-anchor="start" x="45.12" y="-657.7" font-family="Arial" font-size="9.00">No_Casualties</ns0:text>
+				
+
+				<ns0:polygon fill="white" stroke="none" points="109.5,-651 109.5,-671 200.5,-671 200.5,-651 109.5,-651"/>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="109.5,-651 109.5,-671 200.5,-671 200.5,-651 109.5,-651"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="113.5,-655 113.5,-667 196.5,-667 196.5,-655 113.5,-655"/>
+				
+
+				<ns0:polygon fill="#4ade80" stroke="none" points="115.5,-657 115.5,-665 190.5,-665 190.5,-657 115.5,-657"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="190.5,-657 190.5,-665 194.5,-665 194.5,-657 190.5,-657"/>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="200.5,-651 200.5,-671 239.5,-671 239.5,-651 200.5,-651"/>
+				
+
+				<ns0:text text-anchor="start" x="204.25" y="-657.7" font-family="Arial" font-size="9.00">94.06%</ns0:text>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="41.5,-631 41.5,-651 109.5,-651 109.5,-631 41.5,-631"/>
+				
+
+				<ns0:text text-anchor="start" x="62" y="-637.7" font-family="Arial" font-size="9.00">Casualties</ns0:text>
+				
+
+				<ns0:polygon fill="white" stroke="none" points="109.5,-631 109.5,-651 200.5,-651 200.5,-631 109.5,-631"/>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="109.5,-631 109.5,-651 200.5,-651 200.5,-631 109.5,-631"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="113.5,-635 113.5,-647 196.5,-647 196.5,-635 113.5,-635"/>
+				
+
+				<ns0:polygon fill="#4ade80" stroke="none" points="115.5,-637 115.5,-645 119.5,-645 119.5,-637 115.5,-637"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="119.5,-637 119.5,-645 194.5,-645 194.5,-637 119.5,-637"/>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="200.5,-631 200.5,-651 239.5,-651 239.5,-631 200.5,-631"/>
+				
+
+				<ns0:text text-anchor="start" x="209.25" y="-637.7" font-family="Arial" font-size="9.00">5.94%</ns0:text>
+				
+
+			</ns0:g>
+			
+
+
+			<ns0:g id="edge11" class="edge">
+				
+
+				<ns0:title>casualties-&gt;AdaptionCapacity</ns0:title>
+				
+
+				<ns0:path fill="none" stroke="#64748b" stroke-width="0.8" d="M239.47,-651.67C239.47,-651.67 284.01,-651.67 284.01,-651.67"/>
+				
+
+				<ns0:polygon fill="#64748b" stroke="#64748b" stroke-width="0.8" points="284.01,-655.17 294.01,-651.67 284.01,-648.17 284.01,-655.17"/>
+				
+
+			</ns0:g>
+			
+
+
+			<ns0:g id="node5" class="node">
+				
+
+				<ns0:title>AidResource</ns0:title>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="45.5,-485 45.5,-507 235.5,-507 235.5,-485 45.5,-485"/>
+				
+
+				<ns0:text text-anchor="start" x="112.38" y="-492.5" font-family="Arial" font-size="10.00">AidResource</ns0:text>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="45.5,-465 45.5,-485 105.5,-485 105.5,-465 45.5,-465"/>
+				
+
+				<ns0:text text-anchor="start" x="60.25" y="-471.7" font-family="Arial" font-size="9.00">Not_Used</ns0:text>
+				
+
+				<ns0:polygon fill="white" stroke="none" points="105.5,-465 105.5,-485 196.5,-485 196.5,-465 105.5,-465"/>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="105.5,-465 105.5,-485 196.5,-485 196.5,-465 105.5,-465"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="109.5,-469 109.5,-481 192.5,-481 192.5,-469 109.5,-469"/>
+				
+
+				<ns0:polygon fill="#4ade80" stroke="none" points="111.5,-471 111.5,-479 188.5,-479 188.5,-471 111.5,-471"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="188.5,-471 188.5,-479 190.5,-479 190.5,-471 188.5,-471"/>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="196.5,-465 196.5,-485 235.5,-485 235.5,-465 196.5,-465"/>
+				
+
+				<ns0:text text-anchor="start" x="200.25" y="-471.7" font-family="Arial" font-size="9.00">97.43%</ns0:text>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="45.5,-445 45.5,-465 105.5,-465 105.5,-445 45.5,-445"/>
+				
+
+				<ns0:text text-anchor="start" x="79.75" y="-451.7" font-family="Arial" font-size="9.00">Used</ns0:text>
+				
+
+				<ns0:polygon fill="white" stroke="none" points="105.5,-445 105.5,-465 196.5,-465 196.5,-445 105.5,-445"/>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="105.5,-445 105.5,-465 196.5,-465 196.5,-445 105.5,-445"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="109.5,-449 109.5,-461 192.5,-461 192.5,-449 109.5,-449"/>
+				
+
+				<ns0:polygon fill="#4ade80" stroke="none" points="111.5,-451 111.5,-459 113.5,-459 113.5,-451 111.5,-451"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="113.5,-451 113.5,-459 190.5,-459 190.5,-451 113.5,-451"/>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="196.5,-445 196.5,-465 235.5,-465 235.5,-445 196.5,-445"/>
+				
+
+				<ns0:text text-anchor="start" x="205.25" y="-451.7" font-family="Arial" font-size="9.00">2.57%</ns0:text>
+				
+
+			</ns0:g>
+			
+
+
+			<ns0:g id="node14" class="node">
+				
+
+				<ns0:title>RecoveryCapacity</ns0:title>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="295,-339 295,-361 485,-361 485,-339 295,-339"/>
+				
+
+				<ns0:text text-anchor="start" x="349.5" y="-346.5" font-family="Arial" font-size="10.00">RecoveryCapacity</ns0:text>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="295,-319 295,-339 355,-339 355,-319 295,-319"/>
+				
+
+				<ns0:text text-anchor="start" x="328.5" y="-325.7" font-family="Arial" font-size="9.00">Good</ns0:text>
+				
+
+				<ns0:polygon fill="white" stroke="none" points="355,-319 355,-339 446,-339 446,-319 355,-319"/>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="355,-319 355,-339 446,-339 446,-319 355,-319"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="359,-323 359,-335 442,-335 442,-323 359,-323"/>
+				
+
+				<ns0:polygon fill="#4ade80" stroke="none" points="361,-325 361,-333 385,-333 385,-325 361,-325"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="385,-325 385,-333 440,-333 440,-325 385,-325"/>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="446,-319 446,-339 485,-339 485,-319 446,-319"/>
+				
+
+				<ns0:text text-anchor="start" x="449.75" y="-325.7" font-family="Arial" font-size="9.00">30.13%</ns0:text>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="295,-299 295,-319 355,-319 355,-299 295,-299"/>
+				
+
+				<ns0:text text-anchor="start" x="334.5" y="-305.7" font-family="Arial" font-size="9.00">Bad</ns0:text>
+				
+
+				<ns0:polygon fill="white" stroke="none" points="355,-299 355,-319 446,-319 446,-299 355,-299"/>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="355,-299 355,-319 446,-319 446,-299 355,-299"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="359,-303 359,-315 442,-315 442,-303 359,-303"/>
+				
+
+				<ns0:polygon fill="#4ade80" stroke="none" points="361,-305 361,-313 416,-313 416,-305 361,-305"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="416,-305 416,-313 440,-313 440,-305 416,-305"/>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="446,-299 446,-319 485,-319 485,-299 446,-299"/>
+				
+
+				<ns0:text text-anchor="start" x="449.75" y="-305.7" font-family="Arial" font-size="9.00">69.87%</ns0:text>
+				
+
+			</ns0:g>
+			
+
+
+			<ns0:g id="edge4" class="edge">
+				
+
+				<ns0:title>AidResource-&gt;RecoveryCapacity</ns0:title>
+				
+
+				<ns0:path fill="none" stroke="#64748b" stroke-width="0.8" d="M235.29,-476C322.21,-476 437.5,-476 437.5,-476 437.5,-476 437.5,-372.17 437.5,-372.17"/>
+				
+
+				<ns0:polygon fill="#64748b" stroke="#64748b" stroke-width="0.8" points="441,-372.17 437.5,-362.17 434,-372.17 441,-372.17"/>
+				
+
+			</ns0:g>
+			
+
+
+			<ns0:g id="node6" class="node">
+				
+
+				<ns0:title>TowResource</ns0:title>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="45.5,-412 45.5,-434 235.5,-434 235.5,-412 45.5,-412"/>
+				
+
+				<ns0:text text-anchor="start" x="110.5" y="-419.5" font-family="Arial" font-size="10.00">TowResource</ns0:text>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="45.5,-392 45.5,-412 105.5,-412 105.5,-392 45.5,-392"/>
+				
+
+				<ns0:text text-anchor="start" x="60.25" y="-398.7" font-family="Arial" font-size="9.00">Not_Used</ns0:text>
+				
+
+				<ns0:polygon fill="white" stroke="none" points="105.5,-392 105.5,-412 196.5,-412 196.5,-392 105.5,-392"/>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="105.5,-392 105.5,-412 196.5,-412 196.5,-392 105.5,-392"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="109.5,-396 109.5,-408 192.5,-408 192.5,-396 109.5,-396"/>
+				
+
+				<ns0:polygon fill="#4ade80" stroke="none" points="111.5,-398 111.5,-406 143.5,-406 143.5,-398 111.5,-398"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="143.5,-398 143.5,-406 190.5,-406 190.5,-398 143.5,-398"/>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="196.5,-392 196.5,-412 235.5,-412 235.5,-392 196.5,-392"/>
+				
+
+				<ns0:text text-anchor="start" x="200.25" y="-398.7" font-family="Arial" font-size="9.00">40.10%</ns0:text>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="45.5,-372 45.5,-392 105.5,-392 105.5,-372 45.5,-372"/>
+				
+
+				<ns0:text text-anchor="start" x="79.75" y="-378.7" font-family="Arial" font-size="9.00">Used</ns0:text>
+				
+
+				<ns0:polygon fill="white" stroke="none" points="105.5,-372 105.5,-392 196.5,-392 196.5,-372 105.5,-372"/>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="105.5,-372 105.5,-392 196.5,-392 196.5,-372 105.5,-372"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="109.5,-376 109.5,-388 192.5,-388 192.5,-376 109.5,-376"/>
+				
+
+				<ns0:polygon fill="#4ade80" stroke="none" points="111.5,-378 111.5,-386 158.5,-386 158.5,-378 111.5,-378"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="158.5,-378 158.5,-386 190.5,-386 190.5,-378 158.5,-378"/>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="196.5,-372 196.5,-392 235.5,-392 235.5,-372 196.5,-372"/>
+				
+
+				<ns0:text text-anchor="start" x="200.25" y="-378.7" font-family="Arial" font-size="9.00">59.90%</ns0:text>
+				
+
+			</ns0:g>
+			
+
+
+			<ns0:g id="edge7" class="edge">
+				
+
+				<ns0:title>TowResource-&gt;RecoveryCapacity</ns0:title>
+				
+
+				<ns0:path fill="none" stroke="#64748b" stroke-width="0.8" d="M235.18,-403C305.76,-403 390,-403 390,-403 390,-403 390,-372.17 390,-372.17"/>
+				
+
+				<ns0:polygon fill="#64748b" stroke="#64748b" stroke-width="0.8" points="393.5,-372.17 390,-362.17 386.5,-372.17 393.5,-372.17"/>
+				
+
+			</ns0:g>
+			
+
+
+			<ns0:g id="node7" class="node">
+				
+
+				<ns0:title>FirefightingResource</ns0:title>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="45.5,-339 45.5,-361 235.5,-361 235.5,-339 45.5,-339"/>
+				
+
+				<ns0:text text-anchor="start" x="95.5" y="-346.5" font-family="Arial" font-size="10.00">FirefightingResource</ns0:text>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="45.5,-319 45.5,-339 105.5,-339 105.5,-319 45.5,-319"/>
+				
+
+				<ns0:text text-anchor="start" x="60.25" y="-325.7" font-family="Arial" font-size="9.00">Not_Used</ns0:text>
+				
+
+				<ns0:polygon fill="white" stroke="none" points="105.5,-319 105.5,-339 196.5,-339 196.5,-319 105.5,-319"/>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="105.5,-319 105.5,-339 196.5,-339 196.5,-319 105.5,-319"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="109.5,-323 109.5,-335 192.5,-335 192.5,-323 109.5,-323"/>
+				
+
+				<ns0:polygon fill="#4ade80" stroke="none" points="111.5,-325 111.5,-333 189.5,-333 189.5,-325 111.5,-325"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="189.5,-325 189.5,-333 190.5,-333 190.5,-325 189.5,-325"/>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="196.5,-319 196.5,-339 235.5,-339 235.5,-319 196.5,-319"/>
+				
+
+				<ns0:text text-anchor="start" x="200.25" y="-325.7" font-family="Arial" font-size="9.00">98.22%</ns0:text>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="45.5,-299 45.5,-319 105.5,-319 105.5,-299 45.5,-299"/>
+				
+
+				<ns0:text text-anchor="start" x="79.75" y="-305.7" font-family="Arial" font-size="9.00">Used</ns0:text>
+				
+
+				<ns0:polygon fill="white" stroke="none" points="105.5,-299 105.5,-319 196.5,-319 196.5,-299 105.5,-299"/>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="105.5,-299 105.5,-319 196.5,-319 196.5,-299 105.5,-299"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="109.5,-303 109.5,-315 192.5,-315 192.5,-303 109.5,-303"/>
+				
+
+				<ns0:polygon fill="#4ade80" stroke="none" points="111.5,-305 111.5,-313 112.5,-313 112.5,-305 111.5,-305"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="112.5,-305 112.5,-313 190.5,-313 190.5,-305 112.5,-305"/>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="196.5,-299 196.5,-319 235.5,-319 235.5,-299 196.5,-299"/>
+				
+
+				<ns0:text text-anchor="start" x="205.25" y="-305.7" font-family="Arial" font-size="9.00">1.78%</ns0:text>
+				
+
+			</ns0:g>
+			
+
+
+			<ns0:g id="edge9" class="edge">
+				
+
+				<ns0:title>FirefightingResource-&gt;RecoveryCapacity</ns0:title>
+				
+
+				<ns0:path fill="none" stroke="#64748b" stroke-width="0.8" d="M235.18,-330C235.18,-330 284.17,-330 284.17,-330"/>
+				
+
+				<ns0:polygon fill="#64748b" stroke="#64748b" stroke-width="0.8" points="284.17,-333.5 294.17,-330 284.17,-326.5 284.17,-333.5"/>
+				
+
+			</ns0:g>
+			
+
+
+			<ns0:g id="node8" class="node">
+				
+
+				<ns0:title>RescueResource</ns0:title>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="45.5,-266 45.5,-288 235.5,-288 235.5,-266 45.5,-266"/>
+				
+
+				<ns0:text text-anchor="start" x="102.62" y="-273.5" font-family="Arial" font-size="10.00">RescueResource</ns0:text>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="45.5,-246 45.5,-266 105.5,-266 105.5,-246 45.5,-246"/>
+				
+
+				<ns0:text text-anchor="start" x="60.25" y="-252.7" font-family="Arial" font-size="9.00">Not_Used</ns0:text>
+				
+
+				<ns0:polygon fill="white" stroke="none" points="105.5,-246 105.5,-266 196.5,-266 196.5,-246 105.5,-246"/>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="105.5,-246 105.5,-266 196.5,-266 196.5,-246 105.5,-246"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="109.5,-250 109.5,-262 192.5,-262 192.5,-250 109.5,-250"/>
+				
+
+				<ns0:polygon fill="#4ade80" stroke="none" points="111.5,-252 111.5,-260 189.5,-260 189.5,-252 111.5,-252"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="189.5,-252 189.5,-260 190.5,-260 190.5,-252 189.5,-252"/>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="196.5,-246 196.5,-266 235.5,-266 235.5,-246 196.5,-246"/>
+				
+
+				<ns0:text text-anchor="start" x="200.25" y="-252.7" font-family="Arial" font-size="9.00">98.42%</ns0:text>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="45.5,-226 45.5,-246 105.5,-246 105.5,-226 45.5,-226"/>
+				
+
+				<ns0:text text-anchor="start" x="79.75" y="-232.7" font-family="Arial" font-size="9.00">Used</ns0:text>
+				
+
+				<ns0:polygon fill="white" stroke="none" points="105.5,-226 105.5,-246 196.5,-246 196.5,-226 105.5,-226"/>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="105.5,-226 105.5,-246 196.5,-246 196.5,-226 105.5,-226"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="109.5,-230 109.5,-242 192.5,-242 192.5,-230 109.5,-230"/>
+				
+
+				<ns0:polygon fill="#4ade80" stroke="none" points="111.5,-232 111.5,-240 112.5,-240 112.5,-232 111.5,-232"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="112.5,-232 112.5,-240 190.5,-240 190.5,-232 112.5,-232"/>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="196.5,-226 196.5,-246 235.5,-246 235.5,-226 196.5,-226"/>
+				
+
+				<ns0:text text-anchor="start" x="205.25" y="-232.7" font-family="Arial" font-size="9.00">1.58%</ns0:text>
+				
+
+			</ns0:g>
+			
+
+
+			<ns0:g id="edge5" class="edge">
+				
+
+				<ns0:title>RescueResource-&gt;RecoveryCapacity</ns0:title>
+				
+
+				<ns0:path fill="none" stroke="#64748b" stroke-width="0.8" d="M235.29,-257C287.77,-257 342.5,-257 342.5,-257 342.5,-257 342.5,-287.83 342.5,-287.83"/>
+				
+
+				<ns0:polygon fill="#64748b" stroke="#64748b" stroke-width="0.8" points="339,-287.83 342.5,-297.83 346,-287.83 339,-287.83"/>
+				
+
+			</ns0:g>
+			
+
+
+			<ns0:g id="node9" class="node">
+				
+
+				<ns0:title>emergencyPeriod</ns0:title>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="41.5,-598 41.5,-620 239.5,-620 239.5,-598 41.5,-598"/>
+				
+
+				<ns0:text text-anchor="start" x="102.62" y="-605.5" font-family="Arial" font-size="10.00">emergencyPeriod</ns0:text>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="41.5,-578 41.5,-598 109.5,-598 109.5,-578 41.5,-578"/>
+				
+
+				<ns0:text text-anchor="start" x="45.5" y="-584.7" font-family="Arial" font-size="9.00">Early_Morning</ns0:text>
+				
+
+				<ns0:polygon fill="white" stroke="none" points="109.5,-578 109.5,-598 200.5,-598 200.5,-578 109.5,-578"/>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="109.5,-578 109.5,-598 200.5,-598 200.5,-578 109.5,-578"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="113.5,-582 113.5,-594 196.5,-594 196.5,-582 113.5,-582"/>
+				
+
+				<ns0:polygon fill="#4ade80" stroke="none" points="115.5,-584 115.5,-592 118.5,-592 118.5,-584 115.5,-584"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="118.5,-584 118.5,-592 194.5,-592 194.5,-584 118.5,-584"/>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="200.5,-578 200.5,-598 239.5,-598 239.5,-578 200.5,-578"/>
+				
+
+				<ns0:text text-anchor="start" x="209.25" y="-584.7" font-family="Arial" font-size="9.00">3.86%</ns0:text>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="41.5,-558 41.5,-578 109.5,-578 109.5,-558 41.5,-558"/>
+				
+
+				<ns0:text text-anchor="start" x="71.75" y="-564.7" font-family="Arial" font-size="9.00">Morning</ns0:text>
+				
+
+				<ns0:polygon fill="white" stroke="none" points="109.5,-558 109.5,-578 200.5,-578 200.5,-558 109.5,-558"/>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="109.5,-558 109.5,-578 200.5,-578 200.5,-558 109.5,-558"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="113.5,-562 113.5,-574 196.5,-574 196.5,-562 113.5,-562"/>
+				
+
+				<ns0:polygon fill="#4ade80" stroke="none" points="115.5,-564 115.5,-572 145.5,-572 145.5,-564 115.5,-564"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="145.5,-564 145.5,-572 194.5,-572 194.5,-564 145.5,-564"/>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="200.5,-558 200.5,-578 239.5,-578 239.5,-558 200.5,-558"/>
+				
+
+				<ns0:text text-anchor="start" x="204.25" y="-564.7" font-family="Arial" font-size="9.00">38.32%</ns0:text>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="41.5,-538 41.5,-558 109.5,-558 109.5,-538 41.5,-538"/>
+				
+
+				<ns0:text text-anchor="start" x="65.75" y="-544.7" font-family="Arial" font-size="9.00">Afternoon</ns0:text>
+				
+
+				<ns0:polygon fill="white" stroke="none" points="109.5,-538 109.5,-558 200.5,-558 200.5,-538 109.5,-538"/>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="109.5,-538 109.5,-558 200.5,-558 200.5,-538 109.5,-538"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="113.5,-542 113.5,-554 196.5,-554 196.5,-542 113.5,-542"/>
+				
+
+				<ns0:polygon fill="#4ade80" stroke="none" points="115.5,-544 115.5,-552 150.5,-552 150.5,-544 115.5,-544"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="150.5,-544 150.5,-552 194.5,-552 194.5,-544 150.5,-544"/>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="200.5,-538 200.5,-558 239.5,-558 239.5,-538 200.5,-538"/>
+				
+
+				<ns0:text text-anchor="start" x="204.25" y="-544.7" font-family="Arial" font-size="9.00">44.16%</ns0:text>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="41.5,-518 41.5,-538 109.5,-538 109.5,-518 41.5,-518"/>
+				
+
+				<ns0:text text-anchor="start" x="71.75" y="-524.7" font-family="Arial" font-size="9.00">Evening</ns0:text>
+				
+
+				<ns0:polygon fill="white" stroke="none" points="109.5,-518 109.5,-538 200.5,-538 200.5,-518 109.5,-518"/>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="109.5,-518 109.5,-538 200.5,-538 200.5,-518 109.5,-518"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="113.5,-522 113.5,-534 196.5,-534 196.5,-522 113.5,-522"/>
+				
+
+				<ns0:polygon fill="#4ade80" stroke="none" points="115.5,-524 115.5,-532 125.5,-532 125.5,-524 115.5,-524"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="125.5,-524 125.5,-532 194.5,-532 194.5,-524 125.5,-524"/>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="200.5,-518 200.5,-538 239.5,-538 239.5,-518 200.5,-518"/>
+				
+
+				<ns0:text text-anchor="start" x="204.25" y="-524.7" font-family="Arial" font-size="9.00">13.66%</ns0:text>
+				
+
+			</ns0:g>
+			
+
+
+			<ns0:g id="edge10" class="edge">
+				
+
+				<ns0:title>emergencyPeriod-&gt;AdaptionCapacity</ns0:title>
+				
+
+				<ns0:path fill="none" stroke="#64748b" stroke-width="0.8" d="M239.43,-569C290.61,-569 342.5,-569 342.5,-569 342.5,-569 342.5,-619.82 342.5,-619.82"/>
+				
+
+				<ns0:polygon fill="#64748b" stroke="#64748b" stroke-width="0.8" points="339,-619.82 342.5,-629.82 346,-619.82 339,-619.82"/>
+				
+
+			</ns0:g>
+			
+
+
+			<ns0:g id="node10" class="node">
+				
+
+				<ns0:title>responseDuration</ns0:title>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="45,-193 45,-215 236,-215 236,-193 45,-193"/>
+				
+
+				<ns0:text text-anchor="start" x="102.25" y="-200.5" font-family="Arial" font-size="10.00">responseDuration</ns0:text>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="45,-173 45,-193 105,-193 105,-173 45,-173"/>
+				
+
+				<ns0:text text-anchor="start" x="67.25" y="-179.7" font-family="Arial" font-size="9.00">0-15min</ns0:text>
+				
+
+				<ns0:polygon fill="white" stroke="none" points="105,-173 105,-193 197,-193 197,-173 105,-173"/>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="105,-173 105,-193 197,-193 197,-173 105,-173"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="109,-177 109,-189 193,-189 193,-177 109,-177"/>
+				
+
+				<ns0:polygon fill="#4ade80" stroke="none" points="111,-179 111,-187 145.5,-187 145.5,-179 111,-179"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="145.5,-179 145.5,-187 191,-187 191,-179 145.5,-179"/>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="197,-173 197,-193 236,-193 236,-173 197,-173"/>
+				
+
+				<ns0:text text-anchor="start" x="200.75" y="-179.7" font-family="Arial" font-size="9.00">43.56%</ns0:text>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="45,-153 45,-173 105,-173 105,-153 45,-153"/>
+				
+
+				<ns0:text text-anchor="start" x="62" y="-159.7" font-family="Arial" font-size="9.00">15-30min</ns0:text>
+				
+
+				<ns0:polygon fill="white" stroke="none" points="105,-153 105,-173 197,-173 197,-153 105,-153"/>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="105,-153 105,-173 197,-173 197,-153 105,-153"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="109,-157 109,-169 193,-169 193,-157 109,-157"/>
+				
+
+				<ns0:polygon fill="#4ade80" stroke="none" points="111,-159 111,-167 147.5,-167 147.5,-159 111,-159"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="147.5,-159 147.5,-167 191,-167 191,-159 147.5,-159"/>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="197,-153 197,-173 236,-173 236,-153 197,-153"/>
+				
+
+				<ns0:text text-anchor="start" x="200.75" y="-159.7" font-family="Arial" font-size="9.00">45.71%</ns0:text>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="45,-133 45,-153 105,-153 105,-133 45,-133"/>
+				
+
+				<ns0:text text-anchor="start" x="62" y="-139.7" font-family="Arial" font-size="9.00">30-60min</ns0:text>
+				
+
+				<ns0:polygon fill="white" stroke="none" points="105,-133 105,-153 197,-153 197,-133 105,-133"/>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="105,-133 105,-153 197,-153 197,-133 105,-133"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="109,-137 109,-149 193,-149 193,-137 109,-137"/>
+				
+
+				<ns0:polygon fill="#4ade80" stroke="none" points="111,-139 111,-147 119.5,-147 119.5,-139 111,-139"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="119.5,-139 119.5,-147 191,-147 191,-139 119.5,-139"/>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="197,-133 197,-153 236,-153 236,-133 197,-133"/>
+				
+
+				<ns0:text text-anchor="start" x="200.75" y="-139.7" font-family="Arial" font-size="9.00">10.73%</ns0:text>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="45,-113 45,-133 105,-133 105,-113 45,-113"/>
+				
+
+				<ns0:text text-anchor="start" x="70.25" y="-119.7" font-family="Arial" font-size="9.00">60min+</ns0:text>
+				
+
+				<ns0:polygon fill="white" stroke="none" points="105,-113 105,-133 197,-133 197,-113 105,-113"/>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="105,-113 105,-133 197,-133 197,-113 105,-113"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="109,-117 109,-129 193,-129 193,-117 109,-117"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="111,-119 111,-127 191,-127 191,-119 111,-119"/>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="197,-113 197,-133 236,-133 236,-113 197,-113"/>
+				
+
+				<ns0:text text-anchor="start" x="205.75" y="-119.7" font-family="Arial" font-size="9.00">0.00%</ns0:text>
+				
+
+			</ns0:g>
+			
+
+
+			<ns0:g id="edge3" class="edge">
+				
+
+				<ns0:title>responseDuration-&gt;RecoveryCapacity</ns0:title>
+				
+
+				<ns0:path fill="none" stroke="#64748b" stroke-width="0.8" d="M235.89,-164C306.33,-164 390,-164 390,-164 390,-164 390,-287.95 390,-287.95"/>
+				
+
+				<ns0:polygon fill="#64748b" stroke="#64748b" stroke-width="0.8" points="386.5,-287.95 390,-297.95 393.5,-287.95 386.5,-287.95"/>
+				
+
+			</ns0:g>
+			
+
+
+			<ns0:g id="node11" class="node">
+				
+
+				<ns0:title>disposalDuration</ns0:title>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="45,-80 45,-102 236,-102 236,-80 45,-80"/>
+				
+
+				<ns0:text text-anchor="start" x="104.12" y="-87.5" font-family="Arial" font-size="10.00">disposalDuration</ns0:text>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="45,-60 45,-80 105,-80 105,-60 45,-60"/>
+				
+
+				<ns0:text text-anchor="start" x="67.25" y="-66.7" font-family="Arial" font-size="9.00">0-15min</ns0:text>
+				
+
+				<ns0:polygon fill="white" stroke="none" points="105,-60 105,-80 197,-80 197,-60 105,-60"/>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="105,-60 105,-80 197,-80 197,-60 105,-60"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="109,-64 109,-76 193,-76 193,-64 109,-64"/>
+				
+
+				<ns0:polygon fill="#4ade80" stroke="none" points="111,-66 111,-74 134.5,-74 134.5,-66 111,-66"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="134.5,-66 134.5,-74 191,-74 191,-66 134.5,-66"/>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="197,-60 197,-80 236,-80 236,-60 197,-60"/>
+				
+
+				<ns0:text text-anchor="start" x="200.75" y="-66.7" font-family="Arial" font-size="9.00">29.32%</ns0:text>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="45,-40 45,-60 105,-60 105,-40 45,-40"/>
+				
+
+				<ns0:text text-anchor="start" x="62" y="-46.7" font-family="Arial" font-size="9.00">15-30min</ns0:text>
+				
+
+				<ns0:polygon fill="white" stroke="none" points="105,-40 105,-60 197,-60 197,-40 105,-40"/>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="105,-40 105,-60 197,-60 197,-40 105,-40"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="109,-44 109,-56 193,-56 193,-44 109,-44"/>
+				
+
+				<ns0:polygon fill="#4ade80" stroke="none" points="111,-46 111,-54 136.5,-54 136.5,-46 111,-46"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="136.5,-46 136.5,-54 191,-54 191,-46 136.5,-46"/>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="197,-40 197,-60 236,-60 236,-40 197,-40"/>
+				
+
+				<ns0:text text-anchor="start" x="200.75" y="-46.7" font-family="Arial" font-size="9.00">32.12%</ns0:text>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="45,-20 45,-40 105,-40 105,-20 45,-20"/>
+				
+
+				<ns0:text text-anchor="start" x="62" y="-26.7" font-family="Arial" font-size="9.00">30-60min</ns0:text>
+				
+
+				<ns0:polygon fill="white" stroke="none" points="105,-20 105,-40 197,-40 197,-20 105,-20"/>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="105,-20 105,-40 197,-40 197,-20 105,-20"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="109,-24 109,-36 193,-36 193,-24 109,-24"/>
+				
+
+				<ns0:polygon fill="#4ade80" stroke="none" points="111,-26 111,-34 141.5,-34 141.5,-26 111,-26"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="141.5,-26 141.5,-34 191,-34 191,-26 141.5,-26"/>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="197,-20 197,-40 236,-40 236,-20 197,-20"/>
+				
+
+				<ns0:text text-anchor="start" x="200.75" y="-26.7" font-family="Arial" font-size="9.00">38.55%</ns0:text>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="45,0 45,-20 105,-20 105,0 45,0"/>
+				
+
+				<ns0:text text-anchor="start" x="70.25" y="-6.7" font-family="Arial" font-size="9.00">60min+</ns0:text>
+				
+
+				<ns0:polygon fill="white" stroke="none" points="105,0 105,-20 197,-20 197,0 105,0"/>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="105,0 105,-20 197,-20 197,0 105,0"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="109,-4 109,-16 193,-16 193,-4 109,-4"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="111,-6 111,-14 191,-14 191,-6 111,-6"/>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="197,0 197,-20 236,-20 236,0 197,0"/>
+				
+
+				<ns0:text text-anchor="start" x="205.75" y="-6.7" font-family="Arial" font-size="9.00">0.00%</ns0:text>
+				
+
+			</ns0:g>
+			
+
+
+			<ns0:g id="edge6" class="edge">
+				
+
+				<ns0:title>disposalDuration-&gt;RecoveryCapacity</ns0:title>
+				
+
+				<ns0:path fill="none" stroke="#64748b" stroke-width="0.8" d="M235.7,-51C322.57,-51 437.5,-51 437.5,-51 437.5,-51 437.5,-287.87 437.5,-287.87"/>
+				
+
+				<ns0:polygon fill="#64748b" stroke="#64748b" stroke-width="0.8" points="434,-287.87 437.5,-297.87 441,-287.87 434,-287.87"/>
+				
+
+			</ns0:g>
+			
+
+
+			<ns0:g id="node15" class="node">
+				
+
+				<ns0:title>ScenarioResilience</ns0:title>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="499,-671 499,-693 689,-693 689,-671 499,-671"/>
+				
+
+				<ns0:text text-anchor="start" x="552" y="-678.5" font-family="Arial" font-size="10.00">ScenarioResilience</ns0:text>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="499,-651 499,-671 559,-671 559,-651 499,-651"/>
+				
+
+				<ns0:text text-anchor="start" x="532.5" y="-657.7" font-family="Arial" font-size="9.00">Good</ns0:text>
+				
+
+				<ns0:polygon fill="white" stroke="none" points="559,-651 559,-671 650,-671 650,-651 559,-651"/>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="559,-651 559,-671 650,-671 650,-651 559,-651"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="563,-655 563,-667 646,-667 646,-655 563,-655"/>
+				
+
+				<ns0:polygon fill="#4ade80" stroke="none" points="565,-657 565,-665 593,-665 593,-657 565,-657"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="593,-657 593,-665 644,-665 644,-657 593,-657"/>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="650,-651 650,-671 689,-671 689,-651 650,-651"/>
+				
+
+				<ns0:text text-anchor="start" x="653.75" y="-657.7" font-family="Arial" font-size="9.00">35.69%</ns0:text>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="499,-631 499,-651 559,-651 559,-631 499,-631"/>
+				
+
+				<ns0:text text-anchor="start" x="538.5" y="-637.7" font-family="Arial" font-size="9.00">Bad</ns0:text>
+				
+
+				<ns0:polygon fill="white" stroke="none" points="559,-631 559,-651 650,-651 650,-631 559,-631"/>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="559,-631 559,-651 650,-651 650,-631 559,-631"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="563,-635 563,-647 646,-647 646,-635 563,-635"/>
+				
+
+				<ns0:polygon fill="#4ade80" stroke="none" points="565,-637 565,-645 616,-645 616,-637 565,-637"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="616,-637 616,-645 644,-645 644,-637 616,-637"/>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="650,-631 650,-651 689,-651 689,-631 650,-631"/>
+				
+
+				<ns0:text text-anchor="start" x="653.75" y="-637.7" font-family="Arial" font-size="9.00">64.31%</ns0:text>
+				
+
+			</ns0:g>
+			
+
+
+			<ns0:g id="edge12" class="edge">
+				
+
+				<ns0:title>AbsorptionCapacity-&gt;ScenarioResilience</ns0:title>
+				
+
+				<ns0:path fill="none" stroke="#64748b" stroke-width="0.8" d="M484.83,-828C538.11,-828 594,-828 594,-828 594,-828 594,-704.05 594,-704.05"/>
+				
+
+				<ns0:polygon fill="#64748b" stroke="#64748b" stroke-width="0.8" points="597.5,-704.05 594,-694.05 590.5,-704.05 597.5,-704.05"/>
+				
+
+			</ns0:g>
+			
+
+
+			<ns0:g id="edge14" class="edge">
+				
+
+				<ns0:title>AdaptionCapacity-&gt;ScenarioResilience</ns0:title>
+				
+
+				<ns0:path fill="none" stroke="#64748b" stroke-width="0.8" d="M484.83,-662C484.83,-662 488,-662 488,-662"/>
+				
+
+				<ns0:polygon fill="#64748b" stroke="#64748b" stroke-width="0.8" points="488,-665.5 498,-662 488,-658.5 488,-665.5"/>
+				
+
+			</ns0:g>
+			
+
+
+			<ns0:g id="edge2" class="edge">
+				
+
+				<ns0:title>RecoveryCapacity-&gt;ScenarioResilience</ns0:title>
+				
+
+				<ns0:path fill="none" stroke="#64748b" stroke-width="0.8" d="M484.83,-330C538.11,-330 594,-330 594,-330 594,-330 594,-619.85 594,-619.85"/>
+				
+
+				<ns0:polygon fill="#64748b" stroke="#64748b" stroke-width="0.8" points="590.5,-619.85 594,-629.85 597.5,-619.85 590.5,-619.85"/>
+				
+
+			</ns0:g>
+			
+
+		</ns0:g>
+	</g>
+	<text x="1502.5" y="25.0" text-anchor="middle" class="title">Inference with Evidence</text>
+	<g transform="translate(1152.0,30)">
+		<ns0:g xmlns:ns0="http://www.w3.org/2000/svg" id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(3.6 935.6)">
+			
+
+			<ns0:polygon fill="white" stroke="none" points="-3.6,3.6 -3.6,-935.6 697.6,-935.6 697.6,3.6 -3.6,3.6"/>
+			
+
+
+			<ns0:g id="node1" class="node">
+				
+
+				<ns0:title>roadPassibility</ns0:title>
+				
+
+				<ns0:polygon fill="none" stroke="#3b82f6" points="45,-910 45,-932 241,-932 241,-910 45,-910"/>
+				
+
+				<ns0:text text-anchor="start" x="111.12" y="-917.5" font-family="Arial" font-size="10.00">roadPassibility</ns0:text>
+				
+
+				<ns0:polygon fill="none" stroke="#3b82f6" points="45,-890 45,-910 105,-910 105,-890 45,-890"/>
+				
+
+				<ns0:text text-anchor="start" x="53.75" y="-896.7" font-family="Arial" font-size="9.00">Impassable</ns0:text>
+				
+
+				<ns0:polygon fill="white" stroke="none" points="105,-890 105,-910 197,-910 197,-890 105,-890"/>
+				
+
+				<ns0:polygon fill="none" stroke="#3b82f6" points="105,-890 105,-910 197,-910 197,-890 105,-890"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="109,-894 109,-906 193,-906 193,-894 109,-894"/>
+				
+
+				<ns0:polygon fill="#4ade80" stroke="none" points="111,-896 111,-904 191,-904 191,-896 111,-896"/>
+				
+
+				<ns0:polygon fill="none" stroke="#3b82f6" points="197,-890 197,-910 241,-910 241,-890 197,-890"/>
+				
+
+				<ns0:text text-anchor="start" x="200.62" y="-896.7" font-family="Arial" font-size="9.00">100.00%</ns0:text>
+				
+
+				<ns0:polygon fill="none" stroke="#3b82f6" points="45,-870 45,-890 105,-890 105,-870 45,-870"/>
+				
+
+				<ns0:text text-anchor="start" x="62.75" y="-876.7" font-family="Arial" font-size="9.00">Passable</ns0:text>
+				
+
+				<ns0:polygon fill="white" stroke="none" points="105,-870 105,-890 197,-890 197,-870 105,-870"/>
+				
+
+				<ns0:polygon fill="none" stroke="#3b82f6" points="105,-870 105,-890 197,-890 197,-870 105,-870"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="109,-874 109,-886 193,-886 193,-874 109,-874"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="111,-876 111,-884 191,-884 191,-876 111,-876"/>
+				
+
+				<ns0:polygon fill="none" stroke="#3b82f6" points="197,-870 197,-890 241,-890 241,-870 197,-870"/>
+				
+
+				<ns0:text text-anchor="start" x="210.75" y="-876.7" font-family="Arial" font-size="9.00">0.00%</ns0:text>
+				
+
+			</ns0:g>
+			
+
+
+			<ns0:g id="node12" class="node">
+				
+
+				<ns0:title>AbsorptionCapacity</ns0:title>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="300,-837 300,-859 490,-859 490,-837 300,-837"/>
+				
+
+				<ns0:text text-anchor="start" x="352.25" y="-844.5" font-family="Arial" font-size="10.00">AbsorptionCapacity</ns0:text>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="300,-817 300,-837 360,-837 360,-817 300,-817"/>
+				
+
+				<ns0:text text-anchor="start" x="333.5" y="-823.7" font-family="Arial" font-size="9.00">Good</ns0:text>
+				
+
+				<ns0:polygon fill="white" stroke="none" points="360,-817 360,-837 451,-837 451,-817 360,-817"/>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="360,-817 360,-837 451,-837 451,-817 360,-817"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="364,-821 364,-833 447,-833 447,-821 364,-821"/>
+				
+
+				<ns0:polygon fill="#4ade80" stroke="none" points="366,-823 366,-831 386,-831 386,-823 366,-823"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="386,-823 386,-831 445,-831 445,-823 386,-823"/>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="451,-817 451,-837 490,-837 490,-817 451,-817"/>
+				
+
+				<ns0:text text-anchor="start" x="454.75" y="-823.7" font-family="Arial" font-size="9.00">25.61%</ns0:text>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="300,-797 300,-817 360,-817 360,-797 300,-797"/>
+				
+
+				<ns0:text text-anchor="start" x="339.5" y="-803.7" font-family="Arial" font-size="9.00">Bad</ns0:text>
+				
+
+				<ns0:polygon fill="white" stroke="none" points="360,-797 360,-817 451,-817 451,-797 360,-797"/>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="360,-797 360,-817 451,-817 451,-797 360,-797"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="364,-801 364,-813 447,-813 447,-801 364,-801"/>
+				
+
+				<ns0:polygon fill="#4ade80" stroke="none" points="366,-803 366,-811 425,-811 425,-803 366,-803"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="425,-803 425,-811 445,-811 445,-803 425,-803"/>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="451,-797 451,-817 490,-817 490,-797 451,-797"/>
+				
+
+				<ns0:text text-anchor="start" x="454.75" y="-803.7" font-family="Arial" font-size="9.00">74.39%</ns0:text>
+				
+
+			</ns0:g>
+			
+
+
+			<ns0:g id="edge8" class="edge">
+				
+
+				<ns0:title>roadPassibility-&gt;AbsorptionCapacity</ns0:title>
+				
+
+				<ns0:path fill="none" stroke="#64748b" stroke-width="0.8" d="M240.79,-901C311.63,-901 395,-901 395,-901 395,-901 395,-870.17 395,-870.17"/>
+				
+
+				<ns0:polygon fill="#64748b" stroke="#64748b" stroke-width="0.8" points="398.5,-870.17 395,-860.17 391.5,-870.17 398.5,-870.17"/>
+				
+
+			</ns0:g>
+			
+
+
+			<ns0:g id="node2" class="node">
+				
+
+				<ns0:title>emergencyType</ns0:title>
+				
+
+				<ns0:polygon fill="none" stroke="#3b82f6" points="0,-764 0,-786 286,-786 286,-764 0,-764"/>
+				
+
+				<ns0:text text-anchor="start" x="108.5" y="-771.5" font-family="Arial" font-size="10.00">emergencyType</ns0:text>
+				
+
+				<ns0:polygon fill="none" stroke="#3b82f6" points="0,-744 0,-764 150,-764 150,-744 0,-744"/>
+				
+
+				<ns0:text text-anchor="start" x="54.5" y="-750.7" font-family="Arial" font-size="9.00">Vehicle_Self_Accident</ns0:text>
+				
+
+				<ns0:polygon fill="white" stroke="none" points="150,-744 150,-764 242,-764 242,-744 150,-744"/>
+				
+
+				<ns0:polygon fill="none" stroke="#3b82f6" points="150,-744 150,-764 242,-764 242,-744 150,-744"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="154,-748 154,-760 238,-760 238,-748 154,-748"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="156,-750 156,-758 236,-758 236,-750 156,-750"/>
+				
+
+				<ns0:polygon fill="none" stroke="#3b82f6" points="242,-744 242,-764 286,-764 286,-744 242,-744"/>
+				
+
+				<ns0:text text-anchor="start" x="255.75" y="-750.7" font-family="Arial" font-size="9.00">0.00%</ns0:text>
+				
+
+				<ns0:polygon fill="none" stroke="#3b82f6" points="0,-724 0,-744 150,-744 150,-724 0,-724"/>
+				
+
+				<ns0:text text-anchor="start" x="3.75" y="-730.7" font-family="Arial" font-size="9.00">Vehicle_to_Fixed_Object_Accident</ns0:text>
+				
+
+				<ns0:polygon fill="white" stroke="none" points="150,-724 150,-744 242,-744 242,-724 150,-724"/>
+				
+
+				<ns0:polygon fill="none" stroke="#3b82f6" points="150,-724 150,-744 242,-744 242,-724 150,-724"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="154,-728 154,-740 238,-740 238,-728 154,-728"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="156,-730 156,-738 236,-738 236,-730 156,-730"/>
+				
+
+				<ns0:polygon fill="none" stroke="#3b82f6" points="242,-724 242,-744 286,-744 286,-724 242,-724"/>
+				
+
+				<ns0:text text-anchor="start" x="255.75" y="-730.7" font-family="Arial" font-size="9.00">0.00%</ns0:text>
+				
+
+				<ns0:polygon fill="none" stroke="#3b82f6" points="0,-704 0,-724 150,-724 150,-704 0,-704"/>
+				
+
+				<ns0:text text-anchor="start" x="69.5" y="-710.7" font-family="Arial" font-size="9.00">Collision_Accident</ns0:text>
+				
+
+				<ns0:polygon fill="white" stroke="none" points="150,-704 150,-724 242,-724 242,-704 150,-704"/>
+				
+
+				<ns0:polygon fill="none" stroke="#3b82f6" points="150,-704 150,-724 242,-724 242,-704 150,-704"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="154,-708 154,-720 238,-720 238,-708 154,-708"/>
+				
+
+				<ns0:polygon fill="#4ade80" stroke="none" points="156,-710 156,-718 236,-718 236,-710 156,-710"/>
+				
+
+				<ns0:polygon fill="none" stroke="#3b82f6" points="242,-704 242,-724 286,-724 286,-704 242,-704"/>
+				
+
+				<ns0:text text-anchor="start" x="245.62" y="-710.7" font-family="Arial" font-size="9.00">100.00%</ns0:text>
+				
+
+			</ns0:g>
+			
+
+
+			<ns0:g id="node13" class="node">
+				
+
+				<ns0:title>AdaptionCapacity</ns0:title>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="300,-671 300,-693 490,-693 490,-671 300,-671"/>
+				
+
+				<ns0:text text-anchor="start" x="356.38" y="-678.5" font-family="Arial" font-size="10.00">AdaptionCapacity</ns0:text>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="300,-651 300,-671 360,-671 360,-651 300,-651"/>
+				
+
+				<ns0:text text-anchor="start" x="333.5" y="-657.7" font-family="Arial" font-size="9.00">Good</ns0:text>
+				
+
+				<ns0:polygon fill="white" stroke="none" points="360,-651 360,-671 451,-671 451,-651 360,-651"/>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="360,-651 360,-671 451,-671 451,-651 360,-651"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="364,-655 364,-667 447,-667 447,-655 364,-655"/>
+				
+
+				<ns0:polygon fill="#4ade80" stroke="none" points="366,-657 366,-665 372,-665 372,-657 366,-657"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="372,-657 372,-665 445,-665 445,-657 372,-657"/>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="451,-651 451,-671 490,-671 490,-651 451,-651"/>
+				
+
+				<ns0:text text-anchor="start" x="459.75" y="-657.7" font-family="Arial" font-size="9.00">7.78%</ns0:text>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="300,-631 300,-651 360,-651 360,-631 300,-631"/>
+				
+
+				<ns0:text text-anchor="start" x="339.5" y="-637.7" font-family="Arial" font-size="9.00">Bad</ns0:text>
+				
+
+				<ns0:polygon fill="white" stroke="none" points="360,-631 360,-651 451,-651 451,-631 360,-631"/>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="360,-631 360,-651 451,-651 451,-631 360,-631"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="364,-635 364,-647 447,-647 447,-635 364,-635"/>
+				
+
+				<ns0:polygon fill="#4ade80" stroke="none" points="366,-637 366,-645 439,-645 439,-637 366,-637"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="439,-637 439,-645 445,-645 445,-637 439,-637"/>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="451,-631 451,-651 490,-651 490,-631 451,-631"/>
+				
+
+				<ns0:text text-anchor="start" x="454.75" y="-637.7" font-family="Arial" font-size="9.00">92.22%</ns0:text>
+				
+
+			</ns0:g>
+			
+
+
+			<ns0:g id="edge1" class="edge">
+				
+
+				<ns0:title>emergencyType-&gt;AdaptionCapacity</ns0:title>
+				
+
+				<ns0:path fill="none" stroke="#64748b" stroke-width="0.8" d="M265.5,-704.42C265.5,-687.77 265.5,-672.33 265.5,-672.33 265.5,-672.33 288.99,-672.33 288.99,-672.33"/>
+				
+
+				<ns0:polygon fill="#64748b" stroke="#64748b" stroke-width="0.8" points="288.99,-675.83 298.99,-672.33 288.99,-668.83 288.99,-675.83"/>
+				
+
+			</ns0:g>
+			
+
+
+			<ns0:g id="node3" class="node">
+				
+
+				<ns0:title>roadLoss</ns0:title>
+				
+
+				<ns0:polygon fill="none" stroke="#3b82f6" points="45,-837 45,-859 241,-859 241,-837 45,-837"/>
+				
+
+				<ns0:text text-anchor="start" x="123.12" y="-844.5" font-family="Arial" font-size="10.00">roadLoss</ns0:text>
+				
+
+				<ns0:polygon fill="none" stroke="#3b82f6" points="45,-817 45,-837 105,-837 105,-817 45,-817"/>
+				
+
+				<ns0:text text-anchor="start" x="62" y="-823.7" font-family="Arial" font-size="9.00">Not_Loss</ns0:text>
+				
+
+				<ns0:polygon fill="white" stroke="none" points="105,-817 105,-837 197,-837 197,-817 105,-817"/>
+				
+
+				<ns0:polygon fill="none" stroke="#3b82f6" points="105,-817 105,-837 197,-837 197,-817 105,-817"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="109,-821 109,-833 193,-833 193,-821 109,-821"/>
+				
+
+				<ns0:polygon fill="#4ade80" stroke="none" points="111,-823 111,-831 191,-831 191,-823 111,-823"/>
+				
+
+				<ns0:polygon fill="none" stroke="#3b82f6" points="197,-817 197,-837 241,-837 241,-817 197,-817"/>
+				
+
+				<ns0:text text-anchor="start" x="200.62" y="-823.7" font-family="Arial" font-size="9.00">100.00%</ns0:text>
+				
+
+				<ns0:polygon fill="none" stroke="#3b82f6" points="45,-797 45,-817 105,-817 105,-797 45,-797"/>
+				
+
+				<ns0:text text-anchor="start" x="81.5" y="-803.7" font-family="Arial" font-size="9.00">Loss</ns0:text>
+				
+
+				<ns0:polygon fill="white" stroke="none" points="105,-797 105,-817 197,-817 197,-797 105,-797"/>
+				
+
+				<ns0:polygon fill="none" stroke="#3b82f6" points="105,-797 105,-817 197,-817 197,-797 105,-797"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="109,-801 109,-813 193,-813 193,-801 109,-801"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="111,-803 111,-811 191,-811 191,-803 111,-803"/>
+				
+
+				<ns0:polygon fill="none" stroke="#3b82f6" points="197,-797 197,-817 241,-817 241,-797 197,-797"/>
+				
+
+				<ns0:text text-anchor="start" x="210.75" y="-803.7" font-family="Arial" font-size="9.00">0.00%</ns0:text>
+				
+
+			</ns0:g>
+			
+
+
+			<ns0:g id="edge13" class="edge">
+				
+
+				<ns0:title>roadLoss-&gt;AbsorptionCapacity</ns0:title>
+				
+
+				<ns0:path fill="none" stroke="#64748b" stroke-width="0.8" d="M240.79,-828C240.79,-828 288.95,-828 288.95,-828"/>
+				
+
+				<ns0:polygon fill="#64748b" stroke="#64748b" stroke-width="0.8" points="288.95,-831.5 298.95,-828 288.95,-824.5 288.95,-831.5"/>
+				
+
+			</ns0:g>
+			
+
+
+			<ns0:g id="node4" class="node">
+				
+
+				<ns0:title>casualties</ns0:title>
+				
+
+				<ns0:polygon fill="none" stroke="#3b82f6" points="41,-671 41,-693 245,-693 245,-671 41,-671"/>
+				
+
+				<ns0:text text-anchor="start" x="120.88" y="-678.5" font-family="Arial" font-size="10.00">casualties</ns0:text>
+				
+
+				<ns0:polygon fill="none" stroke="#3b82f6" points="41,-651 41,-671 109,-671 109,-651 41,-651"/>
+				
+
+				<ns0:text text-anchor="start" x="44.62" y="-657.7" font-family="Arial" font-size="9.00">No_Casualties</ns0:text>
+				
+
+				<ns0:polygon fill="white" stroke="none" points="109,-651 109,-671 201,-671 201,-651 109,-651"/>
+				
+
+				<ns0:polygon fill="none" stroke="#3b82f6" points="109,-651 109,-671 201,-671 201,-651 109,-651"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="113,-655 113,-667 197,-667 197,-655 113,-655"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="115,-657 115,-665 195,-665 195,-657 115,-657"/>
+				
+
+				<ns0:polygon fill="none" stroke="#3b82f6" points="201,-651 201,-671 245,-671 245,-651 201,-651"/>
+				
+
+				<ns0:text text-anchor="start" x="214.75" y="-657.7" font-family="Arial" font-size="9.00">0.00%</ns0:text>
+				
+
+				<ns0:polygon fill="none" stroke="#3b82f6" points="41,-631 41,-651 109,-651 109,-631 41,-631"/>
+				
+
+				<ns0:text text-anchor="start" x="61.5" y="-637.7" font-family="Arial" font-size="9.00">Casualties</ns0:text>
+				
+
+				<ns0:polygon fill="white" stroke="none" points="109,-631 109,-651 201,-651 201,-631 109,-631"/>
+				
+
+				<ns0:polygon fill="none" stroke="#3b82f6" points="109,-631 109,-651 201,-651 201,-631 109,-631"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="113,-635 113,-647 197,-647 197,-635 113,-635"/>
+				
+
+				<ns0:polygon fill="#4ade80" stroke="none" points="115,-637 115,-645 195,-645 195,-637 115,-637"/>
+				
+
+				<ns0:polygon fill="none" stroke="#3b82f6" points="201,-631 201,-651 245,-651 245,-631 201,-631"/>
+				
+
+				<ns0:text text-anchor="start" x="204.62" y="-637.7" font-family="Arial" font-size="9.00">100.00%</ns0:text>
+				
+
+			</ns0:g>
+			
+
+
+			<ns0:g id="edge11" class="edge">
+				
+
+				<ns0:title>casualties-&gt;AdaptionCapacity</ns0:title>
+				
+
+				<ns0:path fill="none" stroke="#64748b" stroke-width="0.8" d="M244.77,-651.67C244.77,-651.67 288.98,-651.67 288.98,-651.67"/>
+				
+
+				<ns0:polygon fill="#64748b" stroke="#64748b" stroke-width="0.8" points="288.98,-655.17 298.98,-651.67 288.98,-648.17 288.98,-655.17"/>
+				
+
+			</ns0:g>
+			
+
+
+			<ns0:g id="node5" class="node">
+				
+
+				<ns0:title>AidResource</ns0:title>
+				
+
+				<ns0:polygon fill="none" stroke="#3b82f6" points="45,-485 45,-507 241,-507 241,-485 45,-485"/>
+				
+
+				<ns0:text text-anchor="start" x="114.88" y="-492.5" font-family="Arial" font-size="10.00">AidResource</ns0:text>
+				
+
+				<ns0:polygon fill="none" stroke="#3b82f6" points="45,-465 45,-485 105,-485 105,-465 45,-465"/>
+				
+
+				<ns0:text text-anchor="start" x="59.75" y="-471.7" font-family="Arial" font-size="9.00">Not_Used</ns0:text>
+				
+
+				<ns0:polygon fill="white" stroke="none" points="105,-465 105,-485 197,-485 197,-465 105,-465"/>
+				
+
+				<ns0:polygon fill="none" stroke="#3b82f6" points="105,-465 105,-485 197,-485 197,-465 105,-465"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="109,-469 109,-481 193,-481 193,-469 109,-469"/>
+				
+
+				<ns0:polygon fill="#4ade80" stroke="none" points="111,-471 111,-479 191,-479 191,-471 111,-471"/>
+				
+
+				<ns0:polygon fill="none" stroke="#3b82f6" points="197,-465 197,-485 241,-485 241,-465 197,-465"/>
+				
+
+				<ns0:text text-anchor="start" x="200.62" y="-471.7" font-family="Arial" font-size="9.00">100.00%</ns0:text>
+				
+
+				<ns0:polygon fill="none" stroke="#3b82f6" points="45,-445 45,-465 105,-465 105,-445 45,-445"/>
+				
+
+				<ns0:text text-anchor="start" x="79.25" y="-451.7" font-family="Arial" font-size="9.00">Used</ns0:text>
+				
+
+				<ns0:polygon fill="white" stroke="none" points="105,-445 105,-465 197,-465 197,-445 105,-445"/>
+				
+
+				<ns0:polygon fill="none" stroke="#3b82f6" points="105,-445 105,-465 197,-465 197,-445 105,-445"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="109,-449 109,-461 193,-461 193,-449 109,-449"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="111,-451 111,-459 191,-459 191,-451 111,-451"/>
+				
+
+				<ns0:polygon fill="none" stroke="#3b82f6" points="197,-445 197,-465 241,-465 241,-445 197,-445"/>
+				
+
+				<ns0:text text-anchor="start" x="210.75" y="-451.7" font-family="Arial" font-size="9.00">0.00%</ns0:text>
+				
+
+			</ns0:g>
+			
+
+
+			<ns0:g id="node14" class="node">
+				
+
+				<ns0:title>RecoveryCapacity</ns0:title>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="300,-339 300,-361 490,-361 490,-339 300,-339"/>
+				
+
+				<ns0:text text-anchor="start" x="354.5" y="-346.5" font-family="Arial" font-size="10.00">RecoveryCapacity</ns0:text>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="300,-319 300,-339 360,-339 360,-319 300,-319"/>
+				
+
+				<ns0:text text-anchor="start" x="333.5" y="-325.7" font-family="Arial" font-size="9.00">Good</ns0:text>
+				
+
+				<ns0:polygon fill="white" stroke="none" points="360,-319 360,-339 451,-339 451,-319 360,-319"/>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="360,-319 360,-339 451,-339 451,-319 360,-319"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="364,-323 364,-335 447,-335 447,-323 364,-323"/>
+				
+
+				<ns0:polygon fill="#4ade80" stroke="none" points="366,-325 366,-333 394,-333 394,-325 366,-325"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="394,-325 394,-333 445,-333 445,-325 394,-325"/>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="451,-319 451,-339 490,-339 490,-319 451,-319"/>
+				
+
+				<ns0:text text-anchor="start" x="454.75" y="-325.7" font-family="Arial" font-size="9.00">35.00%</ns0:text>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="300,-299 300,-319 360,-319 360,-299 300,-299"/>
+				
+
+				<ns0:text text-anchor="start" x="339.5" y="-305.7" font-family="Arial" font-size="9.00">Bad</ns0:text>
+				
+
+				<ns0:polygon fill="white" stroke="none" points="360,-299 360,-319 451,-319 451,-299 360,-299"/>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="360,-299 360,-319 451,-319 451,-299 360,-299"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="364,-303 364,-315 447,-315 447,-303 364,-303"/>
+				
+
+				<ns0:polygon fill="#4ade80" stroke="none" points="366,-305 366,-313 417,-313 417,-305 366,-305"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="417,-305 417,-313 445,-313 445,-305 417,-305"/>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="451,-299 451,-319 490,-319 490,-299 451,-299"/>
+				
+
+				<ns0:text text-anchor="start" x="454.75" y="-305.7" font-family="Arial" font-size="9.00">65.00%</ns0:text>
+				
+
+			</ns0:g>
+			
+
+
+			<ns0:g id="edge4" class="edge">
+				
+
+				<ns0:title>AidResource-&gt;RecoveryCapacity</ns0:title>
+				
+
+				<ns0:path fill="none" stroke="#64748b" stroke-width="0.8" d="M240.65,-476C328.05,-476 442.5,-476 442.5,-476 442.5,-476 442.5,-372.17 442.5,-372.17"/>
+				
+
+				<ns0:polygon fill="#64748b" stroke="#64748b" stroke-width="0.8" points="446,-372.17 442.5,-362.17 439,-372.17 446,-372.17"/>
+				
+
+			</ns0:g>
+			
+
+
+			<ns0:g id="node6" class="node">
+				
+
+				<ns0:title>TowResource</ns0:title>
+				
+
+				<ns0:polygon fill="none" stroke="#3b82f6" points="45,-412 45,-434 241,-434 241,-412 45,-412"/>
+				
+
+				<ns0:text text-anchor="start" x="113" y="-419.5" font-family="Arial" font-size="10.00">TowResource</ns0:text>
+				
+
+				<ns0:polygon fill="none" stroke="#3b82f6" points="45,-392 45,-412 105,-412 105,-392 45,-392"/>
+				
+
+				<ns0:text text-anchor="start" x="59.75" y="-398.7" font-family="Arial" font-size="9.00">Not_Used</ns0:text>
+				
+
+				<ns0:polygon fill="white" stroke="none" points="105,-392 105,-412 197,-412 197,-392 105,-392"/>
+				
+
+				<ns0:polygon fill="none" stroke="#3b82f6" points="105,-392 105,-412 197,-412 197,-392 105,-392"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="109,-396 109,-408 193,-408 193,-396 109,-396"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="111,-398 111,-406 191,-406 191,-398 111,-398"/>
+				
+
+				<ns0:polygon fill="none" stroke="#3b82f6" points="197,-392 197,-412 241,-412 241,-392 197,-392"/>
+				
+
+				<ns0:text text-anchor="start" x="210.75" y="-398.7" font-family="Arial" font-size="9.00">0.00%</ns0:text>
+				
+
+				<ns0:polygon fill="none" stroke="#3b82f6" points="45,-372 45,-392 105,-392 105,-372 45,-372"/>
+				
+
+				<ns0:text text-anchor="start" x="79.25" y="-378.7" font-family="Arial" font-size="9.00">Used</ns0:text>
+				
+
+				<ns0:polygon fill="white" stroke="none" points="105,-372 105,-392 197,-392 197,-372 105,-372"/>
+				
+
+				<ns0:polygon fill="none" stroke="#3b82f6" points="105,-372 105,-392 197,-392 197,-372 105,-372"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="109,-376 109,-388 193,-388 193,-376 109,-376"/>
+				
+
+				<ns0:polygon fill="#4ade80" stroke="none" points="111,-378 111,-386 191,-386 191,-378 111,-378"/>
+				
+
+				<ns0:polygon fill="none" stroke="#3b82f6" points="197,-372 197,-392 241,-392 241,-372 197,-372"/>
+				
+
+				<ns0:text text-anchor="start" x="200.62" y="-378.7" font-family="Arial" font-size="9.00">100.00%</ns0:text>
+				
+
+			</ns0:g>
+			
+
+
+			<ns0:g id="edge7" class="edge">
+				
+
+				<ns0:title>TowResource-&gt;RecoveryCapacity</ns0:title>
+				
+
+				<ns0:path fill="none" stroke="#64748b" stroke-width="0.8" d="M240.79,-403C311.63,-403 395,-403 395,-403 395,-403 395,-372.17 395,-372.17"/>
+				
+
+				<ns0:polygon fill="#64748b" stroke="#64748b" stroke-width="0.8" points="398.5,-372.17 395,-362.17 391.5,-372.17 398.5,-372.17"/>
+				
+
+			</ns0:g>
+			
+
+
+			<ns0:g id="node7" class="node">
+				
+
+				<ns0:title>FirefightingResource</ns0:title>
+				
+
+				<ns0:polygon fill="none" stroke="#3b82f6" points="45,-339 45,-361 241,-361 241,-339 45,-339"/>
+				
+
+				<ns0:text text-anchor="start" x="98" y="-346.5" font-family="Arial" font-size="10.00">FirefightingResource</ns0:text>
+				
+
+				<ns0:polygon fill="none" stroke="#3b82f6" points="45,-319 45,-339 105,-339 105,-319 45,-319"/>
+				
+
+				<ns0:text text-anchor="start" x="59.75" y="-325.7" font-family="Arial" font-size="9.00">Not_Used</ns0:text>
+				
+
+				<ns0:polygon fill="white" stroke="none" points="105,-319 105,-339 197,-339 197,-319 105,-319"/>
+				
+
+				<ns0:polygon fill="none" stroke="#3b82f6" points="105,-319 105,-339 197,-339 197,-319 105,-319"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="109,-323 109,-335 193,-335 193,-323 109,-323"/>
+				
+
+				<ns0:polygon fill="#4ade80" stroke="none" points="111,-325 111,-333 191,-333 191,-325 111,-325"/>
+				
+
+				<ns0:polygon fill="none" stroke="#3b82f6" points="197,-319 197,-339 241,-339 241,-319 197,-319"/>
+				
+
+				<ns0:text text-anchor="start" x="200.62" y="-325.7" font-family="Arial" font-size="9.00">100.00%</ns0:text>
+				
+
+				<ns0:polygon fill="none" stroke="#3b82f6" points="45,-299 45,-319 105,-319 105,-299 45,-299"/>
+				
+
+				<ns0:text text-anchor="start" x="79.25" y="-305.7" font-family="Arial" font-size="9.00">Used</ns0:text>
+				
+
+				<ns0:polygon fill="white" stroke="none" points="105,-299 105,-319 197,-319 197,-299 105,-299"/>
+				
+
+				<ns0:polygon fill="none" stroke="#3b82f6" points="105,-299 105,-319 197,-319 197,-299 105,-299"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="109,-303 109,-315 193,-315 193,-303 109,-303"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="111,-305 111,-313 191,-313 191,-305 111,-305"/>
+				
+
+				<ns0:polygon fill="none" stroke="#3b82f6" points="197,-299 197,-319 241,-319 241,-299 197,-299"/>
+				
+
+				<ns0:text text-anchor="start" x="210.75" y="-305.7" font-family="Arial" font-size="9.00">0.00%</ns0:text>
+				
+
+			</ns0:g>
+			
+
+
+			<ns0:g id="edge9" class="edge">
+				
+
+				<ns0:title>FirefightingResource-&gt;RecoveryCapacity</ns0:title>
+				
+
+				<ns0:path fill="none" stroke="#64748b" stroke-width="0.8" d="M240.79,-330C240.79,-330 288.95,-330 288.95,-330"/>
+				
+
+				<ns0:polygon fill="#64748b" stroke="#64748b" stroke-width="0.8" points="288.95,-333.5 298.95,-330 288.95,-326.5 288.95,-333.5"/>
+				
+
+			</ns0:g>
+			
+
+
+			<ns0:g id="node8" class="node">
+				
+
+				<ns0:title>RescueResource</ns0:title>
+				
+
+				<ns0:polygon fill="none" stroke="#3b82f6" points="45,-266 45,-288 241,-288 241,-266 45,-266"/>
+				
+
+				<ns0:text text-anchor="start" x="105.12" y="-273.5" font-family="Arial" font-size="10.00">RescueResource</ns0:text>
+				
+
+				<ns0:polygon fill="none" stroke="#3b82f6" points="45,-246 45,-266 105,-266 105,-246 45,-246"/>
+				
+
+				<ns0:text text-anchor="start" x="59.75" y="-252.7" font-family="Arial" font-size="9.00">Not_Used</ns0:text>
+				
+
+				<ns0:polygon fill="white" stroke="none" points="105,-246 105,-266 197,-266 197,-246 105,-246"/>
+				
+
+				<ns0:polygon fill="none" stroke="#3b82f6" points="105,-246 105,-266 197,-266 197,-246 105,-246"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="109,-250 109,-262 193,-262 193,-250 109,-250"/>
+				
+
+				<ns0:polygon fill="#4ade80" stroke="none" points="111,-252 111,-260 191,-260 191,-252 111,-252"/>
+				
+
+				<ns0:polygon fill="none" stroke="#3b82f6" points="197,-246 197,-266 241,-266 241,-246 197,-246"/>
+				
+
+				<ns0:text text-anchor="start" x="200.62" y="-252.7" font-family="Arial" font-size="9.00">100.00%</ns0:text>
+				
+
+				<ns0:polygon fill="none" stroke="#3b82f6" points="45,-226 45,-246 105,-246 105,-226 45,-226"/>
+				
+
+				<ns0:text text-anchor="start" x="79.25" y="-232.7" font-family="Arial" font-size="9.00">Used</ns0:text>
+				
+
+				<ns0:polygon fill="white" stroke="none" points="105,-226 105,-246 197,-246 197,-226 105,-226"/>
+				
+
+				<ns0:polygon fill="none" stroke="#3b82f6" points="105,-226 105,-246 197,-246 197,-226 105,-226"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="109,-230 109,-242 193,-242 193,-230 109,-230"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="111,-232 111,-240 191,-240 191,-232 111,-232"/>
+				
+
+				<ns0:polygon fill="none" stroke="#3b82f6" points="197,-226 197,-246 241,-246 241,-226 197,-226"/>
+				
+
+				<ns0:text text-anchor="start" x="210.75" y="-232.7" font-family="Arial" font-size="9.00">0.00%</ns0:text>
+				
+
+			</ns0:g>
+			
+
+
+			<ns0:g id="edge5" class="edge">
+				
+
+				<ns0:title>RescueResource-&gt;RecoveryCapacity</ns0:title>
+				
+
+				<ns0:path fill="none" stroke="#64748b" stroke-width="0.8" d="M240.76,-257C293.34,-257 347.5,-257 347.5,-257 347.5,-257 347.5,-287.83 347.5,-287.83"/>
+				
+
+				<ns0:polygon fill="#64748b" stroke="#64748b" stroke-width="0.8" points="344,-287.83 347.5,-297.83 351,-287.83 344,-287.83"/>
+				
+
+			</ns0:g>
+			
+
+
+			<ns0:g id="node9" class="node">
+				
+
+				<ns0:title>emergencyPeriod</ns0:title>
+				
+
+				<ns0:polygon fill="none" stroke="#3b82f6" points="41,-598 41,-620 245,-620 245,-598 41,-598"/>
+				
+
+				<ns0:text text-anchor="start" x="105.12" y="-605.5" font-family="Arial" font-size="10.00">emergencyPeriod</ns0:text>
+				
+
+				<ns0:polygon fill="none" stroke="#3b82f6" points="41,-578 41,-598 109,-598 109,-578 41,-578"/>
+				
+
+				<ns0:text text-anchor="start" x="45" y="-584.7" font-family="Arial" font-size="9.00">Early_Morning</ns0:text>
+				
+
+				<ns0:polygon fill="white" stroke="none" points="109,-578 109,-598 201,-598 201,-578 109,-578"/>
+				
+
+				<ns0:polygon fill="none" stroke="#3b82f6" points="109,-578 109,-598 201,-598 201,-578 109,-578"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="113,-582 113,-594 197,-594 197,-582 113,-582"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="115,-584 115,-592 195,-592 195,-584 115,-584"/>
+				
+
+				<ns0:polygon fill="none" stroke="#3b82f6" points="201,-578 201,-598 245,-598 245,-578 201,-578"/>
+				
+
+				<ns0:text text-anchor="start" x="214.75" y="-584.7" font-family="Arial" font-size="9.00">0.00%</ns0:text>
+				
+
+				<ns0:polygon fill="none" stroke="#3b82f6" points="41,-558 41,-578 109,-578 109,-558 41,-558"/>
+				
+
+				<ns0:text text-anchor="start" x="71.25" y="-564.7" font-family="Arial" font-size="9.00">Morning</ns0:text>
+				
+
+				<ns0:polygon fill="white" stroke="none" points="109,-558 109,-578 201,-578 201,-558 109,-558"/>
+				
+
+				<ns0:polygon fill="none" stroke="#3b82f6" points="109,-558 109,-578 201,-578 201,-558 109,-558"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="113,-562 113,-574 197,-574 197,-562 113,-562"/>
+				
+
+				<ns0:polygon fill="#4ade80" stroke="none" points="115,-564 115,-572 195,-572 195,-564 115,-564"/>
+				
+
+				<ns0:polygon fill="none" stroke="#3b82f6" points="201,-558 201,-578 245,-578 245,-558 201,-558"/>
+				
+
+				<ns0:text text-anchor="start" x="204.62" y="-564.7" font-family="Arial" font-size="9.00">100.00%</ns0:text>
+				
+
+				<ns0:polygon fill="none" stroke="#3b82f6" points="41,-538 41,-558 109,-558 109,-538 41,-538"/>
+				
+
+				<ns0:text text-anchor="start" x="65.25" y="-544.7" font-family="Arial" font-size="9.00">Afternoon</ns0:text>
+				
+
+				<ns0:polygon fill="white" stroke="none" points="109,-538 109,-558 201,-558 201,-538 109,-538"/>
+				
+
+				<ns0:polygon fill="none" stroke="#3b82f6" points="109,-538 109,-558 201,-558 201,-538 109,-538"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="113,-542 113,-554 197,-554 197,-542 113,-542"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="115,-544 115,-552 195,-552 195,-544 115,-544"/>
+				
+
+				<ns0:polygon fill="none" stroke="#3b82f6" points="201,-538 201,-558 245,-558 245,-538 201,-538"/>
+				
+
+				<ns0:text text-anchor="start" x="214.75" y="-544.7" font-family="Arial" font-size="9.00">0.00%</ns0:text>
+				
+
+				<ns0:polygon fill="none" stroke="#3b82f6" points="41,-518 41,-538 109,-538 109,-518 41,-518"/>
+				
+
+				<ns0:text text-anchor="start" x="71.25" y="-524.7" font-family="Arial" font-size="9.00">Evening</ns0:text>
+				
+
+				<ns0:polygon fill="white" stroke="none" points="109,-518 109,-538 201,-538 201,-518 109,-518"/>
+				
+
+				<ns0:polygon fill="none" stroke="#3b82f6" points="109,-518 109,-538 201,-538 201,-518 109,-518"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="113,-522 113,-534 197,-534 197,-522 113,-522"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="115,-524 115,-532 195,-532 195,-524 115,-524"/>
+				
+
+				<ns0:polygon fill="none" stroke="#3b82f6" points="201,-518 201,-538 245,-538 245,-518 201,-518"/>
+				
+
+				<ns0:text text-anchor="start" x="214.75" y="-524.7" font-family="Arial" font-size="9.00">0.00%</ns0:text>
+				
+
+			</ns0:g>
+			
+
+
+			<ns0:g id="edge10" class="edge">
+				
+
+				<ns0:title>emergencyPeriod-&gt;AdaptionCapacity</ns0:title>
+				
+
+				<ns0:path fill="none" stroke="#64748b" stroke-width="0.8" d="M244.95,-569C296.18,-569 347.5,-569 347.5,-569 347.5,-569 347.5,-619.82 347.5,-619.82"/>
+				
+
+				<ns0:polygon fill="#64748b" stroke="#64748b" stroke-width="0.8" points="344,-619.82 347.5,-629.82 351,-619.82 344,-619.82"/>
+				
+
+			</ns0:g>
+			
+
+
+			<ns0:g id="node10" class="node">
+				
+
+				<ns0:title>responseDuration</ns0:title>
+				
+
+				<ns0:polygon fill="none" stroke="#3b82f6" points="45,-193 45,-215 241,-215 241,-193 45,-193"/>
+				
+
+				<ns0:text text-anchor="start" x="104.75" y="-200.5" font-family="Arial" font-size="10.00">responseDuration</ns0:text>
+				
+
+				<ns0:polygon fill="none" stroke="#3b82f6" points="45,-173 45,-193 105,-193 105,-173 45,-173"/>
+				
+
+				<ns0:text text-anchor="start" x="67.25" y="-179.7" font-family="Arial" font-size="9.00">0-15min</ns0:text>
+				
+
+				<ns0:polygon fill="white" stroke="none" points="105,-173 105,-193 197,-193 197,-173 105,-173"/>
+				
+
+				<ns0:polygon fill="none" stroke="#3b82f6" points="105,-173 105,-193 197,-193 197,-173 105,-173"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="109,-177 109,-189 193,-189 193,-177 109,-177"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="111,-179 111,-187 191,-187 191,-179 111,-179"/>
+				
+
+				<ns0:polygon fill="none" stroke="#3b82f6" points="197,-173 197,-193 241,-193 241,-173 197,-173"/>
+				
+
+				<ns0:text text-anchor="start" x="210.75" y="-179.7" font-family="Arial" font-size="9.00">0.00%</ns0:text>
+				
+
+				<ns0:polygon fill="none" stroke="#3b82f6" points="45,-153 45,-173 105,-173 105,-153 45,-153"/>
+				
+
+				<ns0:text text-anchor="start" x="62" y="-159.7" font-family="Arial" font-size="9.00">15-30min</ns0:text>
+				
+
+				<ns0:polygon fill="white" stroke="none" points="105,-153 105,-173 197,-173 197,-153 105,-153"/>
+				
+
+				<ns0:polygon fill="none" stroke="#3b82f6" points="105,-153 105,-173 197,-173 197,-153 105,-153"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="109,-157 109,-169 193,-169 193,-157 109,-157"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="111,-159 111,-167 191,-167 191,-159 111,-159"/>
+				
+
+				<ns0:polygon fill="none" stroke="#3b82f6" points="197,-153 197,-173 241,-173 241,-153 197,-153"/>
+				
+
+				<ns0:text text-anchor="start" x="210.75" y="-159.7" font-family="Arial" font-size="9.00">0.00%</ns0:text>
+				
+
+				<ns0:polygon fill="none" stroke="#3b82f6" points="45,-133 45,-153 105,-153 105,-133 45,-133"/>
+				
+
+				<ns0:text text-anchor="start" x="62" y="-139.7" font-family="Arial" font-size="9.00">30-60min</ns0:text>
+				
+
+				<ns0:polygon fill="white" stroke="none" points="105,-133 105,-153 197,-153 197,-133 105,-133"/>
+				
+
+				<ns0:polygon fill="none" stroke="#3b82f6" points="105,-133 105,-153 197,-153 197,-133 105,-133"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="109,-137 109,-149 193,-149 193,-137 109,-137"/>
+				
+
+				<ns0:polygon fill="#4ade80" stroke="none" points="111,-139 111,-147 191,-147 191,-139 111,-139"/>
+				
+
+				<ns0:polygon fill="none" stroke="#3b82f6" points="197,-133 197,-153 241,-153 241,-133 197,-133"/>
+				
+
+				<ns0:text text-anchor="start" x="200.62" y="-139.7" font-family="Arial" font-size="9.00">100.00%</ns0:text>
+				
+
+				<ns0:polygon fill="none" stroke="#3b82f6" points="45,-113 45,-133 105,-133 105,-113 45,-113"/>
+				
+
+				<ns0:text text-anchor="start" x="70.25" y="-119.7" font-family="Arial" font-size="9.00">60min+</ns0:text>
+				
+
+				<ns0:polygon fill="white" stroke="none" points="105,-113 105,-133 197,-133 197,-113 105,-113"/>
+				
+
+				<ns0:polygon fill="none" stroke="#3b82f6" points="105,-113 105,-133 197,-133 197,-113 105,-113"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="109,-117 109,-129 193,-129 193,-117 109,-117"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="111,-119 111,-127 191,-127 191,-119 111,-119"/>
+				
+
+				<ns0:polygon fill="none" stroke="#3b82f6" points="197,-113 197,-133 241,-133 241,-113 197,-113"/>
+				
+
+				<ns0:text text-anchor="start" x="210.75" y="-119.7" font-family="Arial" font-size="9.00">0.00%</ns0:text>
+				
+
+			</ns0:g>
+			
+
+
+			<ns0:g id="edge3" class="edge">
+				
+
+				<ns0:title>responseDuration-&gt;RecoveryCapacity</ns0:title>
+				
+
+				<ns0:path fill="none" stroke="#64748b" stroke-width="0.8" d="M240.79,-164C311.63,-164 395,-164 395,-164 395,-164 395,-287.95 395,-287.95"/>
+				
+
+				<ns0:polygon fill="#64748b" stroke="#64748b" stroke-width="0.8" points="391.5,-287.95 395,-297.95 398.5,-287.95 391.5,-287.95"/>
+				
+
+			</ns0:g>
+			
+
+
+			<ns0:g id="node11" class="node">
+				
+
+				<ns0:title>disposalDuration</ns0:title>
+				
+
+				<ns0:polygon fill="none" stroke="#3b82f6" points="45,-80 45,-102 241,-102 241,-80 45,-80"/>
+				
+
+				<ns0:text text-anchor="start" x="106.62" y="-87.5" font-family="Arial" font-size="10.00">disposalDuration</ns0:text>
+				
+
+				<ns0:polygon fill="none" stroke="#3b82f6" points="45,-60 45,-80 105,-80 105,-60 45,-60"/>
+				
+
+				<ns0:text text-anchor="start" x="67.25" y="-66.7" font-family="Arial" font-size="9.00">0-15min</ns0:text>
+				
+
+				<ns0:polygon fill="white" stroke="none" points="105,-60 105,-80 197,-80 197,-60 105,-60"/>
+				
+
+				<ns0:polygon fill="none" stroke="#3b82f6" points="105,-60 105,-80 197,-80 197,-60 105,-60"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="109,-64 109,-76 193,-76 193,-64 109,-64"/>
+				
+
+				<ns0:polygon fill="#4ade80" stroke="none" points="111,-66 111,-74 191,-74 191,-66 111,-66"/>
+				
+
+				<ns0:polygon fill="none" stroke="#3b82f6" points="197,-60 197,-80 241,-80 241,-60 197,-60"/>
+				
+
+				<ns0:text text-anchor="start" x="200.62" y="-66.7" font-family="Arial" font-size="9.00">100.00%</ns0:text>
+				
+
+				<ns0:polygon fill="none" stroke="#3b82f6" points="45,-40 45,-60 105,-60 105,-40 45,-40"/>
+				
+
+				<ns0:text text-anchor="start" x="62" y="-46.7" font-family="Arial" font-size="9.00">15-30min</ns0:text>
+				
+
+				<ns0:polygon fill="white" stroke="none" points="105,-40 105,-60 197,-60 197,-40 105,-40"/>
+				
+
+				<ns0:polygon fill="none" stroke="#3b82f6" points="105,-40 105,-60 197,-60 197,-40 105,-40"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="109,-44 109,-56 193,-56 193,-44 109,-44"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="111,-46 111,-54 191,-54 191,-46 111,-46"/>
+				
+
+				<ns0:polygon fill="none" stroke="#3b82f6" points="197,-40 197,-60 241,-60 241,-40 197,-40"/>
+				
+
+				<ns0:text text-anchor="start" x="210.75" y="-46.7" font-family="Arial" font-size="9.00">0.00%</ns0:text>
+				
+
+				<ns0:polygon fill="none" stroke="#3b82f6" points="45,-20 45,-40 105,-40 105,-20 45,-20"/>
+				
+
+				<ns0:text text-anchor="start" x="62" y="-26.7" font-family="Arial" font-size="9.00">30-60min</ns0:text>
+				
+
+				<ns0:polygon fill="white" stroke="none" points="105,-20 105,-40 197,-40 197,-20 105,-20"/>
+				
+
+				<ns0:polygon fill="none" stroke="#3b82f6" points="105,-20 105,-40 197,-40 197,-20 105,-20"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="109,-24 109,-36 193,-36 193,-24 109,-24"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="111,-26 111,-34 191,-34 191,-26 111,-26"/>
+				
+
+				<ns0:polygon fill="none" stroke="#3b82f6" points="197,-20 197,-40 241,-40 241,-20 197,-20"/>
+				
+
+				<ns0:text text-anchor="start" x="210.75" y="-26.7" font-family="Arial" font-size="9.00">0.00%</ns0:text>
+				
+
+				<ns0:polygon fill="none" stroke="#3b82f6" points="45,0 45,-20 105,-20 105,0 45,0"/>
+				
+
+				<ns0:text text-anchor="start" x="70.25" y="-6.7" font-family="Arial" font-size="9.00">60min+</ns0:text>
+				
+
+				<ns0:polygon fill="white" stroke="none" points="105,0 105,-20 197,-20 197,0 105,0"/>
+				
+
+				<ns0:polygon fill="none" stroke="#3b82f6" points="105,0 105,-20 197,-20 197,0 105,0"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="109,-4 109,-16 193,-16 193,-4 109,-4"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="111,-6 111,-14 191,-14 191,-6 111,-6"/>
+				
+
+				<ns0:polygon fill="none" stroke="#3b82f6" points="197,0 197,-20 241,-20 241,0 197,0"/>
+				
+
+				<ns0:text text-anchor="start" x="210.75" y="-6.7" font-family="Arial" font-size="9.00">0.00%</ns0:text>
+				
+
+			</ns0:g>
+			
+
+
+			<ns0:g id="edge6" class="edge">
+				
+
+				<ns0:title>disposalDuration-&gt;RecoveryCapacity</ns0:title>
+				
+
+				<ns0:path fill="none" stroke="#64748b" stroke-width="0.8" d="M240.65,-51C328.05,-51 442.5,-51 442.5,-51 442.5,-51 442.5,-287.87 442.5,-287.87"/>
+				
+
+				<ns0:polygon fill="#64748b" stroke="#64748b" stroke-width="0.8" points="439,-287.87 442.5,-297.87 446,-287.87 439,-287.87"/>
+				
+
+			</ns0:g>
+			
+
+
+			<ns0:g id="node15" class="node">
+				
+
+				<ns0:title>ScenarioResilience</ns0:title>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="504,-671 504,-693 694,-693 694,-671 504,-671"/>
+				
+
+				<ns0:text text-anchor="start" x="557" y="-678.5" font-family="Arial" font-size="10.00">ScenarioResilience</ns0:text>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="504,-651 504,-671 564,-671 564,-651 504,-651"/>
+				
+
+				<ns0:text text-anchor="start" x="537.5" y="-657.7" font-family="Arial" font-size="9.00">Good</ns0:text>
+				
+
+				<ns0:polygon fill="white" stroke="none" points="564,-651 564,-671 655,-671 655,-651 564,-651"/>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="564,-651 564,-671 655,-671 655,-651 564,-651"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="568,-655 568,-667 651,-667 651,-655 568,-655"/>
+				
+
+				<ns0:polygon fill="#4ade80" stroke="none" points="570,-657 570,-665 588,-665 588,-657 570,-657"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="588,-657 588,-665 649,-665 649,-657 588,-657"/>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="655,-651 655,-671 694,-671 694,-651 655,-651"/>
+				
+
+				<ns0:text text-anchor="start" x="658.75" y="-657.7" font-family="Arial" font-size="9.00">23.35%</ns0:text>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="504,-631 504,-651 564,-651 564,-631 504,-631"/>
+				
+
+				<ns0:text text-anchor="start" x="543.5" y="-637.7" font-family="Arial" font-size="9.00">Bad</ns0:text>
+				
+
+				<ns0:polygon fill="white" stroke="none" points="564,-631 564,-651 655,-651 655,-631 564,-631"/>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="564,-631 564,-651 655,-651 655,-631 564,-631"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="568,-635 568,-647 651,-647 651,-635 568,-635"/>
+				
+
+				<ns0:polygon fill="#4ade80" stroke="none" points="570,-637 570,-645 631,-645 631,-637 570,-637"/>
+				
+
+				<ns0:polygon fill="#f3f4f6" stroke="none" points="631,-637 631,-645 649,-645 649,-637 631,-637"/>
+				
+
+				<ns0:polygon fill="none" stroke="black" points="655,-631 655,-651 694,-651 694,-631 655,-631"/>
+				
+
+				<ns0:text text-anchor="start" x="658.75" y="-637.7" font-family="Arial" font-size="9.00">76.65%</ns0:text>
+				
+
+			</ns0:g>
+			
+
+
+			<ns0:g id="edge12" class="edge">
+				
+
+				<ns0:title>AbsorptionCapacity-&gt;ScenarioResilience</ns0:title>
+				
+
+				<ns0:path fill="none" stroke="#64748b" stroke-width="0.8" d="M489.83,-828C543.11,-828 599,-828 599,-828 599,-828 599,-704.05 599,-704.05"/>
+				
+
+				<ns0:polygon fill="#64748b" stroke="#64748b" stroke-width="0.8" points="602.5,-704.05 599,-694.05 595.5,-704.05 602.5,-704.05"/>
+				
+
+			</ns0:g>
+			
+
+
+			<ns0:g id="edge14" class="edge">
+				
+
+				<ns0:title>AdaptionCapacity-&gt;ScenarioResilience</ns0:title>
+				
+
+				<ns0:path fill="none" stroke="#64748b" stroke-width="0.8" d="M489.83,-662C489.83,-662 493,-662 493,-662"/>
+				
+
+				<ns0:polygon fill="#64748b" stroke="#64748b" stroke-width="0.8" points="493,-665.5 503,-662 493,-658.5 493,-665.5"/>
+				
+
+			</ns0:g>
+			
+
+
+			<ns0:g id="edge2" class="edge">
+				
+
+				<ns0:title>RecoveryCapacity-&gt;ScenarioResilience</ns0:title>
+				
+
+				<ns0:path fill="none" stroke="#64748b" stroke-width="0.8" d="M489.83,-330C543.11,-330 599,-330 599,-330 599,-330 599,-619.85 599,-619.85"/>
+				
+
+				<ns0:polygon fill="#64748b" stroke="#64748b" stroke-width="0.8" points="595.5,-619.85 599,-629.85 602.5,-619.85 595.5,-619.85"/>
+				
+
+			</ns0:g>
+			
+
+		</ns0:g>
+	</g>
+</svg>

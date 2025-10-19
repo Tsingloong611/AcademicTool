@@ -1,0 +1,23 @@
+package Item{
+
+    part def Item{
+
+    item def Vehicle{
+    }
+
+    part Lane1 : Item{
+        attribute LaneType : String = "快速路";
+        attribute LaneWidth : Real = "10";
+        attribute DesignedSpeed : Real = "120";
+        attribute VehicleTypeRestriction : Bool = "0";
+        attribute RoadClosureStatus : Bool = "0";
+        attribute PollutionStatus : Bool = "0";
+
+        item HazardVehicle : Vehicle;
+        item AffectedVehicle : Vehicle;
+        ref part Road;
+
+
+    }
+
+}

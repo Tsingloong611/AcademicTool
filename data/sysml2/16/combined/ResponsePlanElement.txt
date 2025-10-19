@@ -1,0 +1,43 @@
+package ResponsePlanElement{
+
+    part def ResponsePlanElement{}
+
+    action def Action{
+            out implementationCondition;
+            out startTime;
+            out endTime;
+        }
+
+    state def aidStates{
+            entry; then idleState;
+            state idleState;
+            accept Aid:Action
+                then implementState;
+            state implementState;
+        }
+
+    state def towStates{
+            entry; then idleState;
+            state idleState;
+            accept Tow:Action
+                then implementState;
+            state implementState;
+        }
+
+    state def firefightingStates{
+            entry; then idleState;
+            state idleState;
+            accept FireFighting:Action
+                then implementState;
+            state implementState;
+        }
+
+    state def rescueStates{
+            entry; then idleState;
+            state idleState;
+            accept Rescue:Action
+                then implementState;
+            state implementState;
+        }
+
+}

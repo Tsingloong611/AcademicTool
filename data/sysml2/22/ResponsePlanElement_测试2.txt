@@ -1,0 +1,18 @@
+package ResponsePlanElement{
+
+    part def ResponsePlanElement{
+
+    part 测试2 : ResponsePlanElement{
+        attribute PlanName : String = "测试2";
+
+        ref part 测试2-车辆;
+        ref part 测试2-车辆;
+        ref part 测试2-物资;
+        ref part 测试2-救助;
+        ref part 测试2-牵引;
+        ref part 测试2-抢修;
+
+
+    }
+
+}

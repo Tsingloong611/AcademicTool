@@ -1,0 +1,15 @@
+package ResponsePlanElement{
+
+    part def ResponseResource{}
+    part plan8-人员 : ResponseResource{
+        attribute ResourceType : Enum = "牵引人员";
+        attribute ResourceUsageCondition : Bool = "0";
+        attribute ResourceQuantityOrQuality : Real = "1";
+        attribute Location : String = "浙江省嘉兴市嘉善县姚庄镇花开回季 (30.991171,120.993992)";
+
+        ref part plan8-牵引;
+
+
+    }
+
+}

@@ -1,0 +1,15 @@
+package ResponsePlanElement{
+
+    part def ResponseResource{}
+    part plan2-车辆 : ResponseResource{
+        attribute ResourceType : Enum = "牵引车";
+        attribute ResourceUsageCondition : Bool = "0";
+        attribute ResourceQuantityOrQuality : Real = "1";
+        attribute Location : String = "上海市黄浦区淮海中路街道丰裕里 (31.217449,121.472461)";
+
+        ref part plan2-牵引;
+
+
+    }
+
+}

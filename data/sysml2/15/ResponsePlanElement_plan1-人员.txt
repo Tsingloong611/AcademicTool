@@ -1,0 +1,15 @@
+package ResponsePlanElement{
+
+    part def ResponseResource{}
+    part plan1-人员 : ResponseResource{
+        attribute ResourceType : Enum = "医生";
+        attribute ResourceUsageCondition : Bool = "0";
+        attribute ResourceQuantityOrQuality : Real = "1";
+        attribute Location : String = "上海市黄浦区老西门街道老西门地铁站2号口复兴珑御北区 (31.218477,121.483619)";
+
+        ref part plan1-救助;
+
+
+    }
+
+}

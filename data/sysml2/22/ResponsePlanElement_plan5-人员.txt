@@ -1,0 +1,15 @@
+package ResponsePlanElement{
+
+    part def ResponseResource{}
+    part plan5-人员 : ResponseResource{
+        attribute ResourceType : Enum = "消防员";
+        attribute ResourceUsageCondition : Bool = "0";
+        attribute ResourceQuantityOrQuality : Real = "1";
+        attribute Location : String = "上海市黄浦区淮海中路街道香港新世界大厦上海k11购物艺术中心 (31.223615,121.47332)";
+
+        ref part plan5-救助;
+
+
+    }
+
+}

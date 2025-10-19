@@ -1,0 +1,546 @@
+package ResponsePlanElement{
+
+    part def ResponsePlanElement{}
+
+    action def RoadControl{
+        }
+
+    action def Firefighting{
+        }
+
+    action def RoadCleaning{
+        }
+
+    action def PersonnalRescue{
+        }
+
+    action def VehicleTowing{
+        }
+
+    action def RoadRepair{
+        }
+
+    action def Action{
+            out implementationCondition;
+            out startTime;
+            out endTime;
+        }
+
+    action def HazardousMaterialDisposal{
+        }
+
+    state def firefightingStates{
+            entry; then idleState;
+            state idleState;
+            accept FireFighting:Action
+                then implementState;
+            state implementState;
+        }
+
+    state def rescueStates{
+            entry; then idleState;
+            state idleState;
+            accept Rescue:Action
+                then implementState;
+            state implementState;
+        }
+
+    state def towStates{
+            entry; then idleState;
+            state idleState;
+            accept Tow:Action
+                then implementState;
+            state implementState;
+        }
+
+    state def aidStates{
+            entry; then idleState;
+            state idleState;
+            accept Aid:Action
+                then implementState;
+            state implementState;
+        }
+
+    part plan2 : ResponsePlanElement{
+            attribute PlanName : String = "plan2";
+
+            ref part plan2-人员;
+            ref part plan2-人员;
+            ref part plan2-救助;
+            ref part plan2-牵引;
+
+
+        }
+
+    part plan2-救助 : ResponseAction{
+            attribute BehaviorType : Enum = "救助";
+            attribute ImplementationCondition : Bool = true;
+            attribute Duration : Real = "4";
+
+            ref part plan2-人员;
+
+            perform action Firefighting;
+            perform action PersonnalRescue;
+            perform action VehicleTowing;
+            perform action RoadCleaning;
+            perform action RoadRepair;
+            perform action RoadControl;
+            perform action HazardousMaterialDisposal;
+
+        }
+
+    part plan4-人员 : ResponseResource{
+            attribute ResourceType : Enum = "牵引人员";
+            attribute ResourceUsageCondition : Bool = "0";
+            attribute ResourceQuantityOrQuality : Real = "1";
+            attribute Location : String = "上海市黄浦区瑞金二路街道南昌路136弄小区 (31.219211,121.467826)";
+
+            ref part plan4-牵引;
+
+
+        }
+
+    part plan3-救助 : ResponseAction{
+            attribute BehaviorType : Enum = "救助";
+            attribute ImplementationCondition : Bool = true;
+            attribute Duration : Real = "4";
+
+            ref part plan3-人员;
+
+            perform action Firefighting;
+            perform action PersonnalRescue;
+            perform action VehicleTowing;
+            perform action RoadCleaning;
+            perform action RoadRepair;
+            perform action RoadControl;
+            perform action HazardousMaterialDisposal;
+
+        }
+
+    part plan7-救助 : ResponseAction{
+            attribute BehaviorType : Enum = "救助";
+            attribute ImplementationCondition : Bool = true;
+            attribute Duration : Real = "4";
+
+            ref part plan7-人员;
+
+            perform action Firefighting;
+            perform action PersonnalRescue;
+            perform action VehicleTowing;
+            perform action RoadCleaning;
+            perform action RoadRepair;
+            perform action RoadControl;
+            perform action HazardousMaterialDisposal;
+
+        }
+
+    part plan2-牵引 : ResponseAction{
+            attribute BehaviorType : Enum = "牵引";
+            attribute ImplementationCondition : Bool = true;
+            attribute Duration : Real = "5";
+
+            ref part plan2-人员;
+
+            perform action Firefighting;
+            perform action PersonnalRescue;
+            perform action VehicleTowing;
+            perform action RoadCleaning;
+            perform action RoadRepair;
+            perform action RoadControl;
+            perform action HazardousMaterialDisposal;
+
+        }
+
+    part plan4-牵引 : ResponseAction{
+            attribute BehaviorType : Enum = "牵引";
+            attribute ImplementationCondition : Bool = true;
+            attribute Duration : Real = "4";
+
+            ref part plan4-人员;
+
+            perform action Firefighting;
+            perform action PersonnalRescue;
+            perform action VehicleTowing;
+            perform action RoadCleaning;
+            perform action RoadRepair;
+            perform action RoadControl;
+            perform action HazardousMaterialDisposal;
+
+        }
+
+    part plan8-牵引 : ResponseAction{
+            attribute BehaviorType : Enum = "牵引";
+            attribute ImplementationCondition : Bool = true;
+            attribute Duration : Real = "4";
+
+            ref part plan8-人员;
+
+            perform action Firefighting;
+            perform action PersonnalRescue;
+            perform action VehicleTowing;
+            perform action RoadCleaning;
+            perform action RoadRepair;
+            perform action RoadControl;
+            perform action HazardousMaterialDisposal;
+
+        }
+
+    part plan4-救助 : ResponseAction{
+            attribute BehaviorType : Enum = "救助";
+            attribute ImplementationCondition : Bool = true;
+            attribute Duration : Real = "4";
+
+            ref part plan4-人员;
+
+            perform action Firefighting;
+            perform action PersonnalRescue;
+            perform action VehicleTowing;
+            perform action RoadCleaning;
+            perform action RoadRepair;
+            perform action RoadControl;
+            perform action HazardousMaterialDisposal;
+
+        }
+
+    part plan6-人员 : ResponseResource{
+            attribute ResourceType : Enum = "牵引人员";
+            attribute ResourceUsageCondition : Bool = "0";
+            attribute ResourceQuantityOrQuality : Real = "1";
+            attribute Location : String = "河北省保定市容城县平王乡地面停车场(出入口) (39.010302,116.011516)";
+
+            ref part plan6-牵引;
+
+
+        }
+
+    part plan8-救助 : ResponseAction{
+            attribute BehaviorType : Enum = "救助";
+            attribute ImplementationCondition : Bool = true;
+            attribute Duration : Real = "4";
+
+            ref part plan8-人员;
+
+            perform action Firefighting;
+            perform action PersonnalRescue;
+            perform action VehicleTowing;
+            perform action RoadCleaning;
+            perform action RoadRepair;
+            perform action RoadControl;
+            perform action HazardousMaterialDisposal;
+
+        }
+
+    part plan6 : ResponsePlanElement{
+            attribute PlanName : String = "plan6";
+
+            ref part plan6-人员;
+            ref part plan6-人员;
+            ref part plan6-救助;
+            ref part plan6-牵引;
+
+
+        }
+
+    part plan8-人员 : ResponseResource{
+            attribute ResourceType : Enum = "牵引人员";
+            attribute ResourceUsageCondition : Bool = "0";
+            attribute ResourceQuantityOrQuality : Real = "1";
+            attribute Location : String = "浙江省嘉兴市嘉善县姚庄镇花开回季 (30.991171,120.993992)";
+
+            ref part plan8-牵引;
+
+
+        }
+
+    part plan3-人员 : ResponseResource{
+            attribute ResourceType : Enum = "抢险人员";
+            attribute ResourceUsageCondition : Bool = "0";
+            attribute ResourceQuantityOrQuality : Real = "1";
+            attribute Location : String = "上海市青浦区练塘镇卉逸园林 (30.968948,121.007038)";
+
+            ref part plan3-抢修;
+
+
+        }
+
+    part plan5-救助 : ResponseAction{
+            attribute BehaviorType : Enum = "救助";
+            attribute ImplementationCondition : Bool = true;
+            attribute Duration : Real = "4";
+
+            ref part plan5-人员;
+
+            perform action Firefighting;
+            perform action PersonnalRescue;
+            perform action VehicleTowing;
+            perform action RoadCleaning;
+            perform action RoadRepair;
+            perform action RoadControl;
+            perform action HazardousMaterialDisposal;
+
+        }
+
+    part plan7 : ResponsePlanElement{
+            attribute PlanName : String = "plan7";
+
+            ref part plan7-人员;
+            ref part plan7-人员;
+            ref part plan7-救助;
+            ref part plan7-牵引;
+
+
+        }
+
+    part plan3-牵引 : ResponseAction{
+            attribute BehaviorType : Enum = "牵引";
+            attribute ImplementationCondition : Bool = true;
+            attribute Duration : Real = "5";
+
+            ref part plan3-人员;
+
+            perform action Firefighting;
+            perform action PersonnalRescue;
+            perform action VehicleTowing;
+            perform action RoadCleaning;
+            perform action RoadRepair;
+            perform action RoadControl;
+            perform action HazardousMaterialDisposal;
+
+        }
+
+    part plan5 : ResponsePlanElement{
+            attribute PlanName : String = "plan5";
+
+            ref part plan5-人员;
+            ref part plan5-人员;
+            ref part plan5-物资;
+            ref part plan5-救助;
+            ref part plan5-牵引;
+            ref part plan5-抢修;
+
+
+        }
+
+    part def ResponseResource{}
+
+    part plan5-牵引 : ResponseAction{
+            attribute BehaviorType : Enum = "牵引";
+            attribute ImplementationCondition : Bool = true;
+            attribute Duration : Real = "4";
+
+            ref part plan5-人员;
+
+            perform action Firefighting;
+            perform action PersonnalRescue;
+            perform action VehicleTowing;
+            perform action RoadCleaning;
+            perform action RoadRepair;
+            perform action RoadControl;
+            perform action HazardousMaterialDisposal;
+
+        }
+
+    part plan3 : ResponsePlanElement{
+            attribute PlanName : String = "plan3";
+
+            ref part plan3-人员;
+            ref part plan3-人员;
+            ref part plan3-人员;
+            ref part plan3-救助;
+            ref part plan3-牵引;
+            ref part plan3-抢修;
+
+
+        }
+
+    part plan5-人员 : ResponseResource{
+            attribute ResourceType : Enum = "牵引人员";
+            attribute ResourceUsageCondition : Bool = "0";
+            attribute ResourceQuantityOrQuality : Real = "1";
+            attribute Location : String = "上海市静安区南京西路街道安乐坊花园公寓 (31.227578,121.45581)";
+
+            ref part plan5-牵引;
+
+
+        }
+
+    part plan1-人员 : ResponseResource{
+            attribute ResourceType : Enum = "牵引人员";
+            attribute ResourceUsageCondition : Bool = "0";
+            attribute ResourceQuantityOrQuality : Real = "1";
+            attribute Location : String = "上海市黄浦区打浦桥街道卢湾都市型工业楼宇(黄陂南路) (31.212311,121.477954)";
+
+            ref part plan1-救助;
+
+
+        }
+
+    part plan6-救助 : ResponseAction{
+            attribute BehaviorType : Enum = "救助";
+            attribute ImplementationCondition : Bool = true;
+            attribute Duration : Real = "4";
+
+            ref part plan6-人员;
+
+            perform action Firefighting;
+            perform action PersonnalRescue;
+            perform action VehicleTowing;
+            perform action RoadCleaning;
+            perform action RoadRepair;
+            perform action RoadControl;
+            perform action HazardousMaterialDisposal;
+
+        }
+
+    part plan2-人员 : ResponseResource{
+            attribute ResourceType : Enum = "牵引人员";
+            attribute ResourceUsageCondition : Bool = "0";
+            attribute ResourceQuantityOrQuality : Real = "1";
+            attribute Location : String = "上海市黄浦区淮海中路街道翠湖天地御苑 (31.217156,121.477096)";
+
+            ref part plan2-牵引;
+
+
+        }
+
+    part plan8 : ResponsePlanElement{
+            attribute PlanName : String = "plan8";
+
+            ref part plan8-人员;
+            ref part plan8-人员;
+            ref part plan8-救助;
+            ref part plan8-牵引;
+
+
+        }
+
+    part plan4 : ResponsePlanElement{
+            attribute PlanName : String = "plan4";
+
+            ref part plan4-人员;
+            ref part plan4-人员;
+            ref part plan4-救助;
+            ref part plan4-牵引;
+
+
+        }
+
+    part plan3-抢修 : ResponseAction{
+            attribute BehaviorType : Enum = "抢修";
+            attribute ImplementationCondition : Bool = true;
+            attribute Duration : Real = "7";
+
+            ref part plan3-人员;
+
+            perform action Firefighting;
+            perform action PersonnalRescue;
+            perform action VehicleTowing;
+            perform action RoadCleaning;
+            perform action RoadRepair;
+            perform action RoadControl;
+            perform action HazardousMaterialDisposal;
+
+        }
+
+    part plan6-牵引 : ResponseAction{
+            attribute BehaviorType : Enum = "牵引";
+            attribute ImplementationCondition : Bool = true;
+            attribute Duration : Real = "6";
+
+            ref part plan6-人员;
+
+            perform action Firefighting;
+            perform action PersonnalRescue;
+            perform action VehicleTowing;
+            perform action RoadCleaning;
+            perform action RoadRepair;
+            perform action RoadControl;
+            perform action HazardousMaterialDisposal;
+
+        }
+
+    part plan5-物资 : ResponseResource{
+            attribute ResourceType : Enum = "随车修理工具";
+            attribute ResourceUsageCondition : Bool = "0";
+            attribute ResourceQuantityOrQuality : Real = "1";
+            attribute Location : String = "上海市黄浦区瑞金二路街道复兴公园 (31.217596,121.469543)";
+
+            ref part plan5-抢修;
+
+
+        }
+
+    part plan7-牵引 : ResponseAction{
+            attribute BehaviorType : Enum = "牵引";
+            attribute ImplementationCondition : Bool = true;
+            attribute Duration : Real = "4";
+
+            ref part plan7-人员;
+
+            perform action Firefighting;
+            perform action PersonnalRescue;
+            perform action VehicleTowing;
+            perform action RoadCleaning;
+            perform action RoadRepair;
+            perform action RoadControl;
+            perform action HazardousMaterialDisposal;
+
+        }
+
+    part plan5-抢修 : ResponseAction{
+            attribute BehaviorType : Enum = "抢修";
+            attribute ImplementationCondition : Bool = true;
+            attribute Duration : Real = "7";
+
+            ref part plan5-物资;
+
+            perform action Firefighting;
+            perform action PersonnalRescue;
+            perform action VehicleTowing;
+            perform action RoadCleaning;
+            perform action RoadRepair;
+            perform action RoadControl;
+            perform action HazardousMaterialDisposal;
+
+        }
+
+    part def ResponseAction{}
+
+    part plan1 : ResponsePlanElement{
+            attribute PlanName : String = "plan1";
+
+            ref part plan1-人员;
+            ref part plan1-救助;
+
+
+        }
+
+    part plan1-救助 : ResponseAction{
+            attribute BehaviorType : Enum = "救助";
+            attribute ImplementationCondition : Bool = true;
+            attribute Duration : Real = "4";
+
+            ref part plan1-人员;
+
+            perform action Firefighting;
+            perform action PersonnalRescue;
+            perform action VehicleTowing;
+            perform action RoadCleaning;
+            perform action RoadRepair;
+            perform action RoadControl;
+            perform action HazardousMaterialDisposal;
+
+        }
+
+    part plan7-人员 : ResponseResource{
+            attribute ResourceType : Enum = "牵引人员";
+            attribute ResourceUsageCondition : Bool = "0";
+            attribute ResourceQuantityOrQuality : Real = "1";
+            attribute Location : String = "上海市青浦区练塘镇四联路 (30.99176,121.004807)";
+
+            ref part plan7-牵引;
+
+
+        }
+
+}

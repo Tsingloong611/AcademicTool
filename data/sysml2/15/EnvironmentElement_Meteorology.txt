@@ -1,0 +1,18 @@
+package EnvironmentElement{
+
+    part def EnvironmentElement{
+
+    part Meteorology : EnvironmentElement{
+        attribute WeatherType : Enum = "cloudy";
+        attribute Rainfall : Real = "0.0";
+        attribute Visibility : Real = "23.0";
+        attribute WindSpeed : Real = "2.0";
+        attribute WindForce : Real = null;
+        attribute SnowfallIntensity : Enum = null;
+
+        ref part Road;
+
+
+    }
+
+}

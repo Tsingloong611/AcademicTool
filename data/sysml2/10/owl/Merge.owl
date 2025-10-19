@@ -1,0 +1,1637 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rdf:RDF
+   xmlns="http://example.org/scenario_element.owl#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#PersonnalRescue_plan2-牵引">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_element.owl#hasEffectOn"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#plan2-牵引"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">None</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#VehicleTowing_plan3-抢修">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_element.owl#hasEffectOn"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#plan3-抢修"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">None</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#RoadDamageCondition_Road">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#Road"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#boolean"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">0</hasValue>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Range type: Bool</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#vehicleType_AffectedVehicle">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#AffectedVehicle"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">car</hasValue>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Range type: String</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#DrivingRoadSegment_HazardVehicle">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_element.owl#associateWith"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#HazardVehicle"/>
+    <rdfs:range rdf:resource="http://example.org/scenario_element.owl#Road"/>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Links HazardVehicle to Road</hasDescription>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Road</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#RoadCleaning_plan2-牵引">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_element.owl#hasEffectOn"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#plan2-牵引"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">None</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#CombustionCondition_HazardVehicle">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#HazardVehicle"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#boolean"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">0</hasValue>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Range type: Bool</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#BehaviorType_plan3-抢修">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#plan3-抢修"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">抢修</hasValue>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Range type: Enum</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#HasAction_plan3">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_element.owl#associateWith"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#plan3"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">plan3-救助, plan3-牵引, plan3-抢修</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#TargetOfImplementation_plan3-抢修">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_element.owl#associateWith"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#plan3-抢修"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">None</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#Duration_plan3-牵引">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#plan3-牵引"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#decimal"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">5</hasValue>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Range type: Real</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#VehicleBreakdown_HazardVehicle">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_element.owl#hasEffectOn"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#HazardVehicle"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">None</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#RoadCleaning_plan3-牵引">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_element.owl#hasEffectOn"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#plan3-牵引"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">None</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#NumofLane_Road">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#Road"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#decimal"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">3</hasValue>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Range type: Real</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#WindScale_Meteorology">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#Meteorology"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#decimal"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">2.0</hasValue>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Range type: Real</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#CollideCondition_HazardVehicle">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#HazardVehicle"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#boolean"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">true</hasValue>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Range type: Bool</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#plan3">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://example.org/scenario_element.owl#ResponsePlanElement"/>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Class type: 应急预案, Level: Entity</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#SegmentEndStakeNumber_Road">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#Road"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">None</hasValue>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Range type: String</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#RoadType_Road">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#Road"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">主路</hasValue>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Range type: Enum</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#Visibility_Meteorology">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#Meteorology"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#decimal"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">23.0</hasValue>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Range type: Real</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#Location_plan1-人员">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#plan1-人员"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">上海市黄浦区打浦桥街道卢湾都市型工业楼宇(黄陂南路) (31.212311,121.477954)</hasValue>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Range type: String</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#vehicleType_HazardVehicle">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#HazardVehicle"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">truck</hasValue>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Range type: String</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#EmergencyVehicles_plan3-救助">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_element.owl#associateWith"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#plan3-救助"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">None</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#RoadName_Road">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#Road"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">None</hasValue>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Range type: String</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#Firefighting_plan3-牵引">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_element.owl#hasEffectOn"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#plan3-牵引"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">None</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#plan1-人员">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://example.org/scenario_element.owl#ResponsePlanElement"/>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Class type: 应急资源, Level: Entity</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#plan3-抢修">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://example.org/scenario_element.owl#ResponsePlanElement"/>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Class type: 应急行为, Level: Entity</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#TravelTime_Road">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#Road"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#decimal"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">None</hasValue>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Range type: Real</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#plan2-人员">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://example.org/scenario_element.owl#ResponsePlanElement"/>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Class type: 应急资源, Level: Entity</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#AffiliatedVehicle_passenger">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_element.owl#associateWith"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#passenger"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">None</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#MeteorologyType_Meteorology">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#Meteorology"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">cloudy</hasValue>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Range type: Enum</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#DesignSpeed_AffectedRoad">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#AffectedRoad"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#decimal"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">None</hasValue>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Range type: Real</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#AffectedRoad">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://example.org/scenario_element.owl#AffectedElement"/>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Class type: 路段, Level: Entity</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#Firefighting_plan3-救助">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_element.owl#hasEffectOn"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#plan3-救助"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">None</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#VehicleTowing_plan3-牵引">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_element.owl#hasEffectOn"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#plan3-牵引"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">None</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#RoadMaintenanceConditon_Road">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#Road"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#boolean"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">0</hasValue>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Range type: Bool</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#BehaviorType_plan3-救助">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#plan3-救助"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">救助</hasValue>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Range type: Enum</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#ResourceUsageCondition_plan2-人员">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#plan2-人员"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#boolean"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">0</hasValue>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Range type: Bool</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#VehicleLaneChange_HazardVehicle">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_element.owl#hasEffectOn"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#HazardVehicle"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">None</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario.owl#roadLoss">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario.owl#EconomicFactors"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#boolean"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">1</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#BehaviorType_plan2-牵引">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#plan2-牵引"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">牵引</hasValue>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Range type: Enum</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#VehicleTransport_HazardVehicle">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_element.owl#hasEffectOn"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#HazardVehicle"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">None</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#Rainfall_Meteorology">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#Meteorology"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#decimal"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">0.0</hasValue>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Range type: Real</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#PlanName_plan1">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#plan1"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">plan1</hasValue>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Range type: String</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#RoadSection_lane">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_element.owl#associateWith"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#lane"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">None</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#Firefighting_plan1-救助">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_element.owl#hasEffectOn"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#plan1-救助"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">None</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#plan2-救助">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://example.org/scenario_element.owl#ResponsePlanElement"/>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Class type: 应急行为, Level: Entity</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#VehicleTurning_HazardVehicle">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_element.owl#hasEffectOn"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#HazardVehicle"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">None</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#RoadRepair_plan1-救助">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_element.owl#hasEffectOn"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#plan1-救助"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">None</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#HazardousMaterialDisposal_plan3-救助">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_element.owl#hasEffectOn"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#plan3-救助"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">None</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#EndStake_Road">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#Road"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ND569</hasValue>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Range type: String</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#HazardousMaterialDisposal_plan1-救助">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_element.owl#hasEffectOn"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#plan1-救助"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">None</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#HazardousMaterialDisposal_plan2-牵引">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_element.owl#hasEffectOn"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#plan2-牵引"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">None</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#IncludedFacilities_AffectedRoad">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_element.owl#consistComposition"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#AffectedRoad"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">None</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#HasAction_plan2">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_element.owl#associateWith"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#plan2"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">plan2-救助, plan2-牵引</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#ResourceType_plan1-人员">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#plan1-人员"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">牵引人员</hasValue>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Range type: Enum</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#Duration_plan2-牵引">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#plan2-牵引"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#decimal"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">5</hasValue>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Range type: Real</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#StartStake_AffectedRoad">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#AffectedRoad"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ND569</hasValue>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Range type: String</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#ImplementationCondition_plan1-救助">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#plan1-救助"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#boolean"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">True</hasValue>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Range type: Bool</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#RoadCleaning_plan3-抢修">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_element.owl#hasEffectOn"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#plan3-抢修"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">None</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#EnvironmentElement">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://example.org/scenario_element.owl#ScenarioElement"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#RoadControl_plan1-救助">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_element.owl#hasEffectOn"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#plan1-救助"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">None</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/emergency.owl#InvolvedScenario">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario.owl#Scenario">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario.owl#hasResilience">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario.owl#Scenario"/>
+    <rdfs:range rdf:resource="http://example.org/scenario.owl#ScenarioResilience"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#FacilityLocation_facility">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#facility"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">None</hasValue>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Range type: String</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#Duration_plan2-救助">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#plan2-救助"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#decimal"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">4</hasValue>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Range type: Real</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/emergency.owl#inPhase">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/emergency.owl#Emergency"/>
+    <rdfs:range rdf:resource="http://example.org/emergency.owl#EmergencyPhase"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#EmergencyVehicles_plan1-救助">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_element.owl#associateWith"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#plan1-救助"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">None</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#ImplementingPersonnel_plan2-救助">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_element.owl#associateWith"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#plan2-救助"/>
+    <rdfs:range rdf:resource="http://example.org/scenario_element.owl#plan2-人员"/>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Links plan2-救助 to plan2-人员</hasDescription>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">plan2-人员</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#Meteorology">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://example.org/scenario_element.owl#EnvironmentElement"/>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Class type: 自然环境, Level: Entity</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#NumberOfLanes_Road">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#Road"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#decimal"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">None</hasValue>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Range type: Real</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#RollOverCondition_HazardVehicle">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#HazardVehicle"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#boolean"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">0</hasValue>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Range type: Bool</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#EmergencyPeriod_HazardVehicle">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#HazardVehicle"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">上午</hasValue>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Range type: Enum</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#AssociatedBehavior_plan2-人员">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_element.owl#associateWith"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#plan2-人员"/>
+    <rdfs:range rdf:resource="http://example.org/scenario_element.owl#plan2-救助"/>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Links plan2-人员 to plan2-救助</hasDescription>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">plan2-救助</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#IncludedVehicles_Road">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_element.owl#associateWith"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#Road"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">None</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#RoadControl_plan3-抢修">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_element.owl#hasEffectOn"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#plan3-抢修"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">None</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#ResourceQuantityOrQuality_plan1-人员">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#plan1-人员"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#decimal"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">1</hasValue>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Range type: Real</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#AffectedArea_Meteorology">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_element.owl#associateWith"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#Meteorology"/>
+    <rdfs:range rdf:resource="http://example.org/scenario_element.owl#Road"/>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Links Meteorology to Road</hasDescription>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Road</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#BreakdownCondition_HazardVehicle">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#HazardVehicle"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#boolean"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">0</hasValue>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Range type: Bool</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#HazardElement">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://example.org/scenario_element.owl#ScenarioElement"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#plan1">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://example.org/scenario_element.owl#ResponsePlanElement"/>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Class type: 应急预案, Level: Entity</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#PollutionCondition_Road">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#Road"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#boolean"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">0</hasValue>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Range type: Bool</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#IncludedVehicles_AffectedRoad">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_element.owl#associateWith"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#AffectedRoad"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">None</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#CombustionCondition_AffectedVehicle">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#AffectedVehicle"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#boolean"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">0</hasValue>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Range type: Bool</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#PlanName_plan2">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#plan2"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">plan2</hasValue>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Range type: String</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#ImplementationCondition_plan2-救助">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#plan2-救助"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#boolean"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">True</hasValue>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Range type: Bool</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#VehicleTowing_plan2-牵引">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_element.owl#hasEffectOn"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#plan2-牵引"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">None</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#RoadControl_plan2-救助">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_element.owl#hasEffectOn"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#plan2-救助"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">None</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#RoadRepair_plan2-救助">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_element.owl#hasEffectOn"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#plan2-救助"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">None</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#LaneWidth_lane">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#lane"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#decimal"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">None</hasValue>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Range type: Real</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#LaneType_lane">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#lane"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">None</hasValue>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Range type: String</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#TrafficCapacity_Road">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#Road"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#decimal"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">None</hasValue>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Range type: Real</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#ImplementationCondition_plan3-救助">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#plan3-救助"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#boolean"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">True</hasValue>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Range type: Bool</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#Firefighting_plan2-救助">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_element.owl#hasEffectOn"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#plan2-救助"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">None</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#DesignSpeed_Road">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#Road"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#decimal"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">None</hasValue>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Range type: Real</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#BehaviorType_plan1-救助">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#plan1-救助"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">救助</hasValue>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Range type: Enum</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#VehicleSpillage_HazardVehicle">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_element.owl#hasEffectOn"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#HazardVehicle"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">None</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#ResourceQuantityOrQuality_plan2-人员">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#plan2-人员"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#decimal"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">1</hasValue>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Range type: Real</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#InvolvedMaterials_plan3-救助">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_element.owl#associateWith"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#plan3-救助"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">None</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario.owl#responseDuration">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario.owl#TimeFactors"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#RoadControl_plan3-牵引">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_element.owl#hasEffectOn"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#plan3-牵引"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">None</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#RoadType_AffectedRoad">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#AffectedRoad"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">mainRoad</hasValue>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Range type: Enum</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#ClosureCondition_Road">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#Road"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#boolean"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">0</hasValue>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Range type: Bool</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#RoadMaintenanceConditon_AffectedRoad">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#AffectedRoad"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#boolean"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">0</hasValue>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Range type: Bool</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#ImplementingPersonnel_plan2-牵引">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_element.owl#associateWith"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#plan2-牵引"/>
+    <rdfs:range rdf:resource="http://example.org/scenario_element.owl#plan2-人员"/>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Links plan2-牵引 to plan2-人员</hasDescription>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">plan2-人员</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#ImplementationCondition_plan3-牵引">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#plan3-牵引"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#boolean"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">True</hasValue>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Range type: Bool</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#PollutionStatus_lane">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#lane"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#boolean"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">0</hasValue>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Range type: Bool</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#Item">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#AffectedVehicle">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://example.org/scenario_element.owl#AffectedElement"/>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Class type: 车辆, Level: Entity</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#EmergencyVehicles_plan3-牵引">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_element.owl#associateWith"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#plan3-牵引"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">None</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario.owl#emergencyPeriod">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario.owl#TimeFactors"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Morning</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#ResourceType_plan2-人员">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#plan2-人员"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">牵引人员</hasValue>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Range type: Enum</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#ImplementingPersonnel_plan3-抢修">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_element.owl#associateWith"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#plan3-抢修"/>
+    <rdfs:range rdf:resource="http://example.org/scenario_element.owl#plan3-人员"/>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Links plan3-抢修 to plan3-人员</hasDescription>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">plan3-人员</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario.owl#InvolvedScenarioElement">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#ImplementingPersonnel_plan3-救助">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_element.owl#associateWith"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#plan3-救助"/>
+    <rdfs:range rdf:resource="http://example.org/scenario_element.owl#plan3-人员"/>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Links plan3-救助 to plan3-人员</hasDescription>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">plan3-人员</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#RoadConstrucetionCondition_AffectedRoad">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#AffectedRoad"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#boolean"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">0</hasValue>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Range type: Bool</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#PlanName_plan3">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#plan3"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">plan3</hasValue>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Range type: String</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#BehaviorType_plan3-牵引">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#plan3-牵引"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">牵引</hasValue>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Range type: Enum</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#SpeedLimit_Road">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#Road"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#decimal"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">None</hasValue>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Range type: Real</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#VehicleTypeRestriction_lane">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#lane"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#boolean"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">0</hasValue>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Range type: Bool</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#VehicleComponents_AffectedVehicle">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_element.owl#consistComposition"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#AffectedVehicle"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">None</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#RoadCleaning_plan3-救助">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_element.owl#hasEffectOn"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#plan3-救助"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">None</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#SpillCondition_AffectedVehicle">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#AffectedVehicle"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#boolean"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">true</hasValue>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Range type: Bool</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#HasResource_plan3">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_element.owl#associateWith"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#plan3"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">plan3-人员, plan3-人员, plan3-人员</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#HasAction_plan1">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_element.owl#associateWith"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#plan1"/>
+    <rdfs:range rdf:resource="http://example.org/scenario_element.owl#plan1-救助"/>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Links plan1 to plan1-救助</hasDescription>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">plan1-救助</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#RoadRepair_plan3-救助">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_element.owl#hasEffectOn"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#plan3-救助"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">None</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#RoadRepair_plan3-抢修">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_element.owl#hasEffectOn"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#plan3-抢修"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">None</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#EmergencyVehicles_plan3-抢修">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_element.owl#associateWith"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#plan3-抢修"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">None</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#Duration_plan3-救助">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#plan3-救助"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#decimal"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">4</hasValue>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Range type: Real</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#RoadCleaning_plan1-救助">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_element.owl#hasEffectOn"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#plan1-救助"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">None</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#FacilityType_facility">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#facility"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">立柱</hasValue>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Range type: Enum</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#HazardousMaterialDisposal_plan3-抢修">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_element.owl#hasEffectOn"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#plan3-抢修"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">None</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario.owl#AbsorptionScenario">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://example.org/scenario.owl#Scenario"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario.owl#resourceType">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario.owl#EconomicFactors"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#VehicleExplosion_HazardVehicle">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_element.owl#hasEffectOn"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#HazardVehicle"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">None</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#ClosedCondition_Road">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#Road"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#boolean"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">false</hasValue>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Range type: Bool</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#VehicleCargo_HazardVehicle">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_element.owl#consistComposition"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#HazardVehicle"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">None</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#hasDefaultValue">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#AnnotationProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#AssociatedBehavior_plan3-人员">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_element.owl#associateWith"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#plan3-人员"/>
+    <rdfs:range rdf:resource="http://example.org/scenario_element.owl#plan3-救助"/>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Links plan3-人员 to plan3-救助</hasDescription>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">plan3-救助</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#InvolvedMaterials_plan3-抢修">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_element.owl#associateWith"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#plan3-抢修"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">None</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario.owl">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Ontology"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#TrafficVolume_AffectedRoad">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#AffectedRoad"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#decimal"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">None</hasValue>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Range type: Real</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#IIIegalLaneOccupationCondition_HazardVehicle">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#HazardVehicle"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#boolean"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">0</hasValue>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Range type: Bool</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#ResourceQuantityOrQuality_plan3-人员">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#plan3-人员"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#decimal"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">1</hasValue>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Range type: Real</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#SnowfallIntensity_Meteorology">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#Meteorology"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">None</hasValue>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Range type: Enum</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#ClosedCondition_AffectedRoad">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#AffectedRoad"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#boolean"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">false</hasValue>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Range type: Bool</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#AssociatedBehavior_plan1-人员">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_element.owl#associateWith"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#plan1-人员"/>
+    <rdfs:range rdf:resource="http://example.org/scenario_element.owl#plan1-救助"/>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Links plan1-人员 to plan1-救助</hasDescription>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">plan1-救助</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#VehicleComponents_HazardVehicle">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_element.owl#consistComposition"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#HazardVehicle"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">None</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#drivingDirection_AffectedVehicle">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#AffectedVehicle"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">forward</hasValue>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Range type: Enum</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#VehicleMotion_HazardVehicle">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_element.owl#hasEffectOn"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#HazardVehicle"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">None</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#PollutedCondition_AffectedRoad">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#AffectedRoad"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#boolean"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">true</hasValue>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Range type: Bool</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#HasVehicles_lane">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_element.owl#consistComposition"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#lane"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">None</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#facility">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://example.org/scenario_element.owl#Item"/>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Class type: 基础设施, Level: Item</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#PersonnalRescue_plan3-抢修">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_element.owl#hasEffectOn"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#plan3-抢修"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">None</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#Duration_plan3-抢修">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#plan3-抢修"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#decimal"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">7</hasValue>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Range type: Real</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#position_AffectedVehicle">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#AffectedVehicle"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ND569</hasValue>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Range type: String</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#TargetOfImplementation_plan3-救助">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_element.owl#associateWith"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#plan3-救助"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">None</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#TargetOfImplementation_plan2-救助">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_element.owl#associateWith"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#plan2-救助"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">None</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#StartStake_Road">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#Road"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ND569</hasValue>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Range type: String</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#VehicleCargo_AffectedVehicle">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_element.owl#consistComposition"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#AffectedVehicle"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">None</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#TargetOfImplementation_plan2-牵引">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_element.owl#associateWith"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#plan2-牵引"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">None</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#SegmentStartStakeNumber_Road">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#Road"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">None</hasValue>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Range type: String</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#PersonnalRescue_plan3-救助">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_element.owl#hasEffectOn"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#plan3-救助"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">None</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#RoadDamageCondition_AffectedRoad">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#AffectedRoad"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#boolean"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">0</hasValue>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Range type: Bool</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#ImplementationCondition_plan2-牵引">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#plan2-牵引"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#boolean"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">True</hasValue>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Range type: Bool</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario.owl#ScenarioResilience">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#RoadFacilityOf_facility">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_element.owl#associateWith"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#facility"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">None</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#VehiclePassengers_AffectedVehicle">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_element.owl#consistComposition"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#AffectedVehicle"/>
+    <rdfs:range rdf:resource="http://example.org/scenario_element.owl#passenger"/>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Links AffectedVehicle to passenger</hasDescription>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">passenger</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#EndStake_AffectedRoad">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#AffectedRoad"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ND569</hasValue>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Range type: String</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#RoadClosureStatus_lane">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#lane"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#boolean"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">0</hasValue>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Range type: Bool</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#RoadRepair_plan2-牵引">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_element.owl#hasEffectOn"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#plan2-牵引"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">None</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#ImplementingPersonnel_plan1-救助">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_element.owl#associateWith"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#plan1-救助"/>
+    <rdfs:range rdf:resource="http://example.org/scenario_element.owl#plan1-人员"/>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Links plan1-救助 to plan1-人员</hasDescription>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">plan1-人员</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#ImplementingPersonnel_plan3-牵引">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_element.owl#associateWith"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#plan3-牵引"/>
+    <rdfs:range rdf:resource="http://example.org/scenario_element.owl#plan3-人员"/>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Links plan3-牵引 to plan3-人员</hasDescription>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">plan3-人员</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#lane">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://example.org/scenario_element.owl#Item"/>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Class type: 车道, Level: Item</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#VehicleTowing_plan1-救助">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_element.owl#hasEffectOn"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#plan1-救助"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">None</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#FacilityDamageStatus_facility">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#facility"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#boolean"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">0</hasValue>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Range type: Bool</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#BehaviorType_plan2-救助">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#plan2-救助"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">救助</hasValue>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Range type: Enum</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#InvolvedMaterials_plan2-救助">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_element.owl#associateWith"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#plan2-救助"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">None</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#TrafficVolume_Road">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#Road"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#decimal"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">None</hasValue>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Range type: Real</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#VehicleCollision_HazardVehicle">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_element.owl#hasEffectOn"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#HazardVehicle"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">None</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#PersonnalRescue_plan3-牵引">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_element.owl#hasEffectOn"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#plan3-牵引"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">None</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#plan2">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://example.org/scenario_element.owl#ResponsePlanElement"/>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Class type: 应急预案, Level: Entity</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#ImplementationCondition_plan3-抢修">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#plan3-抢修"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#boolean"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">True</hasValue>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Range type: Bool</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario.owl#SafetyFactors">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://example.org/scenario.owl#ResilienceInfluentialFactors"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#plan3-牵引">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://example.org/scenario_element.owl#ResponsePlanElement"/>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Class type: 应急行为, Level: Entity</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#Firefighting_plan3-抢修">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_element.owl#hasEffectOn"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#plan3-抢修"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">None</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#NumofLane_AffectedRoad">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#AffectedRoad"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#decimal"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">3</hasValue>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Range type: Real</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#HazardousMaterialDisposal_plan3-牵引">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_element.owl#hasEffectOn"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#plan3-牵引"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">None</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#plan2-牵引">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://example.org/scenario_element.owl#ResponsePlanElement"/>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Class type: 应急行为, Level: Entity</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#RoadControl_plan2-牵引">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_element.owl#hasEffectOn"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#plan2-牵引"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">None</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#InvolvedMaterials_plan3-牵引">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_element.owl#associateWith"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#plan3-牵引"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">None</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#HasResource_plan1">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_element.owl#associateWith"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#plan1"/>
+    <rdfs:range rdf:resource="http://example.org/scenario_element.owl#plan1-人员"/>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Links plan1 to plan1-人员</hasDescription>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">plan1-人员</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#RoadRepair_plan3-牵引">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_element.owl#hasEffectOn"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#plan3-牵引"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">None</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario.owl#influencedBy">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario.owl#Scenario"/>
+    <rdfs:range rdf:resource="http://example.org/scenario.owl#ResilienceInfluentialFactors"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/emergency.owl#EmergencyPhase">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#PersonnalRescue_plan2-救助">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_element.owl#hasEffectOn"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#plan2-救助"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">None</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#passenger">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://example.org/scenario_element.owl#Item"/>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Class type: 人类, Level: Item</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#VehiclePassengers_HazardVehicle">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_element.owl#consistComposition"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#HazardVehicle"/>
+    <rdfs:range rdf:resource="http://example.org/scenario_element.owl#passenger"/>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Links HazardVehicle to passenger</hasDescription>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">passenger</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario.owl#disposalDuration">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario.owl#TimeFactors"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#EmergencyVehicles_plan2-救助">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_element.owl#associateWith"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#plan2-救助"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">None</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario.owl#involvesElement">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario.owl#Scenario"/>
+    <rdfs:range rdf:resource="http://example.org/scenario.owl#InvolvedScenarioElement"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#RoadConstrucetionCondition_Road">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#Road"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#boolean"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">0</hasValue>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Range type: Bool</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#HazardousMaterialDisposal_plan2-救助">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_element.owl#hasEffectOn"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#plan2-救助"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">None</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#DesignedSpeed_lane">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#lane"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#decimal"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">None</hasValue>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Range type: Real</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#InvolvedMaterials_plan1-救助">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_element.owl#associateWith"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#plan1-救助"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">None</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#AbnormalSpeedCondition_HazardVehicle">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#HazardVehicle"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#boolean"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">0</hasValue>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Range type: Bool</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#ResourceType_plan3-人员">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#plan3-人员"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">牵引人员</hasValue>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Range type: Enum</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#VehicleTowing_plan2-救助">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_element.owl#hasEffectOn"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#plan2-救助"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">None</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#PersonnalRescue_plan1-救助">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_element.owl#hasEffectOn"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#plan1-救助"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">None</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#HasResource_plan2">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_element.owl#associateWith"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#plan2"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">plan2-人员, plan2-人员</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#IncludedLanes_AffectedRoad">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_element.owl#consistComposition"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#AffectedRoad"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">None</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#Location_plan2-人员">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#plan2-人员"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">上海市黄浦区打浦桥街道卢湾都市型工业楼宇(黄陂南路) (31.212311,121.477954)</hasValue>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Range type: String</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#HazardVehicle">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://example.org/scenario_element.owl#HazardElement"/>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Class type: 车辆, Level: Entity</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#VehicleDeparture_HazardVehicle">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_element.owl#hasEffectOn"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#HazardVehicle"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">None</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/emergency.owl#Emergency">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#DrivingRoadSegment_AffectedVehicle">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_element.owl#associateWith"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#AffectedVehicle"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">None</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#VehicleTowing_plan3-救助">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_element.owl#hasEffectOn"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#plan3-救助"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">None</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#TargetOfImplementation_plan1-救助">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_element.owl#associateWith"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#plan1-救助"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">None</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#plan3-救助">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://example.org/scenario_element.owl#ResponsePlanElement"/>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Class type: 应急行为, Level: Entity</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#ResponsePlanElement">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://example.org/scenario_element.owl#ScenarioElement"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#IncludedLanes_Road">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_element.owl#consistComposition"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#Road"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">None</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#TargetOfImplementation_plan3-牵引">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_element.owl#associateWith"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#plan3-牵引"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">None</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#Firefighting_plan2-牵引">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_element.owl#hasEffectOn"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#plan2-牵引"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">None</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#DamageCondition_AffectedRoad">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#AffectedRoad"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#boolean"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">true</hasValue>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Range type: Bool</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario.owl#ResilienceInfluentialFactors">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#RoadName_AffectedRoad">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#AffectedRoad"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">The North-south Viaduct</hasValue>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Range type: String</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#VehicleSpeed_AffectedVehicle">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#AffectedVehicle"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#decimal"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">None</hasValue>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Range type: Real</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#VehicleOverturn_HazardVehicle">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_element.owl#hasEffectOn"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#HazardVehicle"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">None</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#EmergencyVehicles_plan2-牵引">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_element.owl#associateWith"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#plan2-牵引"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">None</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#drivingDirection_HazardVehicle">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#HazardVehicle"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">forward</hasValue>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Range type: Enum</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario.owl#casualties">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario.owl#SafetyFactors"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#boolean"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">0</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario.owl#AdaptionScenario">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://example.org/scenario.owl#Scenario"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#plan3-人员">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://example.org/scenario_element.owl#ResponsePlanElement"/>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Class type: 应急资源, Level: Entity</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/emergency.owl">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Ontology"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#InvolvedMaterials_plan2-牵引">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_element.owl#associateWith"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#plan2-牵引"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">None</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#position_HazardVehicle">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#HazardVehicle"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">ND569</hasValue>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Range type: String</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#Duration_plan1-救助">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#plan1-救助"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#decimal"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">4</hasValue>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Range type: Real</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#RoadCleaning_plan2-救助">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_element.owl#hasEffectOn"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#plan2-救助"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">None</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#ResourceUsageCondition_plan1-人员">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#plan1-人员"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#boolean"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">0</hasValue>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Range type: Bool</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#IncludedFacilities_Road">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_element.owl#consistComposition"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#Road"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">None</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#WindForce_Meteorology">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#Meteorology"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#decimal"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">None</hasValue>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Range type: Real</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario.owl#EconomicFactors">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://example.org/scenario.owl#ResilienceInfluentialFactors"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#CasualtyCondition_passenger">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#passenger"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#boolean"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">0</hasValue>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Range type: Bool</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#VehicleSpeedChange_HazardVehicle">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_element.owl#hasEffectOn"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#HazardVehicle"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">None</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#Location_plan3-人员">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#plan3-人员"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">上海市黄浦区打浦桥街道卢湾都市型工业楼宇(黄陂南路) (31.212311,121.477954)</hasValue>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Range type: String</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario.owl#emergencyType">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario.owl#SafetyFactors"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Collision_Accident</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#consistComposition">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/emergency.owl#involvesScenario">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/emergency.owl#Emergency"/>
+    <rdfs:range rdf:resource="http://example.org/emergency.owl#InvolvedScenario"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#VehicleSpeed_HazardVehicle">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#HazardVehicle"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#decimal"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">None</hasValue>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Range type: Real</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario.owl#TimeFactors">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://example.org/scenario.owl#ResilienceInfluentialFactors"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#plan1-救助">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://example.org/scenario_element.owl#ResponsePlanElement"/>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Class type: 应急行为, Level: Entity</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario.owl#RecoveryScenario">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://example.org/scenario.owl#Scenario"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#Road">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://example.org/scenario_element.owl#AffectedElement"/>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Class type: 路段, Level: Entity</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#hasEffectOn">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#ScenarioElement">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#SpillCondition_HazardVehicle">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#HazardVehicle"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#boolean"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">true</hasValue>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Range type: Bool</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#RoadControl_plan3-救助">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:subPropertyOf rdf:resource="http://example.org/scenario_element.owl#hasEffectOn"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#plan3-救助"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">None</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#hasDescription">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#AnnotationProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario.owl#roadPassibility">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario.owl#FunctionFactors"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#boolean"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">1</hasValue>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#ResourceUsageCondition_plan3-人员">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:domain rdf:resource="http://example.org/scenario_element.owl#plan3-人员"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#boolean"/>
+    <hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#string">0</hasValue>
+    <hasDescription rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Range type: Bool</hasDescription>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario.owl#FunctionFactors">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://example.org/scenario.owl#ResilienceInfluentialFactors"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#AffectedElement">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:subClassOf rdf:resource="http://example.org/scenario_element.owl#ScenarioElement"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#hasValue">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#AnnotationProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Ontology"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/scenario_element.owl#associateWith">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+  </rdf:Description>
+</rdf:RDF>

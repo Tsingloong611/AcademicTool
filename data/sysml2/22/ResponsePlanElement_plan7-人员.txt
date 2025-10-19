@@ -1,0 +1,15 @@
+package ResponsePlanElement{
+
+    part def ResponseResource{}
+    part plan7-人员 : ResponseResource{
+        attribute ResourceType : Enum = "牵引人员";
+        attribute ResourceUsageCondition : Bool = "0";
+        attribute ResourceQuantityOrQuality : Real = "1";
+        attribute Location : String = "上海市静安区南京西路街道青海路上海文化广播影视集团有限公司(威海路) (31.229927,121.464565)";
+
+        ref part plan7-救助;
+
+
+    }
+
+}

@@ -1,0 +1,15 @@
+package ResponsePlanElement{
+
+    part def ResponseResource{}
+    part plan3-人员 : ResponseResource{
+        attribute ResourceType : Enum = "抢险人员";
+        attribute ResourceUsageCondition : Bool = "0";
+        attribute ResourceQuantityOrQuality : Real = "1";
+        attribute Location : String = "上海市青浦区练塘镇卉逸园林 (30.968948,121.007038)";
+
+        ref part plan3-抢修;
+
+
+    }
+
+}

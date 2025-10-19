@@ -1,0 +1,30 @@
+package AffectedElement{
+
+    part def AffectedElement{
+
+    item def Facility{
+    }
+
+    item def Lane{
+    }
+
+    part AffectedRoad : AffectedElement{
+        attribute RoadName : String = "The North-south Viaduct";
+        attribute RoadType : Enum = "mainRoad";
+        attribute NumberOfLanes : Real = "3";
+        attribute TrafficVolume : Real = null;
+        attribute SegmentStartStakeNumber : String = "ND569";
+        attribute SegmentEndStakeNumber : String = "ND569";
+        attribute DesignSpeed : Real = null;
+        attribute ClosureCondition : Bool = false;
+        attribute RoadDamageCondition : Bool = "0";
+        attribute PollutionCondition : Bool = true;
+        attribute RoadMaintenanceConditon : Bool = "0";
+        attribute RoadConstrucetionCondition : Bool = "0";
+        attribute DamageCondition : Bool = true;
+
+
+
+    }
+
+}

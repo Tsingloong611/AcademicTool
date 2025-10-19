@@ -1,0 +1,15 @@
+package ResponsePlanElement{
+
+    part def ResponseResource{}
+    part plan2-人员 : ResponseResource{
+        attribute ResourceType : Enum = "医生";
+        attribute ResourceUsageCondition : Bool = "0";
+        attribute ResourceQuantityOrQuality : Real = "1";
+        attribute Location : String = "上海市黄浦区淮海中路街道兴业路222号黄浦区人大常委会 (31.219505,121.472805)";
+
+        ref part plan2-救助;
+
+
+    }
+
+}

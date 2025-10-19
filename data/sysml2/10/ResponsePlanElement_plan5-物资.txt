@@ -1,0 +1,15 @@
+package ResponsePlanElement{
+
+    part def ResponseResource{}
+    part plan5-物资 : ResponseResource{
+        attribute ResourceType : Enum = "随车修理工具";
+        attribute ResourceUsageCondition : Bool = "0";
+        attribute ResourceQuantityOrQuality : Real = "1";
+        attribute Location : String = "上海市黄浦区瑞金二路街道复兴公园 (31.217596,121.469543)";
+
+        ref part plan5-抢修;
+
+
+    }
+
+}

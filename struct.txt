@@ -1,0 +1,85 @@
+Root/
+├── config.json
+├── controllers/
+│   ├── __init__.py
+│   └── scenario_controller.py
+├── data/
+│   ├── bn/
+│   ├── required_information/
+│   │   ├── expert_estimation_data.xlsx
+│   │   ├── expert_info_data.xlsx
+│   │   ├── road_position_information.xlsx
+│   │   └── root_prior_data.xlsx
+│   └── sysml2/
+├── database/
+│   ├── __init__.py
+│   ├── db_config.py
+│   └── seed_data.py
+├── evidence.log
+├── main.py
+├── models/
+│   ├── __init__.py
+│   └── models.py
+├── processing.log
+├── requirements.txt
+├── resources/
+│   ├── fonts/
+│   │   └── Roboto-Regular.ttf
+│   ├── icons/
+│   │   ├── add.png
+│   │   ├── checkbox_checked.png
+│   │   ├── delete.png
+│   │   ├── edit.png
+│   │   ├── eye.png
+│   │   ├── eye_off.png
+│   │   ├── location.png
+│   │   ├── zoom_in.png
+│   │   └── zoom_out.png
+│   └── styles/
+│       ├── global.qss
+│       ├── scenario_manager.qss
+│       ├── status_bar.qss
+│       └── widgets.qss
+├── result.json
+├── translations/
+│   ├── translations_en_US.qm
+│   ├── translations_en_US.ts
+│   ├── translations_zh_CN.qm
+│   └── translations_zh_CN.ts
+├── utils/
+│   ├── __init__.py
+│   ├── bn_svg_update.py
+│   ├── combinesysml2.py
+│   ├── createowlfromoriginjson.py
+│   ├── get_config.py
+│   ├── json2owl.py
+│   ├── json2sysml.py
+│   ├── owl2svg.py
+│   ├── parserowl.py
+│   ├── plan.py
+│   └── sysml2json.py
+└── views/
+    ├── __init__.py
+    ├── dialogs/
+    │   ├── __init__.py
+    │   ├── custom_error_dialog.py
+    │   ├── custom_information_dialog.py
+    │   ├── custom_input_dialog.py
+    │   ├── custom_question_dialog.py
+    │   ├── custom_select_dialog.py
+    │   ├── custom_warning_dialog.py
+    │   ├── entity_type_select.py
+    │   ├── missing_data_dialog.py
+    │   └── update_prior_dialog.py
+    ├── login_dialog.py
+    ├── main_window.py
+    ├── scenario_manager.py
+    ├── server_edit_dialog.py
+    ├── status_bar.py
+    └── tabs/
+        ├── __init__.py
+        ├── condition_setting.py
+        ├── element_setting.py
+        ├── model_generation.py
+        ├── model_transformation.py
+        └── tab_widget.py

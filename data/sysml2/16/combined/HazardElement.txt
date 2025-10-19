@@ -1,0 +1,103 @@
+package HazardElement{
+
+    part def HazardElement{}
+
+    action def VehicleMotion{
+        }
+
+    action def Collide{
+            in CollideCondition = true;
+            out DamageCondition = true;
+            out Casualty = true;
+        }
+
+    action def VehicleDeparture{
+        }
+
+    action def VehicleCollision{
+        }
+
+    action def VehicleTransport{
+        }
+
+    action def VehicleLaneChange{
+        }
+
+    action def Spill{
+            out SpillCondition = true;
+            out PullotedCondition = true;
+            out DetachedCondition = true;
+        }
+
+    action def VehicleTurning{
+        }
+
+    action def VehicleSpeedChange{
+        }
+
+    action def Explode{
+            out ExplodeCondition = true;
+        }
+
+    action def VehicleBreakdown{
+        }
+
+    action def VehicleOverturn{
+        }
+
+    action def VehicleExplosion{
+        }
+
+    action def VehicleSpillage{
+        }
+
+    state def HazardStates{
+            entry; then DriveState;
+            state DriveState;
+            accept Collide
+                then CollideState;
+            state CollideState;
+            accept Spill
+                then SpillState;
+            state SpillState;
+        }
+
+    item def VehiclePart{
+        }
+
+    item def VehicleLoad{
+        }
+
+    item def People{
+        }
+
+    part 3 : HazardElement{
+            attribute VehicleType : String = null;
+            attribute CollisionCondition : Bool = "0";
+            attribute CombustionCondition : Bool = "0";
+            attribute SpillCondition : Bool = "0";
+            attribute BreakdownCondition : Bool = "0";
+            attribute RollOverCondition : Bool = "0";
+            attribute AbnormalSpeedCondition : Bool = "0";
+            attribute IIIegalLaneOccupationCondition : Bool = "0";
+            attribute DrivingDirection : Enum = "正向";
+            attribute VehiclePosition : String = null;
+            attribute VehicleSpeed : Real = null;
+            attribute EmergencyPeriod : Enum = "上午";
+
+
+            perform action VehicleMotion;
+            perform action VehicleTransport;
+            perform action VehicleDeparture;
+            perform action VehicleExplosion;
+            perform action VehicleSpillage;
+            perform action VehicleOverturn;
+            perform action VehicleBreakdown;
+            perform action VehicleCollision;
+            perform action VehicleTurning;
+            perform action VehicleLaneChange;
+            perform action VehicleSpeedChange;
+
+        }
+
+}

@@ -1,0 +1,97 @@
+package AffectedElement{
+
+    part def AffectedElement{}
+
+    action def Collide {
+            in CollideCondition = true;
+            out DamageCondition = true;
+            out Casualty = true;
+        }
+
+    action def Explode {
+            out ExplodeCondition = true;
+        }
+
+    action def Spill {
+            out SpillCondition = true;
+            out PullotedCondition = true;
+            out DetachedCondition = true;
+        }
+
+    state def AffectedStates{
+            entry; then DrivingState;
+            state DrivingState;
+            accept Collide
+                then CollidedState;
+            state CollidedState;
+            accept Explode
+                then ExplodeState;
+            state ExplodeState;
+        }
+
+    item def Lane{
+        }
+
+    item def VehiclePart{
+        }
+
+    item def People{
+        }
+
+    item def VehicleLoad{
+        }
+
+    item def Facility{
+        }
+
+    part AffectedRoad : AffectedElement{
+            attribute RoadName : String = "The North-south Viaduct";
+            attribute RoadType : Enum = "mainRoad";
+            attribute NumberOfLanes : Real = "3";
+            attribute TrafficVolume : Real = null;
+            attribute SegmentStartStakeNumber : String = "ND569";
+            attribute SegmentEndStakeNumber : String = "ND569";
+            attribute DesignSpeed : Real = null;
+            attribute ClosureCondition : Bool = false;
+            attribute RoadDamageCondition : Bool = "0";
+            attribute PollutionCondition : Bool = true;
+            attribute RoadMaintenanceConditon : Bool = "0";
+            attribute RoadConstrucetionCondition : Bool = "0";
+            attribute DamageCondition : Bool = true;
+
+
+
+        }
+
+    part AffectedVehicle : AffectedElement{
+            attribute VehicleType : String = "car";
+            attribute CombustionCondition : Bool = "0";
+            attribute SpillCondition : Bool = true;
+            attribute DrivingDirection : Enum = "forward";
+            attribute VehiclePosition : String = "ND569";
+            attribute VehicleSpeed : Real = null;
+
+            item passenger : People;
+
+
+        }
+
+    part Road : AffectedElement{
+            attribute RoadName : String = null;
+            attribute RoadType : Enum = "主路";
+            attribute NumberOfLanes : Real = null;
+            attribute TrafficVolume : Real = null;
+            attribute SegmentStartStakeNumber : String = null;
+            attribute SegmentEndStakeNumber : String = null;
+            attribute DesignSpeed : Real = null;
+            attribute ClosureCondition : Bool = "0";
+            attribute RoadDamageCondition : Bool = "0";
+            attribute PollutionCondition : Bool = "0";
+            attribute RoadMaintenanceConditon : Bool = "0";
+            attribute RoadConstrucetionCondition : Bool = "0";
+
+
+
+        }
+
+}

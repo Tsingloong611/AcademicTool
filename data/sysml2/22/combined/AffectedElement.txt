@@ -1,0 +1,85 @@
+package AffectedElement{
+
+    part def AffectedElement{}
+
+    action def VehicleTransport{
+        }
+
+    action def VehicleMotion{
+        }
+
+    action def VehicleExplosion{
+        }
+
+    action def Explode {
+            out ExplodeCondition = true;
+        }
+
+    action def Spill {
+            out SpillCondition = true;
+            out PullotedCondition = true;
+            out DetachedCondition = true;
+        }
+
+    action def VehicleSpillage{
+        }
+
+    action def VehicleDeparture{
+        }
+
+    action def Collide {
+            in CollideCondition = true;
+            out DamageCondition = true;
+            out Casualty = true;
+        }
+
+    action def VehicleSpeedChange{
+        }
+
+    state def AffectedStates{
+            entry; then DrivingState;
+            state DrivingState;
+            accept Collide
+                then CollidedState;
+            state CollidedState;
+            accept Explode
+                then ExplodeState;
+            state ExplodeState;
+        }
+
+    item def People{
+        }
+
+    item def VehiclePart{
+        }
+
+    item def VehicleLoad{
+        }
+
+    part passenger : AffectedElement{
+            attribute CasualtyCondition : Bool = "1";
+
+
+
+        }
+
+    part AffectedVehicle : AffectedElement{
+            attribute VehicleType : String = "car";
+            attribute CombustionCondition : Bool = "0";
+            attribute SpillCondition : Bool = "0";
+            attribute DrivingDirection : Enum = "forward";
+            attribute VehiclePosition : String = "ND569";
+            attribute VehicleSpeed : Real = null;
+            attribute DamageCondition : Bool = true;
+
+
+            perform action VehicleMotion;
+            perform action VehicleTransport;
+            perform action VehicleDeparture;
+            perform action VehicleExplosion;
+            perform action VehicleSpillage;
+            perform action VehicleSpeedChange;
+
+        }
+
+}

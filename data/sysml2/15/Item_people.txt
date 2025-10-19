@@ -1,0 +1,12 @@
+package Item{
+
+    part def Item{
+
+    part people : Item{
+        attribute CasualtyCondition : Bool = "1";
+
+
+
+    }
+
+}

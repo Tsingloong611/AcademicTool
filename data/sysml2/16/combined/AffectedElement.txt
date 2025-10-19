@@ -1,0 +1,32 @@
+package AffectedElement{
+
+    part def AffectedElement{}
+
+    action def Collide {
+            in CollideCondition = true;
+            out DamageCondition = true;
+            out Casualty = true;
+        }
+
+    action def Explode {
+            out ExplodeCondition = true;
+        }
+
+    action def Spill {
+            out SpillCondition = true;
+            out PullotedCondition = true;
+            out DetachedCondition = true;
+        }
+
+    state def AffectedStates{
+            entry; then DrivingState;
+            state DrivingState;
+            accept Collide
+                then CollidedState;
+            state CollidedState;
+            accept Explode
+                then ExplodeState;
+            state ExplodeState;
+        }
+
+}

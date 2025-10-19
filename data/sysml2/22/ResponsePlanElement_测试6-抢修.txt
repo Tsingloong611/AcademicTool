@@ -1,0 +1,42 @@
+package ResponsePlanElement{
+
+    part def ResponseAction{}
+    action def Firefighting{
+    }
+
+    action def PersonnalRescue{
+    }
+
+    action def VehicleTowing{
+    }
+
+    action def RoadCleaning{
+    }
+
+    action def RoadRepair{
+    }
+
+    action def RoadControl{
+    }
+
+    action def HazardousMaterialDisposal{
+    }
+
+    part 测试6-抢修 : ResponseAction{
+        attribute BehaviorType : Enum = "抢修";
+        attribute ImplementationCondition : Bool = true;
+        attribute Duration : Real = "15";
+
+        ref part 测试6-物资;
+
+        perform action Firefighting;
+        perform action PersonnalRescue;
+        perform action VehicleTowing;
+        perform action RoadCleaning;
+        perform action RoadRepair;
+        perform action RoadControl;
+        perform action HazardousMaterialDisposal;
+
+    }
+
+}

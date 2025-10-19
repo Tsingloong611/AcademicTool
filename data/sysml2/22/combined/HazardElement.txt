@@ -1,0 +1,105 @@
+package HazardElement{
+
+    part def HazardElement{}
+
+    action def Explode{
+            out ExplodeCondition = true;
+        }
+
+    action def VehicleMotion{
+        }
+
+    action def VehicleTransport{
+        }
+
+    action def VehicleExplosion{
+        }
+
+    action def Spill{
+            out SpillCondition = true;
+            out PullotedCondition = true;
+            out DetachedCondition = true;
+        }
+
+    action def VehicleCollision{
+        }
+
+    action def VehicleBreakdown{
+        }
+
+    action def VehicleLaneChange{
+        }
+
+    action def VehicleOverturn{
+        }
+
+    action def VehicleSpillage{
+        }
+
+    action def VehicleTurning{
+        }
+
+    action def VehicleDeparture{
+        }
+
+    action def Collide{
+            in CollideCondition = true;
+            out DamageCondition = true;
+            out Casualty = true;
+        }
+
+    action def VehicleSpeedChange{
+        }
+
+    state def HazardStates{
+            entry; then DriveState;
+            state DriveState;
+            accept Collide
+                then CollideState;
+            state CollideState;
+            accept Spill
+                then SpillState;
+            state SpillState;
+        }
+
+    item def People{
+        }
+
+    item def VehiclePart{
+        }
+
+    item def VehicleLoad{
+        }
+
+    part HazardVehicle : HazardElement{
+            attribute VehicleType : String = "truck";
+            attribute CollisionCondition : Bool = true;
+            attribute CombustionCondition : Bool = "0";
+            attribute SpillCondition : Bool = true;
+            attribute BreakdownCondition : Bool = "0";
+            attribute RollOverCondition : Bool = "0";
+            attribute AbnormalSpeedCondition : Bool = "0";
+            attribute IIIegalLaneOccupationCondition : Bool = "0";
+            attribute DrivingDirection : Enum = "forward";
+            attribute VehiclePosition : String = "ND569";
+            attribute VehicleSpeed : Real = null;
+            attribute EmergencyPeriod : Enum = "上午";
+
+            item passenger : People;
+            ref part Road;
+
+            perform action VehicleMotion;
+            perform action VehicleTransport;
+            perform action VehicleDeparture;
+            perform action VehicleExplosion;
+            perform action VehicleSpillage;
+            perform action VehicleOverturn;
+            perform action VehicleBreakdown;
+            perform action VehicleCollision;
+            perform action VehicleTurning;
+            perform action VehicleLaneChange;
+            perform action VehicleSpeedChange;
+
+        }
+
+}

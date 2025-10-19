@@ -1,0 +1,12 @@
+package AffectedElement{
+
+    part def AffectedElement{
+
+    part people : AffectedElement{
+        attribute CasualtyCondition : Bool = "1";
+
+
+
+    }
+
+}
