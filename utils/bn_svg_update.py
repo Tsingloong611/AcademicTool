@@ -746,6 +746,24 @@ class ScenarioResilience:
                   encoding='utf-8') as f:
             json.dump(node_data, f, indent=4, ensure_ascii=False)
 
+    def set_soft_evidence(self, node_name: str, pmf: dict):
+        """
+        pmf 如 {'Open':0.2,'Partial':0.5,'Closed':0.3}
+        将其作为 VirtualEvidence 注入，不会把先验硬改成单点状态。
+        """
+        import numpy as np
+        import pyAgrum as gum
+
+        if self.ie is None:
+            self.ie = gum.LazyPropagation(self.bn)
+        nid = self.bn.idFromName(node_name)
+        labels = list(self.bn.variable(nid).labels())
+        vec = np.array([pmf.get(lbl, 0.0) for lbl in labels], dtype=float)
+        s = vec.sum()
+        vec = vec / (s if s > 1e-12 else 1.0)
+        ve = gum.VirtualEvidence(self.bn, nid, vec)
+        self.ie.addEvidence(ve)
+
 
 class NetworkVisualizer:
     """贝叶斯网络可视化类"""

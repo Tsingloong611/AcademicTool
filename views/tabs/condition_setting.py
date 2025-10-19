@@ -12,7 +12,7 @@ from PySide6.QtWidgets import (
     QApplication, QWidget, QLabel, QCheckBox, QHBoxLayout, QVBoxLayout,
     QGroupBox, QPushButton, QSizePolicy, QTableWidget, QTableWidgetItem,
     QDialog, QHeaderView, QStackedLayout, QSpinBox, QComboBox, QLineEdit,
-    QListWidget, QTextBrowser, QStyleOptionViewItem, QStyledItemDelegate
+    QListWidget, QTextBrowser, QStyleOptionViewItem, QStyledItemDelegate, QMessageBox
 )
 from PySide6.QtCore import Qt, Signal, QEvent, QObject, Slot, QUrl
 from PySide6.QtGui import QFont, QPainter, QPen, QColor, QIcon
@@ -28,6 +28,18 @@ from views.dialogs.custom_input_dialog import CustomInputDialog
 from views.dialogs.custom_question_dialog import CustomQuestionDialog
 from views.dialogs.custom_warning_dialog import CustomWarningDialog
 from views.dialogs.llm_dialog import AskLLM
+# --- 新增 import（若已有请去重） ---
+import os, json
+from typing import Dict, List, Tuple
+from PySide6.QtWidgets import QPushButton, QHBoxLayout, QVBoxLayout, QWidget, QDialog, QMessageBox
+from PySide6.QtCore import Slot
+
+from sqlalchemy.orm import Session
+from models.models import Entity, PosterioriData, BayesNode, BayesNodeState
+
+# matplotlib 内嵌到 Qt
+from matplotlib.figure import Figure
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 
 ZH_TO_EN = {
     # Behaviors
@@ -920,6 +932,12 @@ class ConditionSettingTab(QWidget):
         self.delete_resource_btn = QPushButton(self.tr("删除"))
         self.execute_btn = QPushButton(self.tr("执行推演"))
         self.ask_ai_btn = QPushButton(self.tr("智能问答"))
+        # 这里直接加入“分阶段推演与可视化”按钮
+        self.stagewise_btn = QPushButton(self.tr("分阶段推演与可视化"))
+        if get_cfg()["i18n"]["language"] == "en_US":
+            self.stagewise_btn.setText("Stagewise Inference & Plots")
+        self.stagewise_btn.setFixedWidth(160)
+        self.stagewise_btn.clicked.connect(self.on_stagewise_clicked)
 
         # 兼容打包后路径（_MEIPASS）或开发路径
         if getattr(sys, 'frozen', False):
@@ -954,6 +972,7 @@ class ConditionSettingTab(QWidget):
         btn_hbox.addWidget(self.delete_resource_btn)
         btn_hbox.addWidget(self.execute_btn)
         btn_hbox.addWidget(self.ask_ai_btn)
+        btn_hbox.addWidget(self.stagewise_btn)
         self.ask_ai_btn.setToolTip(self.tr("智能问答功能"))
         self.setStyleSheet("""
             QPushButton:disabled {
@@ -1929,6 +1948,689 @@ class ConditionSettingTab(QWidget):
         else:
             ask_ai_dialog = AskLLM(self)
             ask_ai_dialog.exec_()
+
+    def run_stagewise_inference_for_plan(self, plan_name: str):
+        """
+        按 t0..tK 循环：收集→分阶段证据→单次推演→读取 posterior_probabilities.json → 按阶段写 posteriori_data
+        依赖：
+        - self.format_plan_as_json / self.create_plan / PlanDataCollector / convert_to_evidence
+        - update_with_evidence(self.analyzer, evidence, output_dir)
+        - self.new_plan_generator.upsert_posterior_probability(...)
+        """
+        import os, json
+        from utils.plan import PlanDataCollector, convert_to_evidence
+        from utils.get_config import get_cfg
+
+        # 1) 保存/更新 plan
+        plan_data = self.format_plan_as_json(plan_name)
+        self.create_plan(plan_name, plan_data)
+
+        # 2) 数据采集器与输出目录
+        collector = PlanDataCollector(self.session, scenario_id=self.scenario_id)
+        output_dir = os.path.abspath(os.path.join(
+            os.path.dirname(__file__), "..", "..", "bn_output", plan_name
+        ))
+        os.makedirs(output_dir, exist_ok=True)
+
+        # 3) 阶段列表
+        stages = get_cfg().get('time_stages', ["t0", "t1", "t2", "t3"])
+
+        last_post = {}
+
+        # 4) 循环执行
+        for t in stages:
+            # 4.1 采集原始数据
+            collected_data = collector.collect_all_data(plan_name=plan_name)
+
+            # 4.2 分阶段证据
+            evidence = convert_to_evidence(collected_data, time_stage=t)
+
+            # 4.3 调用你原有的一次性推演（会生成 posterior_probabilities.json）
+            update_with_evidence(self.analyzer, evidence, output_dir)
+
+            # 4.4 读取 JSON 并写库（带 time_stage）
+            post_file = os.path.join(output_dir, "posterior_probabilities.json")
+            posterior_probabilities = {}
+            if os.path.exists(post_file):
+                with open(post_file, 'r', encoding='utf-8') as f:
+                    posterior_probabilities = json.load(f)
+                    last_post = posterior_probabilities
+
+            self.new_plan_generator.upsert_posterior_probability(
+                plan_name,
+                posterior_probabilities,
+                time_stage=t
+            )
+
+        # 5) 刷新 UI（沿用你原方法）
+        if last_post:
+            self.posterior_probabilities = self.convert_json_to_posterior_probabilities(last_post)
+            self.update_evidence_table()
+
+    def attach_stagewise_button(self):
+        """
+        在现有 UI 加一个按钮：分阶段推演与可视化
+        - 放到右侧或底部工具区；如布局变量不同，改 self.<layout名>.addWidget 即可
+        """
+        try:
+            # 你的页面一般有某个操作区布局；这里尝试常见命名
+            layout = getattr(self, "buttonLayout", None) \
+                     or getattr(self, "rightButtonLayout", None) \
+                     or getattr(self, "toolLayout", None) \
+                     or None
+            if layout is None:
+                # 兜底：加到主 layout
+                layout = getattr(self, "layout", None) or getattr(self, "mainLayout", None)
+            if layout is None:
+                # 再兜底：自己搞一个水平布局插到当前 widget
+                layout = QHBoxLayout(self)
+                self.setLayout(layout)
+
+            self.btn_stagewise = QPushButton("分阶段推演与可视化")
+            self.btn_stagewise.clicked.connect(self.on_stagewise_clicked)
+            layout.addWidget(self.btn_stagewise)
+        except Exception as e:
+            CustomWarningDialog(
+                self.tr("错误"),
+                self.tr("添加分阶段推演按钮时出现错误：") + str(e),
+                parent=self
+            ).open()
+
+    @Slot()
+    def on_stagewise_clicked(self):
+        """
+        点击“分阶段推演与可视化”后，先让用户输入/确认方案名，再执行分阶段推演与绘图
+        """
+        try:
+            dlg = CustomInputDialog(self.tr("预案名称设置"), self.tr("请输入预案名字:"), parent=self)
+            # 输入完成后回调
+            dlg.accepted_text.connect(self.on_stagewise_name_input)
+            dlg.open()
+        except Exception as e:
+            QMessageBox.critical(self, self.tr("错误"), self.tr("无法打开输入对话框：") + str(e))
+
+    def on_stagewise_name_input(self, plan_name: str):
+        """
+        收到用户输入的方案名 → 运行分阶段推演 → 读取并绘图
+        """
+        plan_name = (plan_name or "").strip()
+        if not plan_name:
+            CustomWarningDialog(self.tr("提示"), self.tr("预案名字不能为空。"), parent=self).open()
+            return
+
+        try:
+            # 运行分阶段推演（内部会保存/更新方案并分阶段写库）
+            # self.run_stagewise_inference_for_plan(plan_name)
+            self.run_standard_dbn_for_plan(plan_name)
+
+            # 绘制分阶段结果
+            self.show_stagewise_plots(plan_name)
+
+            # 若需要，顺带刷新右下角“推演结果”列表
+            try:
+                self.load_saved_plans()
+            except Exception:
+                pass
+
+            CustomInformationDialog(
+                self.tr("成功"),
+                self.tr("预案 '") + plan_name + self.tr("' 分阶段推演与可视化已完成。"),
+                parent=self
+            ).open()
+
+        except Exception as e:
+            QMessageBox.critical(self, self.tr("错误"), self.tr("分阶段推演执行失败：") + str(e))
+
+    def show_stagewise_plots(self, plan_name: str):
+        """
+        展示两张图：韧性概率趋势图 + 三类能力对比图
+        """
+        try:
+            session: Session = self.session
+            from models.models import BayesNode, BayesNodeState, PosterioriData, Entity
+            import numpy as np
+            from matplotlib import rcParams
+
+            # 配置中文字体支持
+            rcParams['font.sans-serif'] = ['SimHei', 'DejaVu Sans', 'Arial Unicode MS']
+            rcParams['axes.unicode_minus'] = False
+
+            print(f"\n=== 调试：查询 plan_name='{plan_name}' 的后验数据 ===")
+
+            # 1. 确认 plan 存在
+            plan = session.query(Entity).filter(Entity.entity_name == plan_name).one_or_none()
+            if not plan:
+                print(f"错误：找不到 plan '{plan_name}'")
+                QMessageBox.warning(self, "错误", f"找不到预案 '{plan_name}'")
+                return
+            print(f"✓ Plan ID: {plan.entity_id}")
+
+            # 2. 查看该 plan 的所有后验数据
+            all_post = (session.query(PosterioriData, BayesNodeState, BayesNode)
+                        .join(BayesNodeState, PosterioriData.bayes_node_state_id == BayesNodeState.bayes_node_state_id)
+                        .join(BayesNode, BayesNodeState.bayes_node_id == BayesNode.bayes_node_id)
+                        .filter(PosterioriData.plan_id == plan.entity_id)
+                        .all())
+
+            print(f"✓ 找到 {len(all_post)} 条后验数据记录")
+
+            # 按节点分组显示
+            by_node = {}
+            for post, state, node in all_post:
+                node_name = node.bayes_node_name
+                state_name = state.bayes_node_state_name
+                prob = post.posterior_probability
+                time_stage = getattr(post, 'time_stage', 't0')
+
+                key = (node_name, time_stage)
+                if key not in by_node:
+                    by_node[key] = {}
+                by_node[key][state_name] = prob
+
+            print("\n数据库中的实际数据：")
+            for (node_name, time_stage), states in sorted(by_node.items()):
+                print(f"  {node_name} @ {time_stage}: {states}")
+
+            # 执行查询
+            print("\n=== 执行查询 ===")
+            stages_cfg = get_cfg().get('time_stages', None)
+
+            res_line = query_stagewise_state_prob(
+                session,
+                plan_name,
+                RESILIENCE_NODE_CANDIDATES,
+                HIGH_LABEL_CANDIDATES
+            )
+            print(f"Resilience 查询结果: {res_line}")
+
+            caps = query_stagewise_high_caps(
+                session,
+                plan_name,
+                ["Absorption", "Adaptation", "Recovery"],
+                HIGH_LABEL_CANDIDATES
+            )
+            print(f"Capacities 查询结果: {caps}")
+
+            if not res_line and not caps:
+                QMessageBox.information(
+                    self, self.tr("提示"),
+                    self.tr("未查询到可绘制的后验数据。请查看控制台输出的调试信息。")
+                )
+                return
+
+            # 统一阶段顺序
+            stages = stages_cfg or sorted(set(list(res_line.keys()) + list(caps.keys())))
+            if not stages:
+                stages = ["t0"]
+
+            # 时间阶段的详细标签映射
+            stage_labels = {
+                't0': 'T0\n事故前\n(基线状态)',
+                't1': 'T1\n事故发生\n(冲击状态)',
+                't2': 'T2\n资源到位\n(响应阶段)',
+                't3': 'T3\n处置完成\n(恢复阶段)'
+            }
+
+            # 获取详细标签
+            detailed_stages = [stage_labels.get(s, s) for s in stages]
+
+            res_y = [float(res_line.get(s, 0.0)) for s in stages]
+            cap_nodes = ["Absorption", "Adaptation", "Recovery"]
+            cap_series = {cap: [float(caps.get(s, {}).get(cap, 0.0)) for s in stages] for cap in cap_nodes}
+
+            # ==================== 创建优化后的图表 ====================
+            dlg = QDialog(self)
+            dlg.setWindowTitle(self.tr(f"应急预案韧性评估分析 - {plan_name}"))
+            vbox = QVBoxLayout(dlg)
+
+            # ========== 图1：韧性概率趋势图（优化版）==========
+            fig1 = Figure(figsize=(10, 4.5), dpi=100)
+            ax1 = fig1.add_subplot(111)
+
+            # 绘制折线和数据点
+            x_pos = np.arange(len(stages))
+            line = ax1.plot(x_pos, res_y, marker="o", markersize=10,
+                            linewidth=3, color='#2E86AB',
+                            label='系统韧性水平', markerfacecolor='white',
+                            markeredgewidth=2.5, markeredgecolor='#2E86AB',
+                            zorder=3)
+
+            # 添加数值标注（优化位置避免重叠）
+            for i, (stage, prob) in enumerate(zip(stages, res_y)):
+                # 根据数值大小调整标注位置
+                y_offset = 15 if i % 2 == 0 else 25
+                ax1.annotate(f'{prob:.3f}',
+                             xy=(i, prob),
+                             xytext=(0, y_offset),
+                             textcoords='offset points',
+                             ha='center',
+                             fontsize=10,
+                             fontweight='bold',
+                             bbox=dict(boxstyle='round,pad=0.4',
+                                       facecolor='white',
+                                       edgecolor='#2E86AB',
+                                       alpha=0.95,
+                                       linewidth=1.5),
+                             zorder=4)
+
+            # 添加阴影区域表示韧性水平范围
+            ax1.fill_between(x_pos, 0, res_y, alpha=0.15, color='#2E86AB', zorder=1)
+
+            # 样式优化
+            ax1.set_title('系统韧性演化曲线 - P(韧性=较好|证据)',
+                          fontsize=14, fontweight='bold', pad=20)
+            ax1.set_xlabel('应急响应时间阶段', fontsize=12, fontweight='bold')
+            ax1.set_ylabel('后验概率', fontsize=12, fontweight='bold')
+            ax1.set_ylim(-0.05, 1.15)  # 增大上限以容纳标注
+            ax1.set_xlim(-0.3, len(stages) - 0.7)
+            ax1.set_xticks(x_pos)
+            ax1.set_xticklabels(detailed_stages, fontsize=9)
+            ax1.grid(True, alpha=0.3, linestyle='--', linewidth=0.8, zorder=0)
+            ax1.legend(loc='upper left', fontsize=11, framealpha=0.95,
+                       edgecolor='gray', fancybox=True)
+
+            # 设置背景色
+            ax1.set_facecolor('#F8F9FA')
+            fig1.patch.set_facecolor('white')
+
+            fig1.tight_layout()
+            canvas1 = FigureCanvas(fig1)
+            vbox.addWidget(canvas1)
+
+            # ========== 图2：三类能力分组条形图（优化版）==========
+            fig2 = Figure(figsize=(10, 4.5), dpi=100)
+            ax2 = fig2.add_subplot(111)
+
+            x = np.arange(len(stages))
+            width = 0.25
+
+            # 定义更美观的颜色方案
+            colors = {
+                'Absorption': '#A23B72',
+                'Adaptation': '#F18F01',
+                'Recovery': '#6A994E'
+            }
+
+            # 中文标签
+            cap_labels = {
+                'Absorption': '吸收能力',
+                'Adaptation': '适应能力',
+                'Recovery': '恢复能力'
+            }
+
+            # 绘制分组条形图
+            for i, cap in enumerate(cap_nodes):
+                bars = ax2.bar(x + (i - 1) * width,
+                               cap_series[cap],
+                               width,
+                               label=cap_labels[cap],
+                               color=colors[cap],
+                               alpha=0.85,
+                               edgecolor='white',
+                               linewidth=1.5,
+                               zorder=3)
+
+                # 在条形图上添加数值标注（智能定位）
+                for j, (bar, val) in enumerate(zip(bars, cap_series[cap])):
+                    height = bar.get_height()
+                    # 所有值都显示，小值放在条形外部
+                    if height > 0.15:
+                        # 较大值：放在条形内部
+                        v_pos = height / 2
+                        color = 'white'
+                        weight = 'bold'
+                    else:
+                        # 较小值：放在条形上方
+                        v_pos = height + 0.03
+                        color = colors[cap]
+                        weight = 'normal'
+
+                    ax2.text(bar.get_x() + bar.get_width() / 2., v_pos,
+                             f'{val:.2f}',
+                             ha='center', va='center' if height > 0.15 else 'bottom',
+                             fontsize=9, fontweight=weight, color=color,
+                             zorder=4)
+
+            # 样式优化
+            ax2.set_title('三类韧性能力后验概率对比 - P(能力=较好|证据)',
+                          fontsize=14, fontweight='bold', pad=20)
+            ax2.set_xlabel('应急响应时间阶段', fontsize=12, fontweight='bold')
+            ax2.set_ylabel('后验概率', fontsize=12, fontweight='bold')
+            ax2.set_xticks(x)
+            ax2.set_xticklabels(detailed_stages, fontsize=9)
+            ax2.set_ylim(0, 1.1)
+            ax2.legend(loc='upper right', fontsize=11, framealpha=0.95,
+                       ncol=3, edgecolor='gray', fancybox=True)
+            ax2.grid(True, axis="y", alpha=0.3, linestyle='--', linewidth=0.8, zorder=0)
+
+            # 设置背景色
+            ax2.set_facecolor('#F8F9FA')
+            fig2.patch.set_facecolor('white')
+
+            fig2.tight_layout()
+            canvas2 = FigureCanvas(fig2)
+            vbox.addWidget(canvas2)
+
+            # 设置对话框
+            dlg.setLayout(vbox)
+            dlg.resize(1000, 800)
+            dlg.exec()
+
+        except Exception as e:
+            import traceback
+            error_msg = f"绘图失败：{str(e)}\n\n详细信息：\n{traceback.format_exc()}"
+            print(error_msg)
+            QMessageBox.critical(self, self.tr("错误"), self.tr("绘图失败：") + str(e))
+
+    # ---- 放到 ConditionSettingTab 类中 ----
+    def _dbn_read_cfg(self):
+        """读取 DBN 配置（从 get_cfg）"""
+        from utils.get_config import get_cfg
+        cfg = get_cfg()
+        dbn = cfg.get("dbn", {})
+        stages = dbn.get("time_stages", ["t0", "t1", "t2", "t3"])
+        trans_cfg = dbn.get("transitions", {})
+        cpt_cfg = dbn.get("resilience_cpt", {"use_rule": True})
+        return stages, trans_cfg, cpt_cfg
+
+    def _dbn_collect_emissions(self, plan_name: str, stages: list[str]):
+        """
+        依赖你的采集/转证据函数，生成每阶段的“观测似然”。
+        允许返回：
+          - None
+          - 'High' / 'Medium' / 'Low'
+          - {'Low':p1,'Medium':p2,'High':p3}
+        """
+        from utils.plan import PlanDataCollector, convert_to_evidence
+        collector = PlanDataCollector(self.session, scenario_id=self.scenario_id)
+
+        # 预置结构
+        nodes = ["Absorption", "Adaptation", "Recovery", "resilience"]
+        emissions = {n: {} for n in nodes}
+
+        for t in stages:
+            collected = collector.collect_all_data(plan_name=plan_name)
+            ev = convert_to_evidence(collected, time_stage=t)
+            # 下面根据你 ev 的结构名取值 —— 如果 key 不存在，就让它为 None
+            # 你可以在 convert_to_evidence 里直接 RETURN 以上 4 个节点的软/硬观测
+            for n in nodes:
+                emissions[n][t] = ev.get(n)  # 可能是 None / str / dict
+
+        return emissions
+
+    def run_standard_dbn_for_plan(self, plan_name: str):
+        """
+        【最终混合版】
+        使用 pyAgrum 分析器计算每阶段的发射概率，
+        然后将其输入到 DBN 前向滤波链中，以考虑状态转移。
+        """
+        import numpy as np
+        import json
+        import os
+        from utils.dbn_forward import run_chain, rule_resilience_emission_gb
+        from utils.plan import PlanDataCollector, convert_to_evidence
+
+        # --- 步骤 0: 检查分析器是否已初始化 ---
+        if self.analyzer is None:
+            QMessageBox.critical(self, "错误", "贝叶斯网络分析器未成功初始化。")
+            return
+
+        # --- 步骤 1: 准备工作 ---
+        plan_data = self.format_plan_as_json(plan_name)
+        self.create_plan(plan_name, plan_data)
+
+        stages, trans_cfg, _ = self._dbn_read_cfg()
+        collector = PlanDataCollector(self.session, scenario_id=self.scenario_id)
+        cap_nodes = ["AbsorptionCapacity", "AdaptionCapacity", "RecoveryCapacity"]
+        resilience_node_name = "ScenarioResilience"
+
+        # --- 步骤 2: 计算每个阶段的发射概率 ---
+        # 发射概率来自于用当前证据对静态BN进行推理的结果
+        emissions_by_node = {node: {} for node in cap_nodes + [resilience_node_name]}
+
+        for t in stages:
+            # 2.1) 生成当前阶段的完整证据
+            collected_data = collector.collect_all_data(plan_name=plan_name)
+            evidence_for_t = convert_to_evidence(collected_data, time_stage=t)
+
+            # 2.2) 使用您的分析器进行一次静态推理
+            self.analyzer.make_inference(evidence_for_t)
+
+            # 2.3) 从推理结果中提取我们需要的四个节点的后验概率，作为DBN的发射概率
+            for node_name in cap_nodes + [resilience_node_name]:
+                try:
+                    # analyzer.ie.posterior(node_name) 返回一个 pyAgrum Potential 对象
+                    # 我们需要将其转换为 {"Bad": p1, "Good": p2} 的字典
+                    posterior_potential = self.analyzer.ie.posterior(node_name)
+                    prob_dist = {}
+                    for i, label in enumerate(self.analyzer.state_mapping[node_name]):
+                        prob_dist[label] = posterior_potential[i]
+
+                    emissions_by_node[node_name][t] = prob_dist
+                except Exception as e:
+                    print(f"[警告] 阶段 {t} 提取节点 {node_name} 的发射概率失败: {e}")
+                    # 如果失败，提供一个无信息的发射概率
+                    states = trans_cfg[node_name]["states"]
+                    emissions_by_node[node_name][t] = {s: 1.0 / len(states) for s in states}
+
+        print("--- 各阶段发射概率计算完成 ---")
+        print(json.dumps(emissions_by_node, indent=2))
+
+        # --- 步骤 3: 运行 DBN 前向滤波链 ---
+        # 注意：这里我们不再需要 rule_resilience_emission_gb，因为 Resilience 自己的发射概率
+        # 已经通过静态BN推理得到了，它已经隐式地包含了三能力的影响。
+
+        final_posteriors_by_node = {}
+        all_dynamic_nodes = cap_nodes + [resilience_node_name]
+
+        for node in all_dynamic_nodes:
+            if node not in trans_cfg: continue
+
+            states = trans_cfg[node]["states"]
+            T = np.array(trans_cfg[node]["matrix"], dtype=float)
+
+            # 使用计算出的发射概率运行 DBN 链
+            final_posteriors_by_node[node] = run_chain(
+                stages=stages,
+                states=states,
+                T=T,
+                alpha0=None,  # 使用均匀分布作为初始概率
+                emissions_by_stage=emissions_by_node.get(node, {})
+            )
+
+        # --- 步骤 4: 整理结果并写入数据库 ---
+        for t in stages:
+            # 组合当前阶段所有节点的最终后验概率
+            posterior_probabilities_for_t = {
+                node: final_posteriors_by_node[node][t]
+                for node in all_dynamic_nodes if node in final_posteriors_by_node
+            }
+
+            self.new_plan_generator.upsert_posterior_probability(
+                plan_name,
+                posterior_probabilities_for_t,
+                time_stage=t
+            )
+
+        # --- 步骤 5: 刷新UI ---
+        last_stage = stages[-1]
+        final_ui_posteriors = {
+            node: final_posteriors_by_node[node][last_stage]
+            for node in all_dynamic_nodes if node in final_posteriors_by_node
+        }
+
+        self.posterior_probabilities = self.convert_json_to_posterior_probabilities(final_ui_posteriors)
+        self.update_evidence_table()
+
+
+# ======== 常量：节点/状态候选名（兼容你的表结构与JSON键） ========
+RESILIENCE_NODE_CANDIDATES = ["ScenarioResilience", "resilience", "Resilience"]
+CAP_NODE_CANDIDATES = {
+    "Absorption": ["AbsorptionCapacity", "Absorption"],
+    "Adaptation": ["AdaptionCapacity", "Adaptation"],  # 兼容拼写
+    "Recovery":   ["RecoveryCapacity", "Recovery"],
+}
+HIGH_LABEL_CANDIDATES = ["High", "Good", "较好"]  # “高/较好”视为高状态
+
+# ======== 小工具：安全查询 ========
+def _safe_get_plan_id(session: Session, plan_name: str) -> int:
+    """Entity 可能是 entity_name 或 name 字段，做兜底。"""
+    from models.models import Entity
+    plan = (session.query(Entity).filter(getattr(Entity, "entity_name", Entity.entity_name) == plan_name)
+            .one_or_none())
+    return plan.entity_id if plan else None
+
+def _safe_get_node(session: Session, name_candidates: List[str]):
+    """按候选名逐个匹配 BayesNode，返回第一个命中的节点或 None。"""
+    from models.models import BayesNode
+    for n in name_candidates:
+        node = (session.query(BayesNode)
+                .filter(getattr(BayesNode, "bayes_node_name", BayesNode.bayes_node_name) == n)
+                .one_or_none())
+        if node:
+            return node
+    return None
+
+def _safe_get_state(session: Session, bayes_node_id: int, label_candidates: List[str]):
+    """在某节点下按候选状态名查 BayesNodeState，返回命中或 None。"""
+    from models.models import BayesNodeState
+    for s in label_candidates:
+        st = (session.query(BayesNodeState)
+              .filter(BayesNodeState.bayes_node_id == bayes_node_id,
+                      getattr(BayesNodeState, "bayes_node_state_name", BayesNodeState.bayes_node_state_name) == s)
+              .one_or_none())
+        if st:
+            return st
+    return None
+
+# ======== 替换：_get_plan_id ========
+def _get_plan_id(session: Session, plan_name: str) -> int:
+    pid = _safe_get_plan_id(session, plan_name)
+    if pid is None:
+        raise ValueError(f"未找到预案：{plan_name}")
+    return pid
+
+# ======== 替换：query_stagewise_state_prob ========
+def query_stagewise_state_prob(
+    session: Session,
+    plan_name: str,
+    node_name_or_candidates,
+    state_label_or_candidates
+) -> Dict[str, float]:
+    """
+    返回：{ 't0': 0.23, 't1': 0.31, ... }
+    node_name_or_candidates: 字符串或候选名列表
+    state_label_or_candidates: 字符串或候选名列表
+    """
+    from models.models import PosterioriData, BayesNode, BayesNodeState
+
+    plan_id = _get_plan_id(session, plan_name)
+
+    # 处理候选名
+    node_candidates = (node_name_or_candidates
+                       if isinstance(node_name_or_candidates, list)
+                       else [node_name_or_candidates])
+    state_candidates = (state_label_or_candidates
+                        if isinstance(state_label_or_candidates, list)
+                        else [state_label_or_candidates])
+
+    node = _safe_get_node(session, node_candidates)
+    if not node:
+        return {}  # 找不到就返回空
+
+    state = _safe_get_state(session, node.bayes_node_id, state_candidates)
+    if not state:
+        return {}
+
+    # 兼容是否存在 time_stage 列
+    out: Dict[str, float] = {}
+    has_time_stage = hasattr(PosterioriData, "time_stage")
+
+    if has_time_stage:
+        rows = (session.query(PosterioriData.time_stage, PosterioriData.posterior_probability)
+                .filter(PosterioriData.plan_id == plan_id,
+                        PosterioriData.bayes_node_state_id == state.bayes_node_state_id)
+                .order_by(PosterioriData.time_stage.asc())
+                .all())
+        for ts, p in rows:
+            out[str(ts)] = float(p)
+    else:
+        row = (session.query(PosterioriData.posterior_probability)
+               .filter(PosterioriData.plan_id == plan_id,
+                       PosterioriData.bayes_node_state_id == state.bayes_node_state_id)
+               .one_or_none())
+        if row:
+            out["t0"] = float(row[0])
+
+    return out
+
+# ======== 替换：query_stagewise_high_caps ========
+def query_stagewise_high_caps(
+    session: Session,
+    plan_name: str,
+    cap_nodes: List[str],  # 逻辑名：['Absorption','Adaptation','Recovery']
+    high_label_candidates: List[str] = None
+) -> Dict[str, Dict[str, float]]:
+    """
+    返回：{ 't0': {'Absorption':0.2,'Adaptation':0.3,'Recovery':0.1}, ... }
+    """
+    from models.models import PosterioriData, BayesNodeState
+
+    if high_label_candidates is None:
+        high_label_candidates = HIGH_LABEL_CANDIDATES
+
+    plan_id = _get_plan_id(session, plan_name)
+
+    # 将“逻辑名”映射到真实节点（用候选名搜）
+    node_to_stateid: Dict[str, int] = {}
+    for logic_name in cap_nodes:
+        candidates = CAP_NODE_CANDIDATES.get(logic_name, [logic_name])
+        node = _safe_get_node(session, candidates)
+        if not node:
+            continue
+        st = _safe_get_state(session, node.bayes_node_id, high_label_candidates)
+        if st:
+            node_to_stateid[logic_name] = st.bayes_node_state_id
+
+    out: Dict[str, Dict[str, float]] = {}
+    if not node_to_stateid:
+        return out
+
+    has_time_stage = hasattr(PosterioriData, "time_stage")
+
+    if has_time_stage:
+        rows = (session.query(PosterioriData.time_stage,
+                              PosterioriData.bayes_node_state_id,
+                              PosterioriData.posterior_probability)
+                .filter(PosterioriData.plan_id == plan_id,
+                        PosterioriData.bayes_node_state_id.in_(list(node_to_stateid.values())))
+                .all())
+        rev = {sid: logic for logic, sid in node_to_stateid.items()}
+        for ts, sid, p in rows:
+            stage = str(ts)
+            logic = rev.get(sid)
+            if logic is None:
+                continue
+            out.setdefault(stage, {})[logic] = float(p)
+
+        # 补齐缺项
+        for stage in list(out.keys()):
+            for logic in cap_nodes:
+                out[stage].setdefault(logic, 0.0)
+    else:
+        # 无阶段：退化为单阶段 t0
+        stage = "t0"
+        out[stage] = {}
+        for logic, sid in node_to_stateid.items():
+            row = (session.query(PosterioriData.posterior_probability)
+                   .filter(PosterioriData.plan_id == plan_id,
+                           PosterioriData.bayes_node_state_id == sid)
+                   .one_or_none())
+            out[stage][logic] = float(row[0]) if row else 0.0
+
+    return out
+
+
 
 
 # ===== 测试入口，仅供本地运行时参考 =====

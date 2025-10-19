@@ -1,3 +1,111 @@
+# =========================
+# 基础文件类型忽略
+# =========================
+*.log
 *.json
 *.xlsx
-*.log
+*.csv
+*.tmp
+*.bak
+
+# =========================
+# Python 相关
+# =========================
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pdb
+*.egg-info/
+.eggs/
+build/
+dist/
+.venv/
+venv/
+env/
+ENV/
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# =========================
+# Jupyter / 数据分析缓存
+# =========================
+.DS_Store
+*.swp
+*.swo
+*.sqlite
+*.db
+*.h5
+*.hdf5
+*.pickle
+*.pkl
+*.npy
+*.npz
+
+# =========================
+# IDE / 编辑器配置
+# =========================
+.vscode/
+.idea/
+*.code-workspace
+*.sublime-project
+*.sublime-workspace
+
+# =========================
+# 操作系统生成文件
+# =========================
+Thumbs.db
+Desktop.ini
+.DS_Store
+ehthumbs.db
+
+# =========================
+# 虚拟环境 / 依赖
+# =========================
+Pipfile.lock
+poetry.lock
+requirements.txt.lock
+.env
+*.env
+
+# =========================
+# 临时文件 / 结果输出
+# =========================
+logs/
+outputs/
+results/
+cache/
+tmp/
+checkpoints/
+runs/
+reports/
+artifacts/
+
+# =========================
+# 模型与数据文件
+# =========================
+*.pt
+*.pth
+*.onnx
+*.ckpt
+*.model
+*.tflite
+*.weights
+*.h5
+*.pb
+
+# =========================
+# 其他项目相关
+# =========================
+node_modules/
+package-lock.json
+yarn.lock
+__MACOSX/
+
+data/
+dist/
+dist_nuitka/
+*.xml
+*.txt
+*.spec
+bn_output/

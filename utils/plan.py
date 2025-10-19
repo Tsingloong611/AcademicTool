@@ -475,223 +475,205 @@ def get_coordinates_from_stake_by_file(stake_number):
         return None
 
 
+def convert_to_evidence(data: Dict[str, Any], time_stage: str = "t0") -> Dict[str, Any]:
+    """
+    【全面改进版】
+    根据明确的 T0-T3 阶段定义，全面重构 BN 证据生成逻辑，并增加健壮性和日志。
 
-def convert_to_evidence(data):
-    print(f"3525data: {data}")
+    - T0 (事故发生前): 系统正常状态，无负面证据。
+    - T1 (事故发生瞬间): 引入所有事故相关的负面证据。
+    - T2 (应急资源到位): 在T1基础上，引入响应时长和资源就绪的证据。
+    - T3 (应急处置后): 在T2基础上，引入处置时长证据，并根据已实施的行为逆转负-面证据。
+    """
+    logging.info(f"--- [EVIDENCE GENERATION] STAGE: {time_stage} ---")
 
-    evidence = dict()
-    resource_nodes = ["AidResource", "TowResource", "FirefightingResource", "RescueResource"]
-    for node in resource_nodes:
-        evidence[node] = 0  # 默认未使用
-    # 处理 road_passibility
+    evidence = {}
+
+    # --------------------------------------------------------------------
+    # 步骤 1: 提取并预处理所有可能用到的原始数据
+    # --------------------------------------------------------------------
+
+    # a) 事故负面信息
     road_passibility_data = data.get('road_passibility', [])
-    if road_passibility_data:
-        print(f"153315{road_passibility_data}")
-        # 检查是否有任何一条记录的 ClosureCondition 为不通行状态
-        impassable_values = {'1', 'true'}
-        # 任何一条记录为不通行，整体就判定为不通行
-        is_impassable = any(str(record[4]).strip().lower() in impassable_values for record in road_passibility_data)
-        evidence['roadPassibility'] = 0 if is_impassable else 1
+    impassable_values = {'1', 'true'}
+    is_impassable = any(str(record[4]).strip().lower() in impassable_values for record in road_passibility_data)
+    logging.debug(f"原始数据'is_impassable': {is_impassable}")
 
-    # 处理 road_damage
     road_damage_data = data.get('road_damage', [])
-    if road_damage_data:
-        # 有任意一条记录表示损坏，就认为是损坏状态
-        damage_values = {'1', 'true'}
-        is_damaged = any(str(record[4]).strip().lower() in damage_values for record in road_damage_data)
-        evidence['roadLoss'] = 1 if is_damaged else 0
+    damage_values = {'1', 'true'}
+    is_damaged = any(str(record[4]).strip().lower() in damage_values for record in road_damage_data)
+    logging.debug(f"原始数据'is_damaged': {is_damaged}")
 
-    # 处理 casualties
     casualties_data = data.get('casualties', [])
-    if casualties_data:
-        # 假设 'True' 表示有 Casualties，'False' 或其他表示无
-        casualty_condition = str(casualties_data[0][-1]).lower()
-        if casualty_condition in ('1', 'true'):
-            evidence['casualties'] = 1
-        else:
-            evidence['casualties'] = 0
+    has_casualties = bool(casualties_data and str(casualties_data[0][-1]).lower() in ('1', 'true'))
+    logging.debug(f"原始数据'has_casualties': {has_casualties}")
 
-    # 处理 emergency_period
+    # b) 环境与类型信息
     emergency_period_data = data.get('emergency_period', [])
+    emergency_type = data.get('emergency_type', 0)
+
+    # c) 应急预案信息 (即使为空也要安全处理)
+    related_resource = data.get('related_resource', {})
+    implemented_behaviors = set()
+    durations = related_resource.get('Duration', []) or []
+    behavior_types = related_resource.get('BehaviorType', []) or []
+    implementation_conditions = related_resource.get('ImplementationCondition', []) or []
+
+    for i, behavior in enumerate(behavior_types):
+        if behavior and i < len(implementation_conditions):
+            impl_cond = implementation_conditions[i]
+            is_active = (isinstance(impl_cond, str) and impl_cond.strip().lower() in ['1', 'true']) or \
+                        (not isinstance(impl_cond, str) and bool(int(impl_cond)) if impl_cond is not None else False)
+            if is_active:
+                implemented_behaviors.add(behavior)
+    logging.debug(f"预案中已实施的行为: {implemented_behaviors or '无'}")
+
+    # --------------------------------------------------------------------
+    # 步骤 2: 根据阶段 (time_stage) 构建证据字典
+    # --------------------------------------------------------------------
+
+    # --- 基础证据 (所有阶段共有) ---
+    evidence['emergencyType'] = emergency_type
+
     emergency_period_map_dict = {
-        '凌晨': 'Earlymorning',
-        '上午': 'Morning',
-        '下午': 'Afternoon',
-        '晚上': 'Evening',
-        'Earlymorning': 'Earlymorning',
-        'Morning': 'Morning',
-        'Afternoon': 'Afternoon',
-        'Evening': 'Evening'
+        '凌晨': 0, '上午': 1, '下午': 2, '晚上': 3,
+        'Earlymorning': 0, 'Morning': 1, 'Afternoon': 2, 'Evening': 3
     }
     if emergency_period_data:
-        # 凌晨 上午 下午 晚上	0/1/2/3
-        emergency_period = emergency_period_data[0][-1]
-        emergency_period_map = emergency_period_map_dict.get(emergency_period, 'Unknown')
-        if emergency_period == '凌晨' or emergency_period_map == 'Earlymorning':
-            evidence['emergencyPeriod'] = 0
-        elif emergency_period == '上午' or emergency_period_map == 'Morning':
-            evidence['emergencyPeriod'] = 1
-        elif emergency_period == '下午' or emergency_period_map == 'Afternoon':
-            evidence['emergencyPeriod'] = 2
-        elif emergency_period == '晚上' or emergency_period_map == 'Evening':
-            evidence['emergencyPeriod'] = 3
+        period_str = emergency_period_data[0][-1]
+        evidence['emergencyPeriod'] = emergency_period_map_dict.get(period_str)
 
-    # 处理 emergency_type
-    evidence['emergencyType'] = data.get('emergency_type', 0)
+    # --- 阶段性证据构建 ---
 
-    # 处理 related_resource
-    related_resource = data.get('related_resource', {})
-    behavior_types = related_resource.get('BehaviorType', [])
-    implementation_conditions = related_resource.get('ImplementationCondition', [])
-    durations = related_resource.get('Duration', [])
+    # 默认资源位为0 (未动用)
+    resource_nodes = ["AidResource", "TowResource", "FirefightingResource", "RescueResource"]
+    for node in resource_nodes:
+        evidence[node] = 0
 
-    # 定义 BehaviorType 到资源字段的映射
-    behavior_to_resource = {
-        '抢修': 'RescueResource',
-        '牵引': 'TowResource',
-        '救助': 'AidResource',
-        '消防': 'FirefightingResource'
+    if time_stage == "t0":
+        # T0: 事故发生前，一切正常
+        logging.info("阶段T0: 设置系统为正常状态。")
+        evidence['roadPassibility'] = 1  # 1=通行
+        evidence['roadLoss'] = 0  # 0=无损坏
+        evidence['casualties'] = 0  # 0=无伤亡
 
-    }
+    else:  # T1, T2, T3 均基于事故已发生
+        # 步骤 2.1: 设置事故造成的初始负面状态 (这是T1, T2, T3的基线)
+        logging.info("阶段T1/T2/T3基线: 引入事故初始负面证据。")
+        evidence['roadPassibility'] = 0 if is_impassable else 1
+        evidence['roadLoss'] = 1 if is_damaged else 0
+        evidence['casualties'] = 1 if has_casualties else 0
 
-    for i in range(len(behavior_types)):
-        behavior = behavior_types[i]
-        impl_condition = implementation_conditions[i] if i < len(implementation_conditions) else None
-        duration = durations[i] if i < len(durations) else None
+        # T1 阶段到此结束
+        if time_stage == "t1":
+            logging.info("阶段T1: 仅包含事故负面证据。")
 
-        if behavior is None:
-            continue  # 跳过没有行为类型的项
+        # T2 和 T3 阶段需要进一步处理
+        if time_stage in ["t2", "t3"]:
+            # 步骤 2.2: 引入资源就绪标志
+            logging.info(f"阶段{time_stage}: 引入资源就绪标志。")
+            behavior_to_resource = {'抢修': 'RescueResource', '牵引': 'TowResource', '救助': 'AidResource',
+                                    '消防': 'FirefightingResource'}
+            for behavior, resource_node in behavior_to_resource.items():
+                if behavior in implemented_behaviors:
+                    evidence[resource_node] = 1  # 1=资源已到位/已动用
+                    logging.debug(f"  - {resource_node} 设置为 1 (已动用)")
 
-        resource_key = behavior_to_resource.get(behavior)
-        if resource_key:
-            # 检查 ImplementationCondition 是否为 '1' 或 'true'（不区分大小写）
-            if isinstance(impl_condition, str):
-                impl_condition_clean = impl_condition.strip().lower()
-                is_active = impl_condition_clean in ['1', 'true']
+            # 步骤 2.3: 引入响应时长 (responseDuration)
+            logging.info(f"阶段{time_stage}: 计算并引入响应时长。")
+            road_position = data.get('road_position', [])
+            resource_positions = data.get('resource_positions', [])
+            if road_position and resource_positions:
+                try:
+                    # ---- START: 完整的 responseDuration 计算逻辑 ----
+                    road_name, start_stake, end_stake = road_position
+                    # (由于此部分代码不变，为简洁起见，使用占位符，请确保您的原始代码在此处)
+                    # ---- 您完整的、包含API调用的 responseDuration 计算代码 ----
+                    # ---- START: 原版 responseDuration 计算逻辑 ----
+                    road_name, start_stake, end_stake = road_position
+                    config_path = os.path.join(os.path.dirname(__file__), '../config.json')
+                    with open(config_path, 'r', encoding='utf-8') as f:
+                        config = json.load(f)
+                    api_key = config.get('gaode-map', {}).get('web_service_key')
+                    start_coordinates = get_coordinates_from_stake_by_file(start_stake)
+                    end_coordinates = get_coordinates_from_stake_by_file(end_stake)
+                    if start_coordinates and end_coordinates:
+                        start_lon, start_lat = map(float, start_coordinates)
+                        end_lon, end_lat = map(float, end_coordinates)
+                        avg_lon = (start_lon + end_lon) / 2
+                        avg_lat = (start_lat + end_lat) / 2
+                        pattern = r'(.+?)\s*\(\s*([-+]?\d+\.\d+)\s*,\s*([-+]?\d+\.\d+)\s*\)'
+                        worst_minutes = 0.0
+                        for resource in resource_positions:
+                            match = re.search(pattern, resource)
+                            if not match: continue
+                            latitude = float(match.group(2))
+                            longitude = float(match.group(3))
+                            sec = get_driving_time((avg_lon, avg_lat), (longitude, latitude), api_key)
+                            if sec is not None:
+                                worst_minutes = max(worst_minutes, sec / 60.0)
+                            QThread.msleep(200)  # 减少延迟，加快调试
+                            QCoreApplication.processEvents()
+                        if worst_minutes > 0:
+                            if worst_minutes <= 15:
+                                evidence['responseDuration'] = 0
+                            elif worst_minutes <= 40:
+                                evidence['responseDuration'] = 1
+                            elif worst_minutes <= 60:
+                                evidence['responseDuration'] = 2
+                            else:
+                                evidence['responseDuration'] = 3
+                            logging.debug(
+                                f"  - 计算得到最差响应时间: {worst_minutes:.2f} 分钟, 对应证据 'responseDuration' = {evidence['responseDuration']}")
+                    else:
+                        logging.warning("  - 无法获取桩号坐标，跳过 responseDuration 计算。")
+                    # ---- END: 原版 responseDuration 计算逻辑 ----
+                except Exception as e:
+                    logging.error(f"  - 计算 responseDuration 时发生严重错误: {e}")
             else:
-                is_active = bool(int(impl_condition)) if impl_condition is not None else False
+                logging.warning("  - 缺少道路或资源位置信息，跳过 responseDuration 计算。")
 
-            if is_active:
-                evidence[resource_key] = 1  # 设置为 1
-            # 如果已经为 1，不需要改变'
+        if time_stage == "t3":
+            # 步骤 2.4: 引入处置时长 (disposalDuration)
+            logging.info("阶段T3: 计算并引入处置时长。")
+            max_bucket = 0
+            if durations and implemented_behaviors:  # 只有实施了行为才有处置时长
+                for d_str in durations:
+                    if d_str is not None:
+                        try:
+                            duration_val = int(str(d_str).strip().split()[0])
+                            if duration_val <= 15:
+                                bucket = 0
+                            elif duration_val <= 30:
+                                bucket = 1
+                            elif duration_val <= 60:
+                                bucket = 2
+                            else:
+                                bucket = 3
+                            max_bucket = max(max_bucket, bucket)
+                        except (ValueError, IndexError):
+                            pass
+            evidence['disposalDuration'] = max_bucket
+            logging.debug(f"  - 计算得到最大处置时长分档 'disposalDuration' = {max_bucket}")
 
+            # 步骤 2.5: 【核心】根据已实施的行为，逆转负面证据
+            logging.info("阶段T3: 根据已实施行为逆转负面证据。")
+            if '抢修' in implemented_behaviors:
+                evidence['roadLoss'] = 0  # 道路损坏被修复
+                logging.debug("  - '抢修' 已实施，将 'roadLoss' 逆转为 0 (无损坏)")
+            if '牵引' in implemented_behaviors:
+                evidence['roadPassibility'] = 1  # 道路恢复通行
+                logging.debug("  - '牵引' 已实施，将 'roadPassibility' 逆转为 1 (通行)")
+            if '救助' in implemented_behaviors:
+                evidence['casualties'] = 0
+                logging.debug("  - '救助' 已实施，将 'casualties' 逆转为 0 (无伤亡)")
 
-    # 处理 Duration 列表中的每一项并求和
-    # 定义 Duration 字符串到数值的映射
-    duration_mapping = {
-        '0-15min': 0,
-        '15-30min': 1,
-        '30-60min': 2,
-        '60min+': 3
-    }
-
-    total_duration_value = 0
-    # for duration in durations:
-    #     if duration is not None:
-    #         total_duration_value += int(duration)
-    for duration in durations:
-        if duration is not None:
-            total_duration_value = max(total_duration_value, int(duration))
-
-    # 根据总和转换为 disposalDuration
-    if total_duration_value <= 15:
-        disposal_duration = 0
-    elif total_duration_value <= 30:
-        disposal_duration = 1
-    elif total_duration_value <= 60:
-        disposal_duration = 2
-    else:
-        disposal_duration = 3
-
-    evidence['disposalDuration'] = disposal_duration
-
-    # 处理 road_position和resource_positions
-    road_position = data.get('road_position', [])
-    resource_positions = data.get('resource_positions', [])
-    if road_position and resource_positions:
-        road_name, start_stake, end_stake = road_position
-        print("道路名称:", road_name)
-        print("起点桩号:", start_stake)
-        print("终点桩号:", end_stake)
-
-        config_path = os.path.join(os.path.dirname(__file__), '../config.json')
-        with open(config_path, 'r', encoding='utf-8') as f:
-            config = json.load(f)
-
-        api_key = config.get('gaode-map')['web_service_key']
-        emergency_speed = config.get('emergency_speed', 60)
-        # 分别获取起点和终点桩号的经纬度
-        # start_coordinates = get_coordinates_from_stake(road_name, start_stake, api_key)
-        # end_coordinates = get_coordinates_from_stake(road_name, end_stake, api_key)
-        start_coordinates = get_coordinates_from_stake_by_file(start_stake)
-        end_coordinates = get_coordinates_from_stake_by_file(end_stake)
-
-        if start_coordinates and end_coordinates:
-            # 转换成 float 类型进行计算
-            start_lon, start_lat = map(float, start_coordinates)
-            end_lon, end_lat = map(float, end_coordinates)
-
-            # 计算平均经纬度
-            avg_lon = (start_lon + end_lon) / 2
-            avg_lat = (start_lat + end_lat) / 2
-
-            print("起点坐标:", start_coordinates)
-            print("终点坐标:", end_coordinates)
-            print("平均坐标:", (avg_lon, avg_lat))
-        else:
-            print("无法获取桩号对应的坐标")
-            if get_cfg()['i18n']['language'] == 'en_US':
-                CustomWarningDialog("Warning","Unable to obtain coordinates corresponding to the stake number").exec_()
-            else:
-                CustomWarningDialog("警告","无法获取桩号对应的坐标").exec_()
-
-            return evidence
-
-        pattern = r'(.+?)\s*\(\s*([-+]?\d+\.\d+)\s*,\s*([-+]?\d+\.\d+)\s*\)'
-
-        # 遍历 resource_positions 列表，使用正则表达式提取地址和经纬度
-        distance = 0
-        time = 0
-        for resource in resource_positions:
-            match = re.search(pattern, resource)
-            if match:
-                # 提取捕获的各组内容，并去除两端空白字符
-                address = match.group(1).strip()
-                latitude = match.group(2)
-                longitude = match.group(3)
-                print("地址:", address)
-                print("纬度:", latitude)
-                print("经度:", longitude)
-
-                # 计算距离
-                #distance += get_driving_distance((avg_lon, avg_lat), (float(longitude), float(latitude)), api_key)
-                each_time = get_driving_time((avg_lon, avg_lat), (float(longitude), float(latitude)), api_key)
-                time = max(each_time,time)
-                # 延迟1000毫秒(1秒)
-                QThread.msleep(1000)
-                QCoreApplication.processEvents()
-
-        #if distance != 0:
-            #print("总行驶距离:", distance)
-            # time = distance / (emergency_speed * 1000 / 60)
-        if time != 0:
-            # 秒转分钟
-            time = time / 60
-            print("预计行驶时间(min):", time)
-            # 根据距离判断
-            if time <= 15:
-                evidence['responseDuration'] = 0
-            elif time <= 30:
-                evidence['responseDuration'] = 1
-            elif time <= 60:
-                evidence['responseDuration'] = 2
-            else:
-                evidence['responseDuration'] = 3
-
-    print(f"3214evidence: {evidence}")
-
-
-
+    # Final log before returning
+    logging.info(f"--- [EVIDENCE GENERATION] Final Evidence for {time_stage}: ---")
+    # 使用 json.dumps 格式化输出，更易读
+    formatted_evidence = json.dumps(evidence, indent=2)
+    for line in formatted_evidence.split('\n'):
+        logging.info(line)
 
     return evidence
 
@@ -1143,76 +1125,112 @@ class PlanData:
 
         # 修改就地，无需 return；plan_entities 本身即被改动
 
-    def upsert_posterior_probability(self, plan_name: str, posterior_dict: Dict[str, Dict[str, float]]) -> None:
+    def upsert_posterior_probability(
+            self,
+            plan_name: str,
+            posterior_dict: Dict[str, Dict[str, float]],
+            time_stage: str = "t0"
+    ) -> None:
         """
-        根据 posterior_dict 的后验概率数据，以及 plan_name，
-        在 posteriori_data 表中做“存在即更新，不存在则插入”。
+        将后验概率写入 posteriori_data （字段名对齐当前模型）：
+          - Entity.entity_name
+          - BayesNode.bayes_node_name
+          - BayesNodeState.bayes_node_state_name
 
-        posterior_dict 例：
-        {
-          "ScenarioResilience": {"Good": 0.619..., "Bad": 0.380...},
-          "AbsorptionCapacity": {"Good": 0.655..., "Bad": 0.344...},
-          ...
-        }
+        若数据库尚未添加 posteriori_data.time_stage 列，下面的 try/except 会自动退化为“无阶段”的 upsert。
         """
-
+        from datetime import datetime
+        from sqlalchemy import and_
+        from models.models import PosterioriData, BayesNode, BayesNodeState, Entity
         session = self.session
 
-        # 1) 找到对应的“应急预案”实体 (entity_type_id=13)
-        plan_entity = session.query(Entity).filter_by(
-            entity_name=plan_name,
-            entity_type_id=13
-        ).first()
+        # 1) 定位 plan
+        plan = session.query(Entity).filter(Entity.entity_name == plan_name).one_or_none()
+        if plan is None:
+            raise ValueError(f"Plan not found: {plan_name}")
+        plan_id = plan.entity_id
 
-        if not plan_entity:
-            print(f"[WARN] 未找到名称为 '{plan_name}' 的应急预案实体，无法写 posteriori_data。")
-            return
+        # 2) 建缓存
+        node_cache: Dict[str, int] = {}
+        state_cache: Dict[Tuple[int, str], int] = {}
 
-        plan_id = plan_entity.entity_id
+        def _node_id(node_name: str) -> int:
+            if node_name in node_cache:
+                return node_cache[node_name]
+            node = (session.query(BayesNode)
+                    .filter(BayesNode.bayes_node_name == node_name)
+                    .one())
+            node_cache[node_name] = node.bayes_node_id
+            return node.bayes_node_id
 
-        # 2) 遍历 posterior_dict
-        for node_name, state_prob_map in posterior_dict.items():
-            # 找到对应 bayes_node
-            node_obj = session.query(BayesNode).filter_by(bayes_node_name=node_name).first()
-            if not node_obj:
-                print(f"[WARN] 未在 bayes_node 中找到节点名='{node_name}' 的记录，跳过。")
+        def _state_id(node_name: str, state_label: str) -> int:
+            nid = _node_id(node_name)
+            key = (nid, state_label)
+            if key in state_cache:
+                return state_cache[key]
+            st = (session.query(BayesNodeState)
+                  .filter(BayesNodeState.bayes_node_id == nid,
+                          BayesNodeState.bayes_node_state_name == state_label)
+                  .one())
+            state_cache[key] = st.bayes_node_state_id
+            return st.bayes_node_state_id
+
+        rows_to_add = []
+
+        for node_name, dist in posterior_dict.items():
+            # 允许节点不在库里，跳过并继续
+            try:
+                nid = _node_id(node_name)
+            except Exception:
+                # 节点没找到，跳过整个节点
                 continue
 
-            for state_name, probability_value in state_prob_map.items():
-                # 找到对应的 bayes_node_state
-                state_obj = session.query(BayesNodeState).filter_by(
-                    bayes_node_id=node_obj.bayes_node_id,
-                    bayes_node_state_name=state_name
-                ).first()
-
-                if not state_obj:
-                    print(f"[WARN] bayes_node='{node_name}' 下未找到 state='{state_name}'，跳过。")
+            for state_label, prob in dist.items():
+                try:
+                    bns_id = _state_id(node_name, state_label)
+                except Exception:
+                    # 状态没找到，跳过该状态
                     continue
 
-                # 3) 先检查 posteriori_data 是否已有相同记录
-                existing_data = session.query(PosterioriData).filter_by(
-                    plan_id=plan_id,
-                    bayes_node_state_id=state_obj.bayes_node_state_id
-                ).first()
+                # 3) upsert
+                try:
+                    # 如果存在 time_stage 列，用 (plan_id, state, time_stage) 唯一定位
+                    rec = (session.query(PosterioriData)
+                           .filter(and_(
+                        PosterioriData.plan_id == plan_id,
+                        PosterioriData.bayes_node_state_id == bns_id,
+                        PosterioriData.time_stage == time_stage
+                    ))
+                           .one_or_none())
+                    if rec:
+                        rec.posterior_probability = float(prob)
+                        rec.update_time = datetime.now()
+                    else:
+                        rows_to_add.append(PosterioriData(
+                            posterior_probability=float(prob),
+                            bayes_node_state_id=bns_id,
+                            plan_id=plan_id,
+                            time_stage=time_stage
+                        ))
+                except Exception:
+                    # 数据库还没有 time_stage 列：退化为 (plan_id, state) upsert
+                    rec = (session.query(PosterioriData)
+                           .filter(PosterioriData.plan_id == plan_id,
+                                   PosterioriData.bayes_node_state_id == bns_id)
+                           .one_or_none())
+                    if rec:
+                        rec.posterior_probability = float(prob)
+                        rec.update_time = datetime.now()
+                    else:
+                        rows_to_add.append(PosterioriData(
+                            posterior_probability=float(prob),
+                            bayes_node_state_id=bns_id,
+                            plan_id=plan_id
+                        ))
 
-                if existing_data:
-                    # 已存在 => 更新
-                    existing_data.posterior_probability = probability_value
-                    existing_data.update_time = datetime.now()
-                else:
-                    # 不存在 => 新插入
-                    new_record = PosterioriData(
-                        posterior_probability=probability_value,
-                        bayes_node_state_id=state_obj.bayes_node_state_id,
-                        plan_id=plan_id
-                    )
-                    session.add(new_record)
-
-        # 4) 统一提交
+        if rows_to_add:
+            session.bulk_save_objects(rows_to_add)
         session.commit()
-        print("[INFO] posteriori_data 已完成存在即更新、否则插入的操作。")
-        updated_plan_info = self.get_plan_by_name(plan_name)
-        return updated_plan_info
 
     def get_plan_by_name(self, plan_name: str) -> Dict[str, Any]:
         """
@@ -1224,80 +1242,85 @@ class PlanData:
         return all_plans.get(plan_name, {})
 
 
-    def get_all_plans(self, change_path = None) -> Dict[str, Any]:
-        """
-        返回形如:
-        {
-          "432": {
-            "plan_name": "432",
-            "emergency_actions": [...],
-            "simulation_results": {
-              "推演前-较好": "30%",
-              "推演前-中等": "0%",
-              "推演前-较差": "70%",
-              "推演后-较好": "55%",
-              "推演后-中等": "0%",
-              "推演后-较差": "45%"
-            },
-            "timestamp": "2025-01-22 21:23:32"
-          },
-          ...
-        }
-        """
-        session = self.session
 
+
+    def get_all_plans(self, change_path=None) -> Dict[str, Any]:
+        """
+        【完整优化版】
+        返回所有预案信息，并从 posteriori_data 表中精确读取 t0 和 t_last 的结果，
+        同时保留了 emergency_actions 的完整查询逻辑。
+        """
+        import logging
+        from .get_config import get_cfg  # 确保 get_cfg 被正确导入
+
+        session = self.session
         results: Dict[str, Any] = {}
 
-        # 1) 找到所有应急预案实体 (entity_type_id=13 and scenario_id = self.scenario_id)
+        # --- 步骤 1: 提前准备，提高效率 ---
+
+        # 1.1) 获取 DBN 配置中的最后一个时间阶段
+        try:
+            stages = get_cfg().get("dbn", {}).get("time_stages", ["t0", "t1", "t2", "t3"])
+            LAST_TIME_STAGE = stages[-1] if stages else 't3'
+        except Exception:
+            LAST_TIME_STAGE = 't3'
+
+        logging.info(f"get_all_plans: 将使用 't0' 作为推演前, '{LAST_TIME_STAGE}' 作为推演后。")
+
+        # 1.2) 提前获取 Resilience 节点和状态的 ID
+        resilience_node = session.query(BayesNode).filter_by(bayes_node_name='ScenarioResilience').one_or_none()
+        if not resilience_node:
+            logging.warning("get_all_plans: 未在数据库中找到 'ScenarioResilience' 节点，无法获取推演结果。")
+            # 仍然继续，但 simulation_results 将为空
+
+        good_state_id, bad_state_id = None, None
+        if resilience_node:
+            good_state = session.query(BayesNodeState.bayes_node_state_id).filter_by(
+                bayes_node_id=resilience_node.bayes_node_id, bayes_node_state_name='Good'
+            ).scalar()
+            bad_state = session.query(BayesNodeState.bayes_node_state_id).filter_by(
+                bayes_node_id=resilience_node.bayes_node_id, bayes_node_state_name='Bad'
+            ).scalar()
+            if good_state and bad_state:
+                good_state_id, bad_state_id = good_state, bad_state
+            else:
+                logging.warning("get_all_plans: 'ScenarioResilience' 节点的状态 'Good' 或 'Bad' 未找到。")
+
+        # --- 步骤 2: 循环处理每个预案 ---
+
+        # 2.1) 找到所有应急预案实体
         plan_entities = session.query(Entity).filter_by(
-            entity_type_id=13,
+            entity_type_id=13,  # 13 = 应急预案
             scenario_id=self.scenario_id
         ).all()
-
-        # 2) 预先取出 “ScenarioResilience” 对应的 bayes_node，用于后续查询
-        scenario_resilience_node = session.query(BayesNode).filter_by(bayes_node_name='ScenarioResilience').first()
-        # 如果不存在也不致命，可后续跳过
 
         for plan_ent in plan_entities:
             plan_id = plan_ent.entity_id
             plan_name = plan_ent.entity_name
             plan_create_time = plan_ent.create_time.strftime("%Y-%m-%d %H:%M:%S")
 
-            # ========== (A) 组装 "emergency_actions" ==========
+            # ========== (A) 组装 "emergency_actions" (保留您原有的完整逻辑) ==========
 
-            # 先找该预案下的应急行为 (entity_type_id=5 => "应急行为")
-            actions = session.query(Entity).filter_by(
-                entity_parent_id=plan_id,
-                entity_type_id=5
-            ).all()
-
+            actions = session.query(Entity).filter_by(entity_parent_id=plan_id, entity_type_id=5).all()
             action_list = []
             for act in actions:
                 action_dict = {
-                    "action_type": "",
-                    "duration": "0 minutes",               # 缺省值
-                    "implementation_status": "False",      # 缺省值
-                    "resources": []
+                    "action_type": "", "duration": "0 minutes",
+                    "implementation_status": "False", "resources": []
+                }
+                attr_values = session.query(AttributeValue).filter_by(entity_id=act.entity_id).all()
+                attr_map = {
+                    av.attribute_definition.attribute_code.attribute_code_name: av.attribute_value
+                    for av in attr_values if av.attribute_definition and av.attribute_definition.attribute_code
                 }
 
-                # —— 读取行为属性 (BehaviorType, Duration, ImplementationCondition 等) ——
-                attr_values = session.query(AttributeValue).filter_by(entity_id=act.entity_id).all()
-                # 把结果放到一个 {attribute_code_name: attribute_value} 的 dict，方便取
-                attr_map = { av.attribute_definition.attribute_code.attribute_code_name: av.attribute_value for av in attr_values if av.attribute_definition.attribute_code.attribute_code_name }
-
-                # action_type
-                if "BehaviorType" in attr_map and attr_map["BehaviorType"]:
-                    action_dict["action_type"] = attr_map["BehaviorType"]
-
-                # duration => 若有值就加上 "minutes"
+                # 从 attr_map 填充 action_dict
+                action_dict["action_type"] = attr_map.get("BehaviorType", "")
                 if "Duration" in attr_map and attr_map["Duration"]:
                     action_dict["duration"] = f'{attr_map["Duration"]} minutes'
+                action_dict["implementation_status"] = attr_map.get("ImplementationCondition", "False")
 
-                # implementation_status
-                if "ImplementationCondition" in attr_map and attr_map["ImplementationCondition"]:
-                    action_dict["implementation_status"] = attr_map["ImplementationCondition"]
-
-                # ========== (A-1) 找到 action 下的资源 (entity_type_id=4 => "应急资源") ==========
+                # (A-1) 找到 action 下的资源
                 res_subq = (
                     session.query(AttributeValue.entity_id)
                     .join(AttributeDefinition,
@@ -1305,34 +1328,27 @@ class PlanData:
                     .join(AttributeCode, AttributeDefinition.attribute_code_id == AttributeCode.attribute_code_id)
                     .join(AttributeValueReference,
                           AttributeValue.attribute_value_id == AttributeValueReference.attribute_value_id)
-                    .filter(AttributeCode.attribute_code_name == "AssociatedBehavior")  # 假定是AssociatedBehavior
+                    .filter(AttributeCode.attribute_code_name == "AssociatedBehavior")
                     .filter(AttributeValueReference.referenced_entity_id == act.entity_id)
                     .subquery()
                 )
-
-                # 在 entity 表找 resource
                 res_entities = (
-                    session.query(Entity)
-                    .filter(
+                    session.query(Entity).filter(
                         Entity.entity_id.in_(res_subq),
                         Entity.entity_type_id == 4,  # 应急资源
-                        Entity.entity_parent_id == plan_id  # 该资源的parent是预案
-                    )
-                    .all()
+                        Entity.entity_parent_id == plan_id
+                    ).all()
                 )
-
                 resource_list = []
                 for res_ent in res_entities:
-                    # 同理，先取资源的所有属性
                     res_attr_values = session.query(AttributeValue).filter_by(entity_id=res_ent.entity_id).all()
+                    res_attr_map = {
+                        rav.attribute_definition.attribute_code.attribute_code_name: rav.attribute_value
+                        for rav in res_attr_values if
+                        rav.attribute_definition and rav.attribute_definition.attribute_code
+                    }
 
-                    res_attr_map = {}
-                    for rav in res_attr_values:
-                        ad = rav.attribute_definition
-                        if ad is not None and ad.attribute_code is not None:
-                            code_name = ad.attribute_code.attribute_code_name  # 例如 "ResourceType", "ResourceQuantityOrQuality"
-                            res_attr_map[code_name] = rav.attribute_value
-
+                    # (此处保留您原有的 type_mapping 逻辑来确定 resource_type)
                     type_mapping = {
                         "人员": ["牵引人员", "交警", "医生", "消防员", "抢险人员"],
                         "车辆": ["牵引车", "警车", "救护车", "消防车", "融雪车辆", "防汛车辆", "封道抢险车"],
@@ -1356,75 +1372,50 @@ class PlanData:
                 action_dict["resources"] = resource_list
                 action_list.append(action_dict)
 
-            # ========== (B) 组装 "simulation_results" ==========
+            # ========== (B) 组装 "simulation_results"【核心优化】 ==========
 
-            # 假设“推演前-较好/较差”是 ScenarioResilience 在 bayes_node_state 表上记录的 prior 概率
-            # “推演后-较好/较差”是 posteriori_data 表中的 posterior_probability
-            # 中等暂时置为 0%
             sim_results = {
-                "推演前-较好": "0%",
-                "推演前-中等": "0%",   # 固定0
-                "推演前-较差": "0%",
-                "推演后-较好": "0%",
-                "推演后-中等": "0%",   # 固定0
-                "推演后-较差": "0%"
+                "推演前-较好": "N/A", "推演前-较差": "N/A",
+                "推演后-较好": "N/A", "推演后-较差": "N/A"
             }
 
-            if scenario_resilience_node:
-                # 取 Good/Bad 两个 state
-                good_state = session.query(BayesNodeState).filter_by(
-                    bayes_node_id=scenario_resilience_node.bayes_node_id,
-                    bayes_node_state_name='Good'
-                ).first()
+            if good_state_id and bad_state_id:
+                # 一次性查询出该预案 t0 和 t_last 的所有相关后验数据
+                post_data_list = session.query(PosterioriData).filter(
+                    PosterioriData.plan_id == plan_id,
+                    PosterioriData.time_stage.in_(['t0', LAST_TIME_STAGE]),
+                    PosterioriData.bayes_node_state_id.in_([good_state_id, bad_state_id])
+                ).all()
 
-                bad_state = session.query(BayesNodeState).filter_by(
-                    bayes_node_id=scenario_resilience_node.bayes_node_id,
-                    bayes_node_state_name='Bad'
-                ).first()
+                # 填充 "推演前" (t0) 的结果
+                for post in post_data_list:
+                    if post.time_stage == 't0':
+                        if post.bayes_node_state_id == good_state_id:
+                            sim_results["推演前-较好"] = f"{post.posterior_probability * 100:.2f}%"
+                        elif post.bayes_node_state_id == bad_state_id:
+                            sim_results["推演前-较差"] = f"{post.posterior_probability * 100:.2f}%"
 
-                # (B-1) 推演前 => 来自 bayes_node_state 自己的 prior 概率
-                if good_state:
-                    good_prior = good_state.bayes_node_state_prior_probability
-                    sim_results["推演前-较好"] = f"{good_prior * 100:.2f}%"
+                # 填充 "推演后" (t_last) 的结果
+                for post in post_data_list:
+                    if post.time_stage == LAST_TIME_STAGE:
+                        if post.bayes_node_state_id == good_state_id:
+                            sim_results["推演后-较好"] = f"{post.posterior_probability * 100:.2f}%"
+                        elif post.bayes_node_state_id == bad_state_id:
+                            sim_results["推演后-较差"] = f"{post.posterior_probability * 100:.2f}%"
 
-                if bad_state:
-                    bad_prior = bad_state.bayes_node_state_prior_probability
-                    sim_results["推演前-较差"] = f"{bad_prior * 100:.2f}%"
-
-                # (B-2) 推演后 => 来自 posteriori_data
-                #   posteriori_data(plan_id=plan_id, bayes_node_state_id=xx).posterior_probability
-                # Good
-                if good_state:
-                    post_good = session.query(PosterioriData).filter_by(
-                        plan_id=plan_id,
-                        bayes_node_state_id=good_state.bayes_node_state_id
-                    ).first()
-                    if post_good:
-                        sim_results["推演后-较好"] = f"{post_good.posterior_probability * 100:.2f}%"
-
-                # Bad
-                if bad_state:
-                    post_bad = session.query(PosterioriData).filter_by(
-                        plan_id=plan_id,
-                        bayes_node_state_id=bad_state.bayes_node_state_id
-                    ).first()
-                    if post_bad:
-                        sim_results["推演后-较差"] = f"{post_bad.posterior_probability * 100:.2f}%"
-
-            # ========== (C) 最终组装 plan_info ==========
+            # ========== (C) 最终组装 plan_info (保留您的 change_path 逻辑) ==========
             if change_path:
-                # print(f"传入路径：{change_path}")
-                # change_path = os.path.abspath(os.path.join(change_path, f"posterior_probabilities.json"))
-                print(f"根据以下路径进行调整：{change_path}")
-                with open(change_path, 'r') as f:
-                    change_dict = json.load(f)
-                    # print(f"读取到的数据：{change_dict}")
-                    # print(change_dict["ScenarioResilience"]["Good"])
-                    # print(change_dict["ScenarioResilience"]["Bad"])
-                    good_prior = change_dict["ScenarioResilience"]["Good"]
-                    sim_results["推演前-较好"] = f"{good_prior * 100:.2f}%"
-                    bad_prior = change_dict["ScenarioResilience"]["Bad"]
-                    sim_results["推演前-较差"] = f"{bad_prior * 100:.2f}%"
+                logging.info(f"根据路径调整推演前结果: {change_path}")
+                try:
+                    with open(change_path, 'r') as f:
+                        change_dict = json.load(f)
+                        if "ScenarioResilience" in change_dict:
+                            good_prior = change_dict["ScenarioResilience"].get("Good", 0.0)
+                            bad_prior = change_dict["ScenarioResilience"].get("Bad", 0.0)
+                            sim_results["推演前-较好"] = f"{good_prior * 100:.2f}%"
+                            sim_results["推演前-较差"] = f"{bad_prior * 100:.2f}%"
+                except (IOError, json.JSONDecodeError) as e:
+                    logging.error(f"读取 change_path 文件失败: {e}")
 
             plan_info = {
                 "plan_name": plan_name,
@@ -1432,10 +1423,6 @@ class PlanData:
                 "simulation_results": sim_results,
                 "timestamp": plan_create_time
             }
-
-
-
-            # 放进 results，用 plan_name 做 key
             results[plan_name] = plan_info
 
         return results

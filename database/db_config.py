@@ -18,7 +18,7 @@ class DatabaseManager:
     def connect(self, username, password, host, port, database):
         try:
             connection_string = f"mysql+mysqlconnector://{username}:{password}@{host}:{port}/{database}?charset=utf8mb4"
-            self.engine = create_engine(connection_string, echo=True)
+            self.engine = create_engine(connection_string, echo=False)
 
             # ✅ 设置 lc_messages
             with self.engine.connect() as connection:

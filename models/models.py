@@ -757,7 +757,7 @@ class PosterioriData(Base):
     plan_id = Column(Integer, ForeignKey('entity.entity_id',
                                          ondelete='CASCADE', onupdate='RESTRICT'),
                      nullable=False)
-
+    time_stage = Column(String(8), nullable=False, default='t0', index=True)
     create_time = Column(
         DateTime,
         nullable=False,
